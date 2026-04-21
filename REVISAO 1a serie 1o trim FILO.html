@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revisão de Filosofia - Estilo Kahoot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            overflow-x: hidden; /* Evita rolagem horizontal, mas permite a vertical no celular */
+        }
+        
+        /* Cores estilo Kahoot */
+        .color-0 { background-color: #e21b3c; border-bottom: 4px solid #b0152e; } /* Vermelho */
+        .color-1 { background-color: #1368ce; border-bottom: 4px solid #0f52a3; } /* Azul */
+        .color-2 { background-color: #d89e00; border-bottom: 4px solid #ab7d00; } /* Amarelo */
+        .color-3 { background-color: #26890c; border-bottom: 4px solid #1e6b0a; } /* Verde */
+
+        .option-btn {
+            transition: transform 0.1s, filter 0.2s;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .option-btn:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+        }
+        .option-btn:active {
+            transform: translateY(2px);
+            border-bottom-width: 0px;
+            margin-top: 4px;
+        }
+
+        /* Animações do Modal */
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .modal-animate {
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* Formatos geométricos para botões - Escalonado para Mobile e TV */
+        .shape {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            background-color: white;
+        }
+        @media (min-width: 768px) {
+            .shape {
+                width: 32px;
+                height: 32px;
+                margin-right: 16px;
+            }
+        }
+        @media (min-width: 1024px) {
+            .shape {
+                width: 42px;
+                height: 42px;
+                margin-right: 20px;
+            }
+        }
+        .shape-0 { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); } /* Triângulo */
+        .shape-1 { clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); } /* Losango */
+        .shape-2 { border-radius: 50%; } /* Círculo */
+        .shape-3 { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); } /* Quadrado */
+    </style>
+</head>
+<body class="min-h-screen w-full flex flex-col items-center">
+
+    <!-- TELA INICIAL -->
+    <div id="start-screen" class="flex-1 flex flex-col items-center justify-center w-full px-4 md:px-8 py-8 text-center bg-purple-600 text-white">
+        <h1 class="text-4xl md:text-6xl xl:text-[7rem] font-extrabold mb-4 md:mb-6 drop-shadow-2xl tracking-tight">Super Revisão</h1>
+        <p class="text-xl md:text-4xl xl:text-5xl mb-6 md:mb-8 font-semibold">Filosofia - 1ª Série do Ensino Médio</p>
+        <div class="bg-white p-6 md:p-10 rounded-2xl md:rounded-3xl shadow-2xl max-w-5xl w-full text-gray-800 mb-8 md:mb-10">
+            <h2 class="text-2xl md:text-4xl xl:text-5xl font-bold mb-4 text-center">Preparado pra prova?</h2>
+            <p class="text-base md:text-2xl xl:text-4xl mb-4 md:mb-6 leading-relaxed text-justify">São 30 questões (com 4 alternativas cada) para você testar seus conhecimentos.</p>
+            <p class="text-sm md:text-xl xl:text-3xl text-gray-500 font-bold text-justify">Leia com atenção, escolha a resposta e veja o feedback na hora!</p>
+        </div>
+        <button onclick="startGame()" class="bg-black text-white text-xl md:text-3xl xl:text-5xl font-bold py-4 px-10 md:py-6 md:px-16 rounded-full hover:bg-gray-800 transition transform hover:scale-105 shadow-2xl">
+            COMEÇAR AGORA!
+        </button>
+    </div>
+
+    <!-- TELA DO JOGO -->
+    <div id="game-screen" class="hidden flex-1 flex-col w-full max-w-[98vw] mx-auto px-2 md:px-4 py-4 h-full">
+        <!-- Top bar -->
+        <div class="flex justify-between items-center mb-4 bg-white p-3 md:p-6 rounded-xl md:rounded-2xl shadow-md shrink-0">
+            <div class="font-bold text-gray-600 text-sm md:text-2xl xl:text-4xl tracking-wide">
+                QUESTÃO <span id="question-counter" class="text-purple-600 text-lg md:text-3xl xl:text-5xl">1</span>/30
+            </div>
+            <div class="font-bold text-gray-600 text-sm md:text-2xl xl:text-4xl">
+                PONTOS: <span id="score-display" class="bg-black text-white px-3 py-1 md:px-4 md:py-2 rounded-lg md:rounded-xl">0</span>
+            </div>
+        </div>
+
+        <!-- Pergunta -->
+        <div class="bg-white rounded-xl md:rounded-2xl shadow-xl p-4 md:p-8 lg:p-10 mb-4 flex-1 flex items-center justify-center">
+            <div id="question-text" class="w-full flex flex-col justify-center">
+                <h2 class="text-lg md:text-3xl lg:text-5xl xl:text-6xl font-extrabold text-gray-800 leading-snug md:leading-tight text-left md:text-justify w-full">Carregando pergunta...</h2>
+            </div>
+        </div>
+
+        <!-- Alternativas -->
+        <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 shrink-0 pb-6 md:pb-0">
+            <!-- Botões gerados via JS -->
+        </div>
+    </div>
+
+    <!-- TELA DE RESULTADO -->
+    <div id="result-screen" class="hidden flex-1 flex-col items-center justify-center w-full px-4 md:px-8 py-8 text-center bg-blue-600 text-white">
+        <h1 class="text-4xl md:text-6xl xl:text-[7rem] font-extrabold mb-6 md:mb-8 drop-shadow-2xl">Fim de Jogo!</h1>
+        <div class="bg-white p-6 md:p-10 rounded-2xl md:rounded-3xl shadow-2xl max-w-5xl w-full text-gray-800 mb-8 md:mb-10">
+            <h2 class="text-2xl md:text-4xl xl:text-6xl font-bold mb-4 md:mb-6 text-center">Sua Pontuação</h2>
+            <p class="text-[5rem] md:text-[8rem] xl:text-[10rem] font-extrabold text-purple-600 mb-2 leading-none text-center"><span id="final-score">0</span></p>
+            <p class="text-lg md:text-2xl xl:text-4xl font-semibold text-gray-600 text-center">de 30 acertos</p>
+            <p id="result-message" class="mt-6 md:mt-8 text-lg md:text-2xl xl:text-4xl font-bold text-gray-700 leading-relaxed text-justify"></p>
+        </div>
+        <button onclick="location.reload()" class="bg-black text-white text-xl md:text-3xl xl:text-4xl font-bold py-4 px-10 md:py-6 md:px-16 rounded-full hover:bg-gray-800 transition transform hover:scale-105 shadow-2xl">
+            JOGAR NOVAMENTE
+        </button>
+    </div>
+
+    <!-- MODAL DE FEEDBACK (POPUP) -->
+    <div id="feedback-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4 md:p-6">
+        <div id="modal-content" class="bg-white w-full max-w-7xl rounded-2xl md:rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.6)] transform scale-0 flex flex-col max-h-[95vh] md:max-h-[90vh]">
+            <!-- Cabeçalho do Modal (Verde ou Vermelho) -->
+            <div id="modal-header" class="p-6 md:p-12 text-white text-center shrink-0">
+                <h2 id="modal-title" class="text-3xl md:text-6xl xl:text-[6rem] font-extrabold tracking-wider uppercase">Acertou!</h2>
+            </div>
+            <!-- Corpo do Modal -->
+            <div class="p-6 md:p-16 text-center overflow-y-auto">
+                <p class="text-gray-500 text-lg md:text-3xl xl:text-4xl font-bold uppercase mb-4 text-center">Por que?</p>
+                <p id="modal-justification" class="text-lg md:text-3xl lg:text-5xl xl:text-6xl text-gray-800 font-bold mb-8 md:mb-12 leading-relaxed text-left md:text-justify">
+                    Justificativa vai aqui...
+                </p>
+                <div class="flex flex-col md:flex-row gap-4 md:gap-6 justify-center mt-4 md:mt-8">
+                    <button onclick="redoQuestion()" class="w-full md:w-1/2 bg-gray-500 text-white text-xl md:text-4xl xl:text-5xl font-bold py-4 md:py-8 rounded-xl md:rounded-2xl hover:bg-gray-600 transition shadow-2xl shrink-0">
+                        ↺ REFAZER
+                    </button>
+                    <button onclick="nextQuestion()" id="next-btn" class="w-full md:w-1/2 bg-black text-white text-xl md:text-4xl xl:text-5xl font-bold py-4 md:py-8 rounded-xl md:rounded-2xl hover:bg-gray-800 transition shadow-2xl shrink-0">
+                        PRÓXIMA ➔
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // BANCO DE 30 QUESTÕES (Todas com 4 opções)
+        const questions = [
+            // --- BLOCO 1: QUESTÕES 1 A 20 (ORIGINAIS) ---
+            {
+                text: "Sobre as diferentes formas de apreensão da realidade elaboradas pelo ser humano, assinale a alternativa que traz a correlação correta de seus conceitos básicos:",
+                options: [
+                    "A) O mito se estrutura em narrativas sobrenaturais; o senso comum é utilitário; a ciência exige método empírico; e a filosofia busca os fundamentos pela razão.",
+                    "B) A filosofia baseia-se na aceitação de crenças místicas, enquanto o senso comum utiliza o método de laboratório.",
+                    "C) O conhecimento científico despreza a experimentação, priorizando o saber transmitido pelas antigas gerações familiares.",
+                    "D) O pensamento mítico formula leis físicas universais com base no questionamento crítico e lógico."
+                ],
+                answer: 0,
+                justification: "Mandou bem! Essa é a essência da matéria: Mito = crenças e sobrenatural; Senso Comum = prático pro dia a dia; Ciência = testes e métodos rigorosos; Filosofia = razão e questionamento profundo."
+            },
+            {
+                text: "Sobre a distinção entre as esferas do saber, assinale a opção correta:",
+                options: [
+                    "A) A Filosofia questiona radicalmente os fundamentos, enquanto o senso comum aceita a rotina sem reflexão metódica.",
+                    "B) O pensamento mítico exige comprovação matemática para explicar a origem do cosmo.",
+                    "C) O conhecimento científico é construído primariamente por intuições emocionais não testáveis.",
+                    "D) O senso comum tem como meta principal formular conceitos abstratos sobre a essência do ser."
+                ],
+                answer: 0,
+                justification: "Isso aí! A Filosofia é a 'chata' que pergunta os porquês de tudo (radical = vai na raiz). Já o senso comum é a gente vivendo no automático, aceitando as coisas porque 'sempre foi assim'."
+            },
+            {
+                text: "Três situações: (I) Argumento que parte de premissa falsa para enganar; (II) Examinar evidências antes de julgar; (III) Exigir que a opinião seja aceita sem contestação. Estas posturas representam:",
+                options: [
+                    "A) Senso Crítico, Falácia Lógica e Dogmatismo.",
+                    "B) Dogmatismo, Senso Crítico e Falácia Lógica.",
+                    "C) Falácia Lógica, Senso Crítico e Dogmatismo.",
+                    "D) Dogmatismo, Falácia Lógica e Senso Crítico."
+                ],
+                answer: 2,
+                justification: "Perfeito! I é Falácia (parece verdade, mas engana); II é Senso Crítico (analisar com cuidado); e III é Dogmatismo (uma verdade fechada que não aceita debate)."
+            },
+            {
+                text: "Um aluno justifica nota ruim dizendo 'o professor não gosta de mim' sem provas. Outro revisa a prova para entender os erros. Um terceiro diz que está certo e recusa ouvir a correção. Essa ordem exemplifica:",
+                options: [
+                    "A) Falácia Lógica, Dogmatismo, Senso Crítico.",
+                    "B) Dogmatismo, Falácia Lógica, Senso Crítico.",
+                    "C) Falácia Lógica, Senso Crítico e Dogmatismo.",
+                    "D) Senso Crítico, Dogmatismo e Falácia Lógica."
+                ],
+                answer: 2,
+                justification: "Exato! Culpar o professor sem provas é Falácia. Querer aprender com o erro é Senso Crítico. Tapar os ouvidos e achar que é o dono da verdade é puro Dogmatismo."
+            },
+            {
+                text: "Um agricultor planta café olhando as fases da lua (saber dos avós). Um agrônomo recomenda o plantio analisando o pH do solo em laboratório. Essa situação ilustra a diferença entre:",
+                options: [
+                    "A) O conhecimento empírico do senso comum e a investigação metodológica e sistemática da ciência.",
+                    "B) A reflexão filosófica voltada aos deuses e o pensamento mítico voltado à agricultura.",
+                    "C) O dogmatismo inquestionável da academia e a falácia lógica dos saberes tradicionais.",
+                    "D) A linguagem hermenêutica das lendas e a interpretação textual literal da botânica."
+                ],
+                answer: 0,
+                justification: "Muito bem! Saber dos avós = Senso comum (vivência, tentativa e erro). Análise de solo = Ciência (método, sistemática, ferramentas)."
+            },
+            {
+                text: "O hábito de tomar um remédio caseiro porque 'sempre funcionou' e o protocolo de testar uma nova vacina em milhares de voluntários revelam a fronteira entre:",
+                options: [
+                    "A) O conhecimento espontâneo do senso comum e a validade metodológica da ciência.",
+                    "B) A argumentação dogmática e a crença nos mitos de fundação.",
+                    "C) O senso crítico filosófico e a falácia da autoridade tradicional.",
+                    "D) O misticismo religioso e a linguagem poética da literatura."
+                ],
+                answer: 0,
+                justification: "Corretíssimo! O chá da avó é o conhecimento espontâneo (senso comum). A vacina exige um método rigoroso para garantir que funciona em todos e é segura (Ciência)."
+            },
+            {
+                text: "Para povos antigos, um eclipse solar era visto como a ira de uma divindade ameaçando apagar o sol. Qual é a principal característica desse tipo de pensamento mítico?",
+                options: [
+                    "A) Propor cálculos geométricos avançados para prever o próximo eclipse.",
+                    "B) Romper com qualquer forma de respeito ou crença nas tradições da comunidade.",
+                    "C) Exigir que todos os membros da pólis realizassem experimentos empíricos diários.",
+                    "D) Utilizar elementos sobrenaturais e simbólicos para dar sentido a fenômenos desconhecidos."
+                ],
+                answer: 3,
+                justification: "Acertou! O mito usava histórias de deuses, heróis e forças sobrenaturais para acalmar o medo e explicar coisas que eles ainda não entendiam."
+            },
+            {
+                text: "Os gregos antigos narravam que o inverno ocorria porque a deusa Deméter entristecia-se quando sua filha ia para o submundo. A função dessa narrativa mítica era:",
+                options: [
+                    "A) Desenvolver a agricultura baseada em análises climáticas exatas.",
+                    "B) Negar a influência das estações do ano no comportamento humano.",
+                    "C) Romper definitivamente com a religiosidade popular.",
+                    "D) Explicar de forma reconfortante um fenômeno natural através de forças divinas personificadas."
+                ],
+                answer: 3,
+                justification: "Exatamente! Em vez de meteorologia, eles usavam histórias de emoções divinas (tristeza de uma deusa) para explicar por que as plantas morriam no inverno."
+            },
+            {
+                text: "Histórias folclóricas que explicam a origem dos rios a partir das lágrimas de divindades se diferenciam da filosofia porque o pensamento mítico se estrutura através de:",
+                options: [
+                    "A) Comprovações documentais e arquivos históricos verificáveis.",
+                    "B) Formulações de leis universais baseadas em testes controlados.",
+                    "C) Imagens simbólicas, emoções e a personificação de forças naturais.",
+                    "D) Dúvidas metódicas elaboradas para desconstruir certezas."
+                ],
+                answer: 2,
+                justification: "Boa! Personificar é dar características humanas (como chorar) a coisas da natureza (formação de rios). O mito é cheio de símbolos e emoções."
+            },
+            {
+                text: "O pensamento mítico, ao contrário da lógica formal e da investigação filosófica, opera principalmente por meio de:",
+                options: [
+                    "A) Demonstrações matemáticas herméticas.",
+                    "B) Tabelas estatísticas de observação contínua.",
+                    "C) Discursos simbólicos, imaginação e atribuição de vontades humanas à natureza.",
+                    "D) Argumentos silogísticos de premissas e conclusões claras."
+                ],
+                answer: 2,
+                justification: "Isso aí! O mito usa a imaginação e a poesia (simbolismo) em vez da razão fria e cálculos."
+            },
+            {
+                text: "Quando os primeiros filósofos começaram a investigar a 'Physis' (natureza), deixaram de buscar respostas nos deuses e buscaram princípios materiais (como água ou ar). Esse movimento representa:",
+                options: [
+                    "A) A ruptura gradual com a narrativa mítica e a inauguração do pensamento filosófico racional.",
+                    "B) A consolidação do pensamento mítico como a única ciência aceita na Grécia.",
+                    "C) A passagem do conhecimento científico para crenças baseadas em intuição mágica.",
+                    "D) O fortalecimento do dogmatismo religioso em todo o território ateniense."
+                ],
+                answer: 0,
+                justification: "Excelente! Esse é o nascimento da Filosofia (a passagem do Mito para o Logos/Razão). Eles passaram a buscar explicações na própria natureza, e não mais no Olimpo."
+            },
+            {
+                text: "A transição conhecida como o 'milagre grego' é marcada pelo momento em que pensadores passaram a:",
+                options: [
+                    "A) Abandonar as explicações mágicas, buscando a causa das coisas na própria matéria e na lógica.",
+                    "B) Defender que apenas os sacerdotes tinham o direito de interpretar o mundo.",
+                    "C) Utilizar telescópios para provar que o Monte Olimpo estava vazio.",
+                    "D) Sistematizar deuses de outras culturas em uma única narrativa mítica."
+                ],
+                answer: 0,
+                justification: "Correto! O 'Milagre Grego' é exatamente essa virada de chave: sair das histórias mágicas e usar o raciocínio lógico e a observação da matéria."
+            },
+            {
+                text: "O surgimento da Filosofia dependeu de um contexto favorável. Qual alternativa apresenta apenas fatores históricos decisivos para esse evento?",
+                options: [
+                    "A) Centralização do poder faraônico, pólvora e isolamento geográfico.",
+                    "B) Viagens marítimas, surgimento da moeda, escrita alfabética e debate político na Pólis.",
+                    "C) Prensa de Gutemberg, Revolução Industrial e universidades.",
+                    "D) Proibição do comércio e abolição das leis escritas."
+                ],
+                answer: 1,
+                justification: "Perfeito! Ao viajar, os gregos viram que outros povos tinham mitos diferentes. A moeda exigiu pensamento abstrato, a escrita fixou as leis, e a praça (Ágora) exigia debate."
+            },
+            {
+                text: "A consolidação da cidade-estado (Pólis) grega foi um motor para a Filosofia porque exigiu uma nova forma de lidar com o conhecimento, centrada:",
+                options: [
+                    "A) No poder despótico de um rei considerado divindade viva.",
+                    "B) Na praça pública (ágora), no debate, na argumentação (logos) e na persuasão racional.",
+                    "C) No isolamento dos cidadãos em suas propriedades rurais.",
+                    "D) Na entrega total das decisões jurídicas aos oráculos."
+                ],
+                answer: 1,
+                justification: "Muito bem! Na Pólis democrática, quem governava não era um rei pela força, mas os cidadãos que tivessem a melhor argumentação (razão) na Ágora. O poder da fala virou rei."
+            },
+            {
+                text: "O senso comum é muito útil no dia a dia. Entretanto, do ponto de vista do senso crítico, ele apresenta um grave problema estrutural, pois:",
+                options: [
+                    "A) Exige que os cidadãos dediquem anos ao estudo abstrato.",
+                    "B) Ignora totalmente a necessidade humana de realizar tarefas diárias.",
+                    "C) Favorece a aceitação acrítica de preconceitos, tabus e tradições sem fundamentação.",
+                    "D) Destrói as relações familiares ao impor métodos científicos em casa."
+                ],
+                answer: 2,
+                justification: "Aí que mora o perigo! Como o senso comum não questiona nada ('todo mundo faz assim'), ele acaba repetindo erros graves, preconceitos e injustiças sem perceber."
+            },
+            {
+                text: "Um dos maiores problemas sociais do uso exclusivo do senso comum é que ele frequentemente:",
+                options: [
+                    "A) Exige equipamentos tecnológicos caros para ser transmitido.",
+                    "B) Desestimula a comunicação entre pessoas da mesma comunidade.",
+                    "C) Propaga estereótipos, machismo e racismos disfarçados de verdades naturais.",
+                    "D) Força os indivíduos a adotarem atitudes permanentemente reflexivas."
+                ],
+                answer: 2,
+                justification: "Triste, mas verdade. Frases como 'menino veste azul e menina veste rosa' ou estereótipos raciais são perpetuados pelo senso comum, disfarçando o preconceito de 'ordem natural'."
+            },
+            {
+                text: "Enquanto o dogmático encerra o debate afirmando possuir a verdade inquestionável, a atitude filosófica caracteriza-se por:",
+                options: [
+                    "A) Aceitar as verdades das autoridades locais para evitar conflitos.",
+                    "B) Reproduzir as opiniões da maioria, garantindo a paz social.",
+                    "C) Evitar qualquer tipo de diálogo com pessoas de opiniões diferentes.",
+                    "D) Manter a indagação constante e o rigor reflexivo na busca ininterrupta pelo conhecimento."
+                ],
+                answer: 3,
+                justification: "Isso mesmo! O filósofo sabe que não sabe de tudo (lembra do Sócrates?). Ele está sempre perguntando, investigando e fugindo das verdades absolutas e prontas (dogmas)."
+            },
+            {
+                text: "Diante de uma notícia falsa que confirma seus preconceitos, o dogmático aceita sem checar. A atitude filosófica, por outro lado, propõe:",
+                options: [
+                    "A) Acreditar apenas nas notícias publicadas há mais de um século.",
+                    "B) Aceitar qualquer mentira desde que ela evite discussões.",
+                    "C) Censurar previamente os meios de comunicação.",
+                    "D) Investigar a fonte, analisar criticamente os dados e recusar afirmações sem provas."
+                ],
+                answer: 3,
+                justification: "Perfeito! Ter atitude filosófica hoje é não cair em Fake News. É desconfiar, checar as fontes e não acreditar em algo só porque massageia nosso ego."
+            },
+            {
+                text: "Considerando os perigos de utilizar só o senso comum, por que a 'atitude filosófica' é a ferramenta adequada para superá-lo?",
+                options: [
+                    "A) Porque ela substitui a sabedoria popular por lendas fáceis de entender.",
+                    "B) Porque obriga todos a concordarem com uma única visão de mundo.",
+                    "C) Porque o filósofo rejeita as práticas cotidianas, vivendo na teoria.",
+                    "D) Porque introduz o questionamento crítico, evitando a paralisia do pensamento e a aceitação de inverdades."
+                ],
+                answer: 3,
+                justification: "Boa! A Filosofia nos 'tira do sono'. Ela nos faz questionar as coisas, impedindo que a gente seja manipulado ou viva no automático."
+            },
+            {
+                text: "Em um mundo repleto de informações rápidas, a atitude filosófica mantém sua importância vital porque:",
+                options: [
+                    "A) Substitui os profissionais de psicologia no tratamento de fobias.",
+                    "B) Garante enriquecimento financeiro através de fórmulas lógicas.",
+                    "C) Condena qualquer forma de avanço tecnológico.",
+                    "D) Fomenta o distanciamento crítico, impedindo que atuemos de modo automático diante das estruturas da sociedade."
+                ],
+                answer: 3,
+                justification: "Você cravou a última! Num mundo de TikTok e rolagens infinitas, a Filosofia é aquele momento de parar, dar um passo pra trás (distanciamento crítico) e pensar por si mesmo."
+            },
+
+            // --- BLOCO 2: QUESTÕES 21 A 30 (NOVAS 10 QUESTÕES - TEXTO EXATO) ---
+            {
+                text: "O ser humano utiliza diferentes \"lentes\" para interpretar a realidade ao seu redor, desde a lavoura até os grandes mistérios do universo. Relacione as formas de conhecimento (Coluna A) com as suas respectivas descrições (Coluna B).<br><br><span class=\"text-left block\">Coluna A:<br>( 1 ) Senso Comum<br>( 2 ) Pensamento Mítico<br>( 3 ) Conhecimento Filosófico<br>( 4 ) Conhecimento Científico<br><br>Coluna B:<br>( &nbsp; ) Baseia-se em narrativas de deuses e heróis para explicar os fenômenos da natureza.<br>( &nbsp; ) É o saber prático e cotidiano, transmitido pela tradição e focado na utilidade imediata.<br>( &nbsp; ) Utiliza métodos de experimentação em laboratório para formular leis físicas universais.<br>( &nbsp; ) Busca os fundamentos da realidade através da argumentação lógica e do questionamento.<br><br>A sequência correta, de cima para baixo, é:</span>",
+                options: [
+                    "A) 2, 1, 4, 3",
+                    "B) 1, 2, 3, 4",
+                    "C) 2, 4, 1, 3",
+                    "D) 3, 1, 4, 2"
+                ],
+                answer: 0,
+                justification: "Perfeito! Mito (2) usa deuses; Senso Comum (1) é o prático do dia a dia; Ciência (4) exige métodos de laboratório; e Filosofia (3) busca os fundamentos pela argumentação lógica."
+            },
+            {
+                text: "O conselho de classe reuniu-se para discutir as novas regras de convivência. Analise as posturas dos participantes e relacione aos conceitos filosóficos ligados à verdade e ao pensamento:<br><br><span class=\"text-left block\">1. Dogmatismo<br>2. Senso Crítico<br>3. Falácia Lógica<br><br>( &nbsp; ) O diretor argumenta de forma que parece fazer sentido, mas que oculta um erro de raciocínio.<br>( &nbsp; ) Um professor propõe ler e questionar cuidadosamente o regimento antes de tomar uma decisão.<br>( &nbsp; ) Um pai de aluno exige que as regras antigas sejam mantidas sem questionamentos ou debates.<br><br>A sequência correta, de cima para baixo, é:</span>",
+                options: [
+                    "A) 1, 2, 3",
+                    "B) 2, 3, 1",
+                    "C) 3, 2, 1",
+                    "D) 3, 1, 2"
+                ],
+                answer: 2,
+                justification: "Isso aí! Falácia Lógica (3) é o erro de raciocínio oculto. Senso Crítico (2) é quem questiona e investiga. Dogmatismo (1) é recusar qualquer tipo de diálogo ou debate."
+            },
+            {
+                text: "Uma estudante acorda com dor de estômago no dia de uma prova. Sua avó prepara um chá de ervas tradicional que alivia a dor rapidamente. Mais tarde, um médico prescreve um comprimido contendo o princípio ativo extraído da mesma planta. A diferença entre os dois saberes reside na distinção entre:",
+                options: [
+                    "A) Senso comum consolidado pelo hábito e o conhecimento científico metodológico.",
+                    "B) Pensamento mítico religioso e o conhecimento de senso comum do cotidiano diário.",
+                    "C) Racionalidade filosófica abstrata e a crença dogmática presente nas mitologias.",
+                    "D) Linguagem hermenêutica complexa e a interpretação textual literal e absolutista."
+                ],
+                answer: 0,
+                justification: "Na mosca! O chá da avó é um saber passado por gerações, na base da tentativa e erro (Senso Comum). O remédio do médico passou por laboratórios e testes (Ciência)."
+            },
+            {
+                text: "Na Grécia Antiga, marinheiros enfrentavam tempestades no mar sem possuir satélites meteorológicos. Para lidar com o terror do desconhecido, eles narravam que o deus Poseidon estava furioso e agitava as águas com seu tridente. Assinale a alternativa que descreve a função desse pensamento mítico:",
+                options: [
+                    "A) Estabelecer métodos científicos modernos para prever o clima e melhorar a navegação.",
+                    "B) Questionar sistematicamente todas as tradições culturais com base na lógica formal.",
+                    "C) Comprovar de forma empírica e rigorosa a existência física de deuses no fundo do mar.",
+                    "D) Oferecer sentido ao mundo e explicar fenômenos naturais através de forças divinas."
+                ],
+                answer: 3,
+                justification: "Muito bem! O Mito servia como um 'calmante' para o medo. Ao colocar um Deus com vontade própria no controle do mar, o mundo caótico passava a fazer sentido para eles."
+            },
+            {
+                text: "Tales de Mileto, observando a natureza, afirmou que \"tudo é água\", tentando explicar a origem da vida sem recorrer às histórias dos deuses do Olimpo. Esse momento histórico, onde se busca causas naturais para fenômenos naturais, representa a:",
+                options: [
+                    "A) Transição do mito para o pensamento filosófico e o uso da racionalidade investigativa.",
+                    "B) Substituição de muitos deuses por um deus único e invisível criador do firmamento.",
+                    "C) Passagem do pensamento racional lógico para uma visão baseada em intuições mágicas.",
+                    "D) Consolidação total das crenças religiosas tradicionais em toda a região mediterrânea."
+                ],
+                answer: 0,
+                justification: "Exatamente! Em vez de culpar os Deuses, Tales olhou para os elementos da natureza usando sua razão. A isso damos o nome de 'Milagre Grego', que é o começo da Filosofia."
+            },
+            {
+                text: "Em uma roda de conversa no interior, idosos contam lendas folclóricas sobre criaturas da floresta que punem caçadores gananciosos. Enquanto o senso comum é focado na utilidade diária, o pensamento mítico presente nessas lendas caracteriza-se por utilizar amplamente:",
+                options: [
+                    "A) Análises estatísticas detalhadas sobre o comportamento animal nas florestas da região.",
+                    "B) Fórmulas matemáticas rigorosas para demonstrar o movimento contínuo das estrelas.",
+                    "C) Relatos totalmente simbólicos e a personificação moral de forças da própria natureza.",
+                    "D) Dúvidas metódicas que buscam desconstruir rapidamente qualquer crença estabelecida."
+                ],
+                answer: 2,
+                justification: "Acertou! O mito não usa fórmulas ou matemática. Ele conta histórias simbólicas, dando emoções e moral a coisas da natureza (personificação) para ensinar algo à comunidade."
+            },
+            {
+                text: "O senso comum funciona como um verdadeiro \"manual de sobrevivência\" para tarefas diárias. Porém, a Filosofia alerta que o uso exclusivo desse tipo de conhecimento pode gerar problemas sérios para a sociedade moderna. Qual é o principal risco do senso comum?",
+                options: [
+                    "A) Exige o uso constante de tecnologias inacessíveis para a população.",
+                    "B) Afasta o ser humano das tradições culturais originárias de sua família.",
+                    "C) Facilita a reprodução de preconceitos e inverdades sem questionamento.",
+                    "D) Anula completamente a necessidade humana de possuir crenças divinas."
+                ],
+                answer: 2,
+                justification: "Corretíssimo. Como no senso comum 'todo mundo faz assim', as pessoas param de pensar e acabam repetindo racismo, machismo e ideias falsas sem perceber o mal que estão causando."
+            },
+            {
+                text: "Em um jantar de família, um parente expõe sua visão política e proíbe que qualquer pessoa na mesa discorde, adotando uma postura dogmática. A Filosofia, por sua própria natureza, opõe-se a esse comportamento dogmático porque preza primordialmente pela:",
+                options: [
+                    "A) Repetição mecânica de tradições culturais seculares sem avaliação de seus méritos.",
+                    "B) Aceitação passiva de todas as opiniões para evitar o desgaste emocional em família.",
+                    "C) Rejeição de qualquer tentativa de debate lógico, preferindo o silêncio contemplativo.",
+                    "D) Busca contínua e incansável por explicações racionais, mantendo vivo o senso crítico."
+                ],
+                answer: 3,
+                justification: "Perfeito! A atitude filosófica é como uma 'pulga atrás da orelha'. Ela foge de quem diz ser o dono da verdade final (dogmatismo) e valoriza o questionamento incansável."
+            },
+            {
+                text: "O surgimento da Filosofia na Grécia Antiga não foi um acontecimento repentino, mas o resultado de um conjunto de transformações sociais, políticas e econômicas que enfraqueceram o pensamento mítico. Cite três fatores históricos que contribuíram para o surgimento da Filosofia e explique brevemente como um deles ajudou a desenvolver o pensamento racional.",
+                options: [
+                    "A) Invenção da escrita alfabética, o surgimento da moeda, viagens marítimas e o debate na Pólis (Ágora).",
+                    "B) A invenção da pólvora, a centralização do poder faraônico e a unificação religiosa.",
+                    "C) O surgimento das universidades, a Revolução Industrial e a prensa de Gutemberg.",
+                    "D) O absolutismo monárquico e o fechamento total das praças públicas para discussões."
+                ],
+                answer: 0,
+                justification: "Show! A viagem de barco os fez ver que outras culturas tinham outros deuses; a moeda e a escrita exigiram raciocínio abstrato; e a praça (Ágora) substituiu a força pela argumentação lógica."
+            },
+            {
+                text: "O senso comum é um tipo de conhecimento prático, baseado na repetição e na tradição, aceito sem questionamento lógico. Cite dois perigos práticos ou sociais de utilizar o senso comum como base exclusiva para a tomada de decisões e explique por que a atitude filosófica é a ferramenta adequada para superá-lo.",
+                options: [
+                    "A) O senso comum exige muita reflexão e a filosofia simplifica criando mitos de deuses gregos.",
+                    "B) O senso comum cobra impostos da população; a filosofia resolve problemas financeiros.",
+                    "C) O senso comum aceita falsas verdades e preconceitos; a Filosofia introduz a dúvida e a investigação reflexiva.",
+                    "D) O senso comum utiliza excesso de pesquisas; a atitude filosófica recusa o debate intelectual."
+                ],
+                answer: 2,
+                justification: "Gabaritou! A Filosofia tem a função de nos 'incomodar', tirando o nosso cérebro do piloto automático do senso comum para que a gente não propague injustiças achando que são 'normais'."
+            }
+        ];
+
+        // Estado do Jogo
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let canClick = true;
+        let lastAnswerCorrect = false;
+
+        // Elementos do DOM
+        const startScreen = document.getElementById('start-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const scoreDisplay = document.getElementById('score-display');
+        
+        // Elementos do Modal
+        const modal = document.getElementById('feedback-modal');
+        const modalContent = document.getElementById('modal-content');
+        const modalHeader = document.getElementById('modal-header');
+        const modalTitle = document.getElementById('modal-title');
+        const modalJustification = document.getElementById('modal-justification');
+
+        function startGame() {
+            startScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            gameScreen.classList.add('flex');
+            currentQuestionIndex = 0;
+            score = 0;
+            updateScore();
+            loadQuestion();
+            // Garante que a tela role para o topo ao iniciar o jogo no celular
+            window.scrollTo(0, 0);
+        }
+
+        function loadQuestion() {
+            canClick = true;
+            const q = questions[currentQuestionIndex];
+            questionCounter.innerText = currentQuestionIndex + 1;
+            
+            // Lógica para redimensionar o texto dependendo do dispositivo (mobile vs TV) e tamanho do texto
+            let textSizeClass = "text-xl md:text-4xl lg:text-5xl xl:text-6xl";
+            if (q.text.length > 400) {
+                // Fonte bem menor para textos muito longos caberem na tela (ex: relacionar colunas)
+                textSizeClass = "text-sm md:text-2xl lg:text-3xl xl:text-4xl"; 
+            } else if (q.text.length > 200) {
+                // Tamanho intermediário
+                textSizeClass = "text-base md:text-3xl lg:text-4xl xl:text-5xl"; 
+            }
+
+            questionText.innerHTML = `<h2 class="${textSizeClass} font-extrabold text-gray-800 leading-snug md:leading-tight text-left md:text-justify w-full">${q.text}</h2>`;
+            
+            optionsContainer.innerHTML = '';
+            
+            // Renderiza os botões
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('div');
+                // Pad responsivo: menor no celular (p-3/4), grande na TV (p-6/8)
+                btn.className = `option-btn color-${index % 4} text-white rounded-xl md:rounded-2xl p-3 md:p-6 lg:p-8 flex items-center shadow-xl`;
+                
+                // Extrai a letra (A, B, C...) e o resto do texto
+                const splitText = opt.split(') ');
+                const letter = splitText[0] ? splitText[0] + ')' : '';
+                const textOnly = splitText[1] || opt;
+
+                btn.innerHTML = `
+                    <div class="shape shape-${index % 4} flex-shrink-0"></div>
+                    <div class="text-left md:text-justify font-bold text-sm md:text-2xl lg:text-3xl xl:text-4xl leading-snug md:leading-tight w-full">
+                        ${letter} ${textOnly}
+                    </div>
+                `;
+                btn.onclick = () => checkAnswer(index);
+                optionsContainer.appendChild(btn);
+            });
+
+            // Rola a tela suavemente para o topo a cada nova pergunta carregada no celular
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function checkAnswer(selectedIndex) {
+            if (!canClick) return;
+            canClick = false;
+
+            const q = questions[currentQuestionIndex];
+            lastAnswerCorrect = (selectedIndex === q.answer);
+
+            if (lastAnswerCorrect) {
+                score++;
+                updateScore();
+            }
+
+            showFeedback(lastAnswerCorrect, q.justification);
+        }
+
+        function showFeedback(isCorrect, justification) {
+            modal.classList.remove('hidden');
+            modalContent.classList.remove('scale-0');
+            modalContent.classList.add('modal-animate');
+
+            if (isCorrect) {
+                modalHeader.className = 'p-6 md:p-12 text-white text-center bg-green-500 shrink-0';
+                modalTitle.innerText = '🎯 ACERTOU!';
+            } else {
+                modalHeader.className = 'p-6 md:p-12 text-white text-center bg-red-500 shrink-0';
+                modalTitle.innerText = '❌ ERROU!';
+            }
+
+            modalJustification.innerText = justification;
+        }
+
+        function redoQuestion() {
+            // Remove o ponto se o aluno havia acertado antes de clicar em refazer
+            if (lastAnswerCorrect) {
+                score--;
+                updateScore();
+            }
+            
+            // Esconde modal
+            modal.classList.add('hidden');
+            modalContent.classList.remove('modal-animate');
+            modalContent.classList.add('scale-0');
+            
+            // Libera o clique novamente na mesma questão
+            canClick = true;
+        }
+
+        function nextQuestion() {
+            // Esconde modal
+            modal.classList.add('hidden');
+            modalContent.classList.remove('modal-animate');
+            modalContent.classList.add('scale-0');
+
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                endGame();
+            }
+        }
+
+        function updateScore() {
+            scoreDisplay.innerText = score;
+        }
+
+        function endGame() {
+            gameScreen.classList.add('hidden');
+            gameScreen.classList.remove('flex');
+            resultScreen.classList.remove('hidden');
+            resultScreen.classList.add('flex');
+
+            document.getElementById('final-score').innerText = score;
+            
+            const messageEl = document.getElementById('result-message');
+            const percentage = (score / questions.length) * 100;
+            
+            if (percentage === 100) {
+                messageEl.innerText = "Sócrates estaria orgulhoso! Você gabaritou!";
+            } else if (percentage >= 70) {
+                messageEl.innerText = "Mandou muito bem! A prova vai ser tranquila.";
+            } else if (percentage >= 50) {
+                messageEl.innerText = "Bom trabalho, mas vale dar mais uma lida nos conceitos básicos.";
+            } else {
+                messageEl.innerText = "Foi difícil? O importante é o que você aprendeu com os erros. Tente de novo!";
+            }
+            
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
