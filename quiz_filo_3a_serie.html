@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulado de Filosofia - 3ª Série</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --correct-color: #27ae60;
+            --wrong-color: #e74c3c;
+            --bg-color: #f5f7fa;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .quiz-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        .progress-bar {
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            height: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .progress-fill {
+            background-color: var(--accent-color);
+            height: 100%;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 1rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            line-height: 1.4;
+        }
+
+        .option-btn:hover {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+        }
+
+        /* Modal / Pop-up Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .modal-message {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            text-align: justify;
+        }
+
+        .correct-theme .modal-icon, .correct-theme .modal-title {
+            color: var(--correct-color);
+        }
+
+        .wrong-theme .modal-icon, .wrong-theme .modal-title {
+            color: var(--wrong-color);
+        }
+
+        /* Botão do Modal e Estado Desativado (Timer) */
+        .btn-next {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-next:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        /* Result Screen */
+        .result-container {
+            display: none;
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz-box">
+        <h1>Simulado: Filosofia</h1>
+        
+        <div id="quiz-content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+            
+            <div class="status-bar">
+                <span id="question-counter">Questão 1 de 50</span>
+                <span id="score-counter">Acertos (1ª tentativa): 0</span>
+            </div>
+
+            <div class="question-text" id="question-text">
+                Carregando pergunta...
+            </div>
+
+            <div class="options-grid" id="options-container">
+                </div>
+        </div>
+
+        <div class="result-container" id="result-content">
+            <h2>Fim do Simulado!</h2>
+            <div class="score-circle" id="final-score">0%</div>
+            <p id="final-message" class="question-text"></p>
+            <button class="btn-next" onclick="reiniciarQuiz()">Tentar Novamente</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="feedback-modal">
+        <div class="modal-content" id="modal-box">
+            <div class="modal-icon" id="modal-icon">✓</div>
+            <div class="modal-title" id="modal-title">Você Acertou!</div>
+            <div class="modal-message" id="modal-message">Explicação aqui.</div>
+            <button class="btn-next" id="modal-btn">Aguarde...</button>
+        </div>
+    </div>
+
+    <script>
+        const questoes = [
+            {
+                enunciado: "1. Durante um debate eleitoral, um candidato afirma: 'Todos os problemas econômicos do país são causados por impostos. Nosso país tem impostos. Logo, cortando impostos, não teremos mais problemas'. Do ponto de vista da lógica formal, o argumento do candidato demonstra que:",
+                opcoes: [
+                    "A) A estrutura do raciocínio garante que a conclusão seja inquestionavelmente verdadeira na prática.",
+                    "B) A validade de um silogismo não assegura a verdade material de suas premissas no mundo real.",
+                    "C) A argumentação indutiva utilizada é suficiente para resolver as crises econômicas do Estado.",
+                    "D) A falácia do espantalho foi utilizada para desviar o foco da real causa das crises financeiras."
+                ], correta: 1, explicacao: "A lógica formal estuda a validade da estrutura. Um argumento pode ser estruturalmente válido, mas ter premissas falsas na realidade material."
+            },
+            {
+                enunciado: "2. O avanço da inteligência artificial generativa tem tornado a criação de vídeos hiper-realistas (deepfakes) algo acessível. Esse cenário contemporâneo nos remete diretamente à dúvida metódica de René Descartes, pois:",
+                opcoes: [
+                    "A) Reforça a ideia de que a experiência sensível é a única fonte segura e confiável de conhecimento.",
+                    "B) Demonstra que os nossos sentidos podem ser facilmente enganados pelas tecnologias modernas.",
+                    "C) Comprova que a mente humana é incapaz de formular conceitos matemáticos sem a tecnologia.",
+                    "D) Sugere que a verdade absoluta só pode ser alcançada pela observação empírica da natureza."
+                ], correta: 1, explicacao: "Descartes instituiu a dúvida metódica por desconfiar dos sentidos, que frequentemente nos enganam. Deepfakes são exemplos perfeitos de ilusão sensorial."
+            },
+            {
+                enunciado: "3. Nas redes sociais, é comum o uso de filtros que alteram rosto e cenário. Muitas vezes, ao encontrar a pessoa na vida real, a aparência é diferente. Essa reflexão sobre o que é a aparência na tela e o corpo real nos leva a um questionamento da Metafísica, porque:",
+                opcoes: [
+                    "A) Questiona o que é genuinamente real e o que é apenas uma ilusão passageira criada para enganar sentidos.",
+                    "B) Estabelece que a tecnologia de ponta é a única forma de o ser humano alcançar a beleza verdadeira.",
+                    "C) Comprova que a internet eliminou a possibilidade de os jovens sofrerem com a própria imagem.",
+                    "D) Proíbe o uso de aplicativos de edição para garantir que a verdade científica seja respeitada."
+                ], correta: 0, explicacao: "A Metafísica investiga a natureza última da realidade. Questionar a diferença entre o real e a aparência (ilusão) é um problema clássico."
+            },
+            {
+                enunciado: "4. Em uma rede social, um usuário critica uma teoria científica dizendo: 'O autor dessa teoria foi reprovado na escola quando criança, logo sua teoria não tem valor'. Esse comentário exemplifica a falácia ad hominem, que se caracteriza por:",
+                opcoes: [
+                    "A) Atacar as características pessoais do argumentador em vez de refutar o argumento em si.",
+                    "B) Distorcer o argumento original para torná-lo mais fácil de ser atacado e ridicularizado.",
+                    "C) Apelar para a opinião da maioria para justificar a veracidade de uma afirmação científica.",
+                    "D) Utilizar uma premissa oculta que já pressupõe a conclusão que se deseja provar no final."
+                ], correta: 0, explicacao: "A falácia ad hominem ocorre quando se tenta descredibilizar um argumento atacando o caráter ou o histórico de quem o defende."
+            },
+            {
+                enunciado: "5. O filósofo John Locke afirmava que a mente humana é como uma 'tábula rasa' (folha em branco) ao nascer. Se aplicarmos essa perspectiva empirista ao funcionamento dos algoritmos de recomendação na internet, podemos concluir que:",
+                opcoes: [
+                    "A) O algoritmo possui ideias inatas sobre o que o usuário deseja antes de qualquer interação.",
+                    "B) O perfil digital do usuário é construído inteiramente a partir das experiências e cliques dele.",
+                    "C) O conhecimento gerado pela rede prescinde da coleta contínua de dados do mundo sensível.",
+                    "D) A inteligência artificial utiliza deduções puramente metafísicas para prever comportamentos."
+                ], correta: 1, explicacao: "Para o empirismo, todo conhecimento vem da experiência. Analogamente, o algoritmo só aprende quem é o usuário a partir de seus cliques."
+            },
+            {
+                enunciado: "6. Na Grécia Antiga, Heráclito afirmou que 'ninguém entra no mesmo rio duas vezes', enfatizando o fluxo constante da realidade. Considerando a rápida obsolescência dos aparelhos tecnológicos, a visão de Heráclito:",
+                opcoes: [
+                    "A) Sustenta que a essência das coisas é estática e imutável, apesar das aparências em contrário.",
+                    "B) Explica o mundo contemporâneo como um espaço onde a mudança é a única regra permanente.",
+                    "C) Demonstra que o progresso técnico é uma ilusão dos sentidos que mascara a imobilidade do ser.",
+                    "D) Contradiz a necessidade capitalista de inovar constantemente os meios de produção material."
+                ], correta: 1, explicacao: "Heráclito é o filósofo do devir (vir a ser). A realidade atual, marcada pela inovação incessante, reflete sua teoria de mudança contínua."
+            },
+            {
+                enunciado: "7. Um cientista realiza cem experimentos em laboratório e, em todos eles, um determinado metal se dilata ao ser aquecido. Ele conclui que 'todo metal se dilata ao ser aquecido'. Esse raciocínio baseia-se na:",
+                opcoes: [
+                    "A) Dedução formal, que parte de premissas universais para chegar a uma conclusão particular.",
+                    "B) Intuição intelectual, que apreende a verdade de forma imediata sem o uso dos sentidos.",
+                    "C) Indução lógica, que generaliza uma regra a partir da observação repetida de casos singulares.",
+                    "D) Revelação mística, que dispensa a verificação empírica para validar a lei científica."
+                ], correta: 2, explicacao: "A indução é o processo pelo qual partimos da observação de vários casos particulares para formular uma lei geral e universal."
+            },
+            {
+                enunciado: "8. Kant argumentou que não conhecemos a 'coisa em si' (nóumeno), mas apenas como ela aparece para nós (fenômeno). No contexto atual, conhecendo o mundo através de interfaces digitais, a tese alerta que:",
+                opcoes: [
+                    "A) A tecnologia nos permite finalmente acessar a essência verdadeira e oculta da realidade.",
+                    "B) Nossa percepção do mundo é sempre mediada e formatada pelas ferramentas que utilizamos.",
+                    "C) Os sentidos humanos se tornaram obsoletos diante da capacidade de processamento das máquinas.",
+                    "D) A realidade virtual é a única forma de conhecimento que escapa das ilusões da mente."
+                ], correta: 1, explicacao: "Assim como as estruturas da mente formatam a realidade para Kant, as telas e algoritmos atuam hoje como mediadores que filtram o que vemos."
+            },
+            {
+                enunciado: "9. A lógica aristotélica fundamenta-se no Princípio da Não-Contradição. Imagine um contrato de app que afirme simultaneamente: 'O usuário tem total privacidade' e 'A empresa pode vender os dados a terceiros'. Esse contrato:",
+                opcoes: [
+                    "A) Demonstra uma evolução do pensamento lógico para além das limitações da filosofia grega.",
+                    "B) Viola uma regra lógica fundamental, pois duas proposições contrárias não podem ser verdadeiras.",
+                    "C) Estabelece um novo paradigma ético compatível com as exigências do mercado tecnológico.",
+                    "D) Valida o princípio de identidade, confirmando que os dados pertencem à empresa."
+                ], correta: 1, explicacao: "O Princípio da Não-Contradição afirma que é impossível que algo seja e não seja ao mesmo tempo e sob o mesmo aspecto."
+            },
+            {
+                enunciado: "10. Platão, na Alegoria da Caverna, descreve prisioneiros que tomam sombras por realidade. Hoje, a metáfora é frequentemente utilizada para analisar o fenômeno das 'fake news', pois estas:",
+                opcoes: [
+                    "A) Estimulam o pensamento crítico e a busca incessante pela verdade nos meios de comunicação.",
+                    "B) Representam cópias imperfeitas da realidade que aprisionam a mente na ilusão e na ignorância.",
+                    "C) São o resultado do método científico aplicado à difusão de informações nas redes sociais.",
+                    "D) Libertam os indivíduos da opressão exercida pelos filósofos e pelos intelectuais acadêmicos."
+                ], correta: 1, explicacao: "Fake news atuam como as sombras na parede da caverna: são aparências manipuladas que as pessoas tomam por fatos reais."
+            },
+            {
+                enunciado: "11. A epistemologia contemporânea enfrenta o desafio da 'pós-verdade', período em que crenças pessoais e emoções têm mais influência do que fatos objetivos. Esse fenômeno afeta diretamente a ciência porque:",
+                opcoes: [
+                    "A) Substitui a necessidade de comprovação empírica por narrativas que geram engajamento virtual.",
+                    "B) Fortalece o método experimental ao integrar as opiniões dos usuários nos resultados das pesquisas.",
+                    "C) Torna o conhecimento científico acessível e inquestionável para todas as classes da sociedade.",
+                    "D) Consolida o racionalismo dogmático como a única forma aceitável de debate público na internet."
+                ], correta: 0, explicacao: "A pós-verdade ocorre quando o apelo emocional supera o rigor dos fatos e testes empíricos da ciência."
+            },
+            {
+                enunciado: "12. O pensamento mítico e o filosófico divergem. Enquanto um mito explicaria uma tempestade como a fúria de um deus, um pensador pré-socrático buscaria:",
+                opcoes: [
+                    "A) Apaziguar os deuses por meio de rituais e sacrifícios detalhados para restaurar o equilíbrio.",
+                    "B) Identificar causas naturais e racionais que explicassem a origem e a dinâmica do fenômeno.",
+                    "C) Aceitar a tempestade como um mistério insondável que a mente humana jamais compreenderá.",
+                    "D) Criar uma nova narrativa religiosa que justificasse a ocorrência do evento de forma poética."
+                ], correta: 1, explicacao: "A transição do mito à razão (filosofia) é marcada pela busca de explicações e causas pautadas na natureza (physis) e na racionalidade."
+            },
+            {
+                enunciado: "13. Segundo Aristóteles, tudo possui 'Ato' e 'Potência'. Aplicando esse conceito metafísico ao processo educacional de um estudante do Ensino Médio, conclui-se que a educação serve para:",
+                opcoes: [
+                    "A) Manter o indivíduo em seu estado de ato permanente, evitando frustrações futuras.",
+                    "B) Eliminar qualquer possibilidade de mudança, garantindo a estabilidade social do país.",
+                    "C) Atualizar as potências do indivíduo, transformando suas capacidades latentes em realidade.",
+                    "D) Substituir a natureza intrínseca do aluno por um modelo padronizado imposto pelo Estado."
+                ], correta: 2, explicacao: "A potência é aquilo que pode vir a ser. A educação atua justamente para transformar o potencial latente do aluno em realidade (ato)."
+            },
+            {
+                enunciado: "14. Nas redes sociais, curtir e compartilhar fotos cria uma dinâmica de exposição. Para Jean-Paul Sartre, o 'olhar do outro' é fundamental para a construção de quem somos. Nesse ambiente, o sujeito frequentemente:",
+                opcoes: [
+                    "A) Alcança a liberdade absoluta, não se importando com os julgamentos estéticos alheios.",
+                    "B) Modifica seu próprio comportamento para corresponder às expectativas do olhar da massa.",
+                    "C) Isola-se completamente da sociedade, construindo uma identidade sem influências externas.",
+                    "D) Supera a necessidade de aprovação social ao compreender a falsidade inerente das mídias."
+                ], correta: 1, explicacao: "Sartre destaca que somos moldados também pelo olhar alheio. Na internet, muitos editam sua personalidade apenas para agradar esse olhar."
+            },
+            {
+                enunciado: "15. Emmanuel Levinas defende que a ética nasce no encontro com o 'rosto do outro'. No contexto do cyberbullying, onde os ataques ocorrem através de telas e avatares anônimos, a ética de Levinas ajuda a entender que:",
+                opcoes: [
+                    "A) O distanciamento físico e a ausência do rosto diminuem o peso da responsabilidade moral sentida pelo agressor.",
+                    "B) A agressão virtual é menos prejudicial por não atingir a integridade física do alvo atacado.",
+                    "C) O anonimato potencializa a empatia, permitindo debates mais honestos e desinibidos.",
+                    "D) A ausência da face física impede que o agressor sofra qualquer tipo de punição legal."
+                ], correta: 0, explicacao: "Ao não ver o rosto (a expressão humana de vulnerabilidade), o indivíduo sente menos o peso da responsabilidade ética sobre suas agressões."
+            },
+            {
+                enunciado: "16. A 'cultura do cancelamento' caracteriza-se pela exclusão pública de indivíduos que cometeram erros. Do ponto de vista da alteridade, essa prática social moderna tende a:",
+                opcoes: [
+                    "A) Promover a reintegração harmônica do indivíduo através do diálogo e do perdão coletivo.",
+                    "B) Reduzir a complexidade humana a um único erro, apagando a possibilidade de transformação.",
+                    "C) Fortalecer os laços comunitários baseados na tolerância irrestrita a qualquer comportamento.",
+                    "D) Garantir o direito de defesa do acusado antes de qualquer tipo de julgamento moral público."
+                ], correta: 1, explicacao: "A alteridade exige ver o outro como um ser complexo e em construção. O cancelamento o reduz a um rótulo estático e definitivo."
+            },
+            {
+                enunciado: "17. Algoritmos mostram conteúdos que confirmam nossas crenças, criando 'bolhas virtuais'. Para uma sociedade democrática, o isolamento nessas bolhas representa um risco porque:",
+                opcoes: [
+                    "A) Elimina o confronto com a alteridade, enfraquecendo a capacidade de dialogar com o diferente.",
+                    "B) Força os usuários a entrarem em debates constantes com pessoas de ideologias extremas.",
+                    "C) Diminui o tempo de tela dos usuários, prejudicando o modelo financeiro das grandes empresas.",
+                    "D) Homogeneíza o pensamento social, criando uma utopia onde todos concordam pacificamente."
+                ], correta: 0, explicacao: "A democracia e a convivência dependem do diálogo com o diferente. A bolha destrói a habilidade social de exercitar a alteridade."
+            },
+            {
+                enunciado: "18. O imperativo 'Conhece-te a ti mesmo' é um convite à reflexão interior. Na 'era dos dados', onde aplicativos monitoram sono e produtividade, o autoconhecimento corre o risco de ser:",
+                opcoes: [
+                    "A) Aprofundado através da união perfeita entre a meditação filosófica e a exatidão matemática.",
+                    "B) Substituído por métricas externas quantificáveis, esvaziando a dimensão subjetiva do sujeito.",
+                    "C) Democratizado, uma vez que as máquinas compreendem a essência humana melhor que nós.",
+                    "D) Ignorado pelas novas gerações, que preferem o estudo da natureza ao invés do estudo de si."
+                ], correta: 1, explicacao: "Ater-se apenas aos números de aplicativos reduz o ser humano a uma máquina de dados, esvaziando a reflexão filosófica interior profunda."
+            },
+            {
+                enunciado: "19. Em 'O Segundo Sexo', Simone de Beauvoir afirmou: 'Não se nasce mulher, torna-se mulher'. Aplicando essa reflexão aos papéis de gênero na atualidade, entende-se que:",
+                opcoes: [
+                    "A) O comportamento humano é rigidamente determinado pela genética desde o momento do parto.",
+                    "B) A sociedade impõe expectativas e normas que moldam a identidade do sujeito ao longo da vida.",
+                    "C) A diferença salarial entre gêneros é uma consequência natural das aptidões físicas de cada um.",
+                    "D) A liberdade individual é incapaz de questionar os valores morais estabelecidos pela tradição."
+                ], correta: 1, explicacao: "O existencialismo feminino de Beauvoir aponta que os papéis de gênero são construções sociais impostas, e não um destino biológico."
+            },
+            {
+                enunciado: "20. Empatia é frequentemente definida como a capacidade de se colocar no lugar do outro. Contudo, filosoficamente, entender o outro de forma plena é um desafio, pois:",
+                opcoes: [
+                    "A) Nossas próprias vivências e preconceitos atuam como um filtro na interpretação da dor alheia.",
+                    "B) A natureza humana é essencialmente egoísta e incapaz de qualquer sentimento de solidariedade.",
+                    "C) O sofrimento é uma ilusão criada pela mente que não deve ser validada pelas outras pessoas.",
+                    "D) A comunicação digital extinguiu a necessidade biológica de conexão emocional com o próximo."
+                ], correta: 0, explicacao: "É impossível anular totalmente nossa própria bagagem. Por isso, enxergamos a dor do outro invariavelmente através dos nossos próprios filtros."
+            },
+            {
+                enunciado: "21. A psicanálise de Freud, ao inserir o conceito de 'inconsciente', causou uma revolução no conhecimento de si. Com Freud, compreendemos que:",
+                opcoes: [
+                    "A) Nossas ações são frequentemente motivadas por desejos e traumas que desconhecemos ativamente.",
+                    "B) A razão humana é soberana e capaz de controlar todos os impulsos biológicos e instintos primitivos.",
+                    "C) O autoconhecimento pleno é facilmente alcançado através da meditação diária e pensamento positivo.",
+                    "D) Os fatores sociais são os únicos responsáveis pela formação do caráter e angústias do indivíduo."
+                ], correta: 0, explicacao: "O inconsciente abalou a ideia de que o ser humano tem controle racional total sobre si. Nossas ações carregam motivos ocultos."
+            },
+            {
+                enunciado: "22. Foucault utilizou o 'Panóptico' (prisão de vigilância invisível) para explicar a sociedade. Quando usuários de redes ajustam seu comportamento pelo medo de perderem 'seguidores', demonstram que:",
+                opcoes: [
+                    "A) Alcançaram o nível mais alto de autonomia e liberdade de expressão na era da informação.",
+                    "B) Internalizaram a vigilância externa, punindo a si mesmos para se adequarem aos padrões exigidos.",
+                    "C) Ignoram completamente a pressão social, focando apenas na construção de laços reais.",
+                    "D) Utilizam a plataforma de forma crítica e subversiva para combater as injustiças penais."
+                ], correta: 1, explicacao: "A vigilância constante gera autodisciplina. O indivíduo policia a si mesmo para não ser 'punido' com a exclusão social."
+            },
+            {
+                enunciado: "23. Pesquisas apontam que inteligências artificiais podem reproduzir preconceitos, associando cargos de liderança apenas a homens brancos. Isso demonstra que as tecnologias em relação ao 'conhecimento do outro':",
+                opcoes: [
+                    "A) São imparciais e corrigem automaticamente as injustiças históricas das sociedades humanas.",
+                    "B) Espelham e amplificam os vieses, estereótipos e desigualdades já existentes na nossa cultura.",
+                    "C) Produzem novos tipos de preconceitos que não possuíam nenhuma raiz no comportamento humano.",
+                    "D) Demonstram que a matemática e a programação são disciplinas isentas de influências sociais."
+                ], correta: 1, explicacao: "Máquinas aprendem com dados humanos. Se a base de dados tem viés histórico, a inteligência artificial irá reproduzi-lo."
+            },
+            {
+                enunciado: "24. A transição do Ensino Médio para a vida adulta traz angústias ligadas à escolha profissional. Para o existencialismo, essa angústia diante das escolhas ocorre porque:",
+                opcoes: [
+                    "A) Somos seres predeterminados pelo destino, o que torna qualquer tentativa de escolha inútil e frustrante.",
+                    "B) O indivíduo é 'condenado a ser livre', sendo o único responsável por criar o seu próprio projeto de vida.",
+                    "C) A sociedade capitalista garante o sucesso imediato para todos os que seguem as regras de mercado.",
+                    "D) A essência humana já está definida antes do nascimento, bastando ao sujeito descobrir qual é ela."
+                ], correta: 1, explicacao: "A liberdade traz o peso da responsabilidade absoluta. Sem destino traçado, cada escolha profissional é de inteira responsabilidade do jovem."
+            },
+            {
+                enunciado: "25. A globalização conectou culturas instantaneamente. No entanto, o simples contato com informações de diferentes culturas não reduziu a xenofobia, evidenciando que:",
+                opcoes: [
+                    "A) O excesso de informação gera obrigatoriamente um profundo respeito pela alteridade e diversidade.",
+                    "B) A tecnologia suprimiu barreiras geográficas e eliminou as diferenças culturais existentes.",
+                    "C) O conhecimento genuíno do outro exige uma postura ética de abertura que vai além da conexão técnica.",
+                    "D) A intolerância é um fenômeno restrito às comunidades que não possuem acesso à internet."
+                ], correta: 2, explicacao: "Redes conectam cabos, não corações. A verdadeira alteridade e o combate ao preconceito exigem esforço e engajamento ético pessoal."
+            },
+            {
+                enunciado: "26. A observação dos astros através de telescópios revolucionou a compreensão do cosmos. Para os filósofos empiristas, o uso de instrumentos que ampliam os sentidos fundamenta a tese de que:",
+                opcoes: [
+                    "A) Todo conhecimento válido deriva inevitavelmente da experiência sensível e da observação material.",
+                    "B) A razão pura é suficiente para deduzir as leis universais sem a necessidade de testes práticos.",
+                    "C) O universo é uma ilusão de ótica que não pode ser compreendida através de equipamentos físicos.",
+                    "D) As ideias inatas da mente humana já contêm todas as informações sobre a física dos corpos celestes."
+                ], correta: 0, explicacao: "Para o empirismo, todo conhecimento advém da experiência empírica; telescópios apenas potencializam a nossa capacidade de observação."
+            },
+            {
+                enunciado: "27. Um produtor argumenta: 'Sempre que aplico adubo NPK antes da chuva, a colheita melhora. Ontem choveu, mas não adubei. Logo, a colheita será péssima'. Na lógica formal, ele comete uma falácia porque:",
+                opcoes: [
+                    "A) Confunde uma condição que é suficiente com uma condição necessária para o sucesso da plantação.",
+                    "B) Utiliza dados meteorológicos incorretos para tentar prever o comportamento biológico das plantas.",
+                    "C) Apela para a autoridade do agricultor em vez de analisar a composição química do solo.",
+                    "D) Ataca pessoalmente os concorrentes que utilizam métodos completamente diferentes de irrigação."
+                ], correta: 0, explicacao: "O adubo ajuda, mas a chuva sozinha também pode salvar a colheita. Ele assumiu que o adubo era a única causa possível."
+            },
+            {
+                enunciado: "28. Antigamente, avós usavam chás para tratar doenças. Hoje, a comunidade recorre a postos de saúde para exames de sangue e remédios. Essa mudança na história do conhecimento ilustra que:",
+                opcoes: [
+                    "A) O conhecimento científico se destacou ao oferecer métodos de investigação testáveis, rigorosos e comprovados.",
+                    "B) A sabedoria popular foi totalmente apagada e proibida pelas leis governamentais e farmacêuticas.",
+                    "C) Os médicos modernos passaram a receitar chás e simpatias como o método mais seguro para evitar cirurgias.",
+                    "D) O pensamento baseado no senso comum e o método científico utilizam as mesmas ferramentas de cura."
+                ], correta: 0, explicacao: "A ciência médica provê confiabilidade através da falseabilidade, repetição controlada e testes rigorosos de laboratório."
+            },
+            {
+                enunciado: "29. Em um bairro periférico sem água encanada, as famílias criaram regras rigorosas para reaproveitar água da chuva. O desperdício é um grave desvio de caráter. Sob a ótica sociológica, isso demonstra que:",
+                opcoes: [
+                    "A) As necessidades materiais e as dificuldades do ambiente moldam diretamente os nossos valores morais.",
+                    "B) A moral de um grupo independe totalmente das dificuldades financeiras ou crises climáticas que ele enfrenta.",
+                    "C) O racionamento de recursos naturais é uma preocupação exclusiva de governantes isolados em escritórios.",
+                    "D) As regras sociais são sempre impostas de cima para baixo pelo governo e nunca surgem do povo."
+                ], correta: 0, explicacao: "A moral e a ética comunitária são intimamente influenciadas pelas condições materiais e pelas necessidades de sobrevivência daquele grupo."
+            },
+            {
+                enunciado: "30. Sistemas em rede filtram o tráfego de dados, decidindo de forma invisível o que chega à tela. Epistemologicamente, ao delegarmos a algoritmos o filtro da informação, enfrentamos o risco de:",
+                opcoes: [
+                    "A) Atingir a verdade absoluta de forma rápida, pois as máquinas não possuem vieses cognitivos.",
+                    "B) Ter nossa percepção da realidade limitada pelas regras invisíveis programadas na infraestrutura tecnológica.",
+                    "C) Expandir infinitamente nossa capacidade de memorização visual sem esforço intelectual.",
+                    "D) Eliminar definitivamente as notícias falsas da internet através de uma censura automatizada."
+                ], correta: 1, explicacao: "A realidade que vemos na tela é curada e manipulada por algoritmos que refletem as escolhas limitadas de seus desenvolvedores."
+            },
+            {
+                enunciado: "31. Um script de automação segue regras condicionais ('Se A, execute B'). Quando falha, significa que a lógica não foi respeitada. A lógica formal foca principalmente:",
+                opcoes: [
+                    "A) Na análise rigorosa da estrutura do raciocínio, independentemente do conteúdo material das premissas.",
+                    "B) Na investigação profunda dos sentimentos do programador durante a digitação.",
+                    "C) Na avaliação do impacto financeiro que o aplicativo terá no mercado de tecnologia.",
+                    "D) Na capacidade do software de improvisar soluções artísticas para resolver equações."
+                ], correta: 0, explicacao: "A lógica formal lida exclusivamente com a validade e estruturação de proposições (A = B), abstraindo os elementos concretos."
+            },
+            {
+                enunciado: "32. Se criassem um jogo online tão imersivo que esquecêssemos de nossas vidas físicas, tocaríamos na metáfora do 'Gênio Maligno'. Descartes utilizou essa hipótese para:",
+                opcoes: [
+                    "A) Provar que os jogos eletrônicos são prejudiciais ao desenvolvimento dos jovens.",
+                    "B) Suspender radicalmente todas as certezas sensíveis até encontrar uma verdade indubitável pela razão.",
+                    "C) Afirmar que nossos corpos físicos são prisioneiros de forças alienígenas cruéis.",
+                    "D) Justificar a criação de universos virtuais fechados como alternativa à violência."
+                ], correta: 1, explicacao: "A dúvida hiperbólica (do Gênio Maligno) forçou Descartes a duvidar de tudo até chegar à primeira certeza incontestável: o 'Penso, logo existo'."
+            },
+            {
+                enunciado: "33. Durante uma aula de campo num instituto da Mata Atlântica, estudantes observam predadores e presas. Um olhar científico recusa a visão mítica antiga porque busca:",
+                opcoes: [
+                    "A) Narrar a origem da floresta a partir de uma épica batalha entre deuses e titãs.",
+                    "B) Compreender as relações de causalidade biológica e a interdependência ecológica de forma racional.",
+                    "C) Classificar rigorosamente as plantas segundo o seu valor mágico e espiritual para povos antigos.",
+                    "D) Ignorar os dados empíricos observados em favor de uma meditação poética sobre a vida."
+                ], correta: 1, explicacao: "O rompimento com o mito e o uso do método científico focam em explicações imanentes, naturais e baseadas em causas encadeadas."
+            },
+            {
+                enunciado: "34. Ao fazer o inventário da fauna em um parque, o registro repetitivo do comportamento de uma espécie é essencial. Na teoria do conhecimento, coletar dados particulares para formular uma lei geral reflete o método:",
+                opcoes: [
+                    "A) Dedutivo, que parte de um princípio universal incontestável para tentar explicar um caso isolado.",
+                    "B) Indutivo, que observa pacientemente múltiplos casos específicos para estabelecer uma regularidade geral.",
+                    "C) Dogmático, que aceita passivamente as premissas inquestionáveis impostas pela tradição acadêmica.",
+                    "D) Intuitivo, que compreende a natureza complexa dos animais através de iluminação intelectual súbita."
+                ], correta: 1, explicacao: "O empirismo e o método indutivo consolidam leis científicas agrupando observações regulares e repetidas."
+            },
+            {
+                enunciado: "35. Quando a medicina passou a exigir ensaios clínicos controlados para validar tratamentos, ela abraçou o critério de falseabilidade de Karl Popper. Para ele, uma teoria é científica se:",
+                opcoes: [
+                    "A) For confirmada inequivocamente por autoridades políticas e religiosas de grande influência.",
+                    "B) Apresentar formulações genéricas e amplas que nunca possam ser contrariadas pela experiência.",
+                    "C) Estiver sempre aberta à possibilidade estrutural de ser testada, desafiada e refutada por novas evidências.",
+                    "D) Basear-se exclusivamente no senso comum e nas intuições populares."
+                ], correta: 2, explicacao: "A ciência não provê dogmas. Para Popper, a validade da ciência reside em se expor ao teste e correr o risco de ser falseada."
+            },
+            {
+                enunciado: "36. O uso indiscriminado de inseticidas pode gerar resistência em pragas. O senso comum diria 'aplique mais veneno', enquanto a ciência estuda o ciclo da praga. A diferença central é que a ciência:",
+                opcoes: [
+                    "A) É metódica, sistemática e busca compreender as causas profundas e as consequências dos fenômenos naturais.",
+                    "B) Baseia-se em crenças imediatistas, fáceis de aplicar, e não questiona os efeitos colaterais no solo.",
+                    "C) Rejeita qualquer tipo de intervenção tecnológica na natureza para preservar integralmente os insetos.",
+                    "D) Prioriza a intuição prática do trabalhador braçal em detrimento das pesquisas em laboratórios."
+                ], correta: 0, explicacao: "O senso comum se apoia no imediatismo e na fragmentação. A ciência constrói sistemas para enxergar impactos a longo prazo."
+            },
+            {
+                enunciado: "37. Controladores eletrônicos de irrigação operam com portas lógicas: 'Ligue a válvula SE o sensor detectar terra seca E não houver previsão de chuva'. Essa transposição evidencia que:",
+                opcoes: [
+                    "A) A lógica formal, estruturada de forma abstrata na antiguidade, possui aplicações tecnológicas diretas hoje.",
+                    "B) Os filósofos gregos já haviam previsto detalhadamente a invenção dos microprocessadores.",
+                    "C) O pensamento filosófico acadêmico é totalmente incompatível com necessidades da agricultura.",
+                    "D) A inteligência artificial desenvolveu uma racionalidade própria desvinculada do pensamento lógico."
+                ], correta: 0, explicacao: "Toda a computação moderna, automação e linguagem de programação derivam da base estruturada pela lógica filosófica clássica."
+            },
+            {
+                enunciado: "38. O método socrático clássico (Maiêutica) consistia em realizar perguntas estratégicas para que o interlocutor 'parisse' suas próprias ideias. Em abordagens educacionais, o uso da maiêutica pressupõe que o aluno:",
+                opcoes: [
+                    "A) É uma 'tábula rasa' passiva que deve apenas absorver o conteúdo ditado monocraticamente.",
+                    "B) Possui uma capacidade reflexiva e racional latente que deve ser instigada através do questionamento guiado.",
+                    "C) Precisa decorar conceitos abstratos e históricos para ser aprovado em avaliações padronizadas.",
+                    "D) Deve rejeitar sumariamente toda autoridade acadêmica, baseando-se apenas no seu próprio achismo."
+                ], correta: 1, explicacao: "Sócrates acreditava que o conhecimento já habitava a pessoa. O papel do professor é apenas ajudar a extrair (parto) essa verdade."
+            },
+            {
+                enunciado: "39. O conceito de Desenho Universal para a Aprendizagem (DUA) propõe criar estratégias de ensino acessíveis a múltiplos perfis. Sob a ótica ética da alteridade, adotar essa perspectiva significa:",
+                opcoes: [
+                    "A) Padronizar rigorosamente o ensino para garantir que todos aprendam da mesma forma mecanicista.",
+                    "B) Reconhecer a pluralidade cognitiva da turma, promovendo equidade ao derrubar barreiras metodológicas.",
+                    "C) Segregar os alunos com dificuldades em turmas separadas para não atrasar o rendimento dos demais.",
+                    "D) Ignorar deliberadamente as limitações individuais, tratando o grupo como uma massa homogênea."
+                ], correta: 1, explicacao: "Reconhecer e agir para incluir o Outro (em suas particularidades neurodivergentes) é um gesto máximo de respeito e alteridade."
+            },
+            {
+                enunciado: "40. Para Levinas, ações como oferecer suporte diário a um familiar não são obrigações contratuais frias, mas o alicerce do ser. Segundo essa perspectiva, o sujeito moral:",
+                opcoes: [
+                    "A) Deve priorizar exclusivamente sua própria autonomia individual e seu sucesso profissional financeiro.",
+                    "B) Constitui-se eticamente no exato momento em que se sente responsável por responder ao apelo do 'rosto' do outro.",
+                    "C) Cumpre as suas obrigações de cuidado apenas para evitar penalidades jurídicas rigorosas do Estado.",
+                    "D) Transfere a responsabilidade do cuidado interpessoal para instituições governamentais de forma fria."
+                ], correta: 1, explicacao: "A ética da alteridade de Levinas baseia-se na responsabilidade intransferível que sinto ao ver a vulnerabilidade do Rosto do meu semelhante."
+            },
+            {
+                enunciado: "41. Viagens frequentemente colocam o indivíduo em contato direto com costumes muito diferentes dos seus. Filosoficamente, esse confronto pacífico com a diversidade atua como um catalisador para:",
+                opcoes: [
+                    "A) Comprovar de maneira definitiva a superioridade moral da nossa própria região de origem.",
+                    "B) Desconstruir visões etnocêntricas e expandir a nossa compreensão empática sobre a complexidade humana.",
+                    "C) Absorver acriticamente as práticas estrangeiras, apagando nossa própria identidade histórica.",
+                    "D) Justificar o isolamento da nossa comunidade com o objetivo de protegê-la de influências externas."
+                ], correta: 1, explicacao: "O contato prático dissolve dogmas etnocêntricos, permitindo reconhecer a validade de outros sistemas de vida e crença."
+            },
+            {
+                enunciado: "42. A organização de estudantes em equipes costuma gerar atritos sobre como executar tarefas. Segundo a perspectiva existencialista, esses conflitos evidenciam que:",
+                opcoes: [
+                    "A) O ser humano possui uma natureza corrompida, incapaz de cooperar sem ameaça de punições.",
+                    "B) A nossa identidade social não é formada no isolamento, mas tensionada e construída no contato com o outro.",
+                    "C) As emoções pessoais devem ser completamente suprimidas para que o grupo alcance produtividade máxima.",
+                    "D) O individualismo radical é a única postura racional defensável para evitar decepções."
+                ], correta: 1, explicacao: "A famosa frase sartreana 'O inferno são os outros' ilustra justamente que a vida em grupo nos expõe e nos julga, moldando ativamente nosso ser social."
+            },
+            {
+                enunciado: "43. No terceiro ano do Ensino Médio, jovens sentem pressão para assumir negócios dos pais. Quando percebem o roteiro imposto e decidem tomar as rédeas do futuro, sentem angústia. Para o existencialismo, essa angústia surge porque:",
+                opcoes: [
+                    "A) O jovem se dá conta de que é livre e passa a ser o único responsável pelo sucesso ou fracasso de sua escolha.",
+                    "B) A sociedade capitalista garante um excelente emprego imediato para aqueles que desobedecem aos pais.",
+                    "C) O destino das pessoas já está escrito desde o momento do nascimento, não importando o que façam.",
+                    "D) As empresas de hoje valorizam apenas os profissionais que nunca questionam as tradições."
+                ], correta: 0, explicacao: "Para Sartre, a angústia é o subproduto natural e inevitável da liberdade; é perceber que estamos 'condenados a ser livres'."
+            },
+            {
+                enunciado: "44. Após o término de um namoro, adolescentes apagam fotos e tentam agir como se a relação não tivesse existido. Sobre o 'autoconhecimento', ignorar memórias dolorosas é um problema porque:",
+                opcoes: [
+                    "A) Impede o indivíduo de olhar para a própria dor, de aprender com os erros e de amadurecer através das vivências.",
+                    "B) Garante que a pessoa nunca mais vai sofrer por amor, alcançando rapidamente a felicidade plena.",
+                    "C) Comprova que a internet é um espaço seguro onde as nossas emoções reais podem ser desligadas.",
+                    "D) Elimina definitivamente os traumas guardados na mente, resolvendo as feridas sem necessidade de reflexão."
+                ], correta: 0, explicacao: "Deletar o passado superficialmente afasta a pessoa da elaboração psicológica da frustração, impedindo o amadurecimento e o autoconhecimento."
+            },
+            {
+                enunciado: "45. Um profissional decide abandonar uma área burocrática e biológica para se dedicar à docência. Para o existencialismo sartreano, essas guinadas no roteiro de vida ilustram que:",
+                opcoes: [
+                    "A) O ser humano é existencialmente inacabado, estando em um processo ininterrupto de construir a si mesmo.",
+                    "B) As primeiras escolhas acadêmicas determinam irrevogavelmente o caráter na fase adulta.",
+                    "C) A vocação profissional é um instinto biológico oculto que não pode ser reprimido sem causar graves patologias.",
+                    "D) A sociedade de consumo julga o valor de um sujeito exclusivamente pela capacidade de gerar riqueza."
+                ], correta: 0, explicacao: "O existencialismo prega que não possuímos uma 'essência' pré-estabelecida; nos definimos a cada dia através de nossas decisões autênticas."
+            },
+            {
+                enunciado: "46. A disseminação de interações hostis em perfis anônimos na internet afeta silenciosamente a saúde mental de jovens. Filosoficamente, a ausência de rosto nas telas facilita uma falha ética grave conhecida como:",
+                opcoes: [
+                    "A) O excesso prejudicial de empatia, que gera paralisia emocional no ofensor nas discussões virtuais.",
+                    "B) A coisificação ou objetificação do indivíduo, reduzindo o semelhante a um mero alvo pixelado sem humanidade.",
+                    "C) A tolerância exagerada às diferenças culturais, que acaba se manifestando de forma violenta devido a erros de escrita.",
+                    "D) A aplicação imediata e implacável da justiça punitiva civil contra as infrações dentro do ciberespaço."
+                ], correta: 1, explicacao: "Ao não encararmos o semelhante, transformamo-lo num objeto (coisificação), o que anula os freios morais que normalmente teríamos pessoalmente."
+            },
+            {
+                enunciado: "47. Ao compartilhar grandes volumes de dados através de redes descentralizadas, formamos conexões com milhares de usuários anônimos. Zygmunt Bauman classificaria essas interações modernas como 'líquidas' porque:",
+                opcoes: [
+                    "A) São vínculos momentâneos, superficiais e estritamente utilitários, carecendo da profundidade do laço comunitário.",
+                    "B) Representam o ápice evolutivo da solidariedade global, unindo pacificamente o planeta por meio da tecnologia.",
+                    "C) Asseguram a tranquilidade emocional dos internautas, que não precisam mais lidar com exigências de vizinhos.",
+                    "D) Substituem definitivamente as antigas legislações de Estado por regras éticas formuladas por programadores."
+                ], correta: 0, explicacao: "O conceito de 'Modernidade Líquida' descreve laços frouxos que se formam e se dissolvem rapidamente baseados apenas em conveniências."
+            },
+            {
+                enunciado: "48. O princípio de Sócrates, 'Só sei que nada sei', marca a atitude filosófica ocidental. Na atual sociedade da informação, infestada por conteúdos em buscadores, essa postura humilde orienta-nos a:",
+                opcoes: [
+                    "A) Desconfiar e rejeitar todo o conhecimento armazenado digitalmente, considerando-o farsa manipulada.",
+                    "B) Reconhecer constantemente nossas limitações intelectuais, preservando um rigoroso filtro crítico diante de dados.",
+                    "C) Esforçarmo-nos para memorizar o maior número de dados factuais, evitando depender da conexão.",
+                    "D) Aceitar pacificamente que o limite do conhecimento humano foi alcançado pela ciência, não havendo o que debater."
+                ], correta: 1, explicacao: "Ter informação à mão (Google) não é possuir sabedoria. A dúvida socrática protege contra a arrogância intelectual."
+            },
+            {
+                enunciado: "49. Foucault descreve como a sociedade moderna utiliza mecanismos sutis para disciplinar comportamentos. Quando um influenciador altera sua personalidade pelo medo de perder engajamento, ele evidencia:",
+                opcoes: [
+                    "A) A resistência heroica contra os padrões mercadológicos estritos impostos pelas grandes corporações de mídia.",
+                    "B) A internalização profunda da vigilância social (panóptico), fazendo com que o próprio sujeito censure suas atitudes.",
+                    "C) O alcance da mais plena e verdadeira liberdade de expressão, que só foi possibilitada após a invenção da web.",
+                    "D) A superação histórica e definitiva das opressões institucionais antigas, substituídas agora pela criatividade."
+                ], correta: 1, explicacao: "No controle social 'panóptico', a opressão atinge sua eficiência máxima quando o próprio vigiado age como seu próprio repressor moral."
+            },
+            {
+                enunciado: "50. Interagimos rotineiramente com IAs capazes de emular o diálogo coloquial. Do ponto de vista existencial da alteridade, o perigo de substituirmos os vínculos humanos pela máquina reside no fato de que o software:",
+                opcoes: [
+                    "A) Possui uma consciência moral superior à nossa, capaz de solucionar rapidamente dilemas existenciais complexos.",
+                    "B) Apenas projeta uma simulação de empatia, não possuindo o peso da vivência real nem a imprevisibilidade humana.",
+                    "C) Exige do usuário contemporâneo um gasto de energia intelectual muito maior do que em conversas presenciais.",
+                    "D) Demonstra um grande sofrimento psíquico autêntico quando os humanos dão comandos sem polidez."
+                ], correta: 1, explicacao: "O convívio autêntico exige o sofrimento, o conflito e as limitações reais. A máquina apenas calcula e entrega frases algorítmicas de conformo programado."
+            }
+        ];
+
+        let questaoAtual = 0;
+        let acertos = 0;
+        let primeiraTentativa = true;
+        let tempoInicioQuestao = 0;
+        let timerAvanco;
+
+        const uiElements = {
+            content: document.getElementById('quiz-content'),
+            result: document.getElementById('result-content'),
+            questionText: document.getElementById('question-text'),
+            optionsContainer: document.getElementById('options-container'),
+            progress: document.getElementById('progress'),
+            questionCounter: document.getElementById('question-counter'),
+            scoreCounter: document.getElementById('score-counter'),
+            modal: document.getElementById('feedback-modal'),
+            modalBox: document.getElementById('modal-box'),
+            modalIcon: document.getElementById('modal-icon'),
+            modalTitle: document.getElementById('modal-title'),
+            modalMessage: document.getElementById('modal-message'),
+            modalBtn: document.getElementById('modal-btn'),
+            finalScore: document.getElementById('final-score'),
+            finalMessage: document.getElementById('final-message')
+        };
+
+        function iniciarQuiz() {
+            questaoAtual = 0;
+            acertos = 0;
+            uiElements.content.style.display = 'block';
+            uiElements.result.style.display = 'none';
+            carregarQuestao();
+        }
+
+        function carregarQuestao() {
+            primeiraTentativa = true; 
+            tempoInicioQuestao = Date.now(); // Grava o momento em que a questão apareceu na tela
+            clearInterval(timerAvanco); // Limpa qualquer timer residual
+            
+            const q = questoes[questaoAtual];
+            uiElements.questionText.textContent = q.enunciado;
+            uiElements.optionsContainer.innerHTML = '';
+            
+            const progressoPct = ((questaoAtual) / questoes.length) * 100;
+            uiElements.progress.style.width = `${progressoPct}%`;
+            uiElements.questionCounter.textContent = `Questão ${questaoAtual + 1} de ${questoes.length}`;
+            uiElements.scoreCounter.textContent = `Acertos (1ª tentativa): ${acertos}`;
+
+            q.opcoes.forEach((opcao, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opcao;
+                btn.onclick = () => verificarResposta(index);
+                uiElements.optionsContainer.appendChild(btn);
+            });
+        }
+
+        function verificarResposta(indiceSelecionado) {
+            const q = questoes[questaoAtual];
+            const acertou = (indiceSelecionado === q.correta);
+
+            if (acertou) {
+                if (primeiraTentativa) {
+                    acertos++;
+                    uiElements.scoreCounter.textContent = `Acertos (1ª tentativa): ${acertos}`;
+                }
+                mostrarModal(true, q.explicacao);
+            } else {
+                primeiraTentativa = false; 
+                const msgErro = `A resposta correta não é essa. Tente novamente!<br><br><strong>Dica da Explicação:</strong> ${q.explicacao}`;
+                mostrarModal(false, msgErro);
+            }
+        }
+
+        function mostrarModal(acertou, mensagem) {
+            uiElements.modal.style.display = 'flex';
+            clearInterval(timerAvanco); 
+            
+            if (acertou) {
+                uiElements.modalBox.className = 'modal-content correct-theme';
+                uiElements.modalIcon.textContent = '✓';
+                uiElements.modalTitle.textContent = 'Você Acertou!';
+                uiElements.modalMessage.innerHTML = mensagem;
+                
+                // Calcula quanto tempo passou desde que a questão carregou
+                let tempoDecorrido = Math.floor((Date.now() - tempoInicioQuestao) / 1000);
+                let tempoRestante = 15 - tempoDecorrido;
+
+                if (tempoRestante > 0) {
+                    uiElements.modalBtn.disabled = true;
+                    uiElements.modalBtn.textContent = `Aguarde (${tempoRestante}s)`;
+                    uiElements.modalBtn.onclick = null;
+                    
+                    timerAvanco = setInterval(() => {
+                        tempoRestante--;
+                        if (tempoRestante > 0) {
+                            uiElements.modalBtn.textContent = `Aguarde (${tempoRestante}s)`;
+                        } else {
+                            clearInterval(timerAvanco);
+                            uiElements.modalBtn.disabled = false;
+                            uiElements.modalBtn.textContent = "Próxima Questão";
+                            uiElements.modalBtn.onclick = avancarQuestao;
+                        }
+                    }, 1000);
+                } else {
+                    // Já passou de 15s desde que a questão carregou
+                    uiElements.modalBtn.disabled = false;
+                    uiElements.modalBtn.textContent = "Próxima Questão";
+                    uiElements.modalBtn.onclick = avancarQuestao;
+                }
+
+            } else {
+                uiElements.modalBox.className = 'modal-content wrong-theme';
+                uiElements.modalIcon.textContent = '✗';
+                uiElements.modalTitle.textContent = 'Resposta Incorreta';
+                uiElements.modalMessage.innerHTML = mensagem;
+                
+                // Erro: permite tentar novamente de imediato para não prender o aluno na tela de erro
+                uiElements.modalBtn.disabled = false;
+                uiElements.modalBtn.textContent = "Tentar Novamente";
+                uiElements.modalBtn.onclick = tentarNovamente;
+            }
+        }
+
+        function tentarNovamente() {
+            uiElements.modal.style.display = 'none';
+        }
+
+        function avancarQuestao() {
+            uiElements.modal.style.display = 'none';
+            questaoAtual++;
+
+            if (questaoAtual < questoes.length) {
+                carregarQuestao();
+            } else {
+                mostrarResultado();
+            }
+        }
+
+        function mostrarResultado() {
+            uiElements.content.style.display = 'none';
+            uiElements.result.style.display = 'block';
+            
+            const porcentagem = Math.round((acertos / questoes.length) * 100);
+            uiElements.finalScore.textContent = `${porcentagem}%`;
+            
+            let mensagem = "";
+            if (porcentagem >= 80) mensagem = "Excelente! Você demonstrou foco e leitura atenta acertando várias questões de primeira.";
+            else if (porcentagem >= 50) mensagem = "Bom trabalho! Continue testando seus conhecimentos filosóficos.";
+            else mensagem = "O mais importante foi ler as explicações com calma. O conhecimento leva tempo para construir!";
+            
+            uiElements.finalMessage.textContent = mensagem;
+        }
+
+        function reiniciarQuiz() {
+            iniciarQuiz();
+        }
+
+        window.onload = iniciarQuiz;
+    </script>
+</body>
+</html>
