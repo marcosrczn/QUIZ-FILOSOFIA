@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Filosófico: Eixo 1 - 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .modal-overlay { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(8px); }
+        .obj-list-item { @apply text-blue-700 text-[11px] font-bold uppercase tracking-tight; }
+        .separator { @apply text-slate-300 mx-2 font-normal; }
+        .text-justificado { text-align: justify; text-justify: inter-word; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 pb-12">
+
+    <!-- Seção de Objetos de Conhecimento -->
+    <section class="w-full max-w-4xl mt-4 mb-8 p-6 bg-white rounded-3xl shadow-sm border border-slate-200">
+        <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            Objetos de Conhecimento Abordados
+        </h3>
+        <div class="flex flex-wrap items-center justify-start leading-relaxed">
+            <span class="obj-list-item">Ser Humano e Racionalidade</span><span class="separator">;</span>
+            <span class="obj-list-item">Pensamento</span><span class="separator">;</span>
+            <span class="obj-list-item">Linguagem</span><span class="separator">;</span>
+            <span class="obj-list-item">Indagação</span><span class="separator">;</span>
+            <span class="obj-list-item">Interpretação</span><span class="separator">;</span>
+            <span class="obj-list-item">Tipos de Conhecimento</span><span class="separator">;</span>
+            <span class="obj-list-item">Senso Comum</span><span class="separator">;</span>
+            <span class="obj-list-item">Pensamento Mítico</span><span class="separator">;</span>
+            <span class="obj-list-item">Surgimento da Filosofia</span><span class="separator">;</span>
+            <span class="obj-list-item">Atitude Filosófica</span><span class="separator">;</span>
+            <span class="obj-list-item">Exigências do Pensamento</span><span class="separator">;</span>
+            <span class="obj-list-item">Verdade</span>
+        </div>
+    </section>
+
+    <!-- Header do Quiz -->
+    <header class="w-full max-w-3xl mb-8 text-center">
+        <h1 class="text-3xl font-black text-slate-900 tracking-tight mb-2">Desafio Filosófico 1ª Série</h1>
+        <p class="text-slate-500 font-medium">Habilidade: EM13CHS101</p>
+        
+        <div class="mt-6 w-full bg-slate-200 rounded-full h-3 overflow-hidden shadow-inner">
+            <div id="progress" class="bg-blue-600 h-full transition-all duration-700" style="width: 0%"></div>
+        </div>
+        <div class="flex justify-between mt-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            <span id="question-count">Carregando...</span>
+            <span id="score-display">Acertos: 0</span>
+        </div>
+    </header>
+
+    <!-- Card do Quiz -->
+    <main id="quiz-card" class="w-full max-w-3xl bg-white rounded-[2rem] shadow-2xl p-8 md:p-12 border border-slate-100 transition-all duration-300">
+        <div id="text-base" class="mb-8 text-slate-700 bg-slate-50 p-6 rounded-2xl border-l-4 border-blue-500 italic leading-relaxed text-sm md:text-base text-justificado">
+            <!-- Texto base dinâmico -->
+        </div>
+        <h2 id="question-prompt" class="text-xl md:text-2xl font-extrabold text-slate-800 mb-10 leading-tight text-justificado">
+            <!-- Pergunta dinâmica -->
+        </h2>
+        <div id="options-container" class="space-y-4">
+            <!-- Opções dinâmicas -->
+        </div>
+    </main>
+
+    <!-- Modal de Feedback -->
+    <div id="modal" class="fixed inset-0 modal-overlay hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-[2.5rem] shadow-2xl max-w-lg w-full p-10 transform transition-all relative overflow-hidden">
+            
+            <div id="modal-status-icon" class="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 text-5xl"></div>
+            
+            <h3 id="modal-title" class="text-2xl font-black text-center mb-4 uppercase tracking-tighter">Resultado</h3>
+            <p id="modal-feedback" class="text-slate-500 text-center mb-8 leading-relaxed">Feedback.</p>
+            
+            <!-- Timer Visual -->
+            <div id="timer-box" class="bg-slate-50 rounded-3xl p-6 mb-8 text-center border border-slate-100">
+                <span id="timer-label" class="text-[10px] font-black text-slate-400 block mb-2 uppercase tracking-widest">Tempo de Reflexão</span>
+                <span id="seconds-left" class="text-5xl font-black text-blue-600 tabular-nums">20s</span>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="grid grid-cols-1 gap-4">
+                <button id="btn-next" disabled class="w-full py-5 bg-slate-200 text-slate-400 cursor-not-allowed font-black rounded-2xl transition-all flex items-center justify-center gap-3">
+                    AVANÇAR <span id="btn-timer-text" class="text-xs opacity-60">(20s)</span>
+                </button>
+                <button id="btn-retry" class="w-full py-4 text-slate-500 font-bold hover:text-slate-800 transition-colors">
+                    REFAZER QUESTÃO
+                </button>
+            </div>
+
+            <!-- Botão de Desbloqueio (Professor) -->
+            <div class="mt-8 pt-8 border-t border-slate-100">
+                <button id="btn-master-unlock" class="w-full flex items-center justify-center gap-2 text-[10px] font-black text-slate-300 hover:text-blue-500 transition-all uppercase tracking-widest">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    Acesso do Professor
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tela Final -->
+    <div id="final-screen" class="hidden w-full max-w-2xl bg-white rounded-[3rem] shadow-2xl p-16 text-center border border-slate-100">
+        <div class="text-7xl mb-8">🎯</div>
+        <h2 class="text-4xl font-black text-slate-900 mb-4">Quiz Finalizado!</h2>
+        <p class="text-slate-500 mb-12 text-lg">Você concluiu os 50 desafios sobre a racionalidade humana.</p>
+        <div class="inline-block px-10 py-6 bg-blue-50 rounded-3xl mb-12">
+            <span class="block text-xs font-black text-blue-400 uppercase tracking-widest mb-1">Seu Desempenho</span>
+            <span class="text-6xl font-black text-blue-600" id="final-score-val">0/50</span>
+        </div>
+        <button onclick="location.reload()" class="w-full py-5 bg-blue-600 text-white font-black rounded-2xl shadow-xl shadow-blue-200 hover:bg-blue-700 hover:-translate-y-1 transition-all">
+            RECOMEÇAR SIMULADO
+        </button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                base: "Immanuel Kant afirmava que a 'menoridade' é a incapacidade de fazer uso do próprio entendimento sem a condução de outrem. No contexto das redes sociais, algoritmos selecionam o que consumimos.",
+                prompt: "Considerando as exigências do pensamento racional, a atitude que rompe com essa 'menoridade' digital é:",
+                options: ["Aceitar as sugestões da plataforma por serem baseadas em dados.", "Buscar o conforto de informações que confirmem crenças prévias.", "Exercer a autonomia intelectual através da análise crítica e lógica.", "Priorizar narrativas que possuam maior engajamento e visualização."],
+                correct: 2
+            },
+            {
+                base: "Um debatedor apresenta dados científicos sobre o clima, enquanto outro afirma que 'não acredita' no aquecimento global porque hoje o dia está frio na sua cidade.",
+                prompt: "A falha na racionalidade do segundo debatedor reside em:",
+                options: ["Utilizar uma linguagem técnica inacessível para o público.", "Confundir percepção individual e momentânea com prova lógica.", "Buscar a verdade além do senso comum por indagações sérias.", "Comparar diferentes fontes de informação antes de formular ideias."],
+                correct: 1
+            },
+            {
+                base: "Um relatório de IA afirmou que 'todos os humanos são imortais' partindo da premissa de que 'alguns humanos vivem muito tempo'.",
+                prompt: "Do ponto de vista da lógica, esse argumento é inválido porque:",
+                options: ["A conclusão extrapola as evidências contidas nas premissas.", "A linguagem utilizada é excessivamente simples para o tema.", "O pensamento mítico foi ignorado na construção da narrativa.", "A interpretação depende apenas da opinião pessoal do leitor."],
+                correct: 0
+            },
+            {
+                base: "Ao resolver um dilema ético, um gestor decide ignorar as regras da empresa para favorecer um amigo, alegando que 'a amizade vale mais que qualquer papel'.",
+                prompt: "No âmbito da racionalidade, a postura do gestor caracteriza uma:",
+                options: ["Atitude filosófica baseada na busca por soluções coletivas.", "Interpretação profunda dos processos políticos e sociais.", "Substituição do critério lógico e impessoal pelo desejo individual.", "Identificação clara de fontes e narrativas em diversas linguagens."],
+                correct: 2
+            },
+            {
+                base: "A frase 'A palavra é o fio com que tecemos nossa realidade' ressalta que a linguagem organiza o pensamento.",
+                prompt: "Sobre a relação entre linguagem e pensamento, pode-se afirmar que:",
+                options: ["O pensamento existe de forma completa sem o uso de signos.", "A linguagem limita a criatividade por impor regras fixas.", "As palavras são ferramentas que estruturam nossa percepção.", "O senso comum é a única linguagem capaz de expressar a verdade."],
+                correct: 2
+            },
+            {
+                base: "Uma propaganda utiliza sons de natureza para vender um produto industrializado, induzindo sentimentos de pureza.",
+                prompt: "Segundo o currículo de Filosofia, analisar essa estratégia consiste em:",
+                options: ["Decorar os conceitos de verdade expressos nos manuais.", "Analisar narrativas presentes em mídias e suas intenções.", "Aceitar a linguagem visual como uma prova de qualidade.", "Utilizar o pensamento mítico para explicar o efeito de um item."],
+                correct: 1
+            },
+            {
+                base: "A transição do Mito para o Lógos na Grécia representou uma mudança na forma como o ser humano explica o Cosmos.",
+                prompt: "A principal característica do pensamento baseado no Lógos é:",
+                options: ["O uso de figuras divinas para justificar as leis naturais.", "A fundamentação do saber na razão e na análise crítica.", "A dependência da tradição oral para validar as verdades.", "O abandono total de qualquer forma de linguagem simbólica."],
+                correct: 1
+            },
+            {
+                base: "Em um debate sobre fake news, argumenta-se que a verdade é 'subjetiva e o que importa é o que eu sinto'.",
+                prompt: "Filosoficamente, essa visão é problemática porque:",
+                options: ["Impede o debate racional e a busca por fundamentos comuns.", "Facilita a compreensão de diversas linguagens contemporâneas.", "Fortalece a utilização do pensamento mítico na esfera pública.", "Garante que o senso comum seja superado pela lógica individual."],
+                correct: 0
+            },
+            {
+                base: "A 'atitude filosófica' exige um estranhamento do que é considerado óbvio, como hábitos e regras de conduta.",
+                prompt: "Diferente do senso comum, a atitude filosófica caracteriza-se por:",
+                options: ["Aceitar as explicações tradicionais sem questionamentos.", "Transformar o hábito e o costume em objetos de indagação.", "Priorizar a utilidade prática imediata de cada conhecimento.", "Buscar nos mitos a resposta final para os dilemas da ciência."],
+                correct: 1
+            },
+            {
+                base: "A admiração (espanto) é considerada o ponto de partida para o conhecimento filosófico.",
+                prompt: "Este sentimento é essencial para o conhecimento pois:",
+                options: ["Leva o indivíduo a aceitar o mundo exatamente como ele é.", "Provoca o estranhamento que gera a indagação e a pesquisa.", "Incentiva o uso exclusivo do senso comum para resolver fatos.", "Impede que o ser humano utilize a linguagem para se comunicar."],
+                correct: 1
+            },
+            {
+                base: "O senso comum costuma aceitar explicações fragmentadas sobre a realidade, baseadas na experiência imediata.",
+                prompt: "O conhecimento filosófico diferencia-se do senso comum por ser:",
+                options: ["Um conjunto de opiniões populares aceitas pela maioria.", "Uma investigação sistemática e crítica sobre os fundamentos.", "Uma verdade absoluta revelada por autoridades espirituais.", "Um saber técnico voltado apenas para o lucro econômico."],
+                correct: 1
+            },
+            {
+                base: "A linguagem não apenas descreve o mundo, ela também o constrói ao nomear objetos e sentimentos.",
+                prompt: "Quando uma nova palavra surge para um sentimento, isso demonstra que:",
+                options: ["A racionalidade humana está diminuindo com o tempo.", "A linguagem e a cultura evoluem em processos integrados.", "O pensamento mítico voltou a dominar a comunicação social.", "A verdade absoluta foi finalmente alcançada pela gramática."],
+                correct: 1
+            },
+            {
+                base: "O pensamento mítico utilizava a genealogia dos deuses para explicar o surgimento dos fenômenos naturais.",
+                prompt: "Uma característica central do mito, em contraste com a filosofia, é:",
+                options: ["A exigência de provas experimentais para cada narrativa.", "A explicação baseada em vontades arbitrárias de divindades.", "O uso de argumentos lógicos para convencer os cidadãos.", "A recusa em utilizar linguagens poéticas ou metafóricas."],
+                correct: 1
+            },
+            {
+                base: "Na Grécia Antiga, o surgimento da moeda e do alfabeto escrito exigiu maior capacidade de abstração.",
+                prompt: "Essas condições históricas foram importantes para a filosofia pois:",
+                options: ["Fortaleceram a crença cega nos mitos dos antepassados.", "Estimularam o pensamento racional e a generalização lógica.", "Proibiram a discussão pública sobre leis e política nas praças.", "Garantiram que apenas os poetas tivessem acesso à verdade."],
+                correct: 1
+            },
+            {
+                base: "A verdade pode ser entendida como correspondência entre o que se diz e a realidade dos fatos.",
+                prompt: "Nesse conceito, para que uma afirmação seja verdadeira, ela deve:",
+                options: ["Ser aceita pela maioria das pessoas como algo óbvio.", "Ser passível de verificação lógica ou empírica na realidade.", "Transmitir um sentimento de conforto emocional ao ouvinte.", "Seguir as ordens de uma autoridade política ou religiosa."],
+                correct: 1
+            },
+            {
+                base: "A indagação filosófica busca as causas primeiras e os fundamentos de um conceito ou fenômeno.",
+                prompt: "Uma pergunta verdadeiramente filosófica sobre o tempo seria:",
+                options: ["Qual é o horário exato em que o sol nasce hoje?", "Como configurar o despertador no meu smartphone novo?", "O que é o tempo e como ele se relaciona com a existência?", "Quanto tempo dura uma viagem de avião entre duas cidades?"],
+                correct: 2
+            },
+            {
+                base: "O ser humano utiliza a racionalidade para organizar dados e prever resultados em suas ações cotidianas.",
+                prompt: "A racionalidade se manifesta na resolução de problemas quando:",
+                options: ["Agimos puramente por instinto e impulso emocional.", "Organizamos o pensamento em etapas lógicas e coerentes.", "Esperamos que a sorte decida o melhor caminho a seguir.", "Ignoramos as evidências para manter uma crença antiga."],
+                correct: 1
+            },
+            {
+                base: "Interpretamos o mundo através de filtros culturais, educacionais e pessoais.",
+                prompt: "A interpretação filosófica exige que o estudante seja capaz de:",
+                options: ["Repetir fielmente o que leu sem questionar o sentido.", "Identificar e analisar diferentes perspectivas sobre um tema.", "Aceitar que apenas a sua visão pessoal é correta e absoluta.", "Eliminar qualquer forma de curiosidade sobre o pensamento."],
+                correct: 1
+            },
+            {
+                base: "A Filosofia relaciona-se com as demais áreas do conhecimento ao questionar seus próprios fundamentos.",
+                prompt: "Qual é a função da Filosofia em relação à Ciência?",
+                options: ["Substituir os laboratórios por debates puramente abstratos.", "Refletir sobre a ética e a validade dos métodos científicos.", "Ditar quais descobertas devem ser consideradas mentiras.", "Fornecer respostas definitivas que a ciência não consegue."],
+                correct: 1
+            },
+            {
+                base: "As exigências do pensamento racional incluem clareza, coerência e fundamentação.",
+                prompt: "Um discurso que muda de opinião a cada frase falha principalmente na:",
+                options: ["Linguagem, pois não utiliza palavras suficientemente difíceis.", "Coerência, que exige que as ideias não se contradigam.", "Indagação, pois o autor não fez perguntas para o público.", "Verdade, pois mentir é um requisito para o pensamento."],
+                correct: 1
+            },
+            // Adicionando 30 questões adicionais variadas para completar 50 únicas
+            { base: "O senso comum afirma: 'mulher dirige mal'.", prompt: "A atitude filosófica diante desse preconceito seria:", options: ["Aceitar, pois é uma frase repetida por gerações.", "Investigar dados e questionar a origem desse estigma.", "Ignorar, pois filosofia não lida com o cotidiano social.", "Concordar se a maioria das pessoas próximas concordar."], correct: 1 },
+            { base: "O pensamento mítico explicava o trovão como a fúria de um deus.", prompt: "A racionalidade explica o trovão como:", options: ["Um castigo divino para os desobedientes da terra.", "Um fenômeno físico resultante de descargas elétricas.", "Um aviso místico de que a verdade é impossível.", "Uma linguagem poética que não possui causa real."], correct: 1 },
+            { base: "A linguagem inclusiva busca nomear identidades antes invisíveis.", prompt: "Isso mostra que a linguagem:", options: ["É fixa e nunca deve mudar suas regras gramaticais.", "Reflete e influencia as dinâmicas sociais e culturais.", "É apenas um conjunto de sons sem relação com o ser.", "Serve para esconder a verdade através do senso comum."], correct: 1 },
+            { base: "A dúvida metódica propõe questionar tudo o que não for evidente.", prompt: "Essa postura é importante para o conhecimento porque:", options: ["Leva à incerteza total e à desistência do estudo.", "Evita que aceitemos mentiras como verdades óbvias.", "Garante que o mito seja a única fonte de segurança.", "Torna a racionalidade um processo lento e inútil."], correct: 1 },
+            { base: "Verdade como 'coerência' foca na relação entre afirmações.", prompt: "Uma teoria é coerente se:", options: ["Suas partes não entram em contradição entre si.", "O autor for uma pessoa famosa e muito influente.", "O público acreditar nela sem pedir nenhuma prova.", "Ela utilizar apenas a linguagem do senso comum."], correct: 0 },
+            { base: "A Pólis grega era o espaço da palavra e do debate público.", prompt: "Isso favoreceu a filosofia porque:", options: ["Os deuses exigiam que todos falassem ao mesmo tempo.", "A política exigia argumentos racionais para convencer.", "A escrita foi proibida para favorecer apenas a fala.", "O senso comum tornou-se a lei absoluta das cidades."], correct: 1 },
+            { base: "O pensamento é a capacidade de processar informações internamente.", prompt: "O pensamento torna-se filosofia quando:", options: ["É voltado apenas para a sobrevivência biológica.", "Passa a ser crítico, sistemático e fundamentado.", "Repete o que todos dizem nas redes sociais hoje.", "Busca apenas a beleza estética da linguagem usada."], correct: 1 },
+            { base: "A indagação sobre o 'ser' busca entender a essência das coisas.", prompt: "Essa busca é dificultada pelo senso comum porque ele:", options: ["Exige que pensemos demais sobre coisas simples.", "Foca apenas nas aparências e utilidades imediatas.", "Utiliza linguagens técnicas que ninguém compreende.", "Rejeita qualquer tipo de tradição ou história cultural."], correct: 1 },
+            { base: "Diferentes linguagens (arte, ciência, religião) explicam a vida.", prompt: "A filosofia atua entre essas linguagens para:", options: ["Decidir qual delas é a única verdade absoluta.", "Analisar e comparar suas narrativas e limites.", "Eliminar a arte e a religião em favor da ciência.", "Criar um mito único que una todas essas visões."], correct: 1 },
+            { base: "O preconceito é uma forma de conhecimento prévio sem análise.", prompt: "A exigência do pensamento que combate o preconceito é:", options: ["A autoridade, seguindo quem manda no momento.", "A fundamentação, buscando razões reais para o juízo.", "O mito, criando histórias para justificar o ódio.", "O senso comum, aceitando o que a maioria diz."], correct: 1 },
+            { base: "O surgimento da filosofia é chamado de 'milagre grego' por alguns.", prompt: "Porém, historiadores mostram que foi um processo ligado à:", options: ["Sorte de encontrar deuses mais inteligentes na Grécia.", "Troca cultural, escrita, moeda e vida na cidade.", "Decisão mística de abandonar a razão para sempre.", "Falta de linguagem entre os povos vizinhos dos gregos."], correct: 1 },
+            { base: "Interpretar um vídeo exige perceber o que não é dito explicitamente.", prompt: "Isso demonstra a habilidade de:", options: ["Analisar narrativas em diversas linguagens.", "Aceitar a imagem como verdade inquestionável.", "Utilizar o senso comum para evitar o cansaço.", "Repetir os comentários dos outros usuários."], correct: 0 },
+            { base: "A racionalidade permite prever as fases da lua com precisão.", prompt: "Diferente do mito, essa previsão racional permite:", options: ["Controlar a vontade dos deuses sobre a maré.", "Planejar ações humanas baseadas em leis estáveis.", "Criar uma narrativa mística que assuste o povo.", "Ignorar a observação em favor do senso comum."], correct: 1 },
+            { base: "A filosofia é uma 'ferramenta para despertar a curiosidade'.", prompt: "Um estudante curioso é aquele que:", options: ["Aceita respostas rápidas para encerrar o assunto.", "Faz perguntas que buscam entender o 'porquê' das coisas.", "Acredita em tudo o que vê em vídeos curtos na internet.", "Usa a linguagem apenas para concordar com o grupo."], correct: 1 },
+            { base: "A ciência busca o 'como', a filosofia busca o 'para quê'.", prompt: "Essa distinção mostra que:", options: ["A ciência e a filosofia são inimigas mortais.", "Elas são formas complementares de conhecimento.", "A filosofia é inútil diante dos avanços técnicos.", "A ciência é baseada em mitos e o lógos é só poético."], correct: 1 },
+            { base: "Senso comum: 'Deus ajuda quem cedo madruga'.", prompt: "Uma análise filosófica desse ditado questionaria:", options: ["O preço do despertador mais eficiente do mercado.", "A relação entre esforço, sucesso e justiça social.", "O melhor horário para dormir e acordar com saúde.", "Se a maioria das pessoas concorda com essa frase."], correct: 1 },
+            { base: "A linguagem corporal também é uma forma de narrativa.", prompt: "Ao interpretar um gesto, o estudante está:", options: ["Utilizando a racionalidade para entender sinais.", "Agindo conforme o pensamento mítico primitivo.", "Ignorando a filosofia em favor do senso comum.", "Buscando uma verdade absoluta em movimentos."], correct: 0 },
+            { base: "O lógos grego significa tanto 'razão' quanto 'palavra'.", prompt: "Essa dupla tradução sugere que:", options: ["Falar e pensar são processos que não se misturam.", "O pensamento racional é expresso pela linguagem.", "A palavra deve ser usada apenas para orar aos deuses.", "A razão é impossível de ser explicada por palavras."], correct: 1 },
+            { base: "Um argumento sólido deve ter premissas verdadeiras e lógica.", prompt: "Se eu digo 'Todo pássaro voa, pinguim é pássaro, logo pinguim voa':", options: ["O argumento é logicamente válido e a conclusão é real.", "O argumento tem falha na verdade de uma premissa.", "A linguagem é muito complexa para ser entendida.", "O pensamento mítico prova que pinguins voam."], correct: 1 },
+            { base: "A atitude cidadã exige o uso da racionalidade.", prompt: "Isso significa que o cidadão deve:", options: ["Seguir ordens sem questionar as leis da cidade.", "Analisar as propostas e agir com base na ética.", "Usar a linguagem apenas para reclamar da vida.", "Aceitar as fake news que favorecem seu grupo."], correct: 1 },
+            { base: "O mito de Sísifo fala sobre o esforço repetitivo sem fim.", prompt: "A filosofia utiliza esse mito para discutir:", options: ["A técnica correta de carregar pedras em montanhas.", "O sentido do trabalho e da existência humana.", "A existência física de deuses gigantes no passado.", "A melhor linguagem para escrever histórias de heróis."], correct: 1 },
+            { base: "A verdade como 'desvelamento' (Aletheia) significa tirar o véu.", prompt: "Na prática, isso significa:", options: ["Esconder os fatos para proteger as pessoas da dor.", "Retirar os preconceitos para enxergar a realidade.", "Criar novos véus de senso comum sobre os temas.", "Usar a linguagem mística para cobrir o pensamento."], correct: 1 },
+            { base: "O pensamento crítico impede a manipulação em massa.", prompt: "Isso ocorre porque o pensamento crítico:", options: ["Faz o indivíduo acreditar em qualquer autoridade.", "Exige fundamentos e lógica para aceitar uma ideia.", "Utiliza o senso comum para decidir em quem votar.", "É uma narrativa mítica sobre o poder da mente."], correct: 1 },
+            { base: "As artes são fontes para compreensão de ideias filosóficas.", prompt: "Ao analisar uma pintura, buscamos entender:", options: ["O preço das tintas usadas pelo artista na obra.", "As visões de mundo e valores expressos na imagem.", "Como o senso comum define se o quadro é bonito.", "A linguagem técnica de como segurar o pincel."], correct: 1 },
+            { base: "A indagação 'Quem sou eu?' remete ao autoconhecimento.", prompt: "Filosoficamente, o autoconhecimento é:", options: ["Saber apenas o próprio nome e a data de nascimento.", "Refletir sobre os próprios processos de pensamento.", "Aceitar o que os outros dizem que você deve ser.", "Uma narrativa mítica sobre a alma dos antepassados."], correct: 1 },
+            { base: "O senso comum é um saber fragmentado e acrítico.", prompt: "Ser 'acrítico' significa:", options: ["Fazer críticas agressivas a todas as pessoas.", "Aceitar informações sem análise ou julgamento.", "Usar a racionalidade para melhorar a sociedade.", "Ter uma linguagem técnica muito avançada."], correct: 1 },
+            { base: "A racionalidade humana é o que permite a ciência avançar.", prompt: "Se abandonarmos a racionalidade, a ciência:", options: ["Tornar-se-ia uma nova forma de pensamento mítico.", "Alcançaria a verdade absoluta mais rapidamente.", "Utilizaria o senso comum para criar novas curas.", "Não precisaria mais de linguagem para se expressar."], correct: 0 },
+            { base: "A filosofia é uma atividade de 'busca' e não de 'posse'.", prompt: "Isso significa que o filósofo:", options: ["É alguém que já sabe de tudo e ensina aos outros.", "Está sempre em processo de questionamento e reflexão.", "Rejeita o pensamento por achar que a verdade é impossível.", "Usa a linguagem apenas para fingir que possui o saber."], correct: 1 },
+            { base: "Os conceitos de verdade mudam conforme a teoria filosófica.", prompt: "Essa mudança mostra que a verdade:", options: ["É uma mentira inventada para controlar o povo.", "É um objetivo que exige rigor e debate constante.", "Depende apenas do que o senso comum diz hoje.", "É uma narrativa mítica sem importância racional."], correct: 1 },
+            { base: "Concluímos o trimestre analisando a importância da filosofia.", prompt: "Qual o maior benefício de estudar essas ferramentas?", options: ["Aprender a ganhar discussões usando palavras difíceis.", "Desenvolver autonomia e pensamento crítico e lógico.", "Confirmar que o senso comum é a melhor forma de vida.", "Decorar a história dos deuses gregos e seus mitos."], correct: 1 }
+        ];
+
+        let currentIdx = 0;
+        let score = 0;
+        let timerInterval;
+        let lockTime = 20; // NOVO TEMPO: 20 segundos
+        let questionShownAt = 0;
+        let isMasterUnlocked = false;
+        let answeredCurrent = false;
+
+        const quizCard = document.getElementById('quiz-card');
+        const finalScreen = document.getElementById('final-screen');
+        const modal = document.getElementById('modal');
+        const btnNext = document.getElementById('btn-next');
+        const btnRetry = document.getElementById('btn-retry');
+        const btnMasterUnlock = document.getElementById('btn-master-unlock');
+
+        function init() {
+            loadQuestion();
+            btnMasterUnlock.addEventListener('click', (e) => {
+                e.preventDefault();
+                if(isMasterUnlocked) return;
+                const pass = prompt("Digite a senha do professor para destravar as travas de tempo:");
+                if(pass === "filosofia") {
+                    isMasterUnlocked = true;
+                    unlockUI();
+                } else if(pass !== null) {
+                    alert("Senha incorreta.");
+                }
+            });
+        }
+
+        function loadQuestion() {
+            const q = questions[currentIdx];
+            document.getElementById('text-base').textContent = q.base;
+            document.getElementById('question-prompt').textContent = q.prompt;
+            document.getElementById('question-count').textContent = `Questão ${currentIdx + 1} de ${questions.length}`;
+            document.getElementById('progress').style.width = `${((currentIdx) / questions.length) * 100}%`;
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            
+            answeredCurrent = false;
+
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full p-5 text-left rounded-3xl bg-white border-2 border-slate-100 hover:border-blue-400 hover:bg-blue-50 transition-all font-medium text-slate-700 flex items-center gap-4 group";
+                btn.innerHTML = `
+                    <span class="w-10 h-10 flex-shrink-0 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center font-black text-slate-400 group-hover:text-blue-500 group-hover:bg-white group-hover:border-blue-200 transition-all">${String.fromCharCode(65+i)}</span>
+                    <span class="flex-1">${opt}</span>
+                `;
+                btn.onclick = () => selectOption(i);
+                container.appendChild(btn);
+            });
+            
+            questionShownAt = Date.now();
+        }
+
+        function selectOption(choice) {
+            const isCorrect = (choice === questions[currentIdx].correct);
+            if(isCorrect && !answeredCurrent) {
+                score++;
+                answeredCurrent = true;
+            }
+            showPopup(isCorrect);
+        }
+
+        function showPopup(isCorrect) {
+            modal.classList.remove('hidden');
+            const icon = document.getElementById('modal-status-icon');
+            const title = document.getElementById('modal-title');
+            const feedback = document.getElementById('modal-feedback');
+            
+            if(isCorrect) {
+                icon.innerHTML = "✨";
+                icon.className = "w-24 h-24 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-6 text-5xl text-green-500 shadow-inner";
+                title.textContent = "Correto!";
+                title.className = "text-2xl font-black text-center mb-4 uppercase tracking-tighter text-green-600";
+                feedback.textContent = "Sua análise demonstra compreensão das ferramentas do pensar.";
+            } else {
+                icon.innerHTML = "💡";
+                icon.className = "w-24 h-24 rounded-full bg-orange-50 flex items-center justify-center mx-auto mb-6 text-5xl text-orange-500 shadow-inner";
+                title.textContent = "Pense Mais";
+                title.className = "text-2xl font-black text-center mb-4 uppercase tracking-tighter text-orange-600";
+                feedback.textContent = "A filosofia exige rigor. Verifique a lógica do argumento e tente novamente.";
+            }
+            
+            document.getElementById('score-display').textContent = `Acertos: ${score}`;
+            startTimerLogic();
+        }
+
+        function startTimerLogic() {
+            clearInterval(timerInterval);
+            if(isMasterUnlocked) {
+                unlockUI();
+                return;
+            }
+            
+            const elapsed = Math.floor((Date.now() - questionShownAt) / 1000);
+            lockTime = Math.max(0, 20 - elapsed); // USANDO 20s
+            
+            if(lockTime <= 0) {
+                unlockUI();
+            } else {
+                setUIState(false);
+                timerInterval = setInterval(() => {
+                    const currentElapsed = Math.floor((Date.now() - questionShownAt) / 1000);
+                    lockTime = Math.max(0, 20 - currentElapsed);
+                    
+                    if(lockTime <= 0) {
+                        unlockUI();
+                    } else {
+                        updateTimerLabel();
+                    }
+                }, 500);
+            }
+        }
+
+        function updateTimerLabel() {
+            document.getElementById('seconds-left').textContent = lockTime + "s";
+            document.getElementById('btn-timer-text').textContent = `(${lockTime}s)`;
+        }
+
+        function unlockUI() {
+            clearInterval(timerInterval);
+            setUIState(true);
+            document.getElementById('seconds-left').textContent = "Liberado";
+            document.getElementById('timer-label').textContent = isMasterUnlocked ? "Modo Professor Ativo" : "Tempo de Reflexão Concluído";
+            document.getElementById('btn-timer-text').textContent = "";
+            if(isMasterUnlocked) {
+                btnMasterUnlock.textContent = "MODO PROFESSOR ATIVO";
+                btnMasterUnlock.className = "text-xs font-black uppercase tracking-widest text-blue-600 flex items-center justify-center gap-2 mx-auto cursor-default";
+            }
+        }
+
+        function setUIState(isUnlocked) {
+            btnNext.disabled = !isUnlocked;
+            if(isUnlocked) {
+                btnNext.className = "w-full py-5 bg-blue-600 text-white hover:bg-blue-700 font-black rounded-2xl shadow-xl shadow-blue-100 transition-all cursor-pointer flex items-center justify-center gap-3";
+            } else {
+                btnNext.className = "w-full py-5 bg-slate-100 text-slate-400 cursor-not-allowed font-black rounded-2xl transition-all flex items-center justify-center gap-3";
+                updateTimerLabel();
+            }
+        }
+
+        btnNext.onclick = () => {
+            modal.classList.add('hidden');
+            currentIdx++;
+            if(currentIdx < questions.length) {
+                loadQuestion();
+            } else {
+                showFinal();
+            }
+        };
+
+        btnRetry.onclick = () => {
+            modal.classList.add('hidden');
+        };
+
+        function showFinal() {
+            quizCard.classList.add('hidden');
+            finalScreen.classList.remove('hidden');
+            document.getElementById('final-score-val').textContent = `${score}/${questions.length}`;
+            document.getElementById('progress').style.width = "100%";
+        }
+
+        init();
+    </script>
+</body>
+</html>
