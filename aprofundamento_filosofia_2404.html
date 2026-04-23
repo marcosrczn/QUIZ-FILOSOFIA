@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprofundamento em Filosofia</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --correct-color: #27ae60;
+            --wrong-color: #e74c3c;
+            --bg-color: #f5f7fa;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .quiz-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .info-box {
+            background-color: #e8f4f8;
+            border-left: 4px solid var(--accent-color);
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .info-box strong {
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            height: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .progress-fill {
+            background-color: var(--accent-color);
+            height: 100%;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 1rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            line-height: 1.4;
+        }
+
+        .option-btn:hover {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .modal-message {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            text-align: justify;
+        }
+
+        .correct-theme .modal-icon, .correct-theme .modal-title {
+            color: var(--correct-color);
+        }
+
+        .wrong-theme .modal-icon, .wrong-theme .modal-title {
+            color: var(--wrong-color);
+        }
+
+        .btn-next {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-next:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        .result-container {
+            display: none;
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz-box">
+        <h1>Aprofundamento em Filosofia</h1>
+        
+        <div class="info-box">
+            <strong>Objetos de Conhecimento Abordados:</strong>
+            • Multiculturalismo (Interculturalidade, Inculturação, Enculturação, Aculturação e Transculturação)<br>
+            • Etnocentrismo<br>
+            • Cultura de massa e cultura popular<br>
+            • Folclore
+        </div>
+
+        <div id="quiz-content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+            
+            <div class="status-bar">
+                <span id="question-counter">Questão 1 de 50</span>
+                <span id="score-counter">Acertos (1ª tentativa): 0</span>
+            </div>
+
+            <div class="question-text" id="question-text">
+                Carregando pergunta...
+            </div>
+
+            <div class="options-grid" id="options-container">
+            </div>
+        </div>
+
+        <div class="result-container" id="result-content">
+            <h2>Fim do Simulado!</h2>
+            <div class="score-circle" id="final-score">0%</div>
+            <p id="final-message" class="question-text"></p>
+            <button class="btn-next" onclick="reiniciarQuiz()">Tentar Novamente</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="feedback-modal">
+        <div class="modal-content" id="modal-box">
+            <div class="modal-icon" id="modal-icon">✓</div>
+            <div class="modal-title" id="modal-title">Você Acertou!</div>
+            <div class="modal-message" id="modal-message">Explicação aqui.</div>
+            <button class="btn-next" id="modal-btn">Aguarde...</button>
+        </div>
+    </div>
+
+    <script>
+        const questoes = [
+            {
+                enunciado: "1. Um engenheiro agrônomo visita uma comunidade rural produtora de café. Ao observar as técnicas de plantio baseadas nas fases da lua, ele classifica a prática como 'atrasada' e afirma que apenas o método moderno que ele utiliza é correto e civilizado. A atitude do engenheiro exemplifica o conceito de:",
+                opcoes: ["A) Interculturalidade, por buscar o diálogo entre os saberes.", "B) Etnocentrismo, ao julgar a outra cultura pela sua própria.", "C) Enculturação, pois ele está aprendendo com os produtores.", "D) Transculturação, pois ocorre uma fusão de conhecimentos."], correta: 1, explicacao: "O Etnocentrismo é a atitude de julgar a cultura do outro tendo a sua própria como padrão e medida de superioridade."
+            },
+            {
+                enunciado: "2. Desde os primeiros meses de vida, uma criança absorve o idioma, as regras de convivência e os hábitos alimentares de sua família de forma natural e contínua, apenas por estar inserida naquele ambiente social. Esse processo de aprendizado inicial é chamado de:",
+                opcoes: ["A) Aculturação estrutural e massificada.", "B) Inculturação imposta externamente.", "C) Enculturação primária e espontânea.", "D) Interculturalidade simétrica e fluida."], correta: 2, explicacao: "A Enculturação é o processo natural de assimilação da própria cultura em que o indivíduo nasce e cresce."
+            },
+            {
+                enunciado: "3. Um grupo de jovens de uma comunidade tradicional começa a consumir intensamente conteúdos de redes sociais estrangeiras. Com o passar de poucos anos, eles abandonam completamente seu idioma nativo e suas vestimentas típicas, adotando apenas os padrões vistos na internet. Esse fenômeno ilustra a:",
+                opcoes: ["A) Valorização profunda da cultura popular e regional.", "B) Aculturação resultante da perda de traços originais.", "C) Preservação estrutural do folclore da comunidade.", "D) Enculturação baseada em heranças de seus avós."], correta: 1, explicacao: "A Aculturação ocorre quando o contato com uma cultura externa leva ao abandono e substituição das raízes culturais originais."
+            },
+            {
+                enunciado: "4. Em uma aula, o professor decide explicar um conceito filosófico complexo utilizando gírias e analogias com os videogames que seus alunos jogam diariamente, adaptando a mensagem para que ela faça sentido dentro da realidade dos jovens. Essa estratégia pedagógica reflete o processo de:",
+                opcoes: ["A) Inculturação, ao adaptar a mensagem ao meio receptor.", "B) Etnocentrismo, ao impor o saber acadêmico de forma rígida.", "C) Cultura de massa, ao transformar a aula em um produto.", "D) Aculturação, ao forçar os alunos a esquecerem seus jogos."], correta: 0, explicacao: "A Inculturação é a inserção intencional de uma mensagem, valor ou ensino adaptando-o à cultura de quem a recebe."
+            },
+            {
+                enunciado: "5. Na periferia de uma grande cidade, músicos começam a misturar os ritmos tradicionais do tambor de seus antepassados com batidas eletrônicas criadas em computadores modernos. Dessa mistura, surge um estilo musical inteiramente novo e original. Esse fenômeno é um exemplo de:",
+                opcoes: ["A) Destruição total do folclore local.", "B) Hegemonia da cultura puramente de massa.", "C) Processo de transculturação criativa.", "D) Prática de etnocentrismo institucional."], correta: 2, explicacao: "A Transculturação é a fusão de elementos de diferentes culturas gerando um produto cultural inédito, sem destruir as partes formadoras."
+            },
+            {
+                enunciado: "6. Uma escola promove um projeto chamado 'EcoLógica', onde alunos debatem soluções ambientais juntamente com líderes de uma aldeia indígena próxima. Ambos os grupos têm o mesmo tempo de fala e suas opiniões têm peso igual nas decisões tomadas. Essa dinâmica configura uma prática de:",
+                opcoes: ["A) Interculturalidade, pautada no respeito e na simetria.", "B) Aculturação, forçando os indígenas a mudarem de vida.", "C) Etnocentrismo, impondo a ciência sobre o mito local.", "D) Cultura de massa, vendendo um produto educacional."], correta: 0, explicacao: "A Interculturalidade é o diálogo e a convivência simétrica e respeitosa entre diferentes culturas, sem imposições."
+            },
+            {
+                enunciado: "7. Uma grande plataforma de streaming lança uma música pop com uma coreografia simples. Em menos de uma semana, a mesma música lidera as paradas em mais de cem países simultaneamente, sendo consumida de forma padronizada globalmente. O texto descreve uma característica central da:",
+                opcoes: ["A) Cultura popular, que nasce espontaneamente do povo.", "B) Cultura de massa, produzida para consumo em larga escala.", "C) Transculturação, focada na resistência das minorias.", "D) Interculturalidade, que valoriza as distinções regionais."], correta: 1, explicacao: "A Cultura de Massa é produzida pela indústria cultural focando em lucro, padronização e consumo rápido em escala global."
+            },
+            {
+                enunciado: "8. Todos os anos, moradores de um bairro se reúnem para confeccionar tapetes de serragem nas ruas. Ninguém é pago por isso, e as técnicas de desenho são passadas dos mais velhos para os mais novos de forma orgânica e comunitária. Essa prática é uma manifestação autêntica da:",
+                opcoes: ["A) Indústria cultural focada no lucro.", "B) Cultura popular de base comunitária.", "C) Aculturação dos jovens do bairro.", "D) Inculturação das mídias digitais."], correta: 1, explicacao: "A Cultura Popular surge do próprio povo, transmitida organicamente e focada na expressão e união, não no lucro comercial."
+            },
+            {
+                enunciado: "9. Catarina escutou de sua avó histórias sobre criaturas que protegem as florestas da região contra caçadores ilegais. Esses contos, transmitidos pela oralidade e que compõem o imaginário coletivo e as crenças da comunidade, são classificados como:",
+                opcoes: ["A) Cultura de massa produzida pela mídia.", "B) Folclore mantido pela tradição oral.", "C) Transculturação do ambiente digital.", "D) Etnocentrismo imposto pelo Estado."], correta: 1, explicacao: "Folclore abrange as lendas, mitos e tradições (geralmente orais e de autores anônimos) que mantêm viva a identidade regional."
+            },
+            {
+                enunciado: "10. Durante o período colonial, muitos documentos descreviam os povos nativos das Américas como pessoas 'sem lei, sem rei e sem fé', desconsiderando suas complexas estruturas de organização política e religiosa. Essa visão histórica foi fundamentada no:",
+                opcoes: ["A) Reconhecimento da alteridade.", "B) Princípio da interculturalidade.", "C) Pensamento etnocêntrico europeu.", "D) Processo de enculturação nativa."], correta: 2, explicacao: "Negar a existência de cultura em outro povo apenas porque ela é diferente da sua é a base do preconceito etnocêntrico."
+            },
+            {
+                enunciado: "11. Uma família de imigrantes muda-se para um novo país. Eles adotam a moeda, as leis trabalhistas e o idioma local para sobreviver, mas dentro de casa continuam preparando seus pratos típicos e celebrando seus feriados originais. Eles passaram por um processo de adaptação, mas evitaram a:",
+                opcoes: ["A) Enculturação primária e total.", "B) Transculturação de novos ritmos.", "C) Cultura popular de seus ancestrais.", "D) Aculturação total e assimilação."], correta: 3, explicacao: "A Aculturação seria o apagamento total de sua cultura original em favor da nova. Ao manterem suas raízes, eles resistem a esse apagamento."
+            },
+            {
+                enunciado: "12. Uma grande rede de fast-food decide criar um hambúrguer que leva ingredientes artificiais sabor 'churrasco tradicional', vendendo milhões de unidades através de intensas campanhas de marketing na televisão. Esse produto representa uma apropriação gerada pela:",
+                opcoes: ["A) Cultura popular e suas raízes.", "B) Interculturalidade comunitária.", "C) Dinâmica da cultura de massa.", "D) Prática do legítimo folclore."], correta: 2, explicacao: "A Indústria Cultural captura elementos reais e os transforma em mercadorias superficiais e padronizadas para gerar lucro rápido."
+            },
+            {
+                enunciado: "13. Quando um viajante se recusa a comer um prato típico de uma região por considerá-lo 'nojento' e 'selvagem', esquecendo-se de que seus próprios hábitos alimentares também podem parecer estranhos para os estrangeiros, ele demonstra um comportamento:",
+                opcoes: ["A) Etnocêntrico e preconceituoso.", "B) Intercultural e harmonioso.", "C) Transcultural e inovador.", "D) Inculturado e pedagógico."], correta: 0, explicacao: "Classificar os hábitos alimentares alheios como selvagens demonstra falta de alteridade e apego exclusivo aos próprios padrões."
+            },
+            {
+                enunciado: "14. O folclore de um país não se resume apenas a lendas antigas, mas engloba também danças, provérbios, simpatias e artesanatos. A principal característica que define uma manifestação como folclórica é o fato de ela ser:",
+                opcoes: ["A) Fabricada pela televisão para obter lucro rápido.", "B) Transmitida anonimamente através de gerações.", "C) Impositora de valores estrangeiros à população.", "D) Erradicada pelo avanço da globalização tecnológica."], correta: 1, explicacao: "O Folclore é patrimônio coletivo: não tem um autor registrado, sendo lapidado pelo tempo e repassado pelas gerações."
+            },
+            {
+                enunciado: "15. Uma professora de sociologia pede que seus alunos pesquisem as origens das festas juninas. Eles descobrem que a festividade mistura elementos de antigas colheitas europeias com práticas indígenas e africanas, gerando uma festa única no Brasil. Essa fusão cultural ilustra a:",
+                opcoes: ["A) Transculturação histórica da festa.", "B) Etnocentrismo imposto pelo clero.", "C) Aculturação dos povos europeus.", "D) Cultura de massa sem identidade."], correta: 0, explicacao: "Sempre que culturas matrizes se encontram e formam algo inédito (sem que uma anule a outra), ocorre a Transculturação."
+            },
+            {
+                enunciado: "16. Uma multinacional de entretenimento transforma um conto do folclore local em um desenho animado padronizado, alterando o final da história para vender mais brinquedos de plástico mundialmente. Esse processo evidencia a transformação da cultura popular em:",
+                opcoes: ["A) Aculturação tecnológica e digital.", "B) Cultura de massa voltada ao mercado.", "C) Inculturação de princípios éticos.", "D) Interculturalidade entre os povos."], correta: 1, explicacao: "A Cultura de Massa mercantiliza a arte popular, removendo sua essência comunitária para transformá-la em objeto de venda global."
+            },
+            {
+                enunciado: "17. Ao nascer em uma determinada sociedade, o indivíduo não precisa reinventar a roda ou criar um novo idioma; ele já encontra um sistema de símbolos pronto, que internaliza ao longo do seu crescimento. Esse mecanismo de absorção contínua e inevitável é a:",
+                opcoes: ["A) Enculturação.", "B) Interculturalidade.", "C) Aculturação.", "D) Cultura de Massa."], correta: 0, explicacao: "A Enculturação é o banho cultural automático que todo ser humano recebe da sociedade em que nasce."
+            },
+            {
+                enunciado: "18. Ao formular leis de proteção aos povos originários, um Estado democrático moderno busca garantir que essas comunidades possam dialogar com a sociedade nacional sem serem forçadas a abandonar suas identidades. Essa política pública fundamenta-se na:",
+                opcoes: ["A) Ideologia do etnocentrismo estatal.", "B) Valorização da interculturalidade.", "C) Expansão da cultura estritamente de massa.", "D) Obrigatoriedade do processo de aculturação."], correta: 1, explicacao: "Políticas interculturais buscam integração respeitosa, evitando a dominação e protegendo o direito constitucional à diferença."
+            },
+            {
+                enunciado: "19. Um missionário viaja para uma comunidade isolada com o objetivo de traduzir seu livro sagrado para o dialeto local, utilizando parábolas que envolvem os animais e as plantas daquela região específica. A ação do missionário caracteriza uma tática de:",
+                opcoes: ["A) Transculturação espontânea e livre.", "B) Cultura popular de raiz comunitária.", "C) Inculturação intencional e dirigida.", "D) Enculturação originária dos nativos."], correta: 2, explicacao: "Inculturação é quando o transmissor veste sua mensagem com as roupas culturais do receptor para facilitar a aceitação."
+            },
+            {
+                enunciado: "20. O repente nordestino, em que poetas criam versos improvisados ao som da viola, refletindo os problemas cotidianos e as alegrias do povo simples, sem interferência de grandes gravadoras comerciais, é uma expressão autêntica da:",
+                opcoes: ["A) Cultura de massa e do mercado livre.", "B) Cultura popular de caráter autônomo.", "C) Dinâmica de aculturação estrangeira.", "D) Perspectiva do etnocentrismo urbano."], correta: 1, explicacao: "A Cultura Popular é viva, feita pelo povo e para o povo, expressando sua realidade direta sem filtros industriais."
+            },
+            {
+                enunciado: "21. O avanço da globalização permite que possamos assistir a filmes estrangeiros e comer pratos típicos de outros continentes. No entanto, quando uma cultura global esmaga e faz desaparecer os costumes regionais de um povo, ocorre um processo violento de:",
+                opcoes: ["A) Enculturação.", "B) Interculturalidade.", "C) Aculturação.", "D) Folclore local."], correta: 2, explicacao: "Quando a dominação cultural global desestrutura e apaga as identidades locais, estamos diante de um processo de Aculturação."
+            },
+            {
+                enunciado: "22. Para combater o etnocentrismo dentro do ambiente escolar, as diretrizes educacionais recomendam a adoção de metodologias que reconheçam a pluralidade. Uma prática escolar efetiva para atingir esse objetivo seria promover debates que:",
+                opcoes: ["A) Favoreçam apenas os autores do continente europeu.", "B) Desvalorizem o folclore e a tradição oral dos alunos.", "C) Considerem equivalentes os saberes de diversas matrizes.", "D) Substituam a cultura popular pela cultura de massas."], correta: 2, explicacao: "Combater o etnocentrismo exige adotar posturas decoloniais, colocando saberes locais e estrangeiros em pé de igualdade no debate."
+            },
+            {
+                enunciado: "23. Muitas vezes confundido com cultura popular, o folclore diferencia-se por seu forte apego à tradição e pela dificuldade em se identificar um autor original de suas obras. Assinale a situação que melhor exemplifica uma manifestação folclórica:",
+                opcoes: ["A) O lançamento de um álbum de um cantor sertanejo famoso.", "B) Uma lenda sobre o Rio Amazonas contada por ribeirinhos.", "C) A exibição de um filme de super-herói em um shopping.", "D) A criação de um aplicativo de celular por um programador."], correta: 1, explicacao: "Lendas ribeirinhas são transmitidas oralmente, de autoria coletiva e anônima, pilares fundamentais do folclore."
+            },
+            {
+                enunciado: "24. A transculturação difere da aculturação porque, na transculturação, o contato entre culturas não resulta na destruição de uma em prol da outra, mas sim:",
+                opcoes: ["A) No isolamento voluntário e definitivo de ambas as culturas.", "B) Na criação de um produto cultural terceiro, inédito e misto.", "C) Na supremacia imediata da cultura que possui mais dinheiro.", "D) Na rejeição de qualquer troca cultural com o mundo exterior."], correta: 1, explicacao: "A Transculturação é um processo de sincretismo; das duas culturas originais nasce uma terceira e nova identidade cultural."
+            },
+            {
+                enunciado: "25. O estudo do multiculturalismo demonstra que a identidade de um indivíduo é construída na relação com o 'outro'. Quando um grupo impõe sua visão de mundo como a única verdadeira, negando o direito à diferença e a própria existência do multiculturalismo, manifesta-se o:",
+                opcoes: ["A) Pensamento etnocêntrico e excludente.", "B) Respeito à transculturação regional.", "C) Apoio às manifestações do folclore.", "D) Fomento da cultura popular de base."], correta: 0, explicacao: "A negação da validade da cultura do 'outro' é o cerne do etnocentrismo, que frequentemente resulta em exclusão e violência."
+            },
+            {
+                enunciado: "26. Um turista europeu viaja para o interior do Brasil e, ao observar o hábito local de dormir em redes nas varandas, publica em suas redes sociais que a população daquela região é preguiçosa e carece de civilidade e de móveis adequados. A atitude do turista ilustra a prática do:",
+                opcoes: ["A) Etnocentrismo, por julgar o outro a partir dos seus próprios moldes.", "B) Relativismo, ao buscar entender a função da rede naquele clima.", "C) Multiculturalismo, por divulgar a diversidade para seus seguidores.", "D) Interculturalismo, promovendo um diálogo entre hábitos distintos."], correta: 0, explicacao: "Julgar os costumes de um clima tropical e modo de vida interiorano com as lentes metropolitanas de outro continente é uma atitude puramente etnocêntrica."
+            },
+            {
+                enunciado: "27. Durante séculos, políticas de Estado obrigaram crianças de povos originários a frequentarem internatos onde eram proibidas de falar seu idioma materno e de usar adornos tradicionais, sob pena de castigos físicos. O objetivo dessas políticas era promover uma rápida:",
+                opcoes: ["A) Valorização do folclore nativo local.", "B) Aculturação e assimilação forçada.", "C) Enculturação de forma livre e natural.", "D) Transculturação de maneira simétrica."], correta: 1, explicacao: "Apagar os traços originais pela força para obrigar a inserção nos moldes da sociedade dominante é o exemplo mais violento de Aculturação."
+            },
+            {
+                enunciado: "28. A feijoada brasileira é frequentemente citada como um prato que mistura as carnes e o feijão preto utilizados por escravizados africanos, a farinha de mandioca de origem indígena e técnicas de cozimento europeias. A formação desse prato típico é um exemplo histórico de:",
+                opcoes: ["A) Aculturação resultante de dominação pacífica.", "B) Etnocentrismo focado na culinária de um povo.", "C) Transculturação gerando um produto inédito.", "D) Cultura de massa criada por grandes indústrias."], correta: 2, explicacao: "A união de ingredientes de três continentes formando algo que não existia nas matrizes originais evidencia o caráter criativo da Transculturação."
+            },
+            {
+                enunciado: "29. Uma grande marca global de roupas lança uma coleção de inverno. Em poucas semanas, jovens de Tóquio, São Paulo, Nova York e Joanesburgo estão vestindo exatamente as mesmas peças, compradas em shoppings idênticos. Essa padronização estética globalizada é impulsionada pela:",
+                opcoes: ["A) Autenticidade da cultura popular local.", "B) Manutenção do folclore de cada região.", "C) Dinâmica mercadológica da cultura de massa.", "D) Prática de valorização do etnocentrismo."], correta: 2, explicacao: "A Cultura de Massa busca justamente extinguir barreiras culturais para vender o mesmo produto, em larga escala, para todas as pessoas ao redor do globo."
+            },
+            {
+                enunciado: "30. Para explicar um conceito moral complexo a uma comunidade ribeirinha, um professor que veio da capital utiliza a figura do rio e dos peixes nativos, em vez de usar os exemplos urbanos que costuma aplicar em sua cidade natal. Essa adaptação pedagógica da linguagem exemplifica a:",
+                opcoes: ["A) Inculturação, ao adequar a mensagem à realidade local.", "B) Enculturação, ao forçar os alunos a mudarem de vida.", "C) Aculturação, ao apagar as memórias antigas da região.", "D) Etnocenstrismo, ao impor um saber tido como superior."], correta: 0, explicacao: "Ao traduzir a mensagem usando símbolos que a comunidade compreende intimamente (o rio, o peixe), o professor realiza o processo de Inculturação."
+            },
+            {
+                enunciado: "31. Quando uma criança entra na educação infantil, ela começa a aprender as regras de convivência social, o momento de falar, o momento de ouvir e a cantar as músicas tradicionais da escola. Esse processo inicial de interiorização da cultura de seu próprio grupo é a:",
+                opcoes: ["A) Transculturação.", "B) Cultura de massa.", "C) Inculturação.", "D) Enculturação."], correta: 3, explicacao: "O ato de aprender a viver na própria sociedade em que se nasce (regras, horários, costumes) é o que a antropologia chama de Enculturação."
+            },
+            {
+                enunciado: "32. Lendas urbanas, como a história da 'Loira do Banheiro' ou do 'Chupacabra', circulam de boca em boca nas escolas e bairros há décadas, sofrendo pequenas alterações dependendo de quem as conta, sem que se saiba quem as inventou. Essas narrativas configuram formas modernas de:",
+                opcoes: ["A) Aculturação midiática forçada.", "B) Cultura popular imposta por lei.", "C) Folclore e tradição oral urbana.", "D) Cultura de massa institucional."], correta: 2, explicacao: "O Folclore não existe apenas no meio rural antigo; narrativas anônimas passadas boca a boca na cidade também são manifestações folclóricas."
+            },
+            {
+                enunciado: "33. Em uma feira de artesanato do interior, um artesão vende bonecos de barro esculpidos à mão, retratando cenas do cotidiano nordestino. Na loja da frente, vende-se um boneco de plástico de um super-herói de cinema fabricado em série na Ásia. Temos aqui, respectivamente, exemplos de:",
+                opcoes: ["A) Cultura popular e Cultura de massa.", "B) Cultura de massa e Folclore regional.", "C) Folclore regional e Cultura popular.", "D) Indústria cultural e Aculturação livre."], correta: 0, explicacao: "O barro esculpido à mão reflete a identidade viva da Cultura Popular. O plástico fabricado em série reflete o lucro da Cultura de Massa."
+            },
+            {
+                enunciado: "34. Uma empresa de tecnologia forma uma equipe de trabalho composta por indianos, brasileiros, alemães e japoneses. A gerência institui reuniões onde os métodos de trabalho de todas as culturas são debatidos em pé de igualdade, para que cheguem juntos à melhor solução. Esse cenário promove a:",
+                opcoes: ["A) Imposição violenta e etnocêntrica.", "B) Prática diária de interculturalidade.", "C) Rápida assimilação e aculturação.", "D) Fabricação de produtos folclóricos."], correta: 1, explicacao: "Quando há troca mútua, respeito horizontal e aproveitamento dos pontos fortes de cada cultura, atinge-se o objetivo prático da Interculturalidade."
+            },
+            {
+                enunciado: "35. No ambiente acadêmico do século XIX, acreditava-se que apenas a Europa possuía Filosofia verdadeira, classificando o pensamento dos povos africanos e orientais como meros 'mitos' ou 'religiões primitivas'. Essa exclusão epistemológica reflete uma postura:",
+                opcoes: ["A) Transcultural de união das matrizes de pensamento.", "B) Intercultural voltada para a troca de conhecimentos.", "C) Etnocêntrica, baseada na suposta superioridade ocidental.", "D) Folclórica, que buscava valorizar saberes minoritários."], correta: 2, explicacao: "Acreditar que o próprio continente tem o monopólio da razão e da Filosofia verdadeira é um viés eurocêntrico (uma forma de etnocentrismo)."
+            },
+            {
+                enunciado: "36. Para evitar sofrer xenofobia e conseguir empregos melhores, um grupo de imigrantes passa a esconder suas tradições religiosas e para de falar seu idioma natal em público, adotando integralmente os costumes do país que os acolheu. Esse apagamento cultural demonstra um caso de:",
+                opcoes: ["A) Aculturação motivada por pressão social.", "B) Interculturalidade simétrica e respeitosa.", "C) Transculturação gerando novas religiões.", "D) Enculturação que ocorre na primeira infância."], correta: 0, explicacao: "Quando a pessoa precisa sacrificar e abandonar sua identidade cultural original para se adequar a uma cultura dominante, sofremos o processo de Aculturação."
+            },
+            {
+                enunciado: "37. O movimento Manguebeat, surgido em Pernambuco na década de 1990, propunha a mistura dos ritmos tradicionais nordestinos, como o maracatu, com guitarras distorcidas do rock e batidas da música eletrônica global. Essa fusão cultural é um nítido processo de:",
+                opcoes: ["A) Etnocentrismo purista e conservador.", "B) Aculturação que destrói ritmos locais.", "C) Transculturação artística e musical.", "D) Inculturação imposta pelo Estado forte."], correta: 2, explicacao: "O Manguebeat é o exemplo perfeito de Transculturação: pegou o global (rock) e fundiu ao local (maracatu) gerando um terceiro elemento cultural genial."
+            },
+            {
+                enunciado: "38. Uma novela exibida em horário nobre por uma grande emissora populariza um bordão de linguagem e um corte de cabelo específico. Em poucos dias, pessoas de todas as regiões do país, de diferentes classes sociais, passam a imitar os personagens. O fenômeno ilustra o poder da:",
+                opcoes: ["A) Cultura de massa na padronização dos comportamentos sociais.", "B) Cultura popular na resistência contra os meios de comunicação.", "C) Tradição folclórica se sobrepondo às tecnologias estrangeiras.", "D) Interculturalidade na quebra dos grandes monopólios de mídia."], correta: 0, explicacao: "A mídia tem o poder de ditar comportamentos de massa, criando modismos artificiais que visam facilitar a venda de produtos agregados."
+            },
+            {
+                enunciado: "39. Em muitas cidades do interior, quando a medicina moderna não resolve de imediato um problema menor, as pessoas ainda recorrem às benzedeiras e aos chás de ervas receitados por gerações de avós. Esse saber medicinal comunitário está diretamente ligado ao conceito de:",
+                opcoes: ["A) Indústria da cultura de massa.", "B) Aculturação da juventude urbana.", "C) Cultura popular e saberes tradicionais.", "D) Enculturação de origem escolar."], correta: 2, explicacao: "Saberes empíricos populares passados de geração em geração, úteis para a sobrevivência do povo, compõem a força da Cultura Popular."
+            },
+            {
+                enunciado: "40. Um bebê aprende a andar, se alimentar e se comunicar apenas observando e imitando os adultos à sua volta, inserindo-se na teia social de sua família de forma natural e inconsciente. O conceito antropológico que define essa assimilação inicial é:",
+                opcoes: ["A) Aculturação.", "B) Enculturação.", "C) Transculturação.", "D) Inculturação."], correta: 1, explicacao: "Repetindo o conceito essencial: o absorvimento das matrizes culturais maternas de forma passiva durante o crescimento chama-se Enculturação."
+            },
+            {
+                enunciado: "41. Uma multinacional adquire uma pequena fábrica familiar. Os novos diretores promovem palestras, mudam a logomarca e oferecem manuais para que os antigos funcionários adotem rapidamente a 'visão, missão e valores' da matriz corporativa. Esse esforço intencional de adaptação caracteriza a:",
+                opcoes: ["A) Inculturação dos métodos e filosofias de trabalho.", "B) Interculturalidade focada no bem-estar comunitário.", "C) Transculturação com o folclore do bairro operário.", "D) Enculturação dos diretores frente aos funcionários."], correta: 0, explicacao: "A empresa tenta traduzir e inserir seus valores corporativos dentro da realidade diária dos trabalhadores operários, o que é uma ação prática de Inculturação."
+            },
+            {
+                enunciado: "42. Em cidades da fronteira entre Brasil e Uruguai, moradores falam corriqueiramente o 'portunhol', transitam livremente entre os países, comemoram os feriados de ambos os lados e dividem serviços públicos de forma pacífica. Essa dinâmica de fronteira caracteriza um alto nível de:",
+                opcoes: ["A) Interculturalidade baseada na convivência contínua.", "B) Etnocentrismo reforçado por barricadas policiais.", "C) Cultura de massa ditada por canais de televisão.", "D) Aculturação, onde o Uruguai perde sua identidade."], correta: 0, explicacao: "A fronteira permeável permite que os dois povos convivam lateralmente, exercendo as práticas uns dos outros sem sentirem-se ameaçados (Interculturalidade)."
+            },
+            {
+                enunciado: "43. O preconceito linguístico ocorre quando uma pessoa ri ou discrimina alguém pela forma como fala, considerando o sotaque da capital como o 'certo' e o falar do interior como 'errado' ou 'caipira'. Esse tipo de discriminação reflete diretamente uma atitude:",
+                opcoes: ["A) Transcultural de adaptação linguística.", "B) Etnocêntrica em relação ao próprio idioma.", "C) Folclórica na defesa das tradições orais.", "D) Intercultural de preservação das matrizes."], correta: 1, explicacao: "Achar que apenas a sua forma gramatical ou seu sotaque representam a linguagem correta, desprezando a variação do outro, é o chamado etnocentrismo linguístico."
+            },
+            {
+                enunciado: "44. A Batalha da Aldeia, encontro em que jovens da periferia se reúnem em praças públicas para improvisar rimas de rap debatendo questões do seu cotidiano de forma livre e orgânica, representa uma forte manifestação de:",
+                opcoes: ["A) Aculturação por influência de mídias conservadoras.", "B) Cultura de massa focada unicamente na publicidade.", "C) Inculturação escolar promovida por professores.", "D) Cultura popular de resistência e identidade urbana."], correta: 3, explicacao: "O Hip-Hop e as batalhas de rima nascem das ruas, sem amarras industriais iniciais, como um protesto cultural autêntico da juventude (Cultura Popular)."
+            },
+            {
+                enunciado: "45. O sincretismo religioso brasileiro, como a Umbanda, que uniu elementos das religiões de matriz africana, do catolicismo europeu e do xamanismo indígena para formar uma nova prática espiritual autônoma, deve ser compreendido como fruto de um longo processo de:",
+                opcoes: ["A) Transculturação.", "B) Etnocentrismo.", "C) Cultura de massa.", "D) Enculturação."], correta: 0, explicacao: "Qualquer tipo de sincretismo robusto (mistura de elementos A, B e C para a criação de um elemento D) é categorizado antropologicamente como Transculturação."
+            },
+            {
+                enunciado: "46. Com a chegada massiva da internet em uma comunidade quilombola, os mais jovens passaram a jogar videogames o dia todo, esquecendo-se das brincadeiras de roda e das cantigas ensinadas pelos líderes comunitários. A mudança drástica de hábitos gerou um processo de:",
+                opcoes: ["A) Aculturação impulsionada pelas tecnologias digitais.", "B) Valorização ampla da cultura popular e tradicional.", "C) Expansão do folclore local para as redes sociais globais.", "D) Interculturalidade fortalecida pelo acesso à internet."], correta: 0, explicacao: "O abandono dos ritos tradicionais da comunidade em virtude da sedução dos estímulos externos modernos causa o enfraquecimento (aculturação) da identidade local."
+            },
+            {
+                enunciado: "47. Festas tradicionais de São João, que antes ocorriam nas ruas com comidas caseiras e entrada gratuita, foram cercadas e transformadas em megaeventos pagos, patrocinados por grandes marcas e liderados por artistas do pop nacional. Essa transformação demonstra a apropriação do folclore pela:",
+                opcoes: ["A) Interculturalidade entre camponeses e operários.", "B) Cultura de massa focada na mercantilização do lazer.", "C) Aculturação das populações dos grandes centros urbanos.", "D) Transculturação solidária sem fins lucrativos ou comerciais."], correta: 1, explicacao: "Quando a Festa Junina perde a raiz comunitária e passa a ser apenas um cenário lucrativo para empresas ganharem milhões, a Cultura de Massa tomou conta."
+            },
+            {
+                enunciado: "48. A festa do Bumba-meu-boi, que envolve teatro, música, dança e elementos visuais costurados pela própria comunidade de forma anônima ao longo do tempo, mantendo vivas lendas sobre morte e ressurreição no sertão, é categorizada corretamente como um patrimônio pertencente ao:",
+                opcoes: ["A) Mercado internacional de consumo.", "B) Processo excludente do etnocentrismo.", "C) Acervo do folclore e da cultura popular.", "D) Mecanismo alienante da cultura de massa."], correta: 2, explicacao: "Como não possui dono formal e foi criado coletivamente pelas raízes populares brasileiras ao longo dos séculos, o Bumba-meu-boi é patrimônio folclórico indiscutível."
+            },
+            {
+                enunciado: "49. Uma grande agência de publicidade americana decide lançar um produto no Nordeste brasileiro. Para isso, os publicitários estudam a linguagem da região e criam um comercial cheio de gírias e elementos do cordel, visando facilitar a aceitação da mercadoria. O uso desses elementos locais configura tática de:",
+                opcoes: ["A) Inculturação voltada para objetivos puramente mercadológicos.", "B) Enculturação infantil promovida pelas secretarias de educação.", "C) Interculturalidade pautada pelo respeito aos saberes regionais.", "D) Etnocentrismo que rejeita completamente a cultura nordestina."], correta: 0, explicacao: "A agência americana pega sua mensagem comercial externa e a veste com roupagem nordestina para que ela não cause rejeição; isso é pura Inculturação de marketing."
+            },
+            {
+                enunciado: "50. A implementação da lei que torna obrigatório o ensino de História e Cultura Afro-Brasileira e Indígena nas escolas busca romper com a narrativa exclusivamente europeia dos livros didáticos antigos. O objetivo central dessa lei é combater o:",
+                opcoes: ["A) Folclore urbano e estimular a produção industrial.", "B) Multiculturalismo que ameaça a unidade da nação.", "C) Etnocentrismo histórico e promover a pluralidade.", "D) Interculturalismo presente nas comunidades isoladas."], correta: 2, explicacao: "Ensinar matrizes africanas e indígenas quebra a falsa narrativa etnocêntrica de que apenas a Europa produziu conhecimento histórico e social válido para o Brasil."
+            }
+        ];
+
+        let questaoAtual = 0;
+        let acertos = 0;
+        let primeiraTentativa = true;
+        let tempoInicioQuestao = 0;
+        let timerAvanco;
+
+        const uiElements = {
+            content: document.getElementById('quiz-content'),
+            result: document.getElementById('result-content'),
+            questionText: document.getElementById('question-text'),
+            optionsContainer: document.getElementById('options-container'),
+            progress: document.getElementById('progress'),
+            questionCounter: document.getElementById('question-counter'),
+            scoreCounter: document.getElementById('score-counter'),
+            modal: document.getElementById('feedback-modal'),
+            modalBox: document.getElementById('modal-box'),
+            modalIcon: document.getElementById('modal-icon'),
+            modalTitle: document.getElementById('modal-title'),
+            modalMessage: document.getElementById('modal-message'),
+            modalBtn: document.getElementById('modal-btn'),
+            finalScore: document.getElementById('final-score'),
+            finalMessage: document.getElementById('final-message')
+        };
+
+        function iniciarQuiz() {
+            questaoAtual = 0;
+            acertos = 0;
+            uiElements.content.style.display = 'block';
+            uiElements.result.style.display = 'none';
+            carregarQuestao();
+        }
+
+        function carregarQuestao() {
+            primeiraTentativa = true; 
+            tempoInicioQuestao = Date.now();
+            clearInterval(timerAvanco);
+            
+            const q = questoes[questaoAtual];
+            uiElements.questionText.textContent = q.enunciado;
+            uiElements.optionsContainer.innerHTML = '';
+            
+            const progressoPct = ((questaoAtual) / questoes.length) * 100;
+            uiElements.progress.style.width = `${progressoPct}%`;
+            uiElements.questionCounter.textContent = `Questão ${questaoAtual + 1} de ${questoes.length}`;
+            uiElements.scoreCounter.textContent = `Acertos (1ª tentativa): ${acertos}`;
+
+            q.opcoes.forEach((opcao, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opcao;
+                btn.onclick = () => verificarResposta(index);
+                uiElements.optionsContainer.appendChild(btn);
+            });
+        }
+
+        function verificarResposta(indiceSelecionado) {
+            const q = questoes[questaoAtual];
+            const acertou = (indiceSelecionado === q.correta);
+
+            if (acertou) {
+                if (primeiraTentativa) {
+                    acertos++;
+                    uiElements.scoreCounter.textContent = `Acertos (1ª tentativa): ${acertos}`;
+                }
+                mostrarModal(true, q.explicacao);
+            } else {
+                primeiraTentativa = false; 
+                const msgErro = `A resposta correta não é essa. Tente novamente!<br><br><strong>Dica da Explicação:</strong> ${q.explicacao}`;
+                mostrarModal(false, msgErro);
+            }
+        }
+
+        function mostrarModal(acertou, mensagem) {
+            uiElements.modal.style.display = 'flex';
+            clearInterval(timerAvanco); 
+            
+            if (acertou) {
+                uiElements.modalBox.className = 'modal-content correct-theme';
+                uiElements.modalIcon.textContent = '✓';
+                uiElements.modalTitle.textContent = 'Você Acertou!';
+                uiElements.modalMessage.innerHTML = mensagem;
+                
+                let tempoDecorrido = Math.floor((Date.now() - tempoInicioQuestao) / 1000);
+                let tempoRestante = 15 - tempoDecorrido;
+
+                if (tempoRestante > 0) {
+                    uiElements.modalBtn.disabled = true;
+                    uiElements.modalBtn.textContent = `Aguarde (${tempoRestante}s)`;
+                    uiElements.modalBtn.onclick = null;
+                    
+                    timerAvanco = setInterval(() => {
+                        tempoRestante--;
+                        if (tempoRestante > 0) {
+                            uiElements.modalBtn.textContent = `Aguarde (${tempoRestante}s)`;
+                        } else {
+                            clearInterval(timerAvanco);
+                            uiElements.modalBtn.disabled = false;
+                            uiElements.modalBtn.textContent = "Próxima Questão";
+                            uiElements.modalBtn.onclick = avancarQuestao;
+                        }
+                    }, 1000);
+                } else {
+                    uiElements.modalBtn.disabled = false;
+                    uiElements.modalBtn.textContent = "Próxima Questão";
+                    uiElements.modalBtn.onclick = avancarQuestao;
+                }
+
+            } else {
+                uiElements.modalBox.className = 'modal-content wrong-theme';
+                uiElements.modalIcon.textContent = '✗';
+                uiElements.modalTitle.textContent = 'Resposta Incorreta';
+                uiElements.modalMessage.innerHTML = mensagem;
+                
+                uiElements.modalBtn.disabled = false;
+                uiElements.modalBtn.textContent = "Tentar Novamente";
+                uiElements.modalBtn.onclick = tentarNovamente;
+            }
+        }
+
+        function tentarNovamente() {
+            uiElements.modal.style.display = 'none';
+        }
+
+        function avancarQuestao() {
+            uiElements.modal.style.display = 'none';
+            questaoAtual++;
+
+            if (questaoAtual < questoes.length) {
+                carregarQuestao();
+            } else {
+                mostrarResultado();
+            }
+        }
+
+        function mostrarResultado() {
+            uiElements.content.style.display = 'none';
+            uiElements.result.style.display = 'block';
+            
+            const porcentagem = Math.round((acertos / questoes.length) * 100);
+            uiElements.finalScore.textContent = `${porcentagem}%`;
+            
+            let mensagem = "";
+            if (porcentagem >= 80) mensagem = "Excelente! Você demonstrou foco e leitura atenta acertando várias questões de primeira.";
+            else if (porcentagem >= 50) mensagem = "Bom trabalho! Continue testando seus conhecimentos filosóficos.";
+            else mensagem = "O mais importante foi ler as explicações com calma. O conhecimento leva tempo para construir!";
+            
+            uiElements.finalMessage.textContent = mensagem;
+        }
+
+        function reiniciarQuiz() {
+            iniciarQuiz();
+        }
+
+        window.onload = iniciarQuiz;
+    </script>
+</body>
+</html>
