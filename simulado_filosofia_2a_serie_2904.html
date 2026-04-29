@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulado de Filosofia e Sociologia - 2ª Série</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --correct-color: #27ae60;
+            --wrong-color: #e74c3c;
+            --bg-color: #f5f7fa;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .quiz-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        /* Bloco de informações do Cabeçalho - Atualizado para maior destaque */
+        .info-block {
+            background-color: #e9ecef;
+            border-left: 5px solid var(--accent-color);
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .info-block h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-block p {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #444;
+        }
+
+        .info-block ul {
+            margin-top: 5px;
+            margin-bottom: 0;
+            padding-left: 20px;
+            color: #444;
+        }
+        
+        .info-divider {
+            border: 0;
+            border-top: 1px solid #cbd5e1;
+            margin: 15px 0;
+        }
+
+        .progress-bar {
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            height: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .progress-fill {
+            background-color: var(--accent-color);
+            height: 100%;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 1rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            line-height: 1.4;
+        }
+
+        .option-btn:hover {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+        }
+
+        /* Modal / Pop-up Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .modal-message {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            text-align: justify;
+        }
+
+        .correct-theme .modal-icon, .correct-theme .modal-title {
+            color: var(--correct-color);
+        }
+
+        .wrong-theme .modal-icon, .wrong-theme .modal-title {
+            color: var(--wrong-color);
+        }
+
+        /* Botão do Modal e Estado Desativado (Timer) */
+        .btn-next {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-next:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        /* Result Screen */
+        .result-container {
+            display: none;
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz-box">
+        <h1>Simulado: Dinâmicas Culturais e Globalização</h1>
+        
+        <!-- Cabeçalho Informativo Atualizado -->
+        <div class="info-block" id="info-block">
+            <h3>🎯 Objetivo de Aprendizagem</h3>
+            <p>Analisar criticamente o impacto da globalização nas dinâmicas culturais, compreendendo fenômenos como hibridismo, mercantilização e apropriação cultural, a fim de valorizar a pluralidade, as identidades locais e os saberes tradicionais frente à homogeneização.</p>
+            
+            <hr class="info-divider">
+            
+            <h3>📚 Objetos de Conhecimento Abordados</h3>
+            <ul>
+                <li>Multiculturalismo: interculturalidade, inculturação, enculturação, aculturação e transculturação.</li>
+                <li>Cultura local e a defesa da pluralidade contra a globalização.</li>
+                <li>Cultura de massa e cultura popular.</li>
+            </ul>
+        </div>
+
+        <div id="quiz-content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+            
+            <div class="status-bar">
+                <span id="question-counter">Questão 1 de 30</span>
+                <span id="score-counter">Acertos (1ª tentativa): 0</span>
+            </div>
+
+            <div class="question-text" id="question-text">
+                Carregando pergunta...
+            </div>
+
+            <div class="options-grid" id="options-container">
+            </div>
+        </div>
+
+        <div class="result-container" id="result-content">
+            <h2>Fim do Simulado!</h2>
+            <div class="score-circle" id="final-score">0%</div>
+            <p id="final-message" class="question-text"></p>
+            <button class="btn-next" onclick="reiniciarQuiz()">Tentar Novamente</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="feedback-modal">
+        <div class="modal-content" id="modal-box">
+            <div class="modal-icon" id="modal-icon">✓</div>
+            <div class="modal-title" id="modal-title">Você Acertou!</div>
+            <div class="modal-message" id="modal-message">Explicação aqui.</div>
+            <button class="btn-next" id="modal-btn">Aguarde...</button>
+        </div>
+    </div>
+
+    <script>
+        const questoes = [
+            {
+                enunciado: "1. Em 2023, a chegada de antenas de internet via satélite a comunidades isoladas na Floresta Amazônica transformou a rotina dos jovens locais. Em poucos meses, as rodas tradicionais de contação de histórias deram lugar ao consumo de vídeos curtos em redes sociais, e o vocabulário local incorporou rapidamente termos em inglês oriundos dos jogos on-line.\nA situação descrita no texto ilustra uma consequência direta da globalização, caracterizada pela:",
+                opcoes: [
+                    "A) assimilação de padrões globais de consumo que alteram dinâmicas regionais isoladas.",
+                    "B) valorização mercadológica de práticas que fortalecem costumes estritamente locais.",
+                    "C) rejeição sistêmica dos meios de comunicação modernos por grupos de menor renda.",
+                    "D) preservação intransigente das tradições ancestrais diante das inovações tecnológicas."
+                ], correta: 0, explicacao: "A introdução de tecnologia conectada à internet em áreas isoladas geralmente acelera o contato com a cultura global, promovendo a assimilação de seus produtos e valores (como anglicismos e novos hábitos de consumo) em detrimento de antigas tradições orais locais."
+            },
+            {
+                enunciado: "2. Quando a rede de fast-food McDonald's iniciou suas operações na Índia, deparou-se com o fato de que a vaca é considerada um animal sagrado para a maioria hindu. Para não perder o mercado bilionário, a empresa substituiu seus clássicos hambúrgueres bovinos por versões feitas com carne de frango, peixe e ingredientes 100% vegetarianos.\nA estratégia corporativa adotada pela multinacional exemplifica o fenômeno socioeconômico da:",
+                opcoes: [
+                    "A) homogeneização cultural, que apaga os traços das identidades locais sem distinções.",
+                    "B) glocalização, que adapta produtos globais padronizados às especificidades regionais.",
+                    "C) intolerância de consumo, que impõe os valores da matriz ocidental aos povos asiáticos.",
+                    "D) xenofobia de mercado, que recusa a integração de elementos estrangeiros no consumo."
+                ], correta: 1, explicacao: "A 'glocalização' é a mescla de características globais com realidades locais. A empresa global adapta seu produto padrão às restrições culturais e religiosas do território em que se instala."
+            },
+            {
+                enunciado: "3. No Quilombo dos Palmares, as crianças aprendem desde cedo, observando os mais velhos, os passos da capoeira, o ritmo dos tambores e o preparo de alimentos com azeite de dendê. Essa vivência diária garante que os saberes não se percam com o passar das gerações, mesmo sem o uso de cartilhas escolares ou registros escritos formais.\nO processo sociológico responsável pela inserção do indivíduo no universo de sua própria comunidade é a:",
+                opcoes: [
+                    "A) transculturação, marcada pela criação de uma identidade que renega o passado colonial.",
+                    "B) aculturação, definida pela perda de traços culturais originais mediante dominação externa.",
+                    "C) enculturação, caracterizada pela transmissão natural da herança cultural de forma interna.",
+                    "D) alienação, pautada pelo distanciamento contínuo das raízes históricas e laços familiares."
+                ], correta: 2, explicacao: "A enculturação é o processo no qual as gerações mais jovens aprendem e internalizam as normas, os valores e os costumes de seu próprio grupo social primário."
+            },
+            {
+                enunciado: "4. O movimento \"Manguebeat\", liderado por Chico Science na década de 1990, propunha uma \"parabólica fincada na lama\". A metáfora representava a união das alfaias do maracatu pernambucano, ritmo de matriz africana, com as guitarras distorcidas do rock e as batidas eletrônicas do hip-hop estadunidense, criando um som inédito.\nA manifestação artística descrita no texto representa de forma contundente um processo de:",
+                opcoes: [
+                    "A) purismo folclórico, que nega terminantemente as influências da cultura globalizada.",
+                    "B) hibridismo cultural, que funde ativamente as matrizes locais e globais em novas formas.",
+                    "C) segregação estética, que afasta os jovens das tradições históricas de seus antepassados.",
+                    "D) padronização midiática, que destrói a criatividade dos artistas independentes do Nordeste."
+                ], correta: 1, explicacao: "O hibridismo cultural ocorre quando elementos de matrizes culturais distintas (no caso, maracatu raiz e rock global) são combinados, gerando uma síntese artística criativa e completamente nova."
+            },
+            {
+                enunciado: "5. Os pensadores Theodor Adorno e Max Horkheimer cunharam o termo \"Indústria Cultural\" para descrever como a arte, no sistema capitalista, passou a ser produzida nos mesmos moldes de uma fábrica de automóveis: padronizada, voltada para o consumo rápido e desenhada para não exigir grande esforço intelectual por parte do seu consumidor final.\nSegundo a perspectiva da Escola de Frankfurt apresentada, essa lógica de produção atua promovendo a:",
+                opcoes: [
+                    "A) emancipação crítica do público, que passa a questionar as bases do sistema capitalista.",
+                    "B) transformação da cultura em mercadoria, visando a aceitação passiva e o lucro contínuo.",
+                    "C) valorização do patrimônio imaterial, que protege os saberes ancestrais da massificação.",
+                    "D) ampliação do multiculturalismo, que incentiva a diversidade de opiniões no rádio e na TV."
+                ], correta: 1, explicacao: "Para a Escola de Frankfurt, a Indústria Cultural destitui a arte de seu caráter crítico, transformando-a em mero entretenimento comercial (mercadoria) para manter a população alienada e dócil."
+            },
+            {
+                enunciado: "6. A culinária brasileira é um reflexo vivo de sua história. Um prato como a moqueca capixaba, por exemplo, une a técnica indígena de cozimento na panela de barro, temperos trazidos pelos colonizadores europeus e o azeite doce, formando um elemento cultural novo que não pertence exclusivamente a nenhuma das três matrizes originais.\nA formação histórica dessa culinária, marcada por trocas recíprocas e dinâmicas, caracteriza a:",
+                opcoes: [
+                    "A) interculturalidade, baseada no diálogo e na intersecção histórica de matrizes distintas.",
+                    "B) intolerância identitária, pautada na imposição violenta de um único sistema alimentar.",
+                    "C) homogeneidade nacional, que apagou completamente as diferenças culturais regionais.",
+                    "D) superioridade eurocêntrica, que manteve suas receitas intocadas ao longo dos séculos."
+                ], correta: 0, explicacao: "Interculturalidade refere-se à presença e interação equitativa de diversas culturas, gerando expressões culturais compartilhadas adquiridas por meio do diálogo e de atitudes de respeito mútuo."
+            },
+            {
+                enunciado: "7. Na cidade de Campina Grande (PB), a tradicional festa de São João, que antes era uma celebração comunitária voltada à colheita do milho e à devoção aos santos católicos, transformou-se em um megaevento. Hoje, o espaço é dominado por camarotes privados, shows de artistas sertanejos de alcance nacional e intensas campanhas publicitárias.\nA transformação da festividade descrita no texto indica um intenso e moderno processo de:",
+                opcoes: [
+                    "A) resistência camponesa, que mantém suas raízes livres de quaisquer interesses comerciais.",
+                    "B) mercantilização cultural, que transforma as tradições regionais em grandes eventos de lucro.",
+                    "C) descolonização do saber, que valoriza os ritmos locais acima dos estilos musicais urbanos.",
+                    "D) preservação folclórica, que congela os costumes rurais antigos em sua forma mais intocada."
+                ], correta: 1, explicacao: "Eventos antes orgânicos perdem suas funções simbólicas primárias para se tornarem bens de consumo e entretenimento rentável patrocinado por marcas, ou seja, são mercantilizados."
+            },
+            {
+                enunciado: "8. Caciques e lideranças indígenas de diversas etnias brasileiras têm utilizado drones para monitorar invasões em suas terras e contas no Instagram para denunciar o garimpo ilegal, alcançando milhões de seguidores. Seus vídeos frequentemente misturam a língua nativa com o português, utilizando a estética dinâmica das redes sociais modernas.\nA apropriação dessas ferramentas digitais pelas comunidades tradicionais demonstra que a tecnologia:",
+                opcoes: [
+                    "A) obriga necessariamente à perda imediata e irrecuperável da identidade originária da tribo.",
+                    "B) funciona como um importante instrumento estratégico de resistência e afirmação política.",
+                    "C) inviabiliza a manutenção a longo prazo dos rituais sagrados e das crenças cosmológicas.",
+                    "D) possui o poder exclusivo de alienar e dominar completamente as populações vulneráveis."
+                ], correta: 1, explicacao: "Grupos marginalizados frequentemente ressignificam e dominam tecnologias impostas pela globalização para que essas ferramentas se tornem armas de denúncia, visibilidade e garantia de direitos sociais."
+            },
+            {
+                enunciado: "9. O bairro da Liberdade, na capital paulista, abriga a maior comunidade japonesa fora do Japão, mas também concentra hoje imigrantes chineses, coreanos e, mais recentemente, refugiados senegaleses e haitianos. Nas ruas do bairro, festividades de diferentes continentes convivem, alterando a paisagem sonora e visual da região central.\nA existência desse espaço urbano, marcado pela convivência de diferentes nações, é uma expressão do:",
+                opcoes: [
+                    "A) multiculturalismo, que atesta a pluralidade de identidades dividindo o mesmo território.",
+                    "B) isolacionismo geográfico, que impede legalmente o contato entre etnias muito diferentes.",
+                    "C) imperialismo imigratório, que obriga os recém-chegados a esquecerem as suas origens.",
+                    "D) colonialismo clássico, que extrai riquezas materiais sem permitir qualquer interação real."
+                ], correta: 0, explicacao: "O multiculturalismo caracteriza-se pela coexistência de múltiplas culturas e matrizes demográficas no seio da mesma sociedade ou espaço geográfico."
+            },
+            {
+                enunciado: "10. Uma grande marca europeia de moda de luxo lançou uma coleção inteira utilizando grafismos da etnia indígena mexicana Mixe. As peças foram vendidas por milhares de dólares ao redor do mundo, porém a comunidade nativa, criadora ancestral daqueles padrões estéticos, não foi consultada e nem recebeu qualquer compensação financeira.\nA conduta da empresa no mercado global levanta um profundo debate ético sobre a prática de:",
+                opcoes: [
+                    "A) difusão cultural solidária, que ajuda a divulgar o trabalho invisibilizado dos minoritários.",
+                    "B) apropriação cultural indevida, que explora comercialmente símbolos de grupos oprimidos.",
+                    "C) valorização estética identitária, que reconhece o mérito superior dos artesãos indígenas.",
+                    "D) intercâmbio produtivo voluntário, que promove a troca igualitária de saberes artesanais."
+                ], correta: 1, explicacao: "A apropriação cultural indevida ocorre quando um elemento de uma cultura minoritária é adotado por membros de uma cultura dominante, esvaziado de seu significado original e explorado com fins puramente lucrativos sem dar crédito ou retorno à comunidade de origem."
+            },
+            {
+                enunciado: "11. A literatura de cordel chegou ao Brasil com os portugueses, mas ganhou contornos próprios no Nordeste. Feita para ser lida em voz alta nas praças, suas rimas retratam o cangaço, a seca, a fé e o humor cotidiano das classes menos abastadas, sendo impressa de forma rústica pelos próprios poetas e vendida diretamente aos ouvintes nas feiras livres.\nEssa produção literária contrasta com a indústria cultural moderna, pois se configura como uma:",
+                opcoes: [
+                    "A) manifestação da cultura popular, ligada organicamente à realidade material do seu grupo.",
+                    "B) expressão da cultura erudita, acessível apenas aos indivíduos com alta formação escolar.",
+                    "C) mercadoria de massa homogeneizada, elaborada unicamente para o mercado internacional.",
+                    "D) imposição da cultura hegemônica elitista, criada pelas elites financeiras do Sul do país."
+                ], correta: 0, explicacao: "A cultura popular nasce da dinâmica própria de uma comunidade, transmitida frequentemente por oralidade e práticas compartilhadas, retratando o imaginário e as necessidades da própria base social que a produz."
+            },
+            {
+                enunciado: "12. O ofício das Paneleiras de Goiabeiras, no Espírito Santo, foi o primeiro bem cultural registrado como Patrimônio Imaterial do Brasil pelo Iphan, em 2002. A técnica de modelagem do barro e a tintura com tanino da casca do mangue-vermelho são saberes transmitidos pelas mulheres da região desde o período pré-colonial, sem uso de maquinário.\nO tombamento dessa prática pelo Estado tem como objetivo fundamental assegurar a:",
+                opcoes: [
+                    "A) eliminação gradual das grandes indústrias metalúrgicas presentes no território capixaba.",
+                    "B) salvaguarda de um conhecimento ancestral como pilar da memória e da cultura regional.",
+                    "C) padronização comercial dos utensílios domésticos consumidos pela alta gastronomia urbana.",
+                    "D) proibição estrita das inovações tecnológicas no preparo dos alimentos contemporâneos."
+                ], correta: 1, explicacao: "As políticas de reconhecimento de patrimônio imaterial servem para proteger e garantir a continuidade de saberes, ofícios e tradições orais frente ao rolo compressor do esquecimento e da padronização industrial."
+            },
+            {
+                enunciado: "13. Lançamentos mundiais da franquia de filmes da Marvel costumam ocorrer na mesma semana em mais de 100 países. O enredo do filme é planejado para ser compreendido tanto por um adolescente no Brasil quanto por um trabalhador no Japão, gerando uma demanda sincronizada por roupas, lancheiras e jogos eletrônicos licenciados.\nO padrão de consumo simultâneo e global apresentado no texto é uma marca consolidada da:",
+                opcoes: [
+                    "A) cultura de massa, que produz bens simbólicos estandardizados para o mercado capitalista.",
+                    "B) valorização estética erudita, que reserva o acesso às obras aos críticos cinematográficos.",
+                    "C) tradição folclórica internacional, que repassa os novos mitos orais para as futuras gerações.",
+                    "D) heterogeneidade local urbana, que cria entretenimento específico para pequenos bairros."
+                ], correta: 0, explicacao: "A cultura de massa visa o maior público consumidor possível, padronizando formatos (filmes blockbuster) para superar barreiras linguísticas ou culturais e lucrar em escala planetária."
+            },
+            {
+                enunciado: "14. Por muito tempo, os livros didáticos de História do Brasil dedicaram longos capítulos à Revolução Francesa e à nobreza portuguesa, resumindo a presença negra à escravidão. A Lei 10.639/03 alterou esse cenário, tornando obrigatório o ensino da cultura afro-brasileira e da história do continente africano nas escolas públicas e particulares do país.\nA implementação dessa legislação visa corrigir uma distorção educacional historicamente baseada no:",
+                opcoes: [
+                    "A) relativismo moral pleno, que ensina os alunos a aceitarem qualquer prática sem ressalvas.",
+                    "B) viés etnocêntrico eurocêntrico, que considerava o homem branco europeu o centro da história.",
+                    "C) pluralismo estético contemporâneo, que equipara o valor artístico de todas as civilizações.",
+                    "D) revisionismo histórico folclórico, que ignora as reais contribuições dos povos dominantes."
+                ], correta: 1, explicacao: "O currículo tradicional refletia uma visão eurocêntrica, colocando a Europa como régua civilizatória universal e invisibilizando o protagonismo, a história e a cultura dos povos da África e de seus descendentes."
+            },
+            {
+                enunciado: "15. Nas favelas cariocas, algumas rádios comunitárias optam por não tocar as músicas que estão no topo das paradas comerciais de grandes gravadoras. Em vez disso, priorizam artistas do próprio morro, debates sobre saneamento básico e informações úteis para os moradores locais, sobrevivendo sem patrocínios de grandes conglomerados.\nA atuação midiática descrita no texto desempenha um papel sociológico voltado diretamente à:",
+                opcoes: [
+                    "A) defesa da pluralidade e expressão identitária frente ao monopólio da indústria cultural.",
+                    "B) alienação dos moradores da periferia em relação às tendências de inovação estrangeira.",
+                    "C) massificação acelerada de produtos musicais que possuem baixo engajamento comercial.",
+                    "D) eliminação violenta das tradições originais do bairro por meio de tecnologias de rádio."
+                ], correta: 0, explicacao: "Meios de comunicação alternativos e comunitários resistem à padronização imposta pelas megacorporações midiáticas, dando voz aos problemas, às lutas e à estética autêntica de sua base populacional."
+            },
+            {
+                enunciado: "16. O antropólogo francês Marc Augé definiu como \"não lugares\" os espaços contemporâneos de trânsito e consumo, como aeroportos e shopping centers. Nesses locais, a arquitetura padronizada, o ar-condicionado constante e as vitrines de marcas globais criam um ambiente que não possui identidade histórica, podendo estar em Tóquio ou em São Paulo.\nA reflexão do antropólogo sobre esses espaços urbanos evidencia o processo contemporâneo de:",
+                opcoes: [
+                    "A) valorização da cultura vernácula, que busca adaptar as construções à geografia da região.",
+                    "B) padronização estética promovida pela globalização, que dilui as particularidades locais.",
+                    "C) exaltação do comércio popular, que domina os corredores dos grandes centros de consumo.",
+                    "D) multiplicidade arquitetônica moderna, que impede a replicação de edifícios massificados."
+                ], correta: 1, explicacao: "Ao tentar replicar espaços estéreis e confortáveis de consumo internacional, o capitalismo globalizado constrói estruturas homogêneas ('não lugares') que anulam as texturas culturais que os diferenciam."
+            },
+            {
+                enunciado: "17. No mês de outubro, escolas brasileiras de idiomas e o comércio varejista promovem intensamente o \"Halloween\", incentivando o uso de fantasias de vampiros e bruxas. Em resposta, um movimento criado por folcloristas instituiu no Brasil o \"Dia do Saci\", na mesma data, visando resgatar lendas como a Mula Sem Cabeça e o Curupira.\nO esforço para instituir a comemoração do Dia do Saci configura-se como uma reação à forte:",
+                opcoes: [
+                    "A) influência do poder brando (soft power) e da indústria cultural dos Estados Unidos no país.",
+                    "B) predominância das matrizes indígenas e africanas no calendário escolar do ensino infantil.",
+                    "C) ausência completa de mitos criativos ou lendas misteriosas na formação folclórica do país.",
+                    "D) incapacidade mercadológica de o jovem brasileiro consumir produtos importados na internet."
+                ], correta: 0, explicacao: "A dominação cultural moderna se dá também pelo 'Soft Power': o cinema, as datas comerciais e o estilo de vida de potências hegemônicas (como os EUA) colonizam as mentes e agendas de outras nações."
+            },
+            {
+                enunciado: "18. No século XIX, antropólogos europeus viajavam para a África e as Américas para estudar tribos nativas. Ao retornar, publicavam relatórios afirmando que aqueles povos estavam no estágio da \"barbárie\", enquanto a sociedade europeia vitoriana representava o ápice inevitável da \"civilização\" que todos os povos deveriam um dia alcançar.\nO julgamento emitido por esses antropólogos fundamentava-se em uma perspectiva pautada pelo:",
+                opcoes: [
+                    "A) relativismo metodológico, que analisa rigorosamente cada povo dentro de sua própria lógica.",
+                    "B) evolucionismo etnocêntrico, que hierarquiza linearmente as sociedades conforme o seu padrão.",
+                    "C) ideal decolonial emergente, que visava romper definitivamente com a dominação escravocrata.",
+                    "D) reconhecimento da alteridade plena, que valoriza as diferenças profundas entre os seres vivos."
+                ], correta: 1, explicacao: "Essa corrente antiga via a história da humanidade como uma escada com estágios de evolução fixos ('selvageria > barbárie > civilização'), colocando sempre o homem branco e industrializado no degrau mais alto e 'civilizado'."
+            },
+            {
+                enunciado: "19. A peça \"O Auto da Compadecida\", de Ariano Suassuna, incorpora elementos dos romances de cordel, a figura do palhaço de picadeiro, as crendices católicas do sertão nordestino e uma linguagem coloquial repleta de gírias da região, distanciando-se intencionalmente do formato tradicional do teatro clássico importado da Europa colonial.\nA obra teatral de Suassuna consolida sua genialidade ao elevar ao palco as raízes profundas da:",
+                opcoes: [
+                    "A) cultura de massa, desenhada por publicitários para atingir altos índices de audiência na TV.",
+                    "B) cultura popular, que emana das experiências autênticas, estéticas e espirituais do próprio povo.",
+                    "C) cultura estritamente erudita, exigindo alto conhecimento teológico para sua total compreensão.",
+                    "D) cultura importada padronizada, dependendo inteiramente de padrões estrangeiros para existir."
+                ], correta: 1, explicacao: "O genial escritor paraibano defendeu ativamente o Movimento Armorial, buscando construir uma literatura e uma arte que não negassem o povo e sim o celebrassem, bebendo em suas fontes populares genuínas."
+            },
+            {
+                enunciado: "20. Durante o Brasil Império, as religiões de matriz africana eram criminalizadas e reprimidas violentamente pela polícia. Para conseguir cultuar seus orixás em segurança, os escravizados passaram a associá-los visualmente aos santos da Igreja Católica, como Ogum a São Jorge e Iansã a Santa Bárbara, realizando seus rituais de forma dissimulada.\nA estratégia de sobrevivência espiritual desenvolvida pelas populações escravizadas gerou o:",
+                opcoes: [
+                    "A) fundamentalismo ortodoxo moderno, pautado na manutenção purista dos cultos de origem.",
+                    "B) sincretismo religioso brasileiro, resultante das tensões, violências e trocas no período colonial.",
+                    "C) estado laico republicano contemporâneo, que extinguiu a interferência religiosa na vida civil.",
+                    "D) agnosticismo popular disseminado, caracterizado pelo abandono voluntário da fé invisível."
+                ], correta: 1, explicacao: "O sincretismo brasileiro não foi uma escolha harmoniosa e espontânea, mas uma tática essencial de resistência que consistiu na fusão forçada e dissimulada de diferentes doutrinas e entidades religiosas."
+            },
+            {
+                enunciado: "21. Para os teóricos sociológicos críticos, a telenovela tradicional atua de forma ambígua: ao mesmo tempo em que oferece lazer acessível após uma longa e exaustiva jornada de trabalho, seus enredos focados em mobilidade social irreal, romances impossíveis e finais sempre felizes desviam o foco do trabalhador das suas reais condições materiais de exploração.\nNessa leitura crítica da comunicação, os produtos audiovisuais de massa cumprem o papel de:",
+                opcoes: [
+                    "A) ferramentas de conscientização de classe que estimulam o questionamento das injustiças.",
+                    "B) mecanismos de apaziguamento social que conformam os indivíduos perante as desigualdades.",
+                    "C) instrumentos de educação revolucionária desenhados para elevar o nível cognitivo do povo.",
+                    "D) manifestações genuínas que expressam a ira coletiva contra a ausência de direitos laborais."
+                ], correta: 1, explicacao: "Bens como as telenovelas muitas vezes funcionam como mecanismos ideológicos de 'apaziguamento'. Entretêm o trabalhador, vendendo a ilusão do final feliz para que ele acorde descansado e sem revolta no dia seguinte."
+            },
+            {
+                enunciado: "22. Estima-se que, no Brasil colonial, existiam mais de mil línguas indígenas. Hoje, restam cerca de 270, muitas delas faladas por apenas algumas dezenas de idosos. Em resposta a essa perda, pesquisadores têm utilizado gravadores e plataformas digitais para documentar vocabulários, lendas e mitos de criação antes que os últimos falantes faleçam.\nO esforço urgente dos pesquisadores justifica-se sociologicamente pela constatação de que:",
+                opcoes: [
+                    "A) existe uma demanda financeira internacional que transforma os dialetos raros em ativos de luxo.",
+                    "B) a extinção de um idioma representa o fim irrecuperável de uma forma única de ver o mundo.",
+                    "C) as línguas nativas devem ser impostas como idioma oficial de trabalho no Mercosul do futuro.",
+                    "D) os idiomas globais contempor বহুম contemporâneos são estruturalmente ineficazes para a ciência e tecnologia."
+                ], correta: 1, explicacao: "Uma língua não é apenas uma ferramenta gramatical neutra; é a estrutura do pensamento de um povo. Sua perda significa apagar todo o acervo histórico, biológico e mítico ali codificado."
+            },
+            {
+                enunciado: "23. O Jongo, dança de origem africana que servia como meio de comunicação codificada entre os escravizados nas fazendas de café do Sudeste, ainda é praticado em comunidades quilombolas da região. Jovens e idosos se reúnem em roda para cantar e tocar os tambores sagrados, ignorando momentaneamente a enxurrada de músicas pop das rádios.\nA manutenção contínua dessa roda de dança no contexto do século XXI atua fortemente como:",
+                opcoes: [
+                    "A) aceitação passiva das pressões comerciais exercidas pela cultura dominante da elite brasileira.",
+                    "B) ferramenta de resistência identitária que reafirma os laços históricos de ancestralidade local.",
+                    "C) obsolescência artística inevitável que condena as práticas arcaicas à substituição tecnológica.",
+                    "D) mecanismo de alienação folclórica focado exclusivamente na atração de turistas internacionais."
+                ], correta: 1, explicacao: "Práticas corporais como o Jongo não são mero lazer folclórico; são atos políticos vivos de demarcação de território, memória dos antepassados e resistência perante a homogeneização cultural global."
+            },
+            {
+                enunciado: "24. Um discurso político na televisão gera, em menos de dez minutos, centenas de \"memes\" (imagens engraçadas acompanhadas de textos) no Twitter e no WhatsApp. O conteúdo original é recortado, recebe interferência dos usuários com piadas locais, e é republicado incansavelmente, alcançando públicos que nem sequer assistiam ao noticiário televisivo.\nA dinâmica descrita evidencia uma característica central da cultura cibernética, pautada pela:",
+                opcoes: [
+                    "A) exclusividade autoral restrita, permitindo apenas a criadores verificados a emissão de opiniões.",
+                    "B) horizontalidade participativa, que viabiliza a rápida recriação e apropriação coletiva do conteúdo.",
+                    "C) censura estrutural rígida, que impede os cidadãos de alterarem a mensagem original da emissora.",
+                    "D) exclusão massiva dos jovens, que repudiam qualquer forma de engajamento no debate sociopolítico."
+                ], correta: 1, explicacao: "Na internet, todos deixam de ser apenas consumidores passivos e tornam-se produtores ativos de conteúdo, recriando as narrativas de forma descentralizada, rápida e fluida."
+            },
+            {
+                enunciado: "25. Um adolescente de classe média convence seus pais a comprarem um tênis de basquete de uma marca americana que custa mais do que um salário mínimo. O jovem sabe que modelos nacionais possuem a mesma qualidade técnica, mas argumenta que apenas aquele modelo específico lhe trará respeito, popularidade e aceitação entre os colegas da escola.\nO comportamento de consumo do adolescente é fortemente impulsionado pela lógica em que o:",
+                opcoes: [
+                    "A) valor simbólico do produto de marca atua como principal passaporte de pertencimento social.",
+                    "B) engajamento ambiental do consumidor privilegia a produção em escala de menor impacto.",
+                    "C) orgulho cívico e nacionalista orienta a escolha sistemática por bens manufaturados locais.",
+                    "D) pragmatismo financeiro estrito avalia objetivamente a relação entre o conforto e o seu preço."
+                ], correta: 0, explicacao: "Em sociedades dominadas pelo capitalismo e marketing global, as mercadorias perdem o seu valor utilitário primário (proteger o pé) e passam a ser consumidas pelo status ('valor de signo') e pela ilusão de pertencimento a um grupo."
+            },
+            {
+                enunciado: "26. Ao discutir o multiculturalismo na escola pública contemporânea, pesquisadores apontam que não basta fazer uma feira de culinária típica no final do ano escolar. A verdadeira educação multicultural requer que os livros de literatura, as aulas de história e a postura dos professores enfrentem os estereótipos de gênero, classe e o racismo estrutural.\nEssa vertente pedagógica descrita no texto, conhecida como multiculturalismo crítico, exige a:",
+                opcoes: [
+                    "A) promoção de celebrações estéticas que apenas exaltem a música e as roupas de diversos povos.",
+                    "B) reflexão analítica sobre as relações de poder e desigualdade que hierarquizam as diferenças.",
+                    "C) adoção de apostilas que evitam debates políticos para garantir a paz na convivência estudantil.",
+                    "D) padronização dos ensinamentos eurocêntricos como forma de nivelar o conhecimento da turma."
+                ], correta: 1, explicacao: "O multiculturalismo festivo apenas tolera 'exotismos'. Já o multiculturalismo crítico ataca a raiz do problema: as assimetrias históricas, questionando ativamente o racismo e as estruturas de opressão institucional."
+            },
+            {
+                enunciado: "27. Na fronteira seca entre Santana do Livramento (Brasil) e Rivera (Uruguai), não há muros, apenas uma praça. Os moradores misturam o português e o espanhol fluentemente no comércio local, consumindo tanto o chimarrão gaúcho quanto os alfajores uruguaios, construindo um estilo de vida que só existe de fato naquela exata linha limítrofe.\nO fenômeno de integração fronteiriça exemplifica a dinâmica sociológica identificada como:",
+                opcoes: [
+                    "A) purismo nacionalista, que atua reforçando a exclusividade cultural e a xenofobia entre os países.",
+                    "B) transculturação híbrida, na qual o contato intenso produz práticas e linguagens inteiramente novas.",
+                    "C) isolacionismo geográfico cego, que impede qualquer intercâmbio físico ou simbólico entre os civis.",
+                    "D) anulação identitária bilateral, cenário em que nenhuma das nações sobrevive culturalmente ao choque."
+                ], correta: 1, explicacao: "A fronteira não é apenas um limite divisor, mas um espaço de intensa fricção onde a transculturação e o hibridismo geram comportamentos novos e próprios (como o idioma 'portunhol')."
+            },
+            {
+                enunciado: "28. Historicamente, os concertos de ópera e as exposições de pintura clássica eram restritos a teatros e palácios, financiados pela nobreza e, mais tarde, pela burguesia rica. Enquanto isso, as folias de reis e os batuques aconteciam nas ruas de terra batida, arcados pelas próprias comunidades rurais, frequentemente sofrendo repressão policial no processo.\nA divisão estrutural histórica entre cultura erudita e cultura popular tem como base sociológica a:",
+                opcoes: [
+                    "A) igualdade plena de direitos, que permitia que camponeses frequentassem a ópera aos domingos.",
+                    "B) profunda desigualdade socioeconômica, que concentrou o acesso e a legitimação de bens simbólicos.",
+                    "C) diversidade genética inexplicável, que dotava a elite financeira de melhor percepção harmônica.",
+                    "D) escolha democrática transparente, onde a população urbana elegeu as formas de arte aceitáveis."
+                ], correta: 1, explicacao: "A classificação da arte entre 'alta/erudita' e 'baixa/popular' não advém do céu nem da biologia; reflete diretamente a pirâmide social e o monopólio da legitimação detido pelas classes abastadas (elites)."
+            },
+            {
+                enunciado: "29. Nos anos 1960, Marshall McLuhan criou o conceito de \"Aldeia Global\" para prever que a TV e o rádio fariam o mundo encolher metaforicamente, conectando as pessoas. Hoje, a internet permite que a guerra no Leste Europeu ou a final do campeonato asiático de esportes eletrônicos sejam assistidas, comentadas e sofridas ao vivo por jovens no interior de Goiás.\nA aplicação do conceito de McLuhan à atual sociedade da informação confirma a existência de uma:",
+                opcoes: [
+                    "A) desconexão informacional crônica, pois as plataformas restringem os dados a pequenos guetos.",
+                    "B) pacificação homogênea absoluta, na qual não há choque de interesses ao se assistir a uma guerra.",
+                    "C) compressão do espaço e do tempo, viabilizando o compartilhamento veloz de eventos distantes.",
+                    "D) colapso dos satélites globais, gerado pela saturação de tráfego de imagens nas grandes metrópoles."
+                ], correta: 2, explicacao: "O conceito da Aldeia Global prevê exatamente que os meios eletrônicos acabam com as distâncias físicas de comunicação (compressão espaço-tempo), tornando o planeta uma única teia interconectada imediata."
+            },
+            {
+                enunciado: "30. A França possui leis rígidas que exigem que as rádios toquem uma cota expressiva de músicas cantadas no idioma local durante o horário nobre. Da mesma forma, o cinema francês recebe pesados subsídios governamentais para competir com as produções de Hollywood, garantindo que suas próprias narrativas, cenários e sotaques continuem circulando na sociedade.\nAs referidas medidas políticas adotadas pelo Estado francês visam fundamentalmente garantir a:",
+                opcoes: [
+                    "A) censura integral e proibição de qualquer conteúdo audiovisual proveniente de nações de língua inglesa.",
+                    "B) soberania cultural do país e a blindagem contra o monopólio e homogeneização imposta pelo mercado.",
+                    "C) alienação do jovem universitário europeu perante as descobertas artísticas provenientes da América.",
+                    "D) estagnação profunda da economia criativa interna, dificultando inovações nas plataformas de streaming."
+                ], correta: 1, explicacao: "Frente ao massacre de bilheteria e imposição estética exercida pelos EUA, as nações frequentemente criam 'cotas de tela e proteções de idioma' para assegurar sua própria sobrevivência e identidade artística."
+            }
+        ];
+
+        let questaoAtual = 0;
+        let acertos = 0;
+        let primeiraTentativa = true;
+        let tempoInicioQuestao = 0;
+        let timerAvanco;
+
+        const uiElements = {
+            infoBlock: document.getElementById('info-block'),
+            content: document.getElementById('quiz-content'),
+            result: document.getElementById('result-content'),
+            questionText: document.getElementById('question-text'),
+            optionsContainer: document.getElementById('options-container'),
+            progress: document.getElementById('progress'),
+            questionCounter: document.getElementById('question-counter'),
+            scoreCounter: document.getElementById('score-counter'),
+            modal: document.getElementById('feedback-modal'),
+            modalBox: document.getElementById('modal-box'),
+            modalIcon: document.getElementById('modal-icon'),
+            modalTitle: document.getElementById('modal-title'),
+            modalMessage: document.getElementById('modal-message'),
+            modalBtn: document.getElementById('modal-btn'),
+            finalScore: document.getElementById('final-score'),
+            finalMessage: document.getElementById('final-message')
+        };
+
+        function iniciarQuiz() {
+            questaoAtual = 0;
+            acertos = 0;
+            uiElements.infoBlock.style.display = 'block'; 
+            uiElements.content.style.display = 'block';
+            uiElements.result.style.display = 'none';
+            carregarQuestao();
+        }
+
+        function carregarQuestao() {
+            // Esconde o bloco de instrução após iniciar a responder a primeira para limpar a tela
+            if(questaoAtual > 0) {
+                uiElements.infoBlock.style.display = 'none';
+            }
+
+            primeiraTentativa = true; 
+            tempoInicioQuestao = Date.now();
+            clearInterval(timerAvanco); 
+            
+            const q = questoes[questaoAtual];
+            uiElements.questionText.innerHTML = q.enunciado.replace(/\n/g, "<br><br>");
+            uiElements.optionsContainer.innerHTML = '';
+            
+            const progressoPct = ((questaoAtual) / questoes.length) * 100;
+            uiElements.progress.style.width = `${progressoPct}%`;
+            uiElements.questionCounter.textContent = `Questão ${questaoAtual + 1} de ${questoes.length}`;
+            uiElements.scoreCounter.textContent = `Acertos (1ª tentativa): ${acertos}`;
+
+            q.opcoes.forEach((opcao, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opcao;
+                btn.onclick = () => verificarResposta(index);
+                uiElements.optionsContainer.appendChild(btn);
+            });
+        }
+
+        function verificarResposta(indiceSelecionado) {
+            const q = questoes[questaoAtual];
+            const acertou = (indiceSelecionado === q.correta);
+
+            if (acertou) {
+                if (primeiraTentativa) {
+                    acertos++;
+                    uiElements.scoreCounter.textContent = `Acertos (1ª tentativa): ${acertos}`;
+                }
+                mostrarModal(true, q.explicacao);
+            } else {
+                primeiraTentativa = false; 
+                const msgErro = `A resposta correta não é essa. Tente novamente!<br><br><strong>Dica da Explicação:</strong> ${q.explicacao}`;
+                mostrarModal(false, msgErro);
+            }
+        }
+
+        function mostrarModal(acertou, mensagem) {
+            uiElements.modal.style.display = 'flex';
+            clearInterval(timerAvanco); 
+            
+            if (acertou) {
+                uiElements.modalBox.className = 'modal-content correct-theme';
+                uiElements.modalIcon.textContent = '✓';
+                uiElements.modalTitle.textContent = 'Você Acertou!';
+                uiElements.modalMessage.innerHTML = mensagem;
+                
+                let tempoDecorrido = Math.floor((Date.now() - tempoInicioQuestao) / 1000);
+                let tempoRestante = 15 - tempoDecorrido;
+
+                if (tempoRestante > 0) {
+                    uiElements.modalBtn.disabled = true;
+                    uiElements.modalBtn.textContent = `Aguarde (${tempoRestante}s)`;
+                    uiElements.modalBtn.onclick = null;
+                    
+                    timerAvanco = setInterval(() => {
+                        tempoRestante--;
+                        if (tempoRestante > 0) {
+                            uiElements.modalBtn.textContent = `Aguarde (${tempoRestante}s)`;
+                        } else {
+                            clearInterval(timerAvanco);
+                            uiElements.modalBtn.disabled = false;
+                            uiElements.modalBtn.textContent = "Próxima Questão";
+                            uiElements.modalBtn.onclick = avancarQuestao;
+                        }
+                    }, 1000);
+                } else {
+                    uiElements.modalBtn.disabled = false;
+                    uiElements.modalBtn.textContent = "Próxima Questão";
+                    uiElements.modalBtn.onclick = avancarQuestao;
+                }
+
+            } else {
+                uiElements.modalBox.className = 'modal-content wrong-theme';
+                uiElements.modalIcon.textContent = '✗';
+                uiElements.modalTitle.textContent = 'Resposta Incorreta';
+                uiElements.modalMessage.innerHTML = mensagem;
+                
+                uiElements.modalBtn.disabled = false;
+                uiElements.modalBtn.textContent = "Tentar Novamente";
+                uiElements.modalBtn.onclick = tentarNovamente;
+            }
+        }
+
+        function tentarNovamente() {
+            uiElements.modal.style.display = 'none';
+        }
+
+        function avancarQuestao() {
+            uiElements.modal.style.display = 'none';
+            questaoAtual++;
+
+            if (questaoAtual < questoes.length) {
+                carregarQuestao();
+            } else {
+                mostrarResultado();
+            }
+        }
+
+        function mostrarResultado() {
+            uiElements.content.style.display = 'none';
+            uiElements.result.style.display = 'block';
+            
+            const porcentagem = Math.round((acertos / questoes.length) * 100);
+            uiElements.finalScore.textContent = `${porcentagem}%`;
+            
+            let mensagem = "";
+            if (porcentagem >= 80) mensagem = "Excelente! Você demonstrou foco e leitura atenta acertando várias questões de primeira.";
+            else if (porcentagem >= 50) mensagem = "Bom trabalho! Continue testando seus conhecimentos em Ciências Humanas.";
+            else mensagem = "O mais importante foi ler as explicações com calma. O conhecimento leva tempo para construir!";
+            
+            uiElements.finalMessage.textContent = mensagem;
+        }
+
+        function reiniciarQuiz() {
+            iniciarQuiz();
+        }
+
+        window.onload = iniciarQuiz;
+    </script>
+</body>
+</html>

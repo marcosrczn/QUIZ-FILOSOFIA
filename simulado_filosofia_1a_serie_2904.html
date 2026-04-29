@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulado de Filosofia - 1ª Série (1º Trimestre)</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --correct-color: #27ae60;
+            --wrong-color: #e74c3c;
+            --bg-color: #f5f7fa;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .quiz-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        .header-info {
+            background-color: #eef2f5;
+            border-left: 5px solid var(--accent-color);
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .header-info h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+        
+        .header-info p {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .header-info p:last-child {
+            margin-bottom: 0;
+        }
+
+        .progress-bar {
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            height: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .progress-fill {
+            background-color: var(--accent-color);
+            height: 100%;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 1rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            line-height: 1.4;
+        }
+
+        .option-btn:hover {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+        }
+
+        /* Modal / Pop-up Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .modal-message {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            text-align: justify;
+        }
+
+        .correct-theme .modal-icon, .correct-theme .modal-title {
+            color: var(--correct-color);
+        }
+
+        .wrong-theme .modal-icon, .wrong-theme .modal-title {
+            color: var(--wrong-color);
+        }
+
+        .btn-next {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-next:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        /* Result Screen */
+        .result-container {
+            display: none;
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz-box">
+        <h1>Simulado: Filosofia e Racionalidade</h1>
+        
+        <div class="header-info" id="header-info">
+            <h3>Objetos de Conhecimento Abordados:</h3>
+            <p>O ser humano e a Racionalidade; Pensamento; Linguagem; Indagação; Interpretação.</p>
+            
+            <h3>Objetivo de Aprendizagem:</h3>
+            <p>Ao final deste quiz, você será capaz de analisar criticamente situações do cotidiano (envolvendo tecnologia, comunicação, ciência e ética) aplicando conceitos filosóficos sobre como o ser humano constrói o pensamento, articula a linguagem e interpreta a realidade. O objetivo é fortalecer a autonomia intelectual e a atitude investigativa (filosófica) diante do mundo.</p>
+        </div>
+
+        <div id="quiz-content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+            
+            <div class="status-bar">
+                <span id="question-counter">Questão 1 de 30</span>
+                <span id="score-counter">Acertos (1ª tentativa): 0</span>
+            </div>
+
+            <div class="question-text" id="question-text">
+                Carregando pergunta...
+            </div>
+
+            <div class="options-grid" id="options-container">
+            </div>
+        </div>
+
+        <div class="result-container" id="result-content">
+            <h2>Fim do Simulado!</h2>
+            <div class="score-circle" id="final-score">0%</div>
+            <p id="final-message" class="question-text"></p>
+            <button class="btn-next" onclick="reiniciarQuiz()">Tentar Novamente</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="feedback-modal">
+        <div class="modal-content" id="modal-box">
+            <div class="modal-icon" id="modal-icon">✓</div>
+            <div class="modal-title" id="modal-title">Você Acertou!</div>
+            <div class="modal-message" id="modal-message">Explicação aqui.</div>
+            <button class="btn-next" id="modal-btn">Aguarde...</button>
+        </div>
+    </div>
+
+    <script>
+        const questoes = [
+            {
+                enunciado: "1. Um carro autônomo é programado para minimizar danos em acidentes. Em uma situação inevitável, o sistema calcula que desviar de cinco pedestres resultará no sacrifício do próprio motorista. Diferente do computador, a decisão humana em uma fração de segundo envolve outros fatores. A situação ilustra que a racionalidade humana difere do processamento da máquina porque:",
+                opcoes: [
+                    "A) envolve julgamentos de valor e instintos de sobrevivência que transcendem o mero cálculo de dados.",
+                    "B) depende exclusivamente de programações prévias estabelecidas pela sociedade para evitar acidentes.",
+                    "C) elimina completamente o medo e a angústia para focar apenas em resultados matemáticos práticos.",
+                    "D) aplica regras lógicas absolutas que impedem qualquer flexibilidade diante de um dilema complexo."
+                ], correta: 0, explicacao: "A decisão humana em dilemas éticos não é apenas um cálculo numérico utilitário (como faz a máquina); ela é perpassada por instintos biológicos, emoções e valores morais subjetivos."
+            },
+            {
+                enunciado: "2. Durante uma crise financeira, o diretor de uma empresa decide demitir metade dos funcionários utilizando apenas um software que avalia metas numéricas, ignorando o contexto familiar de cada um. Do ponto de vista da reflexão sobre a racionalidade, essa atitude demonstra que:",
+                opcoes: [
+                    "A) a racionalidade instrumental foca na eficiência técnica, muitas vezes ignorando as dimensões éticas.",
+                    "B) a reflexão filosófica garante que todas as decisões corporativas agradem aos envolvidos no processo.",
+                    "C) o pensamento crítico impede a análise de dados estatísticos para a resolução de problemas práticos.",
+                    "D) a razão humana é incapaz de organizar sistemas produtivos sem recorrer à emoção e ao misticismo."
+                ], correta: 0, explicacao: "A Escola de Frankfurt critica a 'razão instrumental', que é focada puramente nos meios e na eficiência (lucro, números), desprezando os fins éticos e o valor humano."
+            },
+            {
+                enunciado: "3. Animais como chimpanzés conseguem empilhar caixas para alcançar bananas e corvos usam gravetos para extrair insetos de buracos. No entanto, apenas os seres humanos debatem sobre o direito dos animais. Isso evidencia que a racionalidade humana se caracteriza por:",
+                opcoes: [
+                    "A) resolver problemas práticos imediatos relacionados exclusivamente à busca por alimentação básica.",
+                    "B) possuir capacidade de abstração e reflexão ética sobre a própria existência e a do seu ambiente.",
+                    "C) rejeitar o uso de ferramentas físicas para focar apenas em pensamentos que não alteram o mundo.",
+                    "D) depender de instintos programados biologicamente que impedem a adaptação a novos ecossistemas."
+                ], correta: 1, explicacao: "A inteligência animal foca na resolução de problemas físicos imediatos (comida, abrigo). A racionalidade humana vai além, alcançando a moralidade, a lei e a abstração filosófica."
+            },
+            {
+                enunciado: "4. Ao tentar convencer um amigo a parar de fumar, João apresenta dezenas de artigos científicos sobre os danos ao pulmão. O amigo entende os dados, concorda com eles, mas continua fumando pois diz que o cigarro alivia sua ansiedade. O cenário demonstra que:",
+                opcoes: [
+                    "A) a racionalidade lógica é a única força capaz de motivar e alterar o comportamento humano diário.",
+                    "B) o ser humano possui dimensões afetivas e psicológicas que muitas vezes rivalizam com a razão fria.",
+                    "C) o conhecimento científico carece de validade quando aplicado a problemas de saúde pública geral.",
+                    "D) a reflexão filosófica elimina a ansiedade humana ao apresentar argumentos baseados em estatística."
+                ], correta: 1, explicacao: "A mente humana não é uma máquina puramente lógica. Nossas ações resultam frequentemente da tensão e disputa entre o nosso raciocínio claro e os nossos desejos ou dores psicológicas."
+            },
+            {
+                enunciado: "5. Um juiz, ao proferir uma sentença, deve se basear nas leis e nas provas dos autos. Contudo, defensores do 'realismo jurídico' afirmam que o humor do juiz ou sua vivência pessoal influenciam a pena. Esse conflito evidencia que o ideal de racionalidade pura:",
+                opcoes: [
+                    "A) é facilmente alcançado quando o indivíduo decide isolar suas memórias para julgar o próximo.",
+                    "B) atua como um horizonte desejável, mas que frequentemente esbarra na subjetividade da condição humana.",
+                    "C) torna-se irrelevante para a sociedade contemporânea, que prefere decisões baseadas em emoções.",
+                    "D) garante que todas as pessoas interpretem os fatos cotidianos exatamente da mesma maneira objetiva."
+                ], correta: 1, explicacao: "A objetividade perfeita é um ideal. Na prática, a racionalidade humana opera através dos filtros da experiência individual, humores e vieses inconscientes do sujeito."
+            },
+            {
+                enunciado: "6. Na Grécia Antiga, o filósofo Sócrates andava pelas ruas de Atenas questionando pessoas que se diziam especialistas em virtude, política ou beleza, demonstrando que o conhecimento delas era frágil. A atitude socrática fundamenta a ideia de que a racionalidade exige:",
+                opcoes: [
+                    "A) a aceitação passiva dos saberes tradicionais para manter a estabilidade política e social da pólis.",
+                    "B) o reconhecimento da própria ignorância como passo inicial para a construção do saber verdadeiro.",
+                    "C) a utilização de discursos persuasivos para enganar o oponente e vencer os debates em praça pública.",
+                    "D) o isolamento social absoluto, pois a convivência humana destrói a capacidade de pensar logicamente."
+                ], correta: 1, explicacao: "O princípio de 'só sei que nada sei' de Sócrates estabelece que a consciência da própria falta de conhecimento é o motor indispensável para o despertar filosófico e racional."
+            },
+            {
+                enunciado: "7. Em tempos de redes sociais, algoritmos entregam aos usuários conteúdos que confirmam suas crenças prévias (as 'bolhas de filtro'). Um estudante passa a acreditar que a Terra é plana após assistir a dezenas de vídeos recomendados. Do ponto de vista filosófico, o obstáculo ao pensamento autônomo nesse caso é:",
+                opcoes: [
+                    "A) a total ausência de informações disponíveis na internet para realizar pesquisas aprofundadas.",
+                    "B) a restrição da pluralidade de perspectivas, o que fortalece o viés de confirmação e inibe a crítica.",
+                    "C) a incapacidade cognitiva natural dos jovens de compreender conceitos básicos de geometria e física.",
+                    "D) a exigência das escolas para que os alunos utilizem exclusivamente redes sociais nas lições de casa."
+                ], correta: 1, explicacao: "O pensamento crítico exige a exposição ao contraditório. As bolhas limitam a visão de mundo do usuário ao espelhar apenas o que ele já acredita, matando a atitude de questionamento."
+            },
+            {
+                enunciado: "8. Uma comunidade ribeirinha percebe que o nível do rio está baixando mais rápido do que nos anos anteriores. Os anciãos propõem construir reservatórios, antecipando uma seca que só ocorrerá em meses. Essa capacidade humana evidencia que o pensamento:",
+                opcoes: [
+                    "A) limita-se a reagir aos estímulos sensoriais que estão ocorrendo no momento exato da percepção.",
+                    "B) permite projetar o futuro, criar cenários hipotéticos e planejar ações antes que os fatos ocorram.",
+                    "C) depende essencialmente da linguagem escrita, sem a qual é impossível observar os ciclos da natureza.",
+                    "D) funciona de forma mágica, garantindo que o desejo da comunidade altere fisicamente o nível do rio."
+                ], correta: 1, explicacao: "O pensamento racional nos desvincula do tempo presente imediato. Através da imaginação e dedução, construímos o futuro mentalmente antes que ele aconteça materialmente."
+            },
+            {
+                enunciado: "9. Durante uma reunião de equipe criativa, o líder exige que todos concordem rapidamente com a primeira ideia apresentada para economizar tempo. O resultado é um produto final defeituoso e sem inovação. O cenário demonstra que a qualidade do pensamento crítico depende da:",
+                opcoes: [
+                    "A) eliminação de divergências individuais em prol da harmonia imediata no ambiente de trabalho.",
+                    "B) tolerância à dúvida e da disposição para examinar o problema sob ângulos múltiplos e opostos.",
+                    "C) obediência irrestrita à hierarquia corporativa, que sempre garante as resoluções mais lógicas.",
+                    "D) velocidade com que as conclusões são alcançadas, ignorando as falhas menores no processo."
+                ], correta: 1, explicacao: "Pensar criticamente demanda tempo, conflito de ideias (dialética) e abertura ao erro. Exigir conformidade imediata sufoca a análise profunda dos problemas."
+            },
+            {
+                enunciado: "10. Um inventor passou anos tentando criar um filamento durável para a lâmpada, falhando milhares de vezes antes de usar o tungstênio. Diante do erro contínuo, ele adaptava suas hipóteses. Essa dinâmica revela que o pensamento investigativo:",
+                opcoes: [
+                    "A) atinge o conhecimento de forma passiva através de revelações repentinas e inexplicáveis da mente.",
+                    "B) requer a reformulação constante de ideias a partir do confronto direto com a realidade empírica.",
+                    "C) considera a falha como uma prova definitiva de que o objetivo proposto é humanamente inatingível.",
+                    "D) dispensa o uso da observação prática, dependendo unicamente da lógica matemática pura e abstrata."
+                ], correta: 1, explicacao: "Na ciência e na filosofia, o erro não é o fim do processo, mas um dado valioso que obriga o sujeito a reestruturar seu pensamento diante do comportamento do mundo empírico."
+            },
+            {
+                enunciado: "11. Em 1938, uma transmissão de rádio da obra 'A Guerra dos Mundos' noticiou uma invasão alienígena como se fosse um fato real, causando pânico em parte da população americana. A dificuldade dos ouvintes em distinguir a ficção da realidade aponta para:",
+                opcoes: [
+                    "A) a suspensão do pensamento crítico provocada pelo formato autoritário e realista da mídia jornalística.",
+                    "B) o elevado grau de instrução científica da época, que previa a possibilidade de contato extraterrestre.",
+                    "C) a incapacidade biológica da audição humana de processar informações complexas e narrativas literárias.",
+                    "D) a vontade coletiva da sociedade de ser enganada para escapar dos problemas econômicos cotidianos."
+                ], correta: 0, explicacao: "O formato jornalístico possui uma aura de verdade e autoridade. Quando a informação é apresentada dentro dessa embalagem institucional, as pessoas tendem a afrouxar seu filtro crítico."
+            },
+            {
+                enunciado: "12. O cogito cartesiano, expresso na famosa frase 'Penso, logo existo', surge quando René Descartes decide duvidar de tudo o que aprendeu, de seus sentidos e até da matemática. No contexto de um aluno que revisa seus métodos de estudo, a postura cartesiana inspira a:",
+                opcoes: [
+                    "A) decorar as teorias ensinadas pelos professores sem questionar a aplicabilidade prática desses conceitos.",
+                    "B) submeter suas certezas habituais a um exame rigoroso para encontrar um fundamento de conhecimento sólido.",
+                    "C) abandonar a busca pela verdade, já que a dúvida demonstra que a mente humana é propensa a constantes erros.",
+                    "D) confiar unicamente na intuição emocional para resolver problemas complexos das disciplinas de exatas."
+                ], correta: 1, explicacao: "A Dúvida Metódica de Descartes não é um ceticismo para paralisar a mente, mas uma ferramenta para destruir conhecimentos frágeis e construir a aprendizagem em bases seguras."
+            },
+            {
+                enunciado: "13. Um jornal noticia uma manifestação com a manchete 'Vândalos destroem patrimônio'; outro jornal relata o mesmo evento como 'Trabalhadores exigem direitos'. O fato é exatamente o mesmo. Esse fenômeno demonstra que a linguagem atua como:",
+                opcoes: [
+                    "A) um espelho neutro e transparente que reflete a realidade física sem qualquer tipo de alteração ou juízo.",
+                    "B) uma ferramenta passiva que não possui influência sobre a forma como a sociedade compreende os fatos.",
+                    "C) um construtor de sentidos que enquadra a realidade segundo as perspectivas e intenções de quem a usa.",
+                    "D) um sistema obsoleto de comunicação que está sendo rapidamente substituído por imagens fotográficas brutas."
+                ], correta: 2, explicacao: "A linguagem molda a percepção pública. A escolha das palavras não apenas relata a realidade, mas impõe a ela uma moldura interpretativa (um enquadramento ideológico)."
+            },
+            {
+                enunciado: "14. Durante uma viagem de negócios ao Japão, um executivo brasileiro tenta quebrar o gelo contando uma piada cheia de ironias e gírias regionais. O resultado é um constrangimento geral na sala. Essa quebra de comunicação ocorre porque a linguagem:",
+                opcoes: [
+                    "A) é um fenômeno puramente biológico que varia conforme a genética das diferentes populações mundiais.",
+                    "B) depende de códigos culturais compartilhados para que as sutilezas e os subtextos sejam compreendidos.",
+                    "C) perdeu sua função social na era da globalização, tornando o contato face a face totalmente desnecessário.",
+                    "D) impede a transmissão de informações objetivas, servindo apenas para expressar sentimentos individuais."
+                ], correta: 1, explicacao: "A linguagem não é apenas um dicionário de palavras; ela carrega a história social, as metáforas e o humor da comunidade que a criou. Fora desse código, o sentido se perde."
+            },
+            {
+                enunciado: "15. Ao sentir uma dor de dente terrível, um paciente tenta descrevê-la ao dentista: 'é uma pontada aguda', 'parece um choque', 'é latejante'. Apesar do esforço, o dentista não sente o que o paciente sente. Isso reflete um limite filosófico da linguagem, que é a sua:",
+                opcoes: [
+                    "A) capacidade de transferir perfeitamente experiências sensoriais de um indivíduo para a mente de outro.",
+                    "B) dificuldade estrutural em traduzir experiências subjetivas privadas para uma forma totalmente objetiva.",
+                    "C) inutilidade clínica, visto que a medicina moderna dispensa o relato verbal em favor de exames visuais.",
+                    "D) natureza puramente matemática, que exige fórmulas exatas para descrever fenômenos físicos simples."
+                ], correta: 1, explicacao: "Na filosofia da mente, a experiência subjetiva (qualia) é intransferível. A linguagem pode aproximar e criar empatia, mas é incapaz de transmitir a materialidade da sensação."
+            },
+            {
+                enunciado: "16. O uso de emojis tornou-se universal nas trocas de mensagens instantâneas. Um simples ícone de 'joinha' pode significar concordância, ironia ou até mesmo o encerramento abrupto de uma conversa, dependendo de quem envia. Essa multiplicidade de sentidos indica que:",
+                opcoes: [
+                    "A) a comunicação digital empobreceu o pensamento humano, reduzindo as interações a símbolos primitivos.",
+                    "B) o significado de um signo não é fixo, sendo determinado pelo contexto pragmático da interação social.",
+                    "C) a linguagem escrita tradicional está fadada a desaparecer nos próximos anos devido à sua ineficiência.",
+                    "D) os ícones visuais possuem um único sentido universal que impede qualquer ambiguidade na interpretação."
+                ], correta: 1, explicacao: "A Pragmática estuda a linguagem em uso. Uma imagem (ou palavra) altera seu significado drasticamente dependendo da intenção, do contexto e da relação entre as pessoas."
+            },
+            {
+                enunciado: "17. Na obra '1984', de George Orwell, o governo totalitário cria a 'Novilíngua', um idioma que elimina progressivamente palavras do dicionário (como 'liberdade' ou 'revolução') para impedir que as pessoas pensem em rebelar-se. A premissa dessa estratégia de dominação baseia-se na ideia de que:",
+                opcoes: [
+                    "A) o pensamento humano existe de forma totalmente independente das palavras que o indivíduo conhece.",
+                    "B) a limitação do vocabulário restringe a capacidade do indivíduo de articular e refletir sobre a realidade.",
+                    "C) a imposição de uma nova gramática estimula a criatividade literária da população oprimida pelo Estado.",
+                    "D) a comunicação verbal é irrelevante para a manutenção do poder político em sociedades tecnológicas."
+                ], correta: 1, explicacao: "A forma como nomeamos o mundo determina como pensamos o mundo. Sem os conceitos apropriados, fica impossível articular críticas complexas sobre a própria existência social."
+            },
+            {
+                enunciado: "18. Em discursos de ódio online, palavras ofensivas são frequentemente utilizadas para inferiorizar grupos minoritários. Alguns defendem que 'são apenas palavras' e não causam dano real. No entanto, filósofos da linguagem argumentam que proferir tais ofensas:",
+                opcoes: [
+                    "A) configura uma ação concreta que molda relações de poder, exclui pessoas e gera violência simbólica material.",
+                    "B) representa um direito natural e intocável, incapaz de alterar as condições psicológicas do indivíduo atacado.",
+                    "C) demonstra a riqueza do vocabulário popular e deve ser incentivado como forma de liberdade poética e artística.",
+                    "D) afeta unicamente o mundo virtual, não tendo nenhuma repercussão sobre a vida social e material das vítimas."
+                ], correta: 0, explicacao: "Dizer não é apenas descrever o mundo, mas agir sobre ele. A linguagem de ódio marginaliza indivíduos e legitima, institucionalmente e socialmente, agressões reais."
+            },
+            {
+                enunciado: "19. Uma criança de 4 anos não para de perguntar ao pai: 'Por que o céu é azul?', 'Por que as nuvens se movem?', 'Por que eu tenho que dormir?'. Essa atitude infantil compartilha com a atitude filosófica a característica fundamental de:",
+                opcoes: [
+                    "A) buscar respostas definitivas e dogmáticas para encerrar o assunto o mais rápido possível e evitar fadiga.",
+                    "B) expressar o espanto e a curiosidade diante do mundo, recusando-se a aceitar o cotidiano como algo óbvio.",
+                    "C) demonstrar ignorância sobre as verdades religiosas que explicam perfeitamente todos os fenômenos do universo.",
+                    "D) utilizar métodos científicos rigorosos para formular teorias matemáticas sobre o comportamento da natureza."
+                ], correta: 1, explicacao: "Para Aristóteles, a filosofia nasce da 'admiração' (thauma), do espanto diante daquilo que não compreendemos. As perguntas infantis espelham essa recusa de aceitar passivamente o que lhes é dado."
+            },
+            {
+                enunciado: "20. Em uma empresa tradicional, um novo funcionário percebe que um processo administrativo é muito lento. Ao perguntar o motivo, recebe a resposta: 'Sempre fizemos assim e sempre funcionou'. O choque entre o novato e a empresa reflete a tensão entre:",
+                opcoes: [
+                    "A) a postura investigativa que busca inovar e o comodismo gerado pela repetição acrítica de velhos hábitos.",
+                    "B) a rebeldia infundada da juventude e a profunda sabedoria filosófica dos administradores mais experientes.",
+                    "C) a necessidade de lucro imediato e a exigência legal de manter os protocolos de segurança do trabalho inalterados.",
+                    "D) o pensamento mítico dos funcionários antigos e a racionalidade puramente divina trazida pelo novo integrante."
+                ], correta: 0, explicacao: "A indagação perturba a 'zona de conforto'. Questionar exige esforço mental para justificar as ações presentes, o que colide com a tendência natural de operar no modo 'piloto automático' ou senso comum."
+            },
+            {
+                enunciado: "21. Galileu Galilei decidiu apontar seu telescópio para a Lua e observou que ela não era uma esfera perfeita, contrariando a teoria aristotélica aceita pela Igreja na época. Sua ação de duvidar da autoridade estabelecida demonstra que a indagação:",
+                opcoes: [
+                    "A) é um ato de desobediência civil que visa exclusivamente a destruição das instituições religiosas vigentes.",
+                    "B) atua como o motor fundamental da transformação do conhecimento humano e do progresso das ciências.",
+                    "C) deve ser evitada quando as teorias tradicionais já oferecem um conforto psicológico para a sociedade.",
+                    "D) comprova que os sentidos humanos são infalíveis na apreensão direta das verdades universais e eternas."
+                ], correta: 1, explicacao: "O progresso na ciência e no pensamento humano depende da capacidade de questionar aquilo que é tido como 'verdade inquestionável' pelos dogmas de determinada época histórica."
+            },
+            {
+                enunciado: "22. Durante um debate eleitoral, um candidato recusa-se a responder perguntas difíceis e repete apenas frases de efeito e slogans de campanha já conhecidos pelo seu eleitorado. Filosoficamente, esse comportamento revela uma postura:",
+                opcoes: [
+                    "A) dogmática, que blinda as próprias crenças contra o exame crítico e rejeita a prática da argumentação racional.",
+                    "B) dialética, que busca a síntese de ideias opostas através do confronto honesto e aberto com o adversário político.",
+                    "C) maiêutica, inspirada em Sócrates, que objetiva dar à luz novas verdades no pensamento dos eleitores indecisos.",
+                    "D) analítica, que decompõe os problemas sociais complexos em partes menores para facilitar a compreensão do povo."
+                ], correta: 0, explicacao: "O dogmatismo ocorre quando alguém protege suas opiniões da dúvida, blindando-as de serem submetidas a qualquer tipo de escrutínio rigoroso ou investigação argumentativa."
+            },
+            {
+                enunciado: "23. Um estudante de medicina lê em um livro antigo que certas doenças eram causadas por 'maus ares' (miasmas). Em vez de aceitar a informação, ele questiona as evidências e busca artigos sobre microbiologia. A atitude do estudante evidencia que a verdadeira indagação exige:",
+                opcoes: [
+                    "A) o respeito cego pelos textos históricos, que possuem uma autoridade inquestionável sobre a saúde humana.",
+                    "B) a rejeição de toda a ciência moderna, que frequentemente altera suas teorias e não oferece respostas seguras.",
+                    "C) a autonomia intelectual para avaliar as informações recebidas e buscar fundamentos mais sólidos e coerentes.",
+                    "D) a memorização de conceitos biológicos complexos para aprovação em exames e testes de múltipla escolha."
+                ], correta: 2, explicacao: "Filosofar é ser autônomo na construção do saber. Não basta ler um texto; a pessoa precisa usar a racionalidade para pesar as evidências e testar os argumentos por conta própria."
+            },
+            {
+                enunciado: "24. Na alegoria da Caverna de Platão, o prisioneiro que se liberta das correntes é ofuscado pela luz do sol e sofre ao ver a realidade fora da caverna. Trazendo para os dias atuais, iniciar um processo de indagação profunda sobre nossas próprias vidas frequentemente resulta em:",
+                opcoes: [
+                    "A) um estado de conforto imediato, pois a descoberta da verdade tranquiliza instantaneamente o ser humano.",
+                    "B) um desconforto existencial passageiro, inerente ao abandono das ilusões e crenças confortáveis do passado.",
+                    "C) uma paralisia mental irreversível, que impede o indivíduo de retornar ao convívio social e profissional cotidiano.",
+                    "D) uma iluminação mística automática, que garante a resolução de todos os problemas financeiros do indivíduo."
+                ], correta: 1, explicacao: "Sair da ignorância não é um processo isento de dor. Deixar para trás antigas certezas exige enfrentar a angústia da dúvida, até que o intelecto se adapte à nova claridade da razão."
+            },
+            {
+                enunciado: "25. Um quadro moderno em um museu mostra apenas linhas caóticas vermelhas e pretas. Um espectador vê na obra a 'angústia da guerra'; outro espectador enxerga a 'paixão e o movimento de uma dança'. A divergência entre eles ilustra que o ato de interpretar:",
+                opcoes: [
+                    "A) depende de uma fórmula matemática oculta na obra, que apenas os críticos de arte conseguem decifrar.",
+                    "B) revela a incompetência do artista em transmitir uma mensagem clara e objetiva para o público contemporâneo.",
+                    "C) sofre a intervenção do repertório cultural, emocional e histórico daquele que observa e analisa o objeto.",
+                    "D) comprova que todas as obras de arte abstratas carecem de sentido e não devem ser analisadas filosoficamente."
+                ], correta: 2, explicacao: "A Hermenêutica entende que a interpretação não recai apenas sobre o objeto. Quem observa inevitavelmente projeta suas próprias vivências para construir o sentido da obra."
+            },
+            {
+                enunciado: "26. A lei brasileira prevê o direito à 'liberdade de expressão'. No entanto, os tribunais frequentemente debatem se esse direito protege ofensas racistas ou discursos que incitam a violência. A complexidade do trabalho jurídico reside no fato de que a interpretação:",
+                opcoes: [
+                    "A) deve ser feita de forma literal, consultando apenas o dicionário de língua portuguesa para aplicar sentenças justas.",
+                    "B) exige a articulação entre o texto frio da lei, os valores éticos da sociedade e o contexto prático da situação gerada.",
+                    "C) é uma atividade arbitrária em que o juiz ignora completamente o texto constitucional para aplicar suas crenças pessoais.",
+                    "D) torna-se desnecessária quando as leis são escritas com clareza absoluta pelo poder legislativo federal e estadual."
+                ], correta: 1, explicacao: "A interpretação jurídica não é um mecanismo robotizado. Ela demanda ponderar o texto em harmonia com princípios éticos maiores (como a dignidade da pessoa humana) e o contexto fático."
+            },
+            {
+                enunciado: "27. Dois economistas analisam o mesmo gráfico que mostra a queda no desemprego acompanhada da queda da renda média. O primeiro conclui que a economia está melhorando; o segundo, que está precarizando. A raiz dessa divergência analítica demonstra que os dados brutos:",
+                opcoes: [
+                    "A) carregam em si mesmos o significado final e evidente, bastando que o observador saiba realizar contas básicas.",
+                    "B) são construções falsas elaboradas pelo governo, o que impossibilita qualquer análise racional sobre a economia.",
+                    "C) ganham sentidos diferentes dependendo das premissas teóricas e das ideologias aplicadas na sua decodificação.",
+                    "D) eliminam qualquer espaço para a reflexão filosófica, consolidando-se como as únicas verdades absolutas existentes."
+                ], correta: 2, explicacao: "Números não 'falam por si mesmos'. Todo dado estatístico precisa ser lido através de uma teoria ou lente interpretativa, o que possibilita conclusões variadas sobre o mesmo fato material."
+            },
+            {
+                enunciado: "28. Ao ler uma carta escrita no século XVIII por uma mulher da nobreza que se declara 'escrava das vontades de seu marido', um leitor moderno julga a autora como conformista, ignorando que, na época, esse era o padrão imposto. O erro do leitor moderno consistiu em:",
+                opcoes: [
+                    "A) aplicar os valores morais do presente de forma anacrônica, sem compreender o contexto histórico da produção do texto.",
+                    "B) utilizar métodos psicanalíticos avançados para desvendar os traumas inconscientes de uma figura histórica falecida.",
+                    "C) supervalorizar o empoderamento feminino contemporâneo, que distorce a leitura de qualquer documento antigo.",
+                    "D) realizar uma leitura excessivamente focada na gramática do século XVIII, perdendo o sentido emocional da carta original."
+                ], correta: 0, explicacao: "O anacronismo acontece quando julgamos o passado usando as métricas e exigências morais de hoje, o que nos torna incapazes de interpretar o sentido histórico real que as pessoas do passado viviam."
+            },
+            {
+                enunciado: "29. Um colega de turma responde 'tudo bem' quando questionado se está chateado, mas o faz de braços cruzados, sem contato visual e com um tom de voz áspero. Para entender o que ele realmente sente, você realiza uma interpretação que:",
+                opcoes: [
+                    "A) prioriza exclusivamente o conteúdo literal da mensagem verbal, descartando elementos físicos irrelevantes.",
+                    "B) reconhece o silêncio e a linguagem corporal como códigos portadores de sentido que contradizem a fala.",
+                    "C) baseia-se unicamente em teorias astrológicas para determinar o humor momentâneo do colega de sala.",
+                    "D) assume que todas as interações humanas são transparentes e não exigem nenhum tipo de esforço analítico."
+                ], correta: 1, explicacao: "Interpretar o outro envolve a leitura de múltiplas linguagens simultaneamente (verbal, não verbal, cinésica). Frequentemente, o corpo e o tom transmitem a verdade que as palavras tentam esconder."
+            },
+            {
+                enunciado: "30. Um paciente com sintomas de gripe pesquisa no Google e, após ler alguns artigos genéricos, convence a si mesmo de que possui uma doença rara e fatal. O fenômeno ocorre porque, na ausência de conhecimento médico, a interpretação das informações:",
+                opcoes: [
+                    "A) é altamente precisa, democratizando o acesso à saúde e eliminando a necessidade de frequentar hospitais e clínicas.",
+                    "B) é corrompida pela ansiedade do paciente e pela incapacidade de filtrar e contextualizar o conhecimento técnico-científico.",
+                    "C) demonstra a superioridade da sabedoria popular e do senso comum frente aos métodos utilizados pelos laboratórios médicos.",
+                    "D) garante a cura imediata através do efeito placebo gerado pela extensa leitura de materiais acadêmicos online."
+                ], correta: 1, explicacao: "O acesso à informação pura (dados) não garante a interpretação correta. A leitura técnica e científica exige conhecimento metodológico para contextualizar os fatos e não ser vítima de emoções como medo ou viés de confirmação."
+            }
+        ];
+
+        let questaoAtual = 0;
+        let acertos = 0;
+        let primeiraTentativa = true;
+        let tempoInicioQuestao = 0;
+        let timerAvanco;
+
+        const uiElements = {
+            headerInfo: document.getElementById('header-info'),
+            content: document.getElementById('quiz-content'),
+            result: document.getElementById('result-content'),
+            questionText: document.getElementById('question-text'),
+            optionsContainer: document.getElementById('options-container'),
+            progress: document.getElementById('progress'),
+            questionCounter: document.getElementById('question-counter'),
+            scoreCounter: document.getElementById('score-counter'),
+            modal: document.getElementById('feedback-modal'),
+            modalBox: document.getElementById('modal-box'),
+            modalIcon: document.getElementById('modal-icon'),
+            modalTitle: document.getElementById('modal-title'),
+            modalMessage: document.getElementById('modal-message'),
+            modalBtn: document.getElementById('modal-btn'),
+            finalScore: document.getElementById('final-score'),
+            finalMessage: document.getElementById('final-message')
+        };
+
+        function iniciarQuiz() {
+            questaoAtual = 0;
+            acertos = 0;
+            uiElements.headerInfo.style.display = 'block';
+            uiElements.content.style.display = 'block';
+            uiElements.result.style.display = 'none';
+            carregarQuestao();
+        }
+
+        function carregarQuestao() {
+            primeiraTentativa = true; 
+            tempoInicioQuestao = Date.now();
+            clearInterval(timerAvanco); 
+            
+            const q = questoes[questaoAtual];
+            uiElements.questionText.textContent = q.enunciado;
+            uiElements.optionsContainer.innerHTML = '';
+            
+            const progressoPct = ((questaoAtual) / questoes.length) * 100;
+            uiElements.progress.style.width = `${progressoPct}%`;
+            uiElements.questionCounter.textContent = `Questão ${questaoAtual + 1} de ${questoes.length}`;
+            uiElements.scoreCounter.textContent = `Acertos (1ª tentativa): ${acertos}`;
+
+            q.opcoes.forEach((opcao, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opcao;
+                btn.onclick = () => verificarResposta(index);
+                uiElements.optionsContainer.appendChild(btn);
+            });
+        }
+
+        function verificarResposta(indiceSelecionado) {
+            const q = questoes[questaoAtual];
+            const acertou = (indiceSelecionado === q.correta);
+
+            if (acertou) {
+                if (primeiraTentativa) {
+                    acertos++;
+                    uiElements.scoreCounter.textContent = `Acertos (1ª tentativa): ${acertos}`;
+                }
+                mostrarModal(true, q.explicacao);
+            } else {
+                primeiraTentativa = false; 
+                const msgErro = `A resposta correta não é essa. Tente novamente!<br><br><strong>Dica da Explicação:</strong> ${q.explicacao}`;
+                mostrarModal(false, msgErro);
+            }
+        }
+
+        function mostrarModal(acertou, mensagem) {
+            uiElements.modal.style.display = 'flex';
+            clearInterval(timerAvanco); 
+            
+            if (acertou) {
+                uiElements.modalBox.className = 'modal-content correct-theme';
+                uiElements.modalIcon.textContent = '✓';
+                uiElements.modalTitle.textContent = 'Você Acertou!';
+                uiElements.modalMessage.innerHTML = mensagem;
+                
+                let tempoDecorrido = Math.floor((Date.now() - tempoInicioQuestao) / 1000);
+                let tempoRestante = 15 - tempoDecorrido;
+
+                if (tempoRestante > 0) {
+                    uiElements.modalBtn.disabled = true;
+                    uiElements.modalBtn.textContent = `Aguarde (${tempoRestante}s)`;
+                    uiElements.modalBtn.onclick = null;
+                    
+                    timerAvanco = setInterval(() => {
+                        tempoRestante--;
+                        if (tempoRestante > 0) {
+                            uiElements.modalBtn.textContent = `Aguarde (${tempoRestante}s)`;
+                        } else {
+                            clearInterval(timerAvanco);
+                            uiElements.modalBtn.disabled = false;
+                            uiElements.modalBtn.textContent = "Próxima Questão";
+                            uiElements.modalBtn.onclick = avancarQuestao;
+                        }
+                    }, 1000);
+                } else {
+                    uiElements.modalBtn.disabled = false;
+                    uiElements.modalBtn.textContent = "Próxima Questão";
+                    uiElements.modalBtn.onclick = avancarQuestao;
+                }
+
+            } else {
+                uiElements.modalBox.className = 'modal-content wrong-theme';
+                uiElements.modalIcon.textContent = '✗';
+                uiElements.modalTitle.textContent = 'Resposta Incorreta';
+                uiElements.modalMessage.innerHTML = mensagem;
+                
+                uiElements.modalBtn.disabled = false;
+                uiElements.modalBtn.textContent = "Tentar Novamente";
+                uiElements.modalBtn.onclick = tentarNovamente;
+            }
+        }
+
+        function tentarNovamente() {
+            uiElements.modal.style.display = 'none';
+        }
+
+        function avancarQuestao() {
+            uiElements.modal.style.display = 'none';
+            questaoAtual++;
+
+            if (questaoAtual < questoes.length) {
+                carregarQuestao();
+            } else {
+                mostrarResultado();
+            }
+        }
+
+        function mostrarResultado() {
+            uiElements.headerInfo.style.display = 'none';
+            uiElements.content.style.display = 'none';
+            uiElements.result.style.display = 'block';
+            
+            const porcentagem = Math.round((acertos / questoes.length) * 100);
+            uiElements.finalScore.textContent = `${porcentagem}%`;
+            
+            let mensagem = "";
+            if (porcentagem >= 80) mensagem = "Excelente! Você demonstrou foco e leitura atenta acertando a maior parte das questões de primeira.";
+            else if (porcentagem >= 50) mensagem = "Bom trabalho! Continue exercitando sua racionalidade e pensamento crítico.";
+            else mensagem = "Não se preocupe com os erros! O mais importante foi ler as explicações e exercitar a atitude filosófica.";
+            
+            uiElements.finalMessage.textContent = mensagem;
+        }
+
+        function reiniciarQuiz() {
+            iniciarQuiz();
+        }
+
+        window.onload = iniciarQuiz;
+    </script>
+</body>
+</html>
