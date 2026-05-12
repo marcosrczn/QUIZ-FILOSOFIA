@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulado de Filosofia: 1ª Série do Ensino Médio</title>
+    <style>
+        :root{--primary-color:#2c3e50;--secondary-color:#34495e;--accent-color:#3498db;--correct-color:#27ae60;--wrong-color:#e74c3c;--bg-color:#f5f7fa;--text-color:#333}
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:var(--bg-color);color:var(--text-color);margin:0;padding:20px;display:flex;justify-content:center;align-items:center;min-height:100vh}
+        .quiz-container{background-color:#fff;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,0.1);width:100%;max-width:800px;padding:30px;position:relative;overflow:hidden}
+        h1{text-align:center;color:var(--primary-color);margin-top:0}
+        .header-info{background-color:#eef2f5;border-left:5px solid var(--accent-color);padding:15px 20px;margin-bottom:25px;border-radius:4px;font-size:0.95rem;line-height:1.5}
+        .header-info h3{margin-top:0;margin-bottom:8px;color:var(--primary-color);font-size:1.1rem}
+        .header-info p{margin-top:0;margin-bottom:15px} .header-info p:last-child{margin-bottom:0}
+        .progress-bar{background-color:#e0e0e0;border-radius:5px;height:10px;margin-bottom:20px;width:100%}
+        .progress-fill{background-color:var(--accent-color);height:100%;border-radius:5px;width:0%;transition:width 0.3s ease}
+        .status-bar{display:flex;justify-content:space-between;font-weight:bold;margin-bottom:20px;color:var(--secondary-color)}
+        .question-text{font-size:1.2rem;line-height:1.5;margin-bottom:20px;text-align:justify}
+        .reading-timer{text-align:center;color:#d35400;background-color:#fdebd0;border:1px solid #fad7a1;padding:12px;border-radius:6px;font-weight:bold;font-size:1.1rem;margin-bottom:20px;display:none;animation:pulse 1.5s infinite}
+        @keyframes pulse{0%{opacity:1}50%{opacity:0.8}100%{opacity:1}}
+        .options-grid{display:flex;flex-direction:column;gap:12px}
+        .option-btn{background-color:#f8f9fa;border:2px solid #e9ecef;border-radius:8px;padding:15px;font-size:1rem;text-align:left;cursor:pointer;transition:all 0.2s ease;line-height:1.4}
+        .option-btn:hover:not(:disabled){background-color:#e9ecef;border-color:#ced4da}
+        .option-btn:disabled{background-color:#f1f3f5;color:#7f8c8d;cursor:not-allowed;border-color:#ecf0f1;opacity:0.8}
+        .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0.7);z-index:1000;justify-content:center;align-items:center;padding:20px}
+        .modal-content{background-color:#fff;border-radius:12px;padding:30px;max-width:600px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.3);animation:popIn 0.3s ease}
+        @keyframes popIn{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
+        .modal-icon{font-size:60px;margin-bottom:15px}
+        .modal-title{font-size:1.8rem;font-weight:bold;margin-bottom:10px}
+        .modal-message{font-size:1.1rem;margin-bottom:25px;line-height:1.5;text-align:justify}
+        .correct-theme .modal-icon, .correct-theme .modal-title{color:var(--correct-color)}
+        .wrong-theme .modal-icon, .wrong-theme .modal-title{color:var(--wrong-color)}
+        .btn-next{background-color:var(--primary-color);color:white;border:none;border-radius:6px;padding:12px 25px;font-size:1.1rem;cursor:pointer;font-weight:bold;transition:background-color 0.2s;width:100%;max-width:300px}
+        .btn-next:hover:not(:disabled){background-color:var(--secondary-color)}
+        .result-container{display:none;text-align:center}
+        .score-circle{width:150px;height:150px;border-radius:50%;background-color:var(--accent-color);color:white;display:flex;justify-content:center;align-items:center;font-size:2.5rem;font-weight:bold;margin:0 auto 20px}
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz-box">
+        <h1>Simulado de Filosofia: 1ª Série</h1>
+        
+        <div class="header-info" id="header-info">
+            <h3>Objetos de Conhecimento Abordados:</h3>
+            <p>Pensamento, Racionalidade, Linguagem, Indagação, Interpretação, Senso comum, Pensamento mítico, O surgimento da Filosofia, Atitude filosófica e Os conceitos de Verdade.</p>
+            
+            <h3>Objetivo de Aprendizagem:</h3>
+            <p>Ao final deste simulado, você será capaz de identificar, analisar e comparar diferentes narrativas, compreendendo a transição da consciência mítica para a filosófica e a estruturação do raciocínio lógico (Habilidade EM13CHS101).</p>
+            
+            <p><strong>Atenção:</strong> O pensamento filosófico exige calma e reflexão. Você terá um tempo mínimo obrigatório para ler o enunciado de cada questão antes de poder selecionar uma alternativa.</p>
+        </div>
+
+        <div id="quiz-content">
+            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+            <div class="status-bar">
+                <span id="question-counter">Questão 1</span>
+                <span id="score-counter">Acertos (1ª tentativa): 0</span>
+            </div>
+            <div class="question-text" id="question-text">Carregando pergunta...</div>
+            <div id="reading-timer" class="reading-timer">Tempo de reflexão necessário: <span id="timer-count">15</span>s</div>
+            <div class="options-grid" id="options-container"></div>
+        </div>
+
+        <div class="result-container" id="result-content">
+            <h2>Fim do Simulado!</h2>
+            <div class="score-circle" id="final-score">0%</div>
+            <p id="final-message" class="question-text"></p>
+            <button class="btn-next" onclick="reiniciarQuiz()">Tentar Novamente</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="feedback-modal">
+        <div class="modal-content" id="modal-box">
+            <div class="modal-icon" id="modal-icon">✓</div>
+            <div class="modal-title" id="modal-title">Você Acertou!</div>
+            <div class="modal-message" id="modal-message">Explicação aqui.</div>
+            <button class="btn-next" id="modal-btn">Aguarde...</button>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('beforeunload', function (e) {
+            e.preventDefault();
+            e.returnValue = '';
+        });
+
+        const TEMPO_LEITURA_SEGUNDOS = 15;
+
+        // O sistema embaralha automaticamente as opções. A primeira opção (índice 0) deve ser a CORRETA no array.
+        const questoes = [
+            {
+                enunciado: "1. Durante um trabalho em grupo sobre inteligência artificial, um colega diz que os computadores são superiores porque não erram cálculos. Você responde que nós, humanos, temos algo que a máquina não tem: a capacidade de questionar nossas ações. O que diferencia a nossa racionalidade nesse caso?",
+                opcoes: [
+                    "A mente humana consegue refletir sobre as próprias escolhas e entender o certo e o errado nas decisões.",
+                    "A inteligência humana serve apenas para fazer contas matemáticas de forma muito rápida e sem nenhum erro.",
+                    "A capacidade principal do cérebro é construir máquinas cada vez mais fortes para dominar o nosso planeta.",
+                    "A razão humana serve exclusivamente para processar dados de internet muito mais rápido que um computador."
+                ],
+                explicacao: "A racionalidade humana vai além do cálculo mecânico; ela envolve a consciência, a ética e a capacidade de refletir sobre o próprio sentido da vida e das ações."
+            },
+            {
+                enunciado: "2. Um político famoso faz uma postagem na internet dizendo que luta pela 'liberdade'. O problema é que empresários entendem isso como pagar menos impostos, enquanto trabalhadores entendem como ter mais direitos. O que isso nos ensina sobre o funcionamento da linguagem?",
+                opcoes: [
+                    "O sentido das palavras muda dependendo da realidade e dos interesses da pessoa que está lendo a frase.",
+                    "As palavras têm um único sentido, e todo mundo entende a mesma coisa quando lê um texto na internet.",
+                    "A linguagem é neutra e passa a informação de forma exata, sem que ninguém tenha dúvidas do sentido.",
+                    "A comunicação escrita sempre garante que a pessoa que escreve e a que lê tenham a mesmíssima opinião."
+                ],
+                explicacao: "A linguagem não é um espelho perfeito e neutro da realidade; ela é interpretada a partir das vivências, bagagens culturais e interesses de quem a utiliza."
+            },
+            {
+                enunciado: "3. A sua avó sempre faz um chá de hortelã quando você está com dor de estômago, dizendo que 'isso é tiro e queda, aprendi com minha mãe'. Ela não sabe a composição química da planta, mas o chá funciona. Como a Filosofia chama esse tipo de conhecimento?",
+                opcoes: [
+                    "É um conhecimento popular passado de geração em geração, que as pessoas usam sem exigir provas exatas.",
+                    "É um saber formado por testes de laboratório, sendo aceito apenas depois de muitos estudos científicos.",
+                    "É uma teoria filosófica complexa criada para entender o funcionamento biológico e químico das plantas.",
+                    "É uma lenda antiga e completamente inventada, que não tem nenhuma ligação com o mundo real e prático."
+                ],
+                explicacao: "O senso comum é caracterizado por ser um saber prático, assistemático e repassado pela tradição, muitas vezes sem o rigor de um teste metódico."
+            },
+            {
+                enunciado: "4. Imagine viver em uma tribo antiga. Quando dava uma tempestade muito forte e assustadora, o pajé dizia que o deus do trovão estava irritado. No fundo, para que serviam essas histórias mágicas e mitológicas para aquele povo antigo?",
+                opcoes: [
+                    "Ajudavam a comunidade a se acalmar, dando uma explicação mágica para as coisas que eles não entendiam.",
+                    "Serviam para criar fórmulas matemáticas exatas e prever o tempo com o uso de equipamentos de medição.",
+                    "Tinham a função de ensinar os jovens a não acreditarem em nada que não pudesse ser visto e tocado.",
+                    "Eram usadas pelos professores para dar aulas de ciências naturais e biologia para as crianças da tribo."
+                ],
+                explicacao: "O pensamento mítico fornecia conforto existencial e uma explicação organizadora para os fenômenos naturais aterrorizantes e incompreendidos."
+            },
+            {
+                enunciado: "5. Lá na Grécia Antiga, o pensador Tales de Mileto olhou para a natureza e disse: 'Tudo é feito de água'. Ele não colocou a culpa em um deus da chuva, mas tentou achar uma explicação natural. Por que essa atitude é considerada o início da Filosofia?",
+                opcoes: [
+                    "Mostrou que as pessoas começaram a procurar explicações na própria natureza, usando a razão e a lógica.",
+                    "Provou que a melhor forma de entender o universo era continuar acreditando nas histórias de monstros.",
+                    "Afirmou que não precisávamos mais observar as coisas ao nosso redor, pois tudo já estava descoberto.",
+                    "Criou a ideia de que a água tinha poderes sobrenaturais e deveria ser adorada no lugar dos antigos."
+                ],
+                explicacao: "A transição do pensamento mítico para a filosofia marca a busca por explicações racionais (lógos) baseadas na observação da natureza (physis)."
+            },
+            {
+                enunciado: "6. Você está num ônibus lotado às seis da manhã e de repente pensa: 'Por que todo mundo aceita acordar tão cedo para viver nessa correria maluca todos os dias?'. Esse pequeno choque com a realidade do dia a dia mostra o quê?",
+                opcoes: [
+                    "É o ato de estranhar aquilo que parece normal para todo mundo e começar a fazer perguntas sobre isso.",
+                    "Significa aceitar as coisas ruins da vida sem reclamar, pois é assim que o mundo sempre funcionou.",
+                    "Representa a vontade de brigar com as outras pessoas na rua apenas para provar que você é mais sábio.",
+                    "Mostra que a pessoa perdeu a capacidade de viver em sociedade e precisa de ajuda para ser normal."
+                ],
+                explicacao: "A atitude filosófica começa com o 'espanto' ou a 'admiração' diante do banal, desnaturalizando os hábitos sociais aceitos cegamente."
+            },
+            {
+                enunciado: "7. Um influenciador no TikTok afirma que a Terra é oca porque ele assistiu a um documentário secreto. Você não aceita e pede para ele mostrar dados geológicos e fontes confiáveis. Qual é a regra do pensamento filosófico que você usou nessa hora?",
+                opcoes: [
+                    "Exigir motivos lógicos e provas verdadeiras antes de aceitar que uma opinião qualquer é a pura verdade.",
+                    "Acreditar rapidamente no que as pessoas famosas dizem na internet, sem pedir nenhuma prova concreta.",
+                    "Duvidar de tudo o tempo todo, mesmo quando os cientistas mostram fotos e estudos muito bem feitos.",
+                    "Aceitar que cada pessoa tem a sua própria verdade e que ninguém precisa provar nada para os outros."
+                ],
+                explicacao: "Uma das principais exigências do pensamento rigoroso é a necessidade de fundamentação e coerência lógica para validar uma afirmação."
+            },
+            {
+                enunciado: "8. Um astrônomo estuda um cometa usando telescópios gigantescos e muitos cálculos. Um poeta olha para o mesmo cometa e escreve um poema sobre a beleza e a rapidez da vida. O que isso nos mostra sobre as nossas formas de entender as coisas?",
+                opcoes: [
+                    "Os seres humanos utilizam formas bem diferentes para compreender a realidade, como a ciência e a arte.",
+                    "A ciência é o único jeito certo de entender as coisas, e a arte não serve para explicar o nosso mundo.",
+                    "O poema do artista é mais verdadeiro que o telescópio, pois os sentimentos nunca nos enganam na vida.",
+                    "O cientista e o poeta fazem exatamente o mesmo tipo de trabalho e chegam sempre ao mesmo resultado."
+                ],
+                explicacao: "Existem múltiplos tipos de conhecimento (científico, estético, filosófico, empírico), e cada um apreende uma dimensão diferente da realidade."
+            },
+            {
+                enunciado: "9. Hoje em dia, a ciência consegue mudar o DNA de seres humanos para evitar doenças. Mas os cientistas chamam filósofos para debater se é ético 'brincar de criador' no laboratório. Qual é a relação prática entre a Ciência e a Filosofia aí?",
+                opcoes: [
+                    "A Ciência descobre como fazer as coisas, e a Filosofia ajuda a pensar se nós realmente devemos fazê-las.",
+                    "A Filosofia serve para proibir o trabalho dos cientistas e impedir a criação de novas tecnologias modernas.",
+                    "Os filósofos constroem os laboratórios mais avançados para que os médicos possam trabalhar com segurança.",
+                    "A Ciência e a Filosofia são grandes inimigas e nunca conseguem conversar sobre os problemas do mundo."
+                ],
+                explicacao: "Enquanto a Ciência foca na descrição e intervenção técnica (o 'como'), a Filosofia avalia os fundamentos morais e o sentido ético das ações (o 'devemos')."
+            },
+            {
+                enunciado: "10. Rola uma fofoca na escola de que dois alunos brigaram no pátio. Cada roda de amigos conta uma versão totalmente diferente da história. Para descobrir o que realmente aconteceu, o que a direção precisa fazer segundo o pensamento crítico?",
+                opcoes: [
+                    "Achar a verdade exige que a gente analise os fatos com cuidado e não acredite apenas nas aparências.",
+                    "A verdade não existe no mundo real, então não adianta perder tempo tentando descobrir o que aconteceu.",
+                    "A verdade sempre aparece de forma rápida e fácil, bastando perguntar para a primeira pessoa no corredor.",
+                    "O que importa não é a verdade dos fatos, mas sim quem consegue falar mais alto e convencer os outros."
+                ],
+                explicacao: "A busca pelos conceitos de verdade demanda o exame crítico, o cruzamento de fontes narrativas e a superação de ilusões iniciais."
+            },
+            {
+                enunciado: "11. Seu amigo compra um livro de autoajuda chamado 'Como ficar rico em 5 dias' e diz que agora gosta de Filosofia. Você, que prestou atenção nas aulas, sabe que a verdadeira Filosofia não promete soluções mágicas. Como podemos definir a Filosofia?",
+                opcoes: [
+                    "Uma forma profunda de pensar que busca entender as raízes dos problemas mais difíceis da vida humana.",
+                    "Um livro cheio de regras simples que ensinam as pessoas a ficarem ricas e felizes em poucos dias.",
+                    "Uma lenda muito antiga que dita exatamente o que os jovens devem fazer para terem um futuro brilhante.",
+                    "Uma ciência exata que usa números e cálculos rápidos para resolver todos os sentimentos tristes da gente."
+                ],
+                explicacao: "Filosofia é uma atividade reflexiva, crítica e argumentativa focada nos fundamentos do real, não um receituário de bem-estar."
+            },
+            {
+                enunciado: "12. Dois amigos vão ao cinema assistir a um filme de ficção científica (como Matrix). Um sai achando que é só um filme de tiro, e o outro entende que é uma crítica sobre o controle da sociedade. O que isso ensina sobre a interpretação?",
+                opcoes: [
+                    "Explica que cada pessoa percebe coisas diferentes na história dependendo das suas próprias experiências.",
+                    "Mostra que todo mundo entende um filme do mesmo jeito, sem nenhuma diferença na forma de ver as coisas.",
+                    "Prova que não vale a pena assistir a filmes difíceis, porque eles só servem para confundir a cabeça.",
+                    "Indica que o filme foi mal feito, pois uma boa história só pode ter uma única explicação verdadeira e óbvia."
+                ],
+                explicacao: "A interpretação é mediada pelo referencial teórico e pela bagagem cultural de cada indivíduo ao se deparar com uma linguagem."
+            },
+            {
+                enunciado: "13. Todo mundo já ouviu a frase 'os opostos se atraem'. Mas quando os sociólogos pesquisam casais reais, descobrem que pessoas parecidas tendem a ficar juntas por mais tempo. O que esse choque nos mostra sobre o senso comum?",
+                opcoes: [
+                    "Tem opiniões gerais que até ajudam no dia a dia, mas que às vezes não passam em testes mais sérios.",
+                    "É sempre muito mais confiável que os estudos científicos, pois foi criado pelos nossos avós no passado.",
+                    "Deve ser proibido nas escolas do Brasil, pois só serve para espalhar mentiras entre todos os estudantes.",
+                    "É a única maneira correta de escolher os amigos e namorados, deixando a ciência totalmente de lado."
+                ],
+                explicacao: "O senso comum trabalha com generalizações úteis, mas que podem ser acríticas e falhas quando submetidas a exames mais aprofundados."
+            },
+            {
+                enunciado: "14. Você quer convencer seus pais a deixarem você ir a uma festa. Chorar ou gritar não vai adiantar. Você precisa montar um argumento, mostrando horários, companhias e formas de voltar seguro. Qual exigência da razão você precisou usar com seus pais?",
+                opcoes: [
+                    "Ter ideias que façam sentido e que se liguem de forma lógica para convencer os outros de verdade.",
+                    "Gritar bastante alto para colocar medo nas outras pessoas e forçar que aceitem a sua ideia na hora.",
+                    "Usar palavras muito difíceis que ninguém conhece, para parecer que você é o filho mais inteligente.",
+                    "Falar coisas bonitas que façam as pessoas chorarem, mesmo que a sua ideia não tenha nenhum sentido."
+                ],
+                explicacao: "A exigência lógica do pensamento implica em não se contradizer e estruturar premissas que sustentem racionalmente a conclusão."
+            },
+            {
+                enunciado: "15. Imagine se uma nova rede social proibisse você de usar as palavras 'tristeza', 'raiva' e 'injustiça'. Depois de um tempo, seria até difícil sentir ou explicar essas coisas. O que esse cenário maluco nos ensina sobre a força da linguagem?",
+                opcoes: [
+                    "Pode limitar a nossa forma de pensar o mundo se perdermos palavras importantes para expressar ideias.",
+                    "Não faz nenhuma diferença na nossa vida, pois pensamos apenas com imagens e não precisamos de letras.",
+                    "Garante a nossa liberdade total na internet, pois quanto menos falarmos, menos problemas vamos ter.",
+                    "Serve apenas para enfeitar as nossas redações da escola e não muda nada na cabeça de quem escreve."
+                ],
+                explicacao: "A linguagem não apenas transmite pensamentos, mas estrutura nossa capacidade cognitiva de conceber a própria realidade."
+            },
+            {
+                enunciado: "16. O avô do seu amigo sempre olha a fase da lua antes de plantar feijão na roça, dizendo que dá mais certo. Um agrônomo recém-formado diz que ele deveria usar um sensor de umidade importado. Sobre esses dois jeitos de agir, o que é correto afirmar?",
+                opcoes: [
+                    "As duas formas de conhecer têm o seu valor prático e podem ajudar as pessoas em situações diferentes.",
+                    "O conhecimento dos mais velhos é o único que funciona, e a tecnologia dos engenheiros atrapalha tudo.",
+                    "A ciência das máquinas é totalmente inútil na natureza, pois as plantas crescem sozinhas de todo jeito.",
+                    "O homem do campo não sabe nada sobre plantação se não tiver feito faculdade de agricultura moderna."
+                ],
+                explicacao: "O conhecimento empírico/tradicional e o conhecimento científico atendem a necessidades distintas e podem coexistir de forma útil."
+            },
+            {
+                enunciado: "17. Você repara que muita gente gasta o salário inteiro só para ter o celular do ano, mesmo que o antigo ainda funcione perfeitamente. Quando você para e pergunta 'por que somos tão consumistas?', qual atitude você está tomando?",
+                opcoes: [
+                    "É uma atitude filosófica de estranhar uma ação que todo mundo faz sem nem mesmo pensar no motivo.",
+                    "É uma demonstração de inveja de quem não tem dinheiro para comprar aparelhos novos e bonitos.",
+                    "Representa o senso comum que concorda que devemos sempre seguir a moda ditada pela internet hoje.",
+                    "Significa uma revolta sem nenhum sentido contra as lojas que apenas querem vender os seus produtos."
+                ],
+                explicacao: "O exercício filosófico visa problematizar a rotina e as convenções que a sociedade aceitou passivamente."
+            },
+            {
+                enunciado: "18. Um professor mostra um vídeo onde macacos usam gravetos para pescar formigas. Um aluno diz: 'Eles também pensam!'. O professor concorda, mas lembra que só nós, humanos, escrevemos poemas sobre a dor de existir. Qual é a nossa marca registrada?",
+                opcoes: [
+                    "Ter a capacidade maravilhosa de refletir sobre quem nós somos e tentar encontrar um sentido na vida.",
+                    "Usar as mãos de forma muito rápida para conseguir arrumar comida antes dos outros bichos da floresta.",
+                    "Conseguir correr muito mais rápido e pular muito mais alto do que qualquer outro ser vivo do mundo.",
+                    "Ser capaz de comer todos os tipos de plantas da natureza sem sentir nenhum tipo de dor de barriga."
+                ],
+                explicacao: "A racionalidade humana distingue-se pela autoconsciência, pela reflexão abstrata e pela produção simbólica e cultural."
+            },
+            {
+                enunciado: "19. Pense nas histórias de deuses como Zeus e Poseidon que víamos nos filmes. Para as pessoas da antiguidade que viviam com medo dos raios e do mar revolto, essas histórias mitológicas cumpriam qual papel principal no dia a dia?",
+                opcoes: [
+                    "Criar narrativas muito mágicas e sobrenaturais para dar total tranquilidade às pessoas sobre o mundo.",
+                    "Ensinar a população a duvidar de tudo e não ter medo de fenômenos da natureza que são inofensivos.",
+                    "Impedir que as pessoas se divertissem na rua com histórias assustadoras que eram contadas à noite.",
+                    "Fazer cálculos matemáticos exatos para saber exatamente em qual dia do mês a tempestade ia chegar."
+                ],
+                explicacao: "O mito atua como uma força integradora que acalma a angústia diante do desconhecido por meio da narrativa simbólica."
+            },
+            {
+                enunciado: "20. Quando somos crianças pequenas, passamos o dia inteiro perguntando 'por quê?'. Quando crescemos, a escola pede para não perdermos essa mania de perguntar. Por que a pergunta é tão valiosa para o aprendizado?",
+                opcoes: [
+                    "Mantém a curiosidade ativa e forte, provocando a mente para descobrir motivos mais reais e profundos.",
+                    "Ajuda a aceitar facilmente qualquer resposta rápida que a primeira pessoa der, só para terminar a conversa.",
+                    "Serve para proibir que as pessoas façam perguntas bobas, porque isso tira o tempo útil dos nossos dias.",
+                    "Faz a gente concordar cegamente que todas as respostas já foram descobertas pelos sábios do passado."
+                ],
+                explicacao: "A indagação é o motor do raciocínio crítico, impulsionando a saída da zona de conforto em direção ao conhecimento."
+            },
+            {
+                enunciado: "21. Um colega usa frequentemente uma gíria nova da internet que os pais dele não conseguem compreender em casa. O que este pequeno desencontro nos revela de importante sobre a linguagem falada na nossa sociedade?",
+                opcoes: [
+                    "A língua muda com o tempo e adapta-se à realidade dos jovens.",
+                    "A comunicação verbal é sempre igual e nunca sofre nenhuma alteração.",
+                    "As palavras muito antigas devem ser usadas sempre por todas as pessoas.",
+                    "O sentido final da fala depende apenas do dicionário oficial da escola."
+                ],
+                explicacao: "A linguagem é dinâmica e reflete as contínuas mudanças culturais e geracionais de um grupo social."
+            },
+            {
+                enunciado: "22. Um padeiro sabe fazer o pão perfeito por causa da sua prática diária na cozinha. O cientista sabe explicar exatamente a reação química do fermento. O que podemos concluir sobre estas formas de saber?",
+                opcoes: [
+                    "A longa experiência prática e a teoria científica são dois saberes diferentes.",
+                    "Apenas a ciência de laboratório possui grande utilidade real no dia a dia.",
+                    "O conhecimento rural do padeiro é inútil porque não foi ensinado na escola.",
+                    "Os dois profissionais usam métodos totalmente idênticos para fazer uma receita."
+                ],
+                explicacao: "Conhecimento empírico e conhecimento científico possuem metodologias distintas, mas ambos são formas válidas de compreensão da realidade."
+            },
+            {
+                enunciado: "23. Na Grécia Antiga, os cidadãos juntavam-se nas praças públicas para debater e decidir a criação de novas leis. De que modo este ambiente agitado e participativo ajudou bastante no próprio nascimento da atitude filosófica?",
+                opcoes: [
+                    "Estimulou o puro raciocínio lógico e a troca profunda de opiniões contrárias.",
+                    "Impediu que as pessoas comuns tivessem boas ideias originais sobre a política.",
+                    "Forçou toda a gente a acreditar apenas nos mitos criados pelas lideranças.",
+                    "Proibiu rapidamente qualquer tipo de nova pergunta sobre a origem do cosmos."
+                ],
+                explicacao: "A pólis grega exigiu a argumentação e a persuasão pela palavra, substituindo dogmas inquestionáveis pelo debate dialógico."
+            },
+            {
+                enunciado: "24. Duas pessoas leem uma mesma reportagem sobre um acidente de carro, mas chegam a conclusões opostas sobre o culpado. Por que o mesmo texto jornalístico gera compreensões visivelmente tão diferentes nas mentes dos leitores?",
+                opcoes: [
+                    "Porque a leitura depende bastante das crenças prévias de cada uma pessoa.",
+                    "Porque as notícias sempre tentam espalhar mentiras para enganar todo o povo.",
+                    "Porque a mente humana não consegue focar atenção em textos muito complexos.",
+                    "Porque uma das duas pessoas certamente cometeu um enorme erro na leitura."
+                ],
+                explicacao: "A interpretação nunca é neutra; ela passa pelo filtro da bagagem ideológica e cultural de quem analisa a fonte."
+            },
+            {
+                enunciado: "25. Uma aluna para e questiona o motivo de o sinal da escola tocar sempre na mesma hora exata todos os dias. Na filosofia, como chamamos esta vontade de analisar os hábitos normais da nossa vida?",
+                opcoes: [
+                    "O ato de estranhar as regras óbvias e questionar a nossa forte rotina.",
+                    "A vontade teimosa de não querer respeitar normas muito antigas da escola.",
+                    "A grande falta de educação com todos os inspetores espalhados pelo colégio.",
+                    "O enorme desejo de promover enorme confusão e barulho nos corredores locais."
+                ],
+                explicacao: "O princípio da reflexão consiste na capacidade de desnaturalizar o banal, marca fundamental da atitude filosófica."
+            },
+            {
+                enunciado: "26. Hoje em dia, vídeos falsos criados por computadores potentes enganam rapidamente milhares de pessoas nas principais redes sociais. O que este fenómeno moderno nos alerta sobre a busca da verdade no século em que vivemos?",
+                opcoes: [
+                    "A verdade pede uma reflexão bastante atenta e não apenas uma crença imediata.",
+                    "A verdade surge de forma imediata na primeira imagem que vemos no telemóvel.",
+                    "A tecnologia consegue garantir que todas as partilhas da internet sejam factuais.",
+                    "A imagem gerada por robôs nunca vai conseguir enganar o olhar de um jovem."
+                ],
+                explicacao: "Em tempos de manipulação digital profunda, o rigor investigativo torna-se a única salvaguarda para a factualidade."
+            },
+            {
+                enunciado: "27. Para resolveres um problema difícil de matemática, precisas seguir passos organizados em vez de atirar palpites sem pensar. Como esta simples tarefa da escola se relaciona diretamente com as exigências de um bom raciocínio lógico?",
+                opcoes: [
+                    "Mostra que pensar com método e paciência ajuda a chegar em conclusões boas.",
+                    "Requer que a resposta final surja apenas por meio de instintos bem rápidos.",
+                    "Indica que usar raciocínios longos constitui uma enorme perda de tempo livre.",
+                    "Afirma que resolver grandes equações dispensa a dedicação plena do nosso cérebro."
+                ],
+                explicacao: "O rigor lógico exige a sistematização metodológica das ideias para garantir deduções coerentes."
+            },
+            {
+                enunciado: "28. Na antiguidade grega, o mistério da paixão era explicado através da lenda de Eros, o deus do amor que atirava flechas invisíveis. Qual era o propósito essencial desse tipo de conto folclórico maravilhoso e fantástico?",
+                opcoes: [
+                    "Explicar emoções muito confusas através da ação mágica de seres bastante poderosos.",
+                    "Proibir todos os encontros de jovens nas ruas das cidades gregas bem antigas.",
+                    "Facilitar o rápido aprendizado das disciplinas de física básica para as crianças.",
+                    "Apagar toda a biologia e substitui-la por ensinamentos baseados apenas em magias."
+                ],
+                explicacao: "O mito atua como um sistema explicativo primitivo que traduz paixões humanas complexas em ações divinas compreensíveis."
+            },
+            {
+                enunciado: "29. Um grupo de biólogos consegue clonar ovelhas em cativeiro e, logo depois, alguns pensadores questionam publicamente se isso é correto do ponto de vista moral. O que este debate exemplifica sobre Filosofia e Ciência?",
+                opcoes: [
+                    "A Filosofia avalia as consequências éticas diante das incríveis invenções da Ciência.",
+                    "As duas disciplinas são inimigas clássicas e odeiam falar do mesmo grande problema.",
+                    "A ciência contemporânea tenta anular e destruir o puro pensamento crítico do cidadão.",
+                    "O investigador científico e o pensador efetuam experiências iguais no mesmo laboratório."
+                ],
+                explicacao: "A bioética reflete como o progresso técnico da ciência necessita do balizamento moral e valorativo da filosofia."
+            },
+            {
+                enunciado: "30. Um rapaz encontra os tênis dos seus sonhos, mas decide não comprar para poder poupar dinheiro para o futuro. O que esta decisão sábia sobre o consumo imediato revela sobre a natureza e a racionalidade humana?",
+                opcoes: [
+                    "Mostra a fantástica capacidade de nós travarmos o mero impulso usando a inteligência.",
+                    "Evidencia que os caprichos instintivos controlam absolutamente a nossa tomada de ações.",
+                    "Prova que as pessoas mais novas já não sentem nenhuma atração por produtos bonitos.",
+                    "Confirma que nós sempre agimos por instinto tal como a maioria dos animais agem."
+                ],
+                explicacao: "O ser humano, diferente de outras espécies, pode sobrepor o raciocínio futuro sobre o instinto biológico primário do presente."
+            },
+            {
+                enunciado: "31. Um bom detetive num filme nunca se contenta com as respostas fáceis e continua a interrogar todos à sua volta. Por que é que perguntar repetidas vezes é algo parecido com o trabalho de um filósofo?",
+                opcoes: [
+                    "Porque procurar compreender a fundo ajuda a ver as coisas além da aparência óbvia.",
+                    "Porque as suspeitas simples nunca trazem nenhum benefício claro para a nossa existência.",
+                    "Porque ser desconfiado sobre tudo garante o afastamento rápido e total dos nossos amigos.",
+                    "Porque as rondas policiais noturnas criam mentiras para acusar pessoas bastante trabalhadoras."
+                ],
+                explicacao: "O ato de indagar continuamente serve para transpor a superficialidade das aparências iniciais rumo aos fundamentos ocultos."
+            },
+            {
+                enunciado: "32. Na sala de aula, um aluno novo imagina que a disciplina de Filosofia servirá para ensinar macetes para ser popular no colégio. Como o mestre pode corrigir essa visão muito errada sobre o real papel filosófico?",
+                opcoes: [
+                    "Explicando que a verdadeira reflexão requer um forte mergulho analítico em coisas reais.",
+                    "Afirmando que os cadernos trazem simpatias ótimas para se garantir o sucesso relâmpago.",
+                    "Confessando que o pensamento só serve para causar transtornos emocionais sem nenhum motivo.",
+                    "Contando que a intenção real desta disciplina foca apenas em enriquecer sem muito esforço."
+                ],
+                explicacao: "A utilidade da filosofia está na construção da emancipação mental pela crítica, e não na entrega de regras práticas de sobrevivência."
+            },
+            {
+                enunciado: "33. Há muitos anos atrás, uma aldeia afirmava que tempestades repentinas eram punições enviadas para castigar quem falava muito alto. O que esta curiosa crença assustadora evidencia sobre as lógicas populares passadas de pai para filho?",
+                opcoes: [
+                    "O senso coletivo frequentemente forma ilusões fantasiosas sobre riscos que não compreende totalmente.",
+                    "O ditado popular resulta da grande aprovação de químicos que manipulam o clima diário.",
+                    "O saber da população está muito focado nas modernas contas matemáticas e na gravidade.",
+                    "O conhecimento mais antigo acerta de modo certeiro em cem porcento das suas adivinhações."
+                ],
+                explicacao: "O senso comum engloba superstições acríticas que funcionam como mecanismos rudimentares de alerta social comunitário."
+            },
+            {
+                enunciado: "34. Ao pedires autorização aos pais para ires a um concerto longe de casa, precisas dar argumentos válidos que façam bom sentido do início ao fim. Que regra fundamental do pensar correto estás a tentar aplicar ali?",
+                opcoes: [
+                    "O cuidado e a coerência lógica, que não permitem contradições durante as nossas explicações.",
+                    "O uso da força emocional, que aposta em choros muito ruidosos para convencer as visitas.",
+                    "A atitude imatura e teimosa, que rejeita escutar completamente a resposta das pessoas velhas.",
+                    "O excesso de uma pressa falante, obrigando a que nós digamos poucas frases sem conexões."
+                ],
+                explicacao: "Todo silogismo exigido no debate filosófico proíbe a inconsistência argumentativa que prejudique a compreensão."
+            },
+            {
+                enunciado: "35. Um jovem tenta descrever para os amigos o quão triste ficou depois do falecimento do avô querido, mas afirma que 'não há palavras para isso'. O que a frustração dele nos mostra sobre as frases ditas?",
+                opcoes: [
+                    "Os nossos abalos íntimos emocionais conseguem ir mais longe do que o nosso dicionário consegue.",
+                    "As formas escritas são capazes de explicar detalhadamente tudo aquilo que a nossa cabeça pensa.",
+                    "Os adolescentes da época atual já não conhecem regras gramaticais para dialogar com os mais maduros.",
+                    "A capacidade de usar os sons articulados carece de força para a transmissão de boas impressões."
+                ],
+                explicacao: "Embora a linguagem emoldure nosso pensamento, a profundidade ontológica da dor frequentemente escapa aos limites semânticos formais."
+            },
+            {
+                enunciado: "36. Um investigador percebe que os resultados dos exames não confirmam a sua ideia inicial e ele aceita refazer todo o percurso dos testes pacientemente. Por que reconhecer um engano é a base principal para se conhecer algo novo?",
+                opcoes: [
+                    "Permite arranjar caminhos melhores para descobrir informações firmes num mundo de muito engano.",
+                    "Mostra que a mente das pessoas de hoje em dia possui apenas falhas e muitas fraquezas.",
+                    "Sugere que alterar um único conceito constitui grande derrota pessoal na nossa vida moderna.",
+                    "Significa tentar cobrir desastres de trabalho para não prejudicar as vendas nas enormes farmácias."
+                ],
+                explicacao: "O pensamento reflexivo atrela-se intimamente ao ceticismo saudável: reconhecer o erro metodológico reabre as vias empíricas."
+            },
+            {
+                enunciado: "37. Os indígenas fazem danças à volta da fogueira para a chuva aparecer. A meteorologia monitoriza massas frias de nuvens por ecrãs e radares espaciais muito distantes. Como categorizamos essa distância de visões a respeito de um evento natural?",
+                opcoes: [
+                    "A primeira baseia-se num ritual de fé mística e a segunda busca razões físicas comprovadas.",
+                    "As duas correntes de grupos manejam tecnologia extremamente avançada e rápida para espantar secas prolongadas.",
+                    "Ambas expressam leituras exatas e números calculados a respeito das quedas anuais das chuvas locais.",
+                    "Nenhuma daquelas alternativas faz esforço algum de olhar e reparar nas nuvens sobre o céu negro."
+                ],
+                explicacao: "Reforça as distinções basilares entre o quadro mágico da natureza e o rigor metódico instrumental científico contemporâneo."
+            },
+            {
+                enunciado: "38. Nas viagens por barco para trocar mercadorias no Mar Mediterrâneo, os velhos gregos acabaram por se esbarrar em culturas muito diferentes e com lendas novidades. Como essas rotas marítimas impactaram as cabeças para formar a base filosófica inicial?",
+                opcoes: [
+                    "O encontro de mitos tão variados permitiu aos homens questionarem criticamente aquilo que eles sempre acreditavam.",
+                    "O convívio atestou e firmou para sempre que as crenças religiosas dos gregos venciam os adversários.",
+                    "As rotas trouxeram febres e muitas viroses muito perigosas que assolaram as grandes cidades do sul.",
+                    "O uso massivo do pesado ouro moedado estragou completamente a vocação grega de realizar boas trocas."
+                ],
+                explicacao: "A relatividade gerada pelo comércio internacional revelou que as narrativas míticas não eram absolutas, precipitando a laicização do lógos."
+            },
+            {
+                enunciado: "39. Ao andarmos numa estrada asfaltada e quente, frequentemente avistamos de longe reflexos idênticos a poças brilhantes de água clara espalhadas no chão. O que esta frequente visão enganosa pode ensinar à reflexão na procura severa de verdades inquestionáveis?",
+                opcoes: [
+                    "É obrigatório não ceder precipitadamente aos sinais primários dos sentidos, exigindo provas e muitos exames extras.",
+                    "O cenário exterior nunca constrói peças mentirosas contra a apurada retina das pessoas de muito foco.",
+                    "As ferramentas biológicas instaladas e vivas no rosto não fabricam ou fornecem enganos para o indivíduo.",
+                    "A única salvação possível exige que fechemos com força os globos dos nossos olhos muito velozmente."
+                ],
+                explicacao: "Na teoria dos conceitos de verdade, as impressões empíricas sofrem miragens que atestam a insuficiência dos instintos visuais isolados."
+            },
+            {
+                enunciado: "40. Em aula, a docente de Filosofia lança uma provocação para a turma tentar descobrir por que consumimos apenas os estilos das marcas que mais patrocinam cantores na internet. Qual o real propósito que esta pergunta pretende fazer despertar?",
+                opcoes: [
+                    "Uma reflexão crítica profunda focada para se entender perfeitamente aquilo que sempre determina o nosso uso.",
+                    "Uma sujeição extremamente mansa, deitada e calada da nossa parte face aos logotipos mais expostos ali.",
+                    "A paralisação forçada completa e irreversível de toda a economia ligada e responsável por comercializar as confecções.",
+                    "Um incômodo desprovido de real clareza focado nos amigos próximos muito vaidosos e bem apresentados na sala."
+                ],
+                explicacao: "O mestre utiliza a ironia socrática focada na alienação mercadológica para produzir a desnaturalização dos hábitos."
+            },
+            {
+                enunciado: "41. Um aluno lê um poema sobre o mar. Ele sente que o texto fala de coragem, mas a colega acha que o tema central é o medo escuro. O que este desacordo tão comum nos prova sobre a atitude de interpretar textos humanos?",
+                opcoes: [
+                    "A forma como lemos depende da nossa própria experiência e da nossa maneira de ver o mundo.",
+                    "A leitura de qualquer texto traz sempre uma única mensagem exata e perfeitamente igual para todos.",
+                    "Os poemas antigos perderam totalmente o seu valor e não servem para ensinar nada de novo hoje.",
+                    "A arte da poesia usa palavras mágicas que proíbem as pessoas de pensarem de forma independente."
+                ],
+                explicacao: "Na filosofia da linguagem, a hermenêutica expõe que as interpretações oscilam de acordo com a individualidade do receptor perante a linguagem."
+            },
+            {
+                enunciado: "42. Uma tia costuma afirmar que cortar os cabelos numa noite de lua cheia faz os fios crescerem muito mais rápido. Qual é a marca e característica principal deste tipo de pensamento curioso que é muito partilhado por familiares de idades variadas na comunidade?",
+                opcoes: [
+                    "É um saber popular passado de boca em boca, que as pessoas repetem sem exigir testes científicos.",
+                    "É uma descoberta química muito recente, feita nos laboratórios mais modernos e caros da enorme universidade.",
+                    "É uma teoria matemática bastante complexa, que requer o uso constante de calculadoras para ser compreendida.",
+                    "É um conhecimento totalmente inútil e perigoso, que deve ser proibido rapidamente pelas forças no país."
+                ],
+                explicacao: "Reafirma os traços acríticos, utilitários e imprecisos pertencentes às formulações geracionais empíricas do senso comum folclórico."
+            },
+            {
+                enunciado: "43. Um criador tecnológico desenha um telemóvel capaz de ouvir as conversas de toda a gente na rua. Um filósofo questiona no jornal se isto quebra perigosamente a privacidade cívica e humana. Qual é a finalidade exata e o papel da Filosofia neste caso?",
+                opcoes: [
+                    "Avaliar de forma crítica se as invenções científicas são realmente boas, éticas e amigas para a humanidade.",
+                    "Impedir que a ciência avance e proibir a construção de novos aparelhos tecnológicos rápidos na nossa sociedade.",
+                    "Substituir totalmente o trabalho do inventor e construir peças muito mais baratas e silenciosas para os telefones.",
+                    "Concordar alegre e cegamente com tudo aquilo que o mercado tecnológico sonha comercializar para amontoar mais euros."
+                ],
+                explicacao: "Evidencia o papel das humanidades que freiam os arrebatamentos instrumentais desprovidos de moralidade social essencial."
+            },
+            {
+                enunciado: "44. Ao tentar planear o fim de semana com antecedência, escolhes aguentar o calor no quarto e estudar para os difíceis testes em vez de ires à grande piscina apanhar sol com amigos. O que esta difícil opção indica sobre a inteligência da nossa mente?",
+                opcoes: [
+                    "A grande capacidade que possuímos de adiar prazeres imediatos para tentar alcançar um bom objetivo no futuro.",
+                    "A obrigação instintiva de fugir de todos os momentos felizes para viver apenas em grande tristeza diária.",
+                    "A demonstração clara de que os nossos cérebros não sabem escolher aquilo que é mais divertido e confortável.",
+                    "A prova definitiva de que as outras pessoas jamais importam nas nossas decisões cruciais e muito pesadas."
+                ],
+                explicacao: "O racionalismo humano possibilita o controle das paixões físicas momentâneas rumo ao ideal ético duradouro e pensado."
+            },
+            {
+                enunciado: "45. Em épocas longínquas, os velhos marinheiros assustados com as ondas rezavam de joelhos a seres mitológicos das águas gigantes do oceano antes de irem remar. Nesses tempos inseguros em que as bússolas falhavam, o pensamento enraizado nessas fábulas assegurava qual grande vantagem mental?",
+                opcoes: [
+                    "Dava bastante sentido e conforto psicológico perante os fenómenos naturais temíveis que a população não sabia explicar.",
+                    "Ajudava muito a criar métodos incríveis de navegação marítima utilizando imensos cálculos e ferramentas de precisão exata.",
+                    "Proibia drasticamente que as pessoas mergulhassem em poças profundas para obrigar todos os homens a produzirem pratos.",
+                    "Destruía violentamente o ensino focado da física moderna brilhante que começava a despontar espalhada pela velha Europa."
+                ],
+                explicacao: "Ilustra perfeitamente a cosmologia mitológica operando como salvaguarda protetora do intelecto desprovido de amparo prático empírico."
+            },
+            {
+                enunciado: "46. Quando o crescimento populacional forçou os gregos antigos a debaterem a organização dos espaços nas feiras abertas, surgiu a forte importância persuasiva da fala. Pela lógica dos velhos teóricos, de que modo estas trocas de palavras aquecidas impulsionaram ativamente as origens da Filosofia?",
+                opcoes: [
+                    "Ao premiar brilhantemente o confronto pacífico de ideias inovadoras suportadas pelo encadeamento rigoroso da grande e clara argumentação.",
+                    "Ao forçar de modo hostil todos os homens e agricultores locais a reverenciarem estátuas de deuses gigantes.",
+                    "Ao vetar e expulsar para sempre o convívio saudável diário entre professores, pensadores natos e também adolescentes inexperientes.",
+                    "Ao propagar incansavelmente muitas lendas escuras perigosas que causavam imenso choro ruidoso prolongado entre todas as jovens pessoas."
+                ],
+                explicacao: "A gênese política associou intimamente as necessidades públicas dialógicas e analíticas fomentando o embrião metodológico discursivo clássico rigoroso."
+            },
+            {
+                enunciado: "47. A turma joga à brincadeira da mala escondida: ganha facilmente a equipa que efetua dúvidas e questões cada vez mais curtas e certeiras para ir anulando rapidamente o conjunto de muitas possibilidades. No âmbito investigativo, porque as perguntas eficientes auxiliam de forma ótima?",
+                opcoes: [
+                    "Porque a formulação das fortes questões permite afunilar grandemente as dúvidas e orientar magnificamente o olhar do cérebro.",
+                    "Porque as respostas desatentas sempre levam todas as pessoas da roda alegre a localizarem maravilhosamente prêmios bem falsos.",
+                    "Porque demonstrar as próprias dúvidas em alto som evidencia com clareza a inexperiência juvenil na partilha dos medos.",
+                    "Porque duvidar apenas com gestos serve como desculpa triste usada habitualmente por quem detesta raciocinar intensamente e focar."
+                ],
+                explicacao: "Sistematiza didaticamente o processo socrático dedutivo e de redução rumo à refutação e centralidade reflexiva do real problema."
+            },
+            {
+                enunciado: "48. Atiras frequentemente sacos grossos para o caixote cheio de lixo diário. Hoje, questionas subitamente como a nossa vasta civilização tecnológica contemporânea processará estas quantidades enormes sem ferir a terra. Do ponto de vista puramente filosófico, esta atitude subitânea no quintal demonstra rigorosamente o quê?",
+                opcoes: [
+                    "No simples despertar perante aquilo que parece habitual e banal na vida e rotina cega da grande metrópole.",
+                    "Na triste submissão rápida à ideia antiga em que o globo desaba vertiginosamente sob nós sem qualquer escapatória.",
+                    "Na teimosa ansiedade destrutiva virada para atirar pedras ruidosas nas montras empresariais famosas que vendem pacotes muito atraentes.",
+                    "Na preguiça existencial que amarra as pernas em vez de procurar a recolha sustentável rápida na porta seguinte."
+                ],
+                explicacao: "Transmite o âmago da desnaturalização conceitual das mecânicas perigosas normalizadas que afetam profundamente o sentido ecológico da civilização."
+            },
+            {
+                enunciado: "49. As pinceladas numa tela num salão imponente mexem fortemente com quem olha calado para o grande painel desenhado na parede. Segundos depois, o engenheiro usa uma complexa câmara minuciosa para datar de forma perfeita e limpa as manchas químicas secas do belo quadro pintado. O que as atitudes comprovam aliadas?",
+                opcoes: [
+                    "Podemos conhecer grandes esferas da realidade aplicando abordagens bastante variadas unindo reações dos sentimentos maravilhosos com ferramentas laboratoriais.",
+                    "O parecer preciso extraído matematicamente da câmara mecânica invalida rapidamente todas e quaisquer reações românticas falsas inventadas diariamente.",
+                    "As amargas e tímidas opiniões soltas da assistência emocionada não detêm sequer uma nesga mínima aceitável de total validade.",
+                    "Exclusivamente cérebros muito dotados e repletos de enormes equações difíceis podem confirmar se há, ali desenhada, uma formidável flor."
+                ],
+                explicacao: "Reforça o eixo temático onde a complementaridade da intuição poética se alinha harmoniosamente à fria e dura precisão analítica."
+            },
+            {
+                enunciado: "50. Decidido a contornar o habitual cansaço das longas sextas, o jovem orador usa ritmos conhecidos do hip-hop atual nas apresentações do difícil trabalho da aula de ciências difíceis perante a enorme assistência. Sabendo o imenso impacto atingido e o sucesso alcançado pela ideia ali, concluímos logo que:",
+                opcoes: [
+                    "A linguagem partilhada revela-se moldável, podendo englobar estilos diferentes que aumentam significativamente todo o entendimento das matérias teóricas abordadas.",
+                    "As melodias vocais arrastam o sono profundo perante turmas imensas, não ajudando quase ninguém focado a interiorizar novidades complexas.",
+                    "As gramáticas complexas ignoram ativamente inovações modernas, sendo fortemente necessário guardar a voz calada perante todos os professores atentos.",
+                    "Os debates rimados produzem problemas estridentes incontroláveis nos microfones locais, dificultando terrivelmente e atrasando toda a transmissão atenta agendada."
+                ],
+                explicacao: "Descreve o poder estruturante adaptável dos suportes comunicativos perante e como a mediação da interpretação é fundamental à lógica do estudante."
+            },
+            {
+                enunciado: "51. O inspetor localiza papéis incriminatórios junto a marcas duvidosas numa suposta casa assaltada num bairro bastante nobre. Em vez de prender de forma célere e rápida as velhas proprietárias do local, tranca tudo até efetuar muitas conferências dos pormenores na cidade. Como a filosofia entende profundamente este enorme cuidado policial?",
+                opcoes: [
+                    "A verdade factível impõe bastantes investigações detalhadas de variadas visões para garantir o acerto total nas decisões difíceis duradouras.",
+                    "A verdade exata nasce por magia logo após um singelo e rápido palpite sem necessitar de enormes reflexões intelectuais.",
+                    "A verdade apurada na praça pública significa enorme mentira perigosa manipulada, fazendo crer inutilmente numa investigação bastante desgastante inútil.",
+                    "A verdade perigosa jamais deverá escapar em público perante repórteres astutos para proteger os lucros fabulosos das ricas polícias."
+                ],
+                explicacao: "Pauta-se nas metodologias da incansável superação de fáceis deduções simplistas e aparências precoces para garantir exatidão moral das evidências."
+            },
+            {
+                enunciado: "52. Numa mesa e debate sobre ecologia urbana verde num fórum organizado, atacas as políticas do uso e dizes alto que os grandes sacos grossos impermeáveis prejudicam durante milénios os nossos peixes no mar. Na estrutura da lógica pura atrelada ao bom debate claro de oratória em debate colegial moderno, o teu argumento é considerado correto devido a quê?",
+                opcoes: [
+                    "Porque o teu protesto exibe um raciocínio impecável amparado num inquestionável facto concreto provado que justifica fielmente as tuas reivindicações.",
+                    "Porque descarregas e usas ameaças grosseiras de violência para criar um terrível impacto ruidoso na frágil plateia do teatro.",
+                    "Porque insistes frequentemente em usar palavras tristes que espremem a emoção inútil na busca cega por simpatias na escola.",
+                    "Porque as histórias inventadas são altamente benéficas e fantásticas na difusão da defesa global protetora perante grupos bastante ignorantes."
+                ],
+                explicacao: "Demanda que a argumentação fuja vigorosamente das chantagens meramente emocionais e estabeleça dedutibilidade empírica incontestável para fins válidos filosóficos."
+            },
+            {
+                enunciado: "53. As mezinhas recomendadas pela nossa tia recomendam pousar gelo misturado com barro quente no grande hematoma do braço esquerdo. O doutor local critica asperamente, avisando gravemente sobre terríveis e gigantes infeções perigosas decorrentes. O que este típico braço de ferro comum sublinha filosoficamente perante as diferenças de crenças diárias em curas?",
+                opcoes: [
+                    "A sabedoria não metódica fornece tratamentos bastante folclóricos que exigem fortemente avaliações cautelosas feitas pelos saberes mais modernos formais.",
+                    "As tradições muito orais fornecem garantidamente as curas divinas sagradas que dispensam velozmente análises de máquinas laboratoriais frias recentes.",
+                    "Os avisos pesados partilhados pelas clínicas brancas ricas inventam perigos falsos enormes com o objetivo claro de acabar tradições velhas.",
+                    "O folclore caseiro da família esconde fórmulas ocultas milagrosas imbatíveis que vencem com imensa rapidez qualquer doença bastante horrível epidérmica."
+                ],
+                explicacao: "Enfoca as evidentes limitações pragmáticas da tradição popular supersticiosa que desdenha as perigosas e severas validações clínicas formais do pensamento crítico."
+            },
+            {
+                enunciado: "54. A fotógrafa mostra um painel retratando rãs a saltar num deserto quente. Tu ris, deduzindo agilmente brincadeiras de amigos imaginários em tardes felizes, ao passo que o outro visualiza o esforço desesperado exaustivo pela mera hidratação corporal mínima nos lagos poeirentos e secos remotos. Porquê este duplo cenário partilhado ali simultaneamente e abertamente visualizado e pensado?",
+                opcoes: [
+                    "O peso das experiências particulares atua como grandes filtros moldando intimamente as explicações daquilo que julgamos estar sempre presenciando na obra.",
+                    "O clique veloz e mágico fixado pelas eficientes lentes prateadas inibe por total qualquer fantasia estranha no cérebro pacífico limpo.",
+                    "Os globos redondos visuais pertencentes às mentes ocidentais novas padecem de doenças incuráveis estranhas provocando imensas visões ruidosas totalmente desencontradas.",
+                    "A maldade enorme focada no engano diário praticada pelas meninas ricas tenta perturbar bastante as conversas amigas e abertas de domingo."
+                ],
+                explicacao: "Consagra o eixo interpretativo e polissêmico de análise humana e literária: imagens e textos ganham múltiplos discursos a depender de matrizes de leitura da cabeça alheia."
+            },
+            {
+                enunciado: "55. Na cantina escolar repleta, a professora idosa escuta boatos dizendo falsamente que as velhas classes filosóficas antigas são perdas lamentáveis de tempo muito produtivo precioso entre disciplinas da moderna engenharia mecânica diária de ferramentas práticas para trabalhos e laboratórios e dinheiro nas lojas modernas, respondendo a senhora que tais classes atuavam brilhantemente no passado qual autênticos excelentes complexos 'ginásios das faculdades intelectuais puras'. Como traduzimos com certeza a resposta correta perante este longo aviso no recreio amigável matinal cheio e falador ruidoso alegre?",
+                opcoes: [
+                    "Que a matéria visa apurar a perspicácia focando no poderoso e louvável desafio mental de repensar metodicamente as óbvias normas sociais vigentes.",
+                    "Que o principal objetivo escolar implicava criar músculos fortes braçais capazes perfeitamente de lutar perante imensos pelotões em sangrentas guerras pesadas.",
+                    "Que a sala ensinava mezinhas rápidas eficientes direcionadas muito focadamente para amontoar bastantes moedas numa rotina mágica sem fim sem quebra.",
+                    "Que estritamente indivíduos ricos de extrema sabedoria teriam garantido um passaporte seguro vitalício livre para debaterem opiniões difíceis polémicas e impopulares barulhentas."
+                ],
+                explicacao: "Fixa categoricamente o lugar abstrato e crítico formador da cognição exigido pelas humanidades distantes das prementes necessidades utilitárias dos saberes técnicos duros."
+            },
+            {
+                enunciado: "56. As más bocas costumam afirmar de forma ruidosa que as camadas jovens são inteiramente compostas por inúmeros desinteressados avessos perante o grande esforço ou labuta pesada das horas de duro cansaço do trabalho honrado do país em crise. Em oposição lúcida frontal a semelhante rótulo estéril da fama injusta e apressada de conversas banais de rua suja, o estudioso em grandes sociologias analisa dados complexos e prova a falta enorme drástica gritante dolorosa grave atinente à total extinção do emprego jovem e precário do local. De que modo louvável excelente salutar positivo valioso o rigor sistemático intervém positivamente nesta injusta guerra infeliz rotineira injusta falada verbal caluniosa mentira ruidosa falsa mentirosa repetida levianamente perante tudo?",
+                opcoes: [
+                    "Combateu o preconceito oco enraizado firmemente na falta real de pesquisa profunda, demonstrando claras estatísticas concretas financeiras evidenciando a triste exclusão social da região moderna.",
+                    "Confirmou plenamente os boatos maldosos disparados por bocas zangadas antigas, atestando cruelmente que estudantes adoram e almejam um perpétuo ócio luxuoso na casa quente.",
+                    "Fabricou números forjados altamente fantasiosos para disfarçar o problema evidente da imensa preguiça local espalhada no ar morno quente calmo passivo de rotinas fracas pacíficas caladas pacíficas vazias.",
+                    "Escondeu deliberadamente graves faltas praticadas de forma continuada pelos alunos faltosos matinais ignorando o facto de recusarem todos os pedidos humildes das autoridades locais com deboche e maldade perversa."
+                ],
+                explicacao: "Garante e assegura formidável combate perante simplificações sociais baseadas ativamente em difamações verbais e construtos fracos pertencentes ao senso comum destrutivo espalhado na esquina barulhenta."
+            },
+            {
+                enunciado: "57. As águias no cume longínquo montanhoso da enorme serra do enorme interior escutam barulhos e protegem a sua prole debaixo e escondida no grande ninho feito da folhagem castanha escura no topo ventoso isolado e silencioso. Entes humanos nas enormes metrópoles cosmopolitas erguem braços furiosos segurando bandeiras imensas contra injustiças perante todas as entidades superiores das cúpulas douradas abastadas poderosas perante o vento frio noturno do outono escuro diário de dias cansativos do norte grande capital rica limpa do país central distante e chuvoso frio limpo do de clima húmido e gelado. O que diferencia notavelmente profundamente imensamente gravemente perfeitamente radicalmente claramente e grandemente afasta inequivocamente e as duas instintivas puras biológicas vitais nobres belas lutas perante realidades e ameaças difíceis?",
+                opcoes: [
+                    "A rebeldia e luta nas densas praças citadinas manifestam anseios de partilha baseados na perceção de princípios profundos estruturados com imensa visão e inteligência clara.",
+                    "O voo temeroso e reativo ave limita foca inteiramente no objetivo exclusivo primário de proteção, ignorando noções amplas éticas e conceitos complexos políticos perante perigos.",
+                    "As manobras nos altos céus imitam as greves das manifestações, comprovando com imenso acerto que todas e inteiras raças provêm da exata massa genética básica.",
+                    "A confusão com rituais de gritos efetuados na porta da prefeitura espelha uma fraqueza orgânica de pessoas sem sentido das ordens primárias dadas por deuses."
+                ],
+                explicacao: "Consubstancia majestosamente a diferença magna do cérebro primário protetor e animalesco base da vida do intelecto apurado e sofisticado de um animal dotado de valores cívicos morais universais inalienáveis."
+            },
+            {
+                enunciado: "58. Lá nos recuos e no fundo de tempos imemoriais esquecidos nas cavernas da fria glaciação prévia histórica, chamas azuis brotadas de imensas crateras de antigos inativos formidáveis montes fumegantes aterrorizavam bandos nómadas cobertos na pele, que culpavam os titãs zangados gigantes no coração quente magmático. Em oposição às enormes teorias químicas estruturadas recentes da geologia fina apurada laboratorial de medição científica, esta fábula inventada primitiva ajudava incrivelmente perfeitamente grandemente admiravelmente bastante as tribos como ou no quê na da e no para?",
+                opcoes: [
+                    "Oferecia conforto narrativo mágico acolhedor para acalmar o pânico interior generalizado perante fenómenos climáticos bastante desastrosos que os nossos frágeis ancestrais jamais compreendiam e temiam observar do chão frio exterior.",
+                    "Ordenava que engrenagens maravilhosas metálicas de mineração fossem idealizadas a fundo para congelar precocemente rios de lavas perigosas nas imediações do pico altíssimo central montanhoso do continente habitado quente escuro.",
+                    "Impedia fortemente todas as brincadeiras inocentes infantis diárias fora das perigosas crateras brilhantes para manter as dezenas de jovens aprisionadas em fortes correntes e cordas nas pedras vulcânicas esburacadas ásperas.",
+                    "Substituía os estudos químicos muito complicados ensinados por velhos e amargurados chefes da tribo primitiva e forçava os homens a praticarem intensas provas atléticas perto dos buracos e precipícios térmicos."
+                ],
+                explicacao: "Destrinça abertamente o alicerce curador afetivo que operou magistralmente perante o intelecto cru nas alvoradas trágicas sem as âncoras robustas matemáticas dedutivas das eras posteriores iluminadas."
+            },
+            {
+                enunciado: "59. És pressionado por inúmeros influenciadores em formato rápido audiovisual diário que aconselham a comprar e gastar numa mochila caríssima especial com cabos iluminados a brilhar na escuridão negra noturna chuvosa do inverno escolar rigoroso rigoroso gélido, e em oposição recusas frontalmente e refreias e adias o consumismo pensando de modo claro se careces e precisas da inútil ostentação diária exibida para agradar e surpreender a vizinhança. Neste gesto corajoso lúcido maduro calmo seguro que a escola e o colégio promovem de de elogia estimula enaltece nos livros a na na na nos que a a a a de as a da da, evidencia-se em pleno foco foco qual aspeto notório perfeitamente na das a de?",
+                opcoes: [
+                    "O formidável e raro e o apurado freio interior questionador do próprio instinto frágil de aquisição, revelando muita recusa em ser arrastado pelas falsas prioridades montadas no enganoso e rápido mercado.",
+                    "O grande desprezo infundado raivoso impulsivo perante todo o valioso esforço tecnológico formidável que a indústria comercial emprega de forma sábia para melhorar velozmente o futuro brilhante dos felizes povos.",
+                    "O receio vergonhoso terrível inexplicável fóbico assustado de assumir escolhas públicas que diferem dos teus amigos, originando assim o ocultamento da maravilhosa mochila de grande tamanho cheia no enorme armário.",
+                    "O sentimento doentio egoísta mesquinho miserável triste enclausurado da da avareza profunda mesquinha financeira em gastar tostões nas feiras com bens de grande e inquestionável utilidade extrema nas lides escolares."
+                ],
+                explicacao: "Desbrava enfaticamente a atitude filosófica voltada diretamente contra as tiranias normalizadas de imposição mercantil efetuadas pelas fúteis dinâmicas massificantes das bolhas e de ostentações irrefletidas globais sociais."
+            },
+            {
+                enunciado: "60. A famosa personagem adolescente Katniss no clássico do pão atirado à arena revolta e vira-se face e frente às exigências macabras festivas de combates letais promovidos por senhores do capitólio cruel vaidoso frio perverso do perverso egoísta rico de rico capital a abastado impiedoso. A determinação heroica de recusar obedecer às antigas e péssimas regras cruéis que vigoram mostra qual valiosa ferramenta poderosa de do do de intelecto e da que que nós os?",
+                opcoes: [
+                    "A admirável força da razão interior humana para recusar costumes crueis normalizados pelo terror político oficial e usar um corajoso pensamento crítico livre perante as ordens cegas de ditadores agressivos.",
+                    "O capricho muito fútil das gerações novinhas de procurarem apenas fama nos grandes jogos gravados e de tentarem concentrar os aplausos emocionados inteiramente nas suas caras tristes sem motivos aparentes válidos.",
+                    "A vontade agressiva e muito perigosa originada na cabeça oca de jovens e que não pretendem aceitar conselhos perfeitamente dados de pessoas que dirigem há vários longos anos os pacíficos cidadãos.",
+                    "O rápido apagão que acontece nas inteligências fracas não permitindo que a menina interpretasse noções básicas sobre os deveres fáceis estipulados brilhantemente pela maravilhosa prefeitura antiga de ricos senhores vaidosos locais."
+                ],
+                explicacao: "Sintetiza imortalmente como a atitude filosófica transborda vigorosamente a escola rumo ao rompimento drástico e à recusa corajosa moral frente às naturalizações violentas de injustiças estruturais opressoras em vigor perpetradas e chanceladas ativamente pelo governo local superior absoluto."
+            }
+        ];
+
+        let questaoAtual = 0;
+        let acertos = 0;
+        let primeiraTentativa = true;
+        let timerLeitura; 
+        let indiceCorretoDaQuestaoEmbaralhada = 0;
+
+        const uiElements = {
+            content: document.getElementById('quiz-content'),
+            result: document.getElementById('result-content'),
+            questionText: document.getElementById('question-text'),
+            optionsContainer: document.getElementById('options-container'),
+            progress: document.getElementById('progress'),
+            questionCounter: document.getElementById('question-counter'),
+            scoreCounter: document.getElementById('score-counter'),
+            modal: document.getElementById('feedback-modal'),
+            modalBox: document.getElementById('modal-box'),
+            modalIcon: document.getElementById('modal-icon'),
+            modalTitle: document.getElementById('modal-title'),
+            modalMessage: document.getElementById('modal-message'),
+            modalBtn: document.getElementById('modal-btn'),
+            finalScore: document.getElementById('final-score'),
+            finalMessage: document.getElementById('final-message'),
+            readingTimerBlock: document.getElementById('reading-timer'),
+            timerCountSpan: document.getElementById('timer-count')
+        };
+
+        function iniciarQuiz() {
+            questaoAtual = 0;
+            acertos = 0;
+            document.getElementById('header-info').style.display = 'block';
+            uiElements.content.style.display = 'block';
+            uiElements.result.style.display = 'none';
+            carregarQuestao();
+        }
+
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        function carregarQuestao() {
+            primeiraTentativa = true; 
+            clearInterval(timerLeitura); 
+            
+            const q = questoes[questaoAtual];
+            uiElements.questionText.textContent = q.enunciado;
+            uiElements.optionsContainer.innerHTML = '';
+            
+            const progressoPct = ((questaoAtual) / questoes.length) * 100;
+            uiElements.progress.style.width = `${progressoPct}%`;
+            uiElements.questionCounter.textContent = `Questão ${questaoAtual + 1} de ${questoes.length}`;
+            uiElements.scoreCounter.textContent = `Acertos (1ª tentativa): ${acertos}`;
+
+            let indices = [0, 1, 2, 3];
+            shuffle(indices);
+            indiceCorretoDaQuestaoEmbaralhada = indices.indexOf(0);
+            
+            const letrasAlfabeto = ["A) ", "B) ", "C) ", "D) "];
+
+            indices.forEach((indiceAntigo, indexVisual) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.disabled = true; 
+                btn.textContent = letrasAlfabeto[indexVisual] + q.opcoes[indiceAntigo];
+                btn.onclick = () => verificarResposta(indexVisual);
+                uiElements.optionsContainer.appendChild(btn);
+            });
+
+            iniciarTimerLeitura();
+        }
+
+        function iniciarTimerLeitura() {
+            let tempoRestante = TEMPO_LEITURA_SEGUNDOS;
+            uiElements.readingTimerBlock.style.display = 'block';
+            uiElements.timerCountSpan.textContent = tempoRestante;
+
+            timerLeitura = setInterval(() => {
+                tempoRestante--;
+                uiElements.timerCountSpan.textContent = tempoRestante;
+
+                if (tempoRestante <= 0) {
+                    clearInterval(timerLeitura);
+                    uiElements.readingTimerBlock.style.display = 'none'; 
+                    const botoes = document.querySelectorAll('.option-btn');
+                    botoes.forEach(btn => btn.disabled = false);
+                }
+            }, 1000);
+        }
+
+        function verificarResposta(indiceSelecionado) {
+            const q = questoes[questaoAtual];
+            const acertou = (indiceSelecionado === indiceCorretoDaQuestaoEmbaralhada);
+
+            if (acertou) {
+                if (primeiraTentativa) {
+                    acertos++;
+                    uiElements.scoreCounter.textContent = `Acertos (1ª tentativa): ${acertos}`;
+                }
+                mostrarModal(true, q.explicacao);
+            } else {
+                primeiraTentativa = false; 
+                mostrarModal(false, `A resposta correta não é essa. Tente novamente!<br><br><strong>Dica Filosófica:</strong> ${q.explicacao}`);
+            }
+        }
+
+        function mostrarModal(acertou, mensagem) {
+            uiElements.modal.style.display = 'flex';
+            if (acertou) {
+                uiElements.modalBox.className = 'modal-content correct-theme';
+                uiElements.modalIcon.textContent = '✓';
+                uiElements.modalTitle.textContent = 'Você Acertou!';
+                uiElements.modalMessage.innerHTML = mensagem;
+                uiElements.modalBtn.disabled = false;
+                uiElements.modalBtn.textContent = "Próxima Questão";
+                uiElements.modalBtn.onclick = avancarQuestao;
+            } else {
+                uiElements.modalBox.className = 'modal-content wrong-theme';
+                uiElements.modalIcon.textContent = '✗';
+                uiElements.modalTitle.textContent = 'Resposta Incorreta';
+                uiElements.modalMessage.innerHTML = mensagem;
+                uiElements.modalBtn.disabled = false;
+                uiElements.modalBtn.textContent = "Tentar Novamente";
+                uiElements.modalBtn.onclick = tentarNovamente;
+            }
+        }
+
+        function tentarNovamente() {
+            uiElements.modal.style.display = 'none';
+        }
+
+        function avancarQuestao() {
+            uiElements.modal.style.display = 'none';
+            questaoAtual++;
+            if (questaoAtual < questoes.length) {
+                carregarQuestao();
+            } else {
+                mostrarResultado();
+            }
+        }
+
+        function mostrarResultado() {
+            document.getElementById('header-info').style.display = 'none';
+            uiElements.content.style.display = 'none';
+            uiElements.result.style.display = 'block';
+            
+            const porcentagem = Math.round((acertos / questoes.length) * 100);
+            uiElements.finalScore.textContent = `${porcentagem}%`;
+            
+            let mensagem = "";
+            if (porcentagem >= 80) mensagem = "Excelente! Você demonstrou foco e leitura crítica acertando a maior parte das questões de primeira.";
+            else if (porcentagem >= 50) mensagem = "Bom trabalho! Continue exercitando sua racionalidade e pensamento crítico sobre os problemas analisados.";
+            else mensagem = "Não se preocupe com os erros! O mais importante foi ler as explicações e exercitar a reflexão sistemática. Tente novamente!";
+            
+            uiElements.finalMessage.textContent = mensagem;
+        }
+
+        window.onload = iniciarQuiz;
+    </script>
+</body>
+</html>
