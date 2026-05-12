@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulado de Filosofia: Ética, Tecnologia e Consumo</title>
+    <style>
+        :root{--primary-color:#2c3e50;--secondary-color:#34495e;--accent-color:#3498db;--correct-color:#27ae60;--wrong-color:#e74c3c;--bg-color:#f5f7fa;--text-color:#333}
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:var(--bg-color);color:var(--text-color);margin:0;padding:20px;display:flex;justify-content:center;align-items:center;min-height:100vh}
+        .quiz-container{background-color:#fff;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,0.1);width:100%;max-width:800px;padding:30px;position:relative;overflow:hidden}
+        h1{text-align:center;color:var(--primary-color);margin-top:0}
+        .header-info{background-color:#eef2f5;border-left:5px solid var(--accent-color);padding:15px 20px;margin-bottom:25px;border-radius:4px;font-size:0.95rem;line-height:1.5}
+        .header-info h3{margin-top:0;margin-bottom:8px;color:var(--primary-color);font-size:1.1rem}
+        .header-info p{margin-top:0;margin-bottom:15px} .header-info p:last-child{margin-bottom:0}
+        .progress-bar{background-color:#e0e0e0;border-radius:5px;height:10px;margin-bottom:20px;width:100%}
+        .progress-fill{background-color:var(--accent-color);height:100%;border-radius:5px;width:0%;transition:width 0.3s ease}
+        .status-bar{display:flex;justify-content:space-between;font-weight:bold;margin-bottom:20px;color:var(--secondary-color)}
+        .question-text{font-size:1.2rem;line-height:1.5;margin-bottom:20px;text-align:justify}
+        .reading-timer{text-align:center;color:#d35400;background-color:#fdebd0;border:1px solid #fad7a1;padding:12px;border-radius:6px;font-weight:bold;font-size:1.1rem;margin-bottom:20px;display:none;animation:pulse 1.5s infinite}
+        @keyframes pulse{0%{opacity:1}50%{opacity:0.8}100%{opacity:1}}
+        .options-grid{display:flex;flex-direction:column;gap:12px}
+        .option-btn{background-color:#f8f9fa;border:2px solid #e9ecef;border-radius:8px;padding:15px;font-size:1rem;text-align:left;cursor:pointer;transition:all 0.2s ease;line-height:1.4}
+        .option-btn:hover:not(:disabled){background-color:#e9ecef;border-color:#ced4da}
+        .option-btn:disabled{background-color:#f1f3f5;color:#7f8c8d;cursor:not-allowed;border-color:#ecf0f1;opacity:0.8}
+        .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0.7);z-index:1000;justify-content:center;align-items:center;padding:20px}
+        .modal-content{background-color:#fff;border-radius:12px;padding:30px;max-width:600px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.3);animation:popIn 0.3s ease}
+        @keyframes popIn{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
+        .modal-icon{font-size:60px;margin-bottom:15px}
+        .modal-title{font-size:1.8rem;font-weight:bold;margin-bottom:10px}
+        .modal-message{font-size:1.1rem;margin-bottom:25px;line-height:1.5;text-align:justify}
+        .correct-theme .modal-icon, .correct-theme .modal-title{color:var(--correct-color)}
+        .wrong-theme .modal-icon, .wrong-theme .modal-title{color:var(--wrong-color)}
+        .btn-next{background-color:var(--primary-color);color:white;border:none;border-radius:6px;padding:12px 25px;font-size:1.1rem;cursor:pointer;font-weight:bold;transition:background-color 0.2s;width:100%;max-width:300px}
+        .btn-next:hover:not(:disabled){background-color:var(--secondary-color)}
+        .result-container{display:none;text-align:center}
+        .score-circle{width:150px;height:150px;border-radius:50%;background-color:var(--accent-color);color:white;display:flex;justify-content:center;align-items:center;font-size:2.5rem;font-weight:bold;margin:0 auto 20px}
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz-box">
+        <h1>Simulado: Ética, Tecnologia e Consumo</h1>
+        
+        <div class="header-info" id="header-info">
+            <h3>Objetos de Conhecimento Abordados:</h3>
+            <p>Sistemas econômicos & Consumo; Ética; Socialismo e Capitalismo versus consumo; Ética e tecnologia; Consciência, o eu, os outros e a natureza; Relações de consumo e sustentabilidade.</p>
+            
+            <h3>Objetivo de Aprendizagem:</h3>
+            <p>Ao final deste quiz, você será capaz de reconhecer produtos e/ou processos criativos, além de propor e testar soluções éticas, estéticas e inovadoras para problemas reais relacionados a processos de natureza econômica, filosófica e socioambiental. (Habilidades EMIFCHSA04, 05 e 06).</p>
+            
+            <p><strong>Atenção:</strong> O pensamento filosófico exige calma e reflexão. Você terá um tempo mínimo obrigatório para ler o enunciado de cada questão antes de poder selecionar uma alternativa.</p>
+        </div>
+
+        <div id="quiz-content">
+            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+            <div class="status-bar">
+                <span id="question-counter">Questão 1</span>
+                <span id="score-counter">Acertos (1ª tentativa): 0</span>
+            </div>
+            <div class="question-text" id="question-text">Carregando pergunta...</div>
+            <div id="reading-timer" class="reading-timer">Tempo de reflexão necessário: <span id="timer-count">15</span>s</div>
+            <div class="options-grid" id="options-container"></div>
+        </div>
+
+        <div class="result-container" id="result-content">
+            <h2>Fim do Simulado!</h2>
+            <div class="score-circle" id="final-score">0%</div>
+            <p id="final-message" class="question-text"></p>
+            <button class="btn-next" onclick="reiniciarQuiz()">Tentar Novamente</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="feedback-modal">
+        <div class="modal-content" id="modal-box">
+            <div class="modal-icon" id="modal-icon">✓</div>
+            <div class="modal-title" id="modal-title">Você Acertou!</div>
+            <div class="modal-message" id="modal-message">Explicação aqui.</div>
+            <button class="btn-next" id="modal-btn">Aguarde...</button>
+        </div>
+    </div>
+
+    <script>
+        // Trava para evitar recarregamento acidental
+        window.addEventListener('beforeunload', function (e) {
+            e.preventDefault();
+            e.returnValue = '';
+        });
+
+        const TEMPO_LEITURA_SEGUNDOS = 15;
+
+        // O array contém as 60 questões. A PRIMEIRA opção (índice 0) de cada array 'opcoes' é a CORRETA. O sistema embaralha.
+        const questoes = [
+            {
+                enunciado: "1. A obsolescência programada surgiu na década de 1920, quando fabricantes de lâmpadas decidiram reduzir intencionalmente a vida útil de seus produtos para garantir vendas contínuas. Hoje, essa prática afeta smartphones, eletrodomésticos e roupas. No contexto das relações de consumo e sustentabilidade no capitalismo contemporâneo, a adoção dessa estratégia industrial tem como consequência estrutural primordial a:",
+                opcoes: ["Aceleração contínua do ciclo de substituição e descarte de mercadorias.", "Minimização planejada da extração e do uso de matérias-primas globais.", "Promoção sistemática da conscientização ecológica de todos os consumidores.", "Redução voluntária da lucratividade das grandes corporações transnacionais."],
+                explicacao: "Esta questão avalia a compreensão crítica das lógicas de consumo predatório e geração de resíduos sob a égide dos sistemas econômicos hegemônicos."
+            },
+            {
+                enunciado: "2. Ao longo do século XX, diferentes sistemas econômicos propuseram formas distintas de organizar a produção e a distribuição de bens. Enquanto modelos de inspiração socialista focavam na utilidade social (valor de uso), a lógica do mercado consolidou-se sobre outras bases. Ao analisar criticamente a dinâmica atual de consumo sob a hegemonia capitalista, nota-se que seu principal motor fundamenta-se historicamente sobre a:",
+                opcoes: ["Maximização contínua do lucro associada à indução de necessidades artificiais.", "Distribuição prioritária e igualitária de todos os bens materiais produzidos.", "Erradicação progressiva das desigualdades inerentes à divisão internacional do trabalho.", "Valorização exclusiva das ferramentas voltadas ao planejamento centralizado de recursos."],
+                explicacao: "Reflete sobre o contraste entre sistemas econômicos e a estruturação do consumo baseado no lucro (Eixo 1)."
+            },
+            {
+                enunciado: "3. Softwares de recrutamento e sistemas de concessão de crédito utilizam algoritmos de Inteligência Artificial para tomar decisões rápidas. Embora pareçam puramente matemáticos e neutros, esses sistemas são treinados com bases de dados históricas da sociedade. No campo da ética tecnológica e das relações sociais, o principal risco da adoção acrítica dessas ferramentas em larga escala consiste na sua capacidade inerente de:",
+                opcoes: ["Reproduzir e intensificar desigualdades e preconceitos previamente cristalizados na cultura.", "Garantir a total imparcialidade na distribuição das oportunidades de trabalho.", "Eliminar completamente a influência da subjetividade humana em suas análises.", "Promover a rápida democratização irrestrita do acesso às vagas corporativas."],
+                explicacao: "Alerta para os vieses algorítmicos que transferem problemas sociais históricos para o ambiente digital."
+            },
+            {
+                enunciado: "4. O desenvolvimento tecnológico moderno concedeu à humanidade o poder sem precedentes de alterar a biosfera terrestre. Diante disso, o filósofo Hans Jonas propôs uma ética voltada não apenas para o presente, mas para o futuro distante, consolidando o 'Princípio Responsabilidade'. Considerando a relação entre o eu, os outros e a natureza, essa perspectiva filosófica exige que as ações da sociedade busquem sempre:",
+                opcoes: ["Assegurar a continuidade e a integridade da vida para as próximas gerações.", "Priorizar a exploração máxima e acelerada de todas as matrizes energéticas.", "Ignorar os impactos socioambientais em nome de um progresso técnico absoluto.", "Delegar a recuperação dos ecossistemas naturais para as futuras tecnologias globais."],
+                explicacao: "Hans Jonas exige uma nova ética para a civilização tecnológica, voltada à preservação das condições de existência futura."
+            },
+            {
+                enunciado: "5. Karl Marx utilizou o termo 'fetiche da mercadoria' para explicar como o capitalismo oculta o trabalho humano por trás dos produtos. Nas vitrines, um celular ou um tênis parecem ter valor por si mesmos, desligados das pessoas que os fabricaram. Na dinâmica dos sistemas econômicos e do consumo contemporâneo, esse fenômeno impacta a percepção dos indivíduos na exata medida em que promove o:",
+                opcoes: ["Ocultamento sistemático das relações e condições de trabalho envolvidas na produção.", "Reconhecimento explícito e imediato do esforço físico despendido pelo operário fabril.", "Enaltecimento exclusivo da real utilidade funcional de cada objeto de mercado.", "Barateamento contínuo dos custos finais que são repassados ao cliente comum."],
+                explicacao: "O conceito de alienação explica a dissociação entre quem produz e o objeto consumido."
+            },
+            {
+                enunciado: "6. Em campanhas publicitárias recentes, muitas empresas adotaram cores verdes e selos ecológicos em suas embalagens, afirmando compromisso com o meio ambiente. No entanto, investigações frequentemente revelam que as práticas internas de produção dessas mesmas corporações continuam altamente poluentes. Na articulação entre consumo e sustentabilidade, essa estratégia corporativa é criticada socialmente por visar primordialmente a:",
+                opcoes: ["Construção de uma imagem superficial e ilusória de responsabilidade ambiental.", "Transformação radical e profunda de toda a sua cadeia de suprimentos.", "Eliminação imediata e definitiva da emissão global de gases de estufa.", "Promoção da mais absoluta transparência em todos os seus relatórios fiscais."],
+                explicacao: "Aborda o conceito de 'greenwashing' e a ética (ou falta dela) nas relações de consumo sustentáveis."
+            },
+            {
+                enunciado: "7. O design das plataformas de mídia social é otimizado para prender a atenção do usuário por meio de estímulos constantes e recompensas variáveis, como curtidas e compartilhamentos. Esse ecossistema digital altera profundamente a forma como os sujeitos percebem a si mesmos e se relacionam com o mundo. Analisando a formação da consciência na era digital, um impacto direto dessa tecnologia sobre o indivíduo é:",
+                opcoes: ["A indução de comportamentos ansiosos e a constante fragmentação da atenção.", "O estímulo contínuo ao desenvolvimento de um pensamento reflexivo e autônomo.", "O distanciamento voluntário de quaisquer validações e comparações estéticas com terceiros.", "O fortalecimento orgânico e profundo dos laços comunitários em bairros físicos."],
+                explicacao: "Avalia a relação entre o desenvolvimento tecnológico e as consequências na formação da consciência."
+            },
+            {
+                enunciado: "8. A introdução de máquinas autoatendimento em supermercados e algoritmos em plataformas de entrega por aplicativo alterou significativamente a paisagem do emprego no século XXI. A promessa inicial da tecnologia era liberar o ser humano de tarefas extenuantes. Contudo, sob a ótica ética e econômica, a substituição da força de trabalho humana nas atuais condições de mercado intensificou um grave desafio caracterizado pela:",
+                opcoes: ["Expansão de vínculos trabalhistas precarizados e ausência de proteção social garantida.", "Oferta abundante e irrestrita de empregabilidade segura para todos os cidadãos.", "Erradicação completa e definitiva de todas as antigas desigualdades financeiras estruturais.", "Consolidação de jornadas reduzidas que proporcionam um amplo tempo de descanso."],
+                explicacao: "Critica a contradição entre o avanço tecnológico (automação) e as dinâmicas socioeconômicas (precarização)."
+            },
+            {
+                enunciado: "9. A Revolução Industrial consolidou uma visão de mundo em que florestas, rios e minérios são percebidos estritamente como 'recursos' disponíveis para a apropriação e o crescimento econômico infinito. Essa lógica subordina a dinâmica da Terra às necessidades humanas. No debate filosófico sobre a consciência e a natureza, a crítica a essa postura estritamente utilitarista e antropocêntrica defende primordialmente a necessidade urgente de:",
+                opcoes: ["Reconhecer a profunda interdependência vital entre as sociedades e os ecossistemas.", "Intensificar a extração predatória a fim de financiar a ciência ambiental.", "Extinguir instantaneamente qualquer tipo de atividade agropecuária e industrial no planeta.", "Acelerar o atual modelo linear de produção rumo a colônias espaciais."],
+                explicacao: "Questiona o antropocentrismo e propõe uma nova ética socioambiental de coexistência."
+            },
+            {
+                enunciado: "10. O sistema econômico predominante opera segundo um fluxo linear: extrair matérias-primas, fabricar bens de consumo, utilizar o produto e, finalmente, descartá-lo em aterros. Diante do rápido esgotamento planetário, o conceito de Economia Circular surgiu como um contraponto sistêmico. Considerando as relações de consumo e a sustentabilidade, a principal inovação estrutural proposta por esse novo modelo produtivo consiste em tentar efetivamente:",
+                opcoes: ["Reintegrar continuamente os resíduos como insumos num novo ciclo de manufaturação.", "Maximizar a velocidade de extração das limitadas fontes de energia fóssil.", "Padronizar o descarte acelerado e contínuo de materiais eletrônicos não duráveis.", "Fomentar maciçamente a compra de itens descartáveis projetados para uso único."],
+                explicacao: "Testa a compreensão sobre alternativas éticas e produtivas frente aos sistemas de consumo predatórios."
+            },
+            {
+                enunciado: "11. Nos últimos anos, empresas de biotecnologia têm modificado geneticamente sementes agrícolas tradicionais para torná-las resistentes a herbicidas, registrando em seguida patentes sobre essas novas variedades de plantas. Os agricultores que utilizam essas sementes são obrigados a pagar royalties corporativos anuais. Do ponto de vista ético e socioeconômico, essa expansão do controle tecnológico sobre a vida natural levanta graves preocupações relacionadas diretamente à:",
+                opcoes: ["Apropriação e mercantilização privada de bens biológicos que deveriam ser coletivos.", "Erradicação absoluta e imediata de todos os focos de fome mundial.", "Democratização universal e gratuita do acesso aos mais modernos insumos agrários.", "Preservação incondicional das práticas milenares de cultivo das antigas populações nativas."],
+                explicacao: "Relaciona tecnologia, ética biológica e os limites dos sistemas econômicos sobre os bens comuns."
+            },
+            {
+                enunciado: "12. Em uma sociedade hiperconectada, adquirir um veículo de luxo ou roupas de grifes renomadas frequentemente não atende apenas a uma necessidade prática de locomoção ou proteção contra o frio. O antropólogo Jean Baudrillard analisou a sociedade moderna identificando o 'valor de signo' dos objetos. Nas atuais dinâmicas dos sistemas econômicos, o ato de consumir cumpre frequentemente a importante função sociológica de:",
+                opcoes: ["Demarcar identidades sociais e estabelecer níveis de status ou distinção hierárquica.", "Dissolver imediatamente as profundas desigualdades financeiras existentes entre as diferentes classes.", "Atender de modo estrito e exclusivo às exigências biológicas de sobrevivência.", "Enfraquecer consideravelmente o enorme poder de influência das grandes marcas comerciais."],
+                explicacao: "Aborda a dimensão simbólica do consumo na formação da consciência e da diferenciação social."
+            },
+            {
+                enunciado: "13. O uso 'gratuito' de aplicativos de mensagens, mapas e redes de relacionamento baseia-se em um modelo de negócios específico. Os cliques, o tempo de tela e as preferências do usuário são rastreados, empacotados e vendidos para anunciantes interessados em prever ou induzir comportamentos. Considerando o cruzamento entre sistemas econômicos e a ética na tecnologia contemporânea, o chamado 'capitalismo de vigilância' lucra estruturalmente fundamentado na:",
+                opcoes: ["Extração silenciosa, processamento opaco e comercialização massiva dos dados comportamentais pessoais.", "Proteção rigorosa, incondicional e inviolável de toda a privacidade do indivíduo.", "Garantia absoluta de anonimato para os internautas em todos os servidores.", "Diminuição progressiva do incômodo direcionamento de anúncios virtuais aos consumidores online."],
+                explicacao: "Examina criticamente os novos modelos econômicos baseados na tecnologia da informação."
+            },
+            {
+                enunciado: "14. A onipresença de anúncios publicitários cria constantemente novos desejos que rapidamente se transformam em necessidades percebidas. Muitas vezes, os indivíduos adquirem produtos influenciados mais pela emoção do pertencimento do que pela utilidade real do bem. Analisando as consequências dessa lógica sobre a consciência nas sociedades contemporâneas, o hiperconsumismo revela sua faceta alienante na medida em que provoca frequentemente a:",
+                opcoes: ["Perda da autonomia crítica e do controle consciente sobre o próprio desejo.", "Reflexão madura, contínua e profunda sobre as consequências de cada gasto financeiro.", "Construção voluntária de um completo distanciamento psicológico dos agressivos mercados de varejo.", "Expansão do forte empoderamento econômico autônomo entre as camadas populares menos favorecidas."],
+                explicacao: "Trata da manipulação do desejo humano pelas lógicas do sistema econômico de mercado."
+            },
+            {
+                enunciado: "15. A coisificação ou 'reificação' é um conceito que descreve o processo pelo qual características humanas, relações e até mesmos sentimentos passam a ser tratados como mercadorias ou números em uma planilha. Em aplicativos de namoro ou em plataformas de networking profissional, as pessoas são avaliadas em frações de segundo por suas fotos e métricas de desempenho. O efeito dessa lógica no tecido social moderno caracteriza-se pela:",
+                opcoes: ["Instrumentalização das interações afetivas, que passam a operar sob cálculos utilitários.", "Valorização profunda da empatia genuína e da ampla escuta comunitária solidária.", "Superação completa e imediata do egoísmo e do individualismo exacerbado moderno.", "Estruturação de dinâmicas afetivas blindadas contra qualquer influência de ordem mercadológica."],
+                explicacao: "Analisa a influência do capitalismo nas relações intersubjetivas (o eu e os outros)."
+            },
+            {
+                enunciado: "16. A emergência climática exige não apenas a redução de danos, mas também uma reformulação das engrenagens produtivas desde o seu projeto inicial. Uma abordagem inovadora propõe que os novos produtos da indústria devem ser desenhados visando não ferir a integridade dos ecossistemas. Como alternativa ética capaz de responder à atual crise sistêmica das relações de consumo hiperindustrializadas, ganha crescente destaque na sociedade contemporânea a:",
+                opcoes: ["Concepção de designs sustentáveis que respeitem os limites orgânicos do planeta.", "Padronização massiva e globalizada de todos os hábitos de alimentação urbana.", "Expansão irrefreável das antigas fronteiras territoriais destinadas à exploração agrícola intensiva.", "Proibição imediata de qualquer tipo de pesquisa científica ou avanço tecnológico."],
+                explicacao: "Verifica a capacidade de mobilizar soluções éticas e estéticas para problemas socioambientais."
+            },
+            {
+                enunciado: "17. Nos tribunais de alguns países, inteligências artificiais começam a ser utilizadas para calcular a probabilidade de reincidência criminal e auxiliar na definição de sentenças. Em hospitais, algoritmos recomendam tratamentos ou indicam se leitos devem ser desocupados. A principal objeção filosófica em relação a essa transferência de autoridade cognitiva e deliberativa dos sujeitos humanos para os complexos aparatos tecnológicos automatizados contemporâneos questiona de forma direta a:",
+                opcoes: ["Delegação da responsabilidade moral e do discernimento ético a sistemas programados.", "Implantação de procedimentos totalmente abertos e transparentes nos trâmites processuais jurídicos.", "Extinção instantânea de toda forma de erro ou viés nos julgamentos.", "Ampliação da autonomia emocional e da forte intuição humana nas lideranças."],
+                explicacao: "Levanta o dilema ético inerente à delegação de juízos humanos morais às máquinas."
+            },
+            {
+                enunciado: "18. A produção de um smartphone exige minerais raros frequentemente extraídos no continente africano, enquanto o aparelho é montado na Ásia e majoritariamente consumido na América do Norte e Europa. Anos depois, o lixo eletrônico resultante retorna para países periféricos na forma de sucata. Observando a relação intrínseca entre os sistemas econômicos globais e a sustentabilidade planetária, verifica-se nessa dinâmica uma histórica consolidação sistêmica focada na:",
+                opcoes: ["Exportação dos graves passivos ambientais e sociais para os territórios empobrecidos.", "Divisão rigorosamente igualitária de todos os dividendos financeiros das grandes transnacionais.", "Democratização universal do acesso constante às mais novas tecnologias de ponta.", "Equiparação voluntária e imediata das variadas matrizes industriais instaladas pelo mundo."],
+                explicacao: "Contextualiza as relações desiguais de consumo global e o descarte em países periféricos."
+            },
+            {
+                enunciado: "19. A formação da opinião pública sempre dependeu do debate coletivo. Hoje, no entanto, as plataformas digitais utilizam algoritmos que priorizam exibir aos usuários apenas os conteúdos que confirmam suas crenças prévias, maximizando o engajamento através da indignação ou da afinidade irrefletida. No que tange à relação ética do eu com a pluralidade da sociedade civil, essa configuração midiática acarreta sistematicamente um grave problema focado no:",
+                opcoes: ["Confinamento cognitivo em bolhas ideológicas marcadas pela agressividade e pela exclusão.", "Contato diversificado e profundamente enriquecedor com uma ampla multiplicidade de saberes.", "Bloqueio imediato da circulação de notícias falsas nos variados aplicativos comunicacionais.", "Fortalecimento de um espaço deliberativo pautado unicamente por uma racionalidade equilibrada."],
+                explicacao: "Avalia o impacto ético dos algoritmos na formação da consciência política."
+            },
+            {
+                enunciado: "20. Frente à concentração de riquezas nas mãos de gigantes do agronegócio e varejistas transnacionais, surgem redes de consumo focadas em fortalecer o elo mais fraco da cadeia produtiva: o pequeno produtor rural. Esses movimentos buscam garantir remuneração digna e práticas de cultivo de baixo impacto. Como alternativa concreta que alinha ética econômica, consumo responsável e sustentabilidade nos territórios afetados, esse tipo de articulação baseia-se sobretudo na:",
+                opcoes: ["Promoção engajada do comércio justo e no fortalecimento da agricultura ecológica.", "Aceitação e intensificação irrestrita do atual modelo produtivo do agronegócio exportador.", "Desmobilização sumária de toda forma de indústria de propriedade do Estado.", "Adoção forçada e obrigatória de rudimentares regimes de subsistência comunitária isolada."],
+                explicacao: "Identifica alternativas sustentáveis reais aplicadas a sistemas produtivos locais."
+            },
+            {
+                enunciado: "21. A Escola de Frankfurt cunhou o termo 'Indústria Cultural' para descrever como a arte, a música e o entretenimento foram absorvidos pela lógica capitalista, passando a ser produzidos em série como qualquer outra mercadoria. No contexto das relações de consumo e dos sistemas econômicos vigentes, essa dinâmica transforma a produção simbólica em um mecanismo que busca fundamentalmente a:",
+                opcoes: ["Padronização das manifestações artísticas visando o lucro constante e o consumo massificado.", "Estimulação contínua da profunda reflexão crítica e autônoma entre os jovens estudantes.", "Desestruturação das lógicas mercantis de acúmulo de capital financeiro das corporações globais.", "Ampliação do senso crítico estético e político prático das classes sociais oprimidas."],
+                explicacao: "Relaciona cultura, consumo de massa e alienação (Eixo 1)."
+            },
+            {
+                enunciado: "22. Michel Foucault analisou como as sociedades disciplinares exerciam poder sobre os corpos. Hoje, diversos teóricos aplicam esse conceito ao meio digital, onde cada clique é monitorado. Nas plataformas digitais contemporâneas, o uso de algoritmos para rastrear comportamentos pode ser compreendido como uma forte atualização tecnológica do controle social, pois tem como finalidade direta:",
+                opcoes: ["Moldar os desejos latentes e disciplinar o comportamento geral do consumidor moderno.", "Assegurar a mais total privacidade dos dados pessoais dos vulneráveis usuários online.", "Eliminar as antigas hierarquias de poder nos novos ambientes digitais corporativos modernos.", "Promover a rápida emancipação política estrutural das minorias nas grandes redes sociais."],
+                explicacao: "A tecnologia atua como um sistema moderno de biopolítica e modelagem de consumo."
+            },
+            {
+                enunciado: "23. Projetos educacionais focados na ecologia regional buscam engajar os jovens na preservação da biodiversidade local a partir da análise dos próprios dados da mata nativa. Ao relacionar a urgente sustentabilidade ambiental com as lógicas de produção econômica contemporânea, a principal crítica filosófica feita às práticas extrativistas desenfreadas das grandes indústrias aponta que elas invariavelmente:",
+                opcoes: ["Subordinam a vitalidade biológica e a complexidade dos ecossistemas aos lucros imediatos.", "Preservam a ampla diversidade orgânica territorial para as mais distantes gerações futuras.", "Fomentam a distribuição igualitária, pacífica e justa das riquezas geradas pelo comércio.", "Garantem a estabilidade contínua do clima global dentro de rigorosos níveis aceitáveis."],
+                explicacao: "A lógica capitalista predatória confrontada com a necessidade de conservação ecossistêmica."
+            },
+            {
+                enunciado: "24. A filósofa Hannah Arendt refletiu profundamente sobre a massificação do sujeito e a perigosa ausência de pensamento crítico perante realidades brutalmente opressivas. Trazendo essa densa discussão para a ética nas relações de consumo hipermodernas, a aceitação passiva da compra frequente de produtos gerados pela extrema exploração laboral ao redor do planeta evidencia diretamente a:",
+                opcoes: ["Banalização das injustiças sistêmicas perante o alienante conforto rotineiro do consumidor contemporâneo.", "Participação democrática e o engajamento efetivo da sociedade em causas sociais urgentes.", "Organização orgânica de um boicote generalizado às empresas que transgridem normas legais.", "Priorização legislativa absoluta da defesa da dignidade humana no complexo mercado global."],
+                explicacao: "Aplica o conceito de banalidade do mal de Arendt à passividade do consumidor atual."
+            },
+            {
+                enunciado: "25. A crítica clássica ao modelo capitalista concentra-se na maneira como a riqueza material é produzida de forma coletiva, mas invariavelmente apropriada de maneira privada. Muitas vezes, o trabalhador não consegue adquirir a mercadoria que ele mesmo ajudou a fabricar. Considerando a intersecção analítica entre trabalho, capital e consumo, a alienação sociológica ocorre precipuamente porque o sujeito historicamente:",
+                opcoes: ["Perde o controle ético, a gestão e a posse sobre o próprio produto final.", "Recebe o valor integral financeiro equivalente ao seu exaustivo esforço braçal diário rotineiro.", "Exerce uma grande influência direta nas complexas decisões corporativas do mercado livre mundial.", "Encontra a realização pessoal plena, satisfatória e absoluta nas exaustivas linhas de montagem."],
+                explicacao: "Contraste entre Capitalismo, apropriação do trabalho e as limitações de consumo do trabalhador."
+            },
+            {
+                enunciado: "26. A rápida proliferação de vídeos hiper-realistas manipulados artificialmente afeta diretamente o fluxo do debate público, permitindo que falas e ações graves sejam falsamente atribuídas a qualquer pessoa pública. Sob a ótica da atual ética e da tecnologia, o perigo central provocado por essa inovação para a estabilidade das relações democráticas e comunicacionais contemporâneas consiste na enorme capacidade de:",
+                opcoes: ["Corroer a confiança coletiva social e a validade jurídica dos registros audiovisuais documentais.", "Garantir a veracidade investigativa irrefutável de absolutamente todas as informações em jornais digitais.", "Auxiliar na rápida e eficaz identificação instantânea de notícias falsas nas grandes plataformas.", "Estabelecer um blindado espaço virtual dialógico totalmente imune a qualquer tipo de manipulação."],
+                explicacao: "Dilemas éticos contemporâneos causados pelas tecnologias 'deepfake'."
+            },
+            {
+                enunciado: "27. O modelo internacional de negócios conhecido como 'fast fashion' (moda rápida) baseia-se na produção em grande massa de roupas a baixo custo, lançando microcoleções contínuas que estimulam a substituição imediata do vestuário. O principal e mais agressivo efeito socioambiental nocivo associado a esse padrão capitalista de consumo acelerado reflete-se objetivamente sobre a dinâmica planetária gerando diretamente o:",
+                opcoes: ["Aumento exponencial e altamente descontrolado da pesada geração de resíduos têxteis e plásticos.", "Encolhimento rápido, significativo e comemorado da complexa pegada de carbono do setor industrial.", "Fomento contínuo e amplamente sustentável de pequenas cooperativas formadas por artesãos locais independentes.", "Fortalecimento da valorização afetiva, duradoura e respeitosa de cada vestimenta pelo consumidor final."],
+                explicacao: "Impactos ambientais nefastos causados pelos ciclos de consumo acelerados da indústria (Módulo III)."
+            },
+            {
+                enunciado: "28. Historicamente, o antigo pensamento predominante ocidental estruturou-se por um forte viés antropocêntrico, posicionando sempre a humanidade como a senhora absoluta da natureza, alheia aos ritmos e ciclos orgânicos. Ao reavaliar a postura ética necessária frente à atual e severa emergência climática, as novas formulações teóricas defendem uma profunda interdependência ecossistêmica global, o que exige consequentemente da sociedade o:",
+                opcoes: ["Reconhecimento filosófico, jurídico e essencial do valor intrínseco de todas as demais espécies.", "Submetimento irrestrito, violento e agressivo dos biomas às insaciáveis necessidades produtivas industriais urbanas.", "Esgotamento metódico, planejado e sistemático dos ricos solos férteis para maximizar a colheita.", "Abandono prático ou a negação retórica sumária de toda e qualquer forma vital."],
+                explicacao: "Nova percepção da relação entre nós e a natureza baseada no valor intrínseco da biodiversidade."
+            },
+            {
+                enunciado: "29. As rigorosas regulamentações de patentes protegem a propriedade criativa e o alto investimento das indústrias, garantindo-lhes exclusividade comercial por anos. Contudo, quando se trata de biotecnologias essenciais, esse sistema jurídico é frequentemente questionado. No complexo debate que cruza diretamente ética e sistemas de consumo, essa comercialização restrita de curas estabelece um grave dilema moral que evidencia a:",
+                opcoes: ["Sobreposição estrutural, legal e mercadológica dos vultosos lucros corporativos sobre a saúde coletiva.", "Facilitação burocrática do acesso irrestrito, barato e igualitário a tratamentos médicos inovadores complexos.", "Desmobilização generalizada do antigo interesse institucional pelas rigorosas e perigosas investigações laboratoriais empíricas.", "Doação voluntária, rápida e imediata das cobiçadas licenças científicas pelo próspero mercado privado."],
+                explicacao: "Colisão entre direito de patente (lógica capitalista) e a ética de preservação da vida (acesso social)."
+            },
+            {
+                enunciado: "30. Diante das pressões constantes e crescentes da sociedade por maior responsabilidade sustentável, diversas megacorporações passaram a promover intensamente e a exibir chamativos selos ecológicos em seus produtos. Do ponto de vista de uma análise ética rigorosa e profunda das estruturas produtivas globais, a legitimação discursiva dessas novas práticas só se concretiza como um verdadeiro imperativo funcional quando demonstra:",
+                opcoes: ["Um real compromisso sistêmico, financeiro e estrutural contínuo com a concreta preservação ambiental.", "Uma simples adequação tática, rápida e visual de marketing para atrair investidores estrangeiros.", "Uma ação corporativa isolada, emergencial e midiática visando apenas evitar processos judiciais severos.", "O repasse financeiro dissimulado, imediato e calculado dos pesados custos ecológicos ao comprador."],
+                explicacao: "A verdadeira ética da sustentabilidade opõe-se ao mascaramento publicitário superficial."
+            },
+            {
+                enunciado: "31. Diferentemente da velha obsolescência programada mecânica, onde o produto efetivamente quebra, a obsolescência perceptiva ocorre quando o design de um utensílio perfeitamente funcional é rapidamente modificado, fazendo com que o modelo anterior pareça antiquado. A lógica econômica estruturante que consolida esse tipo de comportamento na atual sociedade baseia-se intencionalmente na constante manipulação psicológica voltada para promover invariavelmente a:",
+                opcoes: ["Criação sistemática de uma profunda insatisfação simbólica, estética e social na mente humana.", "Valorização social coletiva da alta durabilidade estrutural e da forte robustez técnica original.", "Necessidade empírica irrefutável e urgente de atualizar os complexos mecanismos de segurança digital.", "Conscientização ambiental de massa sobre a imensa importância da reciclagem de dispositivos eletrônicos."],
+                explicacao: "Analisa a força psicológica dos sistemas de consumo gerando descartabilidade por insatisfação estética."
+            },
+            {
+                enunciado: "32. O frequente distanciamento mediado por interfaces digitais frias altera profundamente a própria natureza das conexões e das interações subjetivas. Sem o contato analógico face a face, muitas vezes o indivíduo perde a capacidade empática. Na perspectiva de uma análise filosófica focada na alteridade do sujeito, a proliferação da extrema agressividade comunicacional online é impulsionada primariamente pela triste:",
+                opcoes: ["Sensação psicológica de um anonimato seguro aliada à despersonalização crônica do interlocutor virtual.", "Percepção sensível, altamente madura e intensamente acolhedora da frágil condição humana e social.", "Fortificação inabalável, pacífica e estrutural das antigas redes e fortes conexões comunitárias presenciais.", "Estruturação de longos diálogos argumentativos baseados de forma estrita na sólida racionalidade lógica."],
+                explicacao: "Ética e tecnologia aplicadas à agressividade virtual decorrente da reificação do outro."
+            },
+            {
+                enunciado: "33. Diversas correntes teóricas críticas apontam que as forças do livre mercado transnacional desregulamentado tendem quase sempre a aprofundar abismos materiais e financeiros estruturais na civilização. Observando a atual e complexa arquitetura das velozes dinâmicas econômicas e de consumo, a profunda disparidade social sistêmica revela-se de maneira extremamente empírica na sociedade contemporânea notadamente através da contínua e inexorável:",
+                opcoes: ["Acumulação exponencial de grandes recursos monopolizada e centralizada por uma diminuta oligarquia financeira.", "Distribuição monetária perfeitamente equitativa, serena e justa das imensas riquezas criadas entre hemisférios.", "Democratização generalizada dos potentes meios tecnológicos fabris de ponta nas populosas zonas periféricas.", "Extinção gradual e altamente pacífica dos graves conflitos políticos ocasionados pela aguda escassez."],
+                explicacao: "Reconhecimento das consequências assimétricas do capitalismo globalizado sobre a distribuição material."
+            },
+            {
+                enunciado: "34. O conhecido fenômeno tecnológico da uberização introduziu de forma célere uma profunda reconfiguração algorítmica e descentralizada das lógicas laborais tradicionais, transformando os antigos trabalhadores em parceiros autônomos. Considerando as premissas materiais básicas para uma vida digna, a principal e mais incisiva objeção ética levantada por diversos pensadores sociais sobre esse moderno modelo produtivo contesta diretamente e vigorosamente a:",
+                opcoes: ["Transferência dissimulada, legal e silenciosa dos altos custos de manutenção para o próprio colaborador.", "Imposição estatal e burocrática legal de pesados e rigorosos regimes de seguridade ocupacional.", "Consolidação política sem precedentes dos extremamente atuantes e fortes movimentos representativos e sindicais.", "Formulação de burocráticos contratos trabalhistas antiquados caracterizados por amplas e seguras garantias vitalícias."],
+                explicacao: "Análise crítica do novo ecossistema econômico-tecnológico que fragmenta os direitos sociais."
+            },
+            {
+                enunciado: "35. A importante métrica ambiental da pegada ecológica quantifica a exata área biológica necessária para prover os recursos demandados e assimilar os resíduos gerados por determinada comunidade. Projetando a universalização teórica e hipotética do atual padrão hiperconsumista das nações mais ricas para todos os continentes, as ciências ambientais contemporâneas alertam gravemente para cenários drásticos e inevitáveis de um:",
+                opcoes: ["Colapso acelerado, irreversível, drástico e generalizado de absolutamente todas as reservas biosféricas globais.", "Consolidação imediata de um forte equilíbrio termodinâmico planetário plenamente sustentável, harmônico e duradouro.", "Supressão tecnológica rápida, definitiva e milagrosa das altíssimas e nocivas taxas de emissão poluente.", "Restauração ecossistêmica espontânea, acelerada e vigorosa em praticamente todas as bacias hidrográficas mundiais."],
+                explicacao: "Problematiza os limites físicos e a impossibilidade ética de universalizar o consumo dos países centrais."
+            },
+            {
+                enunciado: "36. A frenética dinâmica informacional contemporânea possibilita que percepções afetivas, as indignações fabricadas e as inclinações ideológicas suplantem rapidamente o importante peso argumentativo dos fatos objetivos. Analisando a dimensão ético-política do sujeito inserido na nova pólis digital, a inegável hegemonia da pós-verdade nos espaços virtuais afeta profundamente as bases democráticas institucionais contemporâneas porque invariavelmente e quase que estruturalmente:",
+                opcoes: ["Dificulta intensamente a pacífica construção dialógica de acordos coletivos alicerçados na dura factualidade objetiva.", "Fomenta a ampla deliberação estritamente racional, calma e ponderada nas complexas dinâmicas decisórias eleitorais.", "Assegura o total respeito institucional formal e absoluto à multiplicidade da diversidade de narrativas.", "Impossibilita de forma categórica a perigosa formulação criminosa de engodos e de extremismos virtuais."],
+                explicacao: "Compreensão da relação entre eu/sociedade corrompida pela fragmentação tecnológica da verdade."
+            },
+            {
+                enunciado: "37. Inúmeros pensadores contemporâneos indicam fortemente que a nossa própria e íntima formação identitária foi colonizada pela avassaladora lógica da efemeridade típica do hipercapitalismo. Nós consumimos símbolos e experiências para tentar preencher enormes vazios. Analisando o imperativo da mercadoria nas nossas construções de sentido, a fugaz promessa de felicidade plena veiculada pelos aparatos publicitários apresenta-se invariavelmente como algo:",
+                opcoes: ["Volátil, passageiro, frustrante e insaciável com o único e real propósito de reativar necessidades.", "Definitivo, sólido, integrador e perene logo imediatamente após a rápida conclusão da transação comercial.", "Desvinculado completamente da efetiva e concreta capacidade financeira e do real poder de aquisição.", "Voltado exclusivamente para a sólida construção profunda de relacionamentos baseados no puro desapego existencial."],
+                explicacao: "Analisa criticamente como a promessa estética da publicidade é estruturada para frustrar e manter o consumo."
+            },
+            {
+                enunciado: "38. A deliberação pública internacional sobre intervenções técnicas severas em laboratórios convocou fortes revisões urgentes nas antigas e rígidas premissas morais do desenvolvimento científico. A forte tendência legislativa global crescente em restringir ou banir dolorosos testes estéticos sobre espécimes vivos indica um claro redirecionamento axiológico ético cujo fundamento humanista primordial ancora-se diretamente na extrema e urgente necessidade de:",
+                opcoes: ["Evitar o profundo e desnecessário sofrimento arbitrário imposto aos organismos orgânicos dotados de senciência.", "Minimizar as pesadas e altas despesas financeiras operacionais associadas aos exigentes cuidados zoológicos diários.", "Promover novos insumos botânicos exóticos para conseguir expandir as largas e cobiçadas margens lucrativas.", "Agilizar burocraticamente as burocráticas e muito lentas licenças governamentais voltadas para grandes indústrias químicas."],
+                explicacao: "Reconhecimento do avanço ético em prol de outros seres orgânicos contra lógicas exclusivamente industriais."
+            },
+            {
+                enunciado: "39. Movimentos socioeconômicos globais como o chamado Comércio Justo propõem subverter a longa e custosa cadeia logística de atravessadores para conectar o consumidor final diretamente à origem. Quando contraposto às agressivas lógicas de mercado neoliberais clássicas focadas na maximização absoluta do capital líquido, esse pilar comercial humano e alternativo busca estruturalmente e como princípio ético basilar e irrenunciável:",
+                opcoes: ["Remunerar com absoluta dignidade material a pequena base produtora rural e assegurar todos direitos.", "Favorecer fortemente os imensos conglomerados corporativos supranacionais em enorme detrimento das pequenas comunidades originárias.", "Reduzir de maneira artificial o valor sacrificando criminosamente os repasses tributários e os direitos trabalhistas.", "Ampliar as gigantescas e isoladas áreas de monocultura intensiva utilizando potentes agrotóxicos frequentemente proibidos."],
+                explicacao: "Identifica a formulação de soluções socioeconômicas alternativas focadas no respeito ao trabalhador."
+            },
+            {
+                enunciado: "40. A longa reflexão filosófica acerca do conceito de razão instrumental alerta para a muito perigosa redução da inteligência humana ao mero cálculo técnico frio de eficiência produtiva. Quando poderosos aparatos de controle são aplicados para gerir o convívio social sem humanismo prévio, a principal e mais iminente e devastadora ameaça à vida civilizada configura-se de forma direta pela:",
+                opcoes: ["Coisificação e violenta quantificação gerencial dos sujeitos, que passam a ser tratados como meras engrenagens.", "Subordinação altamente estrutural e sistêmica da inovação aos rígidos, filosóficos e muito lentos julgamentos morais.", "Aceleração contínua, orgânica e ininterrupta das caríssimas e morosas medidas reparatórias dos gigantescos passivos ambientais.", "Fortificação cognitiva natural, psicológica e emocional coletiva da necessária consciência de classe perante grandes crises."],
+                explicacao: "Critica filosófica à instrumentalidade tecnológica submetendo seres humanos ao cálculo utilitário."
+            },
+            {
+                enunciado: "41. O filósofo contemporâneo Byung-Chul Han cunhou a expressão 'sociedade do cansaço' para descrever um modelo social onde os indivíduos se cobram incessantemente por metas de sucesso e hiperatividade, tornando-se seus próprios algozes. Na intersecção entre a ética e a compreensão do eu na atualidade, esse extremo esgotamento psicológico moderno é impulsionado, na maioria das vezes, pela:",
+                opcoes: ["Internalização das cruéis e irreais métricas de produtividade como valor pessoal absoluto.", "Rejeição ampla, consciente e estrutural das pressões exercidas pelo mercado de trabalho.", "Valorização frequente das raras e essenciais pausas e do ócio muito criativo.", "Diminuição geral e visível das fortes e exigentes demandas cognitivas nas empresas."],
+                explicacao: "Reflete sobre os impactos subjetivos das lógicas neoliberais que transformam o indivíduo em 'empreendedor de si' adoecido."
+            },
+            {
+                enunciado: "42. Com o rápido avanço da indústria tecnológica, aparelhos celulares e computadores são substituídos em intervalos cada vez menores. O descarte inadequado desse lixo eletrônico, rico em metais pesados, contamina letalmente o solo. Para alinhar de forma ética os sistemas econômicos à necessária sustentabilidade ambiental, a responsabilidade compartilhada pela produção exige obrigatoriamente a:",
+                opcoes: ["Implantação urgente de rigorosos e eficientes sistemas industriais de ampla logística reversa.", "Transferência imediata de toda a culpa estrutural exclusivamente para o consumidor final.", "Exportação ininterrupta e violenta dos pesados rejeitos tecnológicos para as nações periféricas.", "Incineração rápida e imprudente de todos os complexos componentes químicos nas metrópoles."],
+                explicacao: "Apresenta a logística reversa como premissa indispensável das relações éticas de consumo e meio ambiente sustentável."
+            },
+            {
+                enunciado: "43. Os novos óculos de realidade virtual e os ambientes do metaverso permitem imersões profundas em avatares e mundos digitais altamente complexos, muitas vezes sem a necessidade de sair do quarto. Ao refletir profundamente sobre a consciência e a relação com os outros indivíduos, o grave risco ético dessa imersão prolongada consiste primariamente na:",
+                opcoes: ["Fuga sistêmica, voluntária e perigosa das antigas responsabilidades éticas do mundo físico.", "Compreensão profunda, empática e solidária da múltipla diversidade social no mundo contemporâneo.", "Resolução definitiva e muito pacífica dos diversos e antigos conflitos humanos e territoriais.", "Extinção veloz, absoluta e imediata das seculares e dolorosas desigualdades econômicas globais."],
+                explicacao: "Problematiza o isolamento e o enfraquecimento das conexões materiais na cultura hiperconectada."
+            },
+            {
+                enunciado: "44. O fenômeno moderno do consumo colaborativo, expresso em grandes plataformas de compartilhamento de bens (como carros por aplicativo, aluguel de ferramentas e hospedagens coletivas), desafia a clássica dinâmica materialista. Avaliando as transformações dos sistemas econômicos vigentes, essa prática demonstra claramente uma mudança cultural e comercial significativa que privilegia e impulsiona o:",
+                opcoes: ["Acesso rápido e utilitário aos úteis serviços em detrimento da propriedade privada.", "Acúmulo material progressivo e constante como o principal símbolo do status social.", "Monopólio mercadológico global e irrefreável das grandes fábricas monopolistas de bens duráveis.", "Isolamento voluntário e triste do jovem consumidor frente às novas redes digitais."],
+                explicacao: "Inovações criativas que alteram o eixo econômico tradicional de posse para o eixo de acesso."
+            },
+            {
+                enunciado: "45. A corrente de pensamento conhecida como transumanismo defende de modo otimista o aprimoramento radical e biotecnológico das capacidades físicas e cognitivas humanas através de potentes chips e terapias genéticas. Sob a rigorosa ótica da ética civil e da justiça social, a principal objeção levantada contra essa perspectiva filosófica futurista adverte severamente contra a:",
+                opcoes: ["Criação iminente de enormes abismos biológicos irreversíveis entre as variadas classes econômicas.", "Universalização rápida, igualitária e instantânea dos modernos tratamentos de saúde para cidadãos.", "Estagnação completa, generalizada e irreversível do fundamental desenvolvimento científico nas universidades públicas.", "Padronização absoluta de todas as ricas culturas planetárias através de intervenções genéticas."],
+                explicacao: "Reflexão sobre limites da tecnologia (bioética) cruzada com desníveis de poder de consumo estrutural."
+            },
+            {
+                enunciado: "46. A fabricação global em larga escala de modernos carros elétricos demanda baterias de lítio e cobalto, minérios frequentemente explorados de modo predatório no sul global, causando desmatamento e esgotamento de nascentes. Na urgente discussão mundial sobre as relações de consumo e sustentabilidade, a conivência do mercado financeiro com essa devastação revela a:",
+                opcoes: ["Externalização contínua e irresponsável dos sérios danos socioambientais para maximizar ganhos financeiros.", "Internalização ética e muito rigorosa dos altos custos ecológicos nas planilhas empresariais.", "Distribuição generosa e plenamente solidária dos lucros da mineração para as comunidades.", "Recuperação ambiental imediata, integral e milagrosa da rica biodiversidade nas áreas exploradas."],
+                explicacao: "Expõe as contradições do consumo pretensamente ecológico mantendo velhas práticas de devastação periférica."
+            },
+            {
+                enunciado: "47. No atual e complexo contexto das frenéticas interações cibernéticas, o conceito sociológico de 'bolha de filtros' designa o preocupante isolamento intelectual provocado por invisíveis algoritmos de recomendação comercial. Avaliando a importante formação da consciência crítica do eu perante o coletivo virtual, esse isolamento algorítmico resulta sistematicamente e frequentemente de forma perigosa na:",
+                opcoes: ["Polarização agressiva do debate público e grande intolerância perante novas perspectivas divergentes.", "Ampliação pacífica e muito significativa do rico repertório cultural e respeito coletivo.", "Extinção definitiva, eficaz e imediata do grave discurso criminoso nas plataformas digitais.", "Aceitação sociável e muito serena das múltiplas contradições inerentes às democracias pluralistas."],
+                explicacao: "As interfaces algorítmicas deformam a convivência social, promovendo tribalismo digital e fragmentação cívica."
+            },
+            {
+                enunciado: "48. A agroecologia apresenta-se mundialmente como uma viável e urgente alternativa científica ao agressivo modelo hegemônico do grande agronegócio intensivo e latifundiário. Considerando o forte contraponto conceitual entre o atual capitalismo agrário monocultor e as relações ecológicas e sustentáveis de produção limpa, a adoção deste novo modelo por agricultores objetiva precipuamente a:",
+                opcoes: ["Integração sistêmica, saudável e equilibrada entre conservação da natureza e segurança alimentar.", "Submissão total e incondicional dos antigos biomas aos perigosos pacotes químicos multinacionais.", "Exportação massiva, ininterrupta e agressiva de grãos primários para abastecer o exterior.", "Exploração produtiva extremamente exaustiva da antiga e rica fertilidade química dos solos."],
+                explicacao: "Propõe a mobilização de saberes para soluções sustentáveis nas matrizes produtivas territoriais."
+            },
+            {
+                enunciado: "49. Diversas e potentes câmeras de reconhecimento facial, operadas por bancos de dados corporativos, estão se espalhando pelas grandes metrópoles sob a promessa de combater o crime. Contudo, do ponto de vista da ética e da tecnologia discriminatória, diversos e respePensadores contemporâneos alertam que o uso acrítico dessas ferramentas automáticas pode intensificar a:",
+                opcoes: ["Vigilância discriminatória e altamente repressiva contra os grupos demográficos já historicamente marginalizados.", "Proteção legal incondicional e amplamente garantida do amplo direito civil à privacidade.", "Eliminação veloz, absoluta e permanente dos comuns erros processuais nas investigações policiais.", "Construção cívica de um novo espaço comunitário inteiramente livre de qualquer monitoramento."],
+                explicacao: "Dilemas de vigilância onde vieses embutidos em IA intensificam racismos estruturais e segregação."
+            },
+            {
+                enunciado: "50. O conceito ambiental conhecido como 'pegada hídrica' mensura o oculto e imenso volume total de água doce utilizado para produzir bens como roupas de algodão ou carne bovina. Em uma análise crítica sobre as desiguais relações internacionais de consumo agrário, observa-se que os países altamente industrializados costumam impor ao mundo uma:",
+                opcoes: ["Transferência velada e contínua da grave escassez hídrica mediante intensa importação primária.", "Redução drástica, repentina e totalmente voluntária no habitual consumo de artigos importados.", "Distribuição harmoniosa e extremamente equitativa dos abundantes recursos hídricos globais por fundos.", "Autossuficiência material absoluta e segura na gestão ambiental das complexas bacias hidrográficas."],
+                explicacao: "Compreensão da economia de recursos não explícitos exportados via matérias primas pelo terceiro mundo."
+            },
+            {
+                enunciado: "51. Em oposição à visão de exploração, a ética do cuidado propõe que a moralidade humana deve basear-se na interdependência sistêmica e na responsabilidade coletiva perante a vulnerabilidade. Ao transpor essa bela perspectiva teórica para a relação da humanidade com a frágil natureza frente à atual crise climática global, o principal imperativo exige:",
+                opcoes: ["Assumir coletivamente a responsabilidade direta e essencial pela manutenção da teia vital.", "Instrumentalizar friamente toda a exótica fauna silvestre em nome do atual progresso.", "Ignorar propositalmente as sempre evidentes e graves consequências ecológicas das escolhas cotidianas.", "Transferir burocraticamente e inteiramente os atuais impasses ambientais para resoluções tecnológicas futuras."],
+                explicacao: "Filosofia ética aplicada exigindo protagonismo nas reparações ambientais presentes."
+            },
+            {
+                enunciado: "52. A chamada 'economia da atenção' opera transformando o valioso tempo livre e o profundo engajamento emocional humano em lucrativas mercadorias altamente disputadas por grandes empresas. Observando os gigantescos e bilionários sistemas econômicos calcados nas atrativas plataformas digitais corporativas, a sustentação dessa rede depende de complexas e avançadas estratégias algorítmicas desenvolvidas para:",
+                opcoes: ["Reter artificialmente o usuário comum fixo na brilhante tela para exibir publicidade.", "Limitar eticamente o excessivo tempo de conexão para assegurar forte bem-estar psicológico.", "Cobrar compulsoriamente mensalidades financeiras rigorosas e muito fixas pelo acesso ao sistema.", "Desestimular frequentemente o agressivo hiperconsumismo através da promoção diária de conteúdos lentos."],
+                explicacao: "As estruturas macroeconômicas de hoje operam extraindo o tempo biológico da consciência humana."
+            },
+            {
+                enunciado: "53. A rápida e onipresente cibercultura transformou irreversivelmente as antigas e sólidas noções de espaço geográfico e tempo cronológico, permitindo rápidas e baratas conexões instantâneas em escala planetária ininterrupta. Contudo, na reflexão sobre a formação da consciência e o real contato interpessoal, uma imensa limitação inerente a essa sociabilidade mediada pelas máquinas caracteriza-se pela:",
+                opcoes: ["Substituição frequente da rica presença orgânica física por frágeis conexões virtuais rasas.", "Consolidação vigorosa, inabalável e imediata dos fortes laços fraternos nas periferias metropolitanas.", "Superação instantânea, completa e muito definitiva de todas antigas barreiras socioculturais mundiais.", "Ampliação ininterrupta do profundo e longo diálogo solidário e livre de interferências."],
+                explicacao: "Dificuldades éticas nas interações de alteridade prejudicadas pela alienação tecnológica contínua."
+            },
+            {
+                enunciado: "54. O bilionário mercado global de carbono foi criado para precificar as poluentes emissões de estufa e tentar incentivar supostas práticas industriais ambientalmente mais limpas e justas. Contudo, severos e importantes críticos ambientais alertam que transformar ecologia em mero produto financeiro especulativo corre o gravíssimo risco prático de se resumir em uma estratégia para:",
+                opcoes: ["Conceder cinicamente o pretenso e polêmico direito de poluir corporações que pagam.", "Eliminar progressivamente e integralmente a pesada dependência global das ricas fontes fósseis.", "Punir financeiramente e muito severamente os pequenos países que ainda preservam florestas.", "Encerrar de maneira definitiva, rápida e forçada as produtivas indústrias petroquímicas mundiais."],
+                explicacao: "Denuncia falhas estéticas e éticas em modelos que mascaram devastações através da lógica financeira global."
+            },
+            {
+                enunciado: "55. A popularização da inteligência artificial generativa, que consegue imitar com perfeição técnicas da criação literária e artística absorvendo gigantescos bancos de dados da internet sem créditos, gerou perplexidade. Diante da reflexão ética sobre criatividade, o trabalho humano e a autoria originária no ciberespaço, a ampla disseminação global dessas máquinas exige de forma basilar:",
+                opcoes: ["Regulamentar urgentemente o amplo uso comercial de imensos dados alheios para treinamento.", "Proibir radicalmente e imediatamente toda e qualquer inovação tecnológica voltada à automação.", "Substituir permanentemente os criativos autores humanos pelas velozes e muito eficientes máquinas.", "Banir legalmente o amplo debate institucional contemporâneo sobre os graves impactos robóticos."],
+                explicacao: "O choque entre desenvolvimento técnico algorítmico, a expropriação de saberes e os dilemas autorais na rede."
+            },
+            {
+                enunciado: "56. Movimentos sociais como o 'downshifting' (desaceleração voluntária) reúnem profissionais que optam por renunciar a altos cargos corporativos para ter um estilo de vida muito mais simples. Contrastando fortemente com o voraz modelo do capitalismo financeiro centralizado na perpétua acumulação material e de capital, essa prática busca fundamentalmente tentar resgatar de forma empírica a:",
+                opcoes: ["Qualidade orgânica do necessário tempo livre e os sentidos das conexões existenciais.", "Competitividade sempre feroz e agressiva para poder ascender profissionalmente no ambiente corporativo.", "Extrema capacidade financeira de conseguir adquirir luxuosas marcas e demonstrar muita riqueza.", "Dependência social muito forte, exclusiva e duradoura de limitados programas assistencialistas governamentais."],
+                explicacao: "As tentativas pragmáticas das populações em criar rotas de fuga ao imperativo do consumo esgotador."
+            },
+            {
+                enunciado: "57. Para o importante pensador contemporâneo Edgar Morin, a autêntica compreensão do fenômeno humano exige lidar com os desafios complexos e totalmente entretecidos da nossa vida orgânica no planeta. Ao abordar criticamente a relação intrínseca do sujeito e os imensos impasses ambientais urbanos, a efetiva e profunda superação da crise ecológica global demanda uma:",
+                opcoes: ["Mudança ética civilizatória ampla que reintegre organicamente o sujeito na teia terrestre.", "Separação epistemológica rigorosa, mecânica e definitiva entre o progresso técnico e ecossistemas.", "Confiança utópica, passiva, cega e irrestrita nas eficientes promessas do mercado tecnocientífico.", "Aceitação acrítica e extremamente dócil da hipotética superioridade moral da máquina cibernética."],
+                explicacao: "Demanda do aluno a percepção filosófica de reintegração paradigmática complexa proposta para superar a crise ecológica."
+            },
+            {
+                enunciado: "58. O prático e sedutor comércio eletrônico global facilita absurdamente a aquisição rápida de microprodutos de qualquer continente diretamente para a porta das casas através de frotas expressas. No entanto, analisando criticamente a real sustentabilidade urbana e o esgotamento dos meios, o alto e perigoso custo ambiental oculto dessa logística veloz de varejo revela-se na:",
+                opcoes: ["Multiplicação caótica, visível e extremamente agressiva das numerosas e poluidoras frotas logísticas.", "Redução gradativa, planejada, segura e muito elogiada do trânsito nas densas metrópoles.", "Descentralização harmônica, estruturada e muito solidária das inovadoras e pequenas linhas produtivas.", "Preservação tecnológica incondicional, forte e blindada da frágil atmosfera contra os poluentes."],
+                explicacao: "Critica ao custo ambiental físico que sustenta o 'milagre' logístico do capitalismo em tempo real."
+            },
+            {
+                enunciado: "59. A complexa disciplina de bioética surge historicamente para demarcar os necessários limites morais da rápida ação tecnocientífica sobre os dinâmicos sistemas vitais e sobre os indivíduos. Ao examinar a prática agressiva de registrar rigorosas patentes industriais sobre antigas sementes alimentares nativas, o principal impasse ético que confronta as antigas populações tradicionais repousa na tentativa de:",
+                opcoes: ["Apropriar juridicamente de forma restrita e estritamente privada as históricas genéticas coletivas.", "Divulgar comercialmente e inteiramente as cobiçadas descobertas botânicas para pequenos produtores familiares.", "Proibir severamente o prático e indispensável emprego das antigas máquinas na colheita.", "Distribuir equitativamente, solidariamente e rigorosamente os formidáveis lucros bilionários das patentes transnacionais."],
+                explicacao: "Discute a bioética confrontada com as lógicas neoliberais de cerceamento produtivo das genéticas."
+            },
+            {
+                enunciado: "60. O antigo cooperativismo de crédito comunitário e de comercialização da produção camponesa contrasta diretamente com a dura e implacável lógica verticalizada do grande e moderno capitalismo financeiro especulativo. Considerando as práticas reais dos sistemas econômicos de forte base solidária regional, a principal função desse antigo modelo associativo e horizontal é fomentar nas comunidades periféricas a:",
+                opcoes: ["Retenção comunitária imediata e pacífica das consideráveis riquezas e impulsionamento estrutural autônomo.", "Remessa financeira contínua, invisível e irrefreável dos altos lucros para potências estrangeiras.", "Concentração internacional massiva e muito injusta de todas decisões operacionais nos bancos.", "Competição mercantil extremamente desleal, violenta e permanentemente desagregadora entre vizinhos de produção."],
+                explicacao: "Reconhecimento empírico de modelos alternativos éticos de organização sistêmica baseados em valores justos."
+            }
+        ];
+
+        let questaoAtual = 0;
+        let acertos = 0;
+        let primeiraTentativa = true;
+        let timerLeitura; 
+        let indiceCorretoDaQuestaoEmbaralhada = 0;
+
+        const uiElements = {
+            content: document.getElementById('quiz-content'),
+            result: document.getElementById('result-content'),
+            questionText: document.getElementById('question-text'),
+            optionsContainer: document.getElementById('options-container'),
+            progress: document.getElementById('progress'),
+            questionCounter: document.getElementById('question-counter'),
+            scoreCounter: document.getElementById('score-counter'),
+            modal: document.getElementById('feedback-modal'),
+            modalBox: document.getElementById('modal-box'),
+            modalIcon: document.getElementById('modal-icon'),
+            modalTitle: document.getElementById('modal-title'),
+            modalMessage: document.getElementById('modal-message'),
+            modalBtn: document.getElementById('modal-btn'),
+            finalScore: document.getElementById('final-score'),
+            finalMessage: document.getElementById('final-message'),
+            readingTimerBlock: document.getElementById('reading-timer'),
+            timerCountSpan: document.getElementById('timer-count')
+        };
+
+        function iniciarQuiz() {
+            questaoAtual = 0;
+            acertos = 0;
+            document.getElementById('header-info').style.display = 'block';
+            uiElements.content.style.display = 'block';
+            uiElements.result.style.display = 'none';
+            carregarQuestao();
+        }
+
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        function carregarQuestao() {
+            primeiraTentativa = true; 
+            clearInterval(timerLeitura); 
+            
+            const q = questoes[questaoAtual];
+            uiElements.questionText.textContent = q.enunciado;
+            uiElements.optionsContainer.innerHTML = '';
+            
+            const progressoPct = ((questaoAtual) / questoes.length) * 100;
+            uiElements.progress.style.width = `${progressoPct}%`;
+            uiElements.questionCounter.textContent = `Questão ${questaoAtual + 1} de ${questoes.length}`;
+            uiElements.scoreCounter.textContent = `Acertos (1ª tentativa): ${acertos}`;
+
+            let indices = [0, 1, 2, 3];
+            shuffle(indices);
+            indiceCorretoDaQuestaoEmbaralhada = indices.indexOf(0);
+            
+            const letrasAlfabeto = ["A) ", "B) ", "C) ", "D) "];
+
+            indices.forEach((indiceAntigo, indexVisual) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.disabled = true; 
+                btn.textContent = letrasAlfabeto[indexVisual] + q.opcoes[indiceAntigo];
+                btn.onclick = () => verificarResposta(indexVisual);
+                uiElements.optionsContainer.appendChild(btn);
+            });
+
+            iniciarTimerLeitura();
+        }
+
+        function iniciarTimerLeitura() {
+            let tempoRestante = TEMPO_LEITURA_SEGUNDOS;
+            uiElements.readingTimerBlock.style.display = 'block';
+            uiElements.timerCountSpan.textContent = tempoRestante;
+
+            timerLeitura = setInterval(() => {
+                tempoRestante--;
+                uiElements.timerCountSpan.textContent = tempoRestante;
+
+                if (tempoRestante <= 0) {
+                    clearInterval(timerLeitura);
+                    uiElements.readingTimerBlock.style.display = 'none'; 
+                    const botoes = document.querySelectorAll('.option-btn');
+                    botoes.forEach(btn => btn.disabled = false);
+                }
+            }, 1000);
+        }
+
+        function verificarResposta(indiceSelecionado) {
+            const q = questoes[questaoAtual];
+            const acertou = (indiceSelecionado === indiceCorretoDaQuestaoEmbaralhada);
+
+            if (acertou) {
+                if (primeiraTentativa) {
+                    acertos++;
+                    uiElements.scoreCounter.textContent = `Acertos (1ª tentativa): ${acertos}`;
+                }
+                mostrarModal(true, q.explicacao);
+            } else {
+                primeiraTentativa = false; 
+                mostrarModal(false, `A resposta correta não é essa. Tente novamente!<br><br><strong>Dica Filosófica:</strong> ${q.explicacao}`);
+            }
+        }
+
+        function mostrarModal(acertou, mensagem) {
+            uiElements.modal.style.display = 'flex';
+            if (acertou) {
+                uiElements.modalBox.className = 'modal-content correct-theme';
+                uiElements.modalIcon.textContent = '✓';
+                uiElements.modalTitle.textContent = 'Você Acertou!';
+                uiElements.modalMessage.innerHTML = mensagem;
+                uiElements.modalBtn.disabled = false;
+                uiElements.modalBtn.textContent = "Próxima Questão";
+                uiElements.modalBtn.onclick = avancarQuestao;
+            } else {
+                uiElements.modalBox.className = 'modal-content wrong-theme';
+                uiElements.modalIcon.textContent = '✗';
+                uiElements.modalTitle.textContent = 'Resposta Incorreta';
+                uiElements.modalMessage.innerHTML = mensagem;
+                uiElements.modalBtn.disabled = false;
+                uiElements.modalBtn.textContent = "Tentar Novamente";
+                uiElements.modalBtn.onclick = tentarNovamente;
+            }
+        }
+
+        function tentarNovamente() {
+            uiElements.modal.style.display = 'none';
+        }
+
+        function avancarQuestao() {
+            uiElements.modal.style.display = 'none';
+            questaoAtual++;
+            if (questaoAtual < questoes.length) {
+                carregarQuestao();
+            } else {
+                mostrarResultado();
+            }
+        }
+
+        function mostrarResultado() {
+            document.getElementById('header-info').style.display = 'none';
+            uiElements.content.style.display = 'none';
+            uiElements.result.style.display = 'block';
+            
+            const porcentagem = Math.round((acertos / questoes.length) * 100);
+            uiElements.finalScore.textContent = `${porcentagem}%`;
+            
+            let mensagem = "";
+            if (porcentagem >= 80) mensagem = "Excelente! Você demonstrou foco e leitura crítica acertando a maior parte das questões de primeira.";
+            else if (porcentagem >= 50) mensagem = "Bom trabalho! Continue exercitando sua racionalidade e pensamento ético sobre as lógicas sociais.";
+            else mensagem = "Não se preocupe com os erros! O mais importante foi ler as explicações e exercitar a reflexão sistemática.";
+            
+            uiElements.finalMessage.textContent = mensagem;
+        }
+
+        window.onload = iniciarQuiz;
+    </script>
+</body>
+</html>
