@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulado de Filosofia: Conhecimento, Pensamento e Realidade</title>
+    <style>
+        :root{--primary-color:#2c3e50;--secondary-color:#34495e;--accent-color:#3498db;--correct-color:#27ae60;--wrong-color:#e74c3c;--bg-color:#f5f7fa;--text-color:#333}
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:var(--bg-color);color:var(--text-color);margin:0;padding:20px;display:flex;justify-content:center;align-items:center;min-height:100vh}
+        .quiz-container{background-color:#fff;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,0.1);width:100%;max-width:800px;padding:30px;position:relative;overflow:hidden}
+        h1{text-align:center;color:var(--primary-color);margin-top:0}
+        .header-info{background-color:#eef2f5;border-left:5px solid var(--accent-color);padding:15px 20px;margin-bottom:25px;border-radius:4px;font-size:0.95rem;line-height:1.5}
+        .header-info p{margin-top:0;margin-bottom:8px} .header-info p:last-child{margin-bottom:0}
+        .progress-bar{background-color:#e0e0e0;border-radius:5px;height:10px;margin-bottom:20px;width:100%}
+        .progress-fill{background-color:var(--accent-color);height:100%;border-radius:5px;width:0%;transition:width 0.3s ease}
+        .status-bar{display:flex;justify-content:space-between;font-weight:bold;margin-bottom:20px;color:var(--secondary-color)}
+        .question-text{font-size:1.2rem;line-height:1.5;margin-bottom:20px;text-align:justify}
+        .reading-timer{text-align:center;color:#d35400;background-color:#fdebd0;border:1px solid #fad7a1;padding:12px;border-radius:6px;font-weight:bold;font-size:1.1rem;margin-bottom:20px;display:none;animation:pulse 1.5s infinite}
+        @keyframes pulse{0%{opacity:1}50%{opacity:0.8}100%{opacity:1}}
+        .options-grid{display:flex;flex-direction:column;gap:12px}
+        .option-btn{background-color:#f8f9fa;border:2px solid #e9ecef;border-radius:8px;padding:15px;font-size:1rem;text-align:left;cursor:pointer;transition:all 0.2s ease;line-height:1.4}
+        .option-btn:hover:not(:disabled){background-color:#e9ecef;border-color:#ced4da}
+        .option-btn:disabled{background-color:#f1f3f5;color:#7f8c8d;cursor:not-allowed;border-color:#ecf0f1;opacity:0.8}
+        .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0.7);z-index:1000;justify-content:center;align-items:center;padding:20px}
+        .modal-content{background-color:#fff;border-radius:12px;padding:30px;max-width:600px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.3);animation:popIn 0.3s ease}
+        @keyframes popIn{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
+        .modal-icon{font-size:60px;margin-bottom:15px}
+        .modal-title{font-size:1.8rem;font-weight:bold;margin-bottom:10px}
+        .modal-message{font-size:1.1rem;margin-bottom:25px;line-height:1.5;text-align:justify}
+        .correct-theme .modal-icon, .correct-theme .modal-title{color:var(--correct-color)}
+        .wrong-theme .modal-icon, .wrong-theme .modal-title{color:var(--wrong-color)}
+        .btn-next{background-color:var(--primary-color);color:white;border:none;border-radius:6px;padding:12px 25px;font-size:1.1rem;cursor:pointer;font-weight:bold;transition:background-color 0.2s;width:100%;max-width:300px}
+        .btn-next:hover:not(:disabled){background-color:var(--secondary-color)}
+        .result-container{display:none;text-align:center}
+        .score-circle{width:150px;height:150px;border-radius:50%;background-color:var(--accent-color);color:white;display:flex;justify-content:center;align-items:center;font-size:2.5rem;font-weight:bold;margin:0 auto 20px}
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz-box">
+        <h1>Simulado de Filosofia: 3ª Série</h1>
+        
+        <div class="header-info" id="header-info">
+            <p><strong>Objetos de Conhecimento:</strong> Origem da Filosofia, Tipos de Conhecimento, Lógica, Metafísica, Filosofia e Ciência, e Conhecimento de Si.</p>
+            <p><strong>Objetivo de Aprendizagem:</strong> Analisar narrativas e processos (históricos/sociais) para a compreensão de ideias filosóficas e suas influências na realidade.</p>
+        </div>
+
+        <div id="quiz-content">
+            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+            <div class="status-bar">
+                <span id="question-counter">Questão 1</span>
+                <span id="score-counter">Acertos (1ª tentativa): 0</span>
+            </div>
+            <div class="question-text" id="question-text">Carregando pergunta...</div>
+            <div id="reading-timer" class="reading-timer">Tempo de reflexão necessário: <span id="timer-count">15</span>s</div>
+            <div class="options-grid" id="options-container"></div>
+        </div>
+
+        <div class="result-container" id="result-content">
+            <h2>Fim do Simulado!</h2>
+            <div class="score-circle" id="final-score">0%</div>
+            <p id="final-message" class="question-text"></p>
+            <button class="btn-next" onclick="reiniciarQuiz()">Tentar Novamente</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="feedback-modal">
+        <div class="modal-content" id="modal-box">
+            <div class="modal-icon" id="modal-icon">✓</div>
+            <div class="modal-title" id="modal-title">Você Acertou!</div>
+            <div class="modal-message" id="modal-message">Explicação aqui.</div>
+            <button class="btn-next" id="modal-btn">Aguarde...</button>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('beforeunload', function (e) {
+            e.preventDefault();
+            e.returnValue = '';
+        });
+
+        const TEMPO_LEITURA_SEGUNDOS = 15;
+
+        // A PRIMEIRA opção (índice 0) de cada array 'opcoes' é a CORRETA. O sistema se encarrega de embaralhar.
+        const questoes = [
+            {
+                enunciado: "1. Uma tribo isolada explica as estações do ano como o resultado de uma deusa que desce ao submundo no inverno e retorna na primavera. Um jovem, no entanto, observa os astros e sugere que o clima muda pela posição planetária, sem intervenção direta divina. A reflexão do jovem evidencia qual transformação essencial?",
+                opcoes: ["A substituição de narrativas míticas por uma busca de princípios causais e racionais.", "A passagem de um modelo puramente empírico para crenças dogmáticas insustentáveis.", "A consolidação do senso comum como a única via segura para o entendimento dos fenômenos.", "O retorno às explicações baseadas em superstições locais em detrimento da lógica formal."],
+                explicacao: "Representa a passagem da narrativa mítica para uma explicação racional baseada na observação (nascimento do pensamento filosófico e científico)."
+            },
+            {
+                enunciado: "2. Dona Maria orientou o neto a não tomar leite com manga, afirmando que causava problemas estomacais, crença herdada da bisavó. Anos depois, o neto analisa os alimentos em laboratório e conclui que a mistura não apresenta toxicidade. As posturas de Dona Maria e do neto ilustram, respectivamente:",
+                opcoes: ["Crenças do senso comum e os métodos rigorosos do conhecimento científico.", "Conhecimento científico rigoroso e crenças tradicionais do pensamento mítico.", "Conceitos de filosofia da ciência e reflexões baseadas estritamente em lógica.", "Teoria do conhecimento pura e foco no conhecimento psicológico de si e do outro."],
+                explicacao: "Dona Maria usa a tradição e o senso comum, enquanto o neto usa a comprovação científica."
+            },
+            {
+                enunciado: "3. Durante uma audiência, três testemunhas relatam versões completamente diferentes do mesmo evento. O juiz se vê diante de um dilema: cada um acredita que sua percepção ocular é a verdade, embora as memórias sejam contraditórias. O impasse remete a qual problema investigado pela Filosofia?",
+                opcoes: ["O questionamento da teoria do conhecimento sobre os limites e a confiabilidade da percepção.", "O dilema da metafísica clássica sobre a existência de seres imateriais fora do plano terreno.", "O debate da lógica formal sobre a estrutura gramatical utilizada nos depoimentos judiciais.", "O problema do surgimento histórico da filosofia e suas relações com os mitos de fundação."],
+                explicacao: "A Teoria do Conhecimento (Epistemologia) investiga a validade dos nossos sentidos e os limites do que podemos saber."
+            },
+            {
+                enunciado: "4. Na Atenas do século V a.C., os cidadãos debatiam o destino da pólis na Ágora. Para ter sucesso político, não bastava invocar vontades divinas; era necessário usar a argumentação e o encadeamento lógico para convencer os pares. Qual foi o impacto desse ambiente político para o pensamento grego?",
+                opcoes: ["Favoreceu o surgimento da Filosofia ao exigir a valorização do discurso racional e argumentativo.", "Proporcionou o declínio do pensamento racional e a volta aos governos teocráticos centralizados.", "Inibiu a liberdade de expressão, forçando os pensadores a escreverem suas ideias de modo anônimo.", "Determinou a separação definitiva entre a prática do comércio e o estudo das ciências naturais."],
+                explicacao: "A democracia e o debate público (praça) foram fundamentais para o desenvolvimento da argumentação filosófica."
+            },
+            {
+                enunciado: "5. Um político discursa: 'Todo cidadão preocupado com os filhos deve votar no meu projeto. João não votou em mim. Logo, João não se preocupa com os filhos e é péssimo pai.' Um estudante percebe que a conclusão tenta forçar uma dedução inválida. A ferramenta filosófica para identificar essa falha enquadra-se na:",
+                opcoes: ["Lógica formal, que analisa a validade da estrutura do raciocínio independentemente do conteúdo.", "Filosofia da ciência, que testa empiricamente em laboratório as afirmações políticas proferidas.", "Compreensão mítica, que busca na tradição oral a justificativa moral para as ações da sociedade.", "Metafísica clássica, que investiga a essência ontológica e imutável das relações de parentesco."],
+                explicacao: "A Lógica Formal estuda a validade dos argumentos e ensina a identificar falácias e erros de dedução."
+            },
+            {
+                enunciado: "6. Uma comunidade ribeirinha usa folhas nativas para tratar inflamações (saber tradicional). Um grupo de farmacêuticos isola o princípio ativo em laboratório e publica um artigo sobre a estrutura molecular da planta. A relação entre a prática da comunidade e a pesquisa demonstra que:",
+                opcoes: ["A sabedoria empírica e a investigação científica abordam o mesmo fenômeno por métodos distintos.", "O conhecimento popular é desprovido de qualquer validade e deve ser substituído pela ciência.", "O método de laboratório confirma que as crenças religiosas locais são responsáveis pela cura.", "A ciência moderna ignora as tradições culturais por considerá-las obstáculos ao avanço tecnológico."],
+                explicacao: "O senso comum empírico possui valor prático e frequentemente serve de base para a investigação metódica da ciência."
+            },
+            {
+                enunciado: "7. Marcos usa redes sociais e percebe que seu feed exibe apenas opiniões políticas idênticas às suas. Com o tempo, ele passa a acreditar que o mundo inteiro pensa como ele e que qualquer pessoa diferente é irracional. Do ponto de vista filosófico do 'conhecimento do outro', esse fenômeno:",
+                opcoes: ["Prejudica a alteridade, inviabilizando o confronto saudável com o diferente, essencial ao amadurecimento.", "Promove uma ampliação radical da empatia, pois o sujeito compreende perfeitamente os próprios limites.", "Estimula o reconhecimento da pluralidade humana, facilitando o diálogo construtivo com outras culturas.", "Fortalece o conhecimento filosófico clássico, que sempre defendeu o isolamento intelectual reflexivo."],
+                explicacao: "As bolhas algorítmicas anulam o reconhecimento da alteridade (o outro), gerando isolamento cognitivo."
+            },
+            {
+                enunciado: "8. Mesmo vivendo no século XXI, rodeada de ciência, Joana recusa-se a assinar contratos quando seu aplicativo indica que 'Mercúrio está retrógrado', temendo que forças astrais arruínem seus negócios. A atitude de Joana ilustra fortemente uma característica de qual forma de pensamento?",
+                opcoes: ["Do pensamento mítico-mágico, que projeta intencionalidade e influência dos astros na vida humana.", "Do raciocínio lógico-formal, que calcula os riscos econômicos com base em estatísticas planetárias.", "Da teoria do conhecimento, que valida os signos do zodíaco como verdades científicas irrefutáveis.", "Do ceticismo filosófico, que duvida de todas as ações humanas independentemente das fases da lua."],
+                explicacao: "Atribuir vontade e poder causal aos astros sobre eventos humanos cotidianos é uma característica do pensamento mágico."
+            },
+            {
+                enunciado: "9. Engenheiros desenvolvem um carro autônomo e deparam-se com um problema: em caso de acidente inevitável, o sistema deve priorizar a vida do passageiro ou do pedestre? Eles percebem que a matemática pura não tem a resposta. Nesse caso, a intervenção da Filosofia torna-se necessária para:",
+                opcoes: ["Refletir sobre os valores morais envolvidos na decisão, fornecendo diretrizes sobre o que é justo.", "Calcular com maior rapidez a velocidade do impacto usando fórmulas da cinemática moderna.", "Substituir o trabalho dos engenheiros, demonstrando que a tecnologia é prejudicial à humanidade.", "Proibir o desenvolvimento de carros autônomos, aplicando leis do senso comum para os pedestres."],
+                explicacao: "A Ética (área da Filosofia) é indispensável para orientar os dilemas morais criados pela evolução tecnológica."
+            },
+            {
+                enunciado: "10. Numa aula, a professora desenha um triângulo. Um aluno observa que o desenho sempre terá pequenas imperfeições no giz. A professora concorda: 'O triângulo perfeito não existe no mundo físico, apenas no mundo das ideias'. Essa fala remete a um problema clássico estudado na área da:",
+                opcoes: ["Metafísica, que investiga realidades imateriais, puramente inteligíveis e além da experiência física.", "Lógica formal, que se preocupa exclusivamente com as regras de pontuação gramatical na frase dita.", "Sociologia do conhecimento, que estuda como as escolas oprimem os alunos com regras muito antigas.", "Filosofia política, que debate a distribuição democrática dos recursos didáticos nas escolas públicas."],
+                explicacao: "A distinção entre o mundo físico (imperfeito) e o mundo das ideias (essências perfeitas) é um debate central da Metafísica."
+            },
+            {
+                enunciado: "11. Uma criança pergunta à mãe por que o céu é azul (luz do sol). Ela questiona por que o sol tem luz (reações químicas). E insiste: 'Mas por que as reações existem?'. A atitude de não se contentar com respostas imediatas e buscar a causa primeira assemelha-se a qual característica da Filosofia?",
+                opcoes: ["A atitude crítica e radical, que busca compreender os fundamentos últimos e as razões da realidade.", "A aceitação dogmática dos saberes estabelecidos pela autoridade familiar como verdades absolutas.", "O conformismo intelectual, que paralisa a investigação assim que encontra uma explicação plausível.", "O uso do pensamento mítico, que cria seres sobrenaturais para justificar processos físicos complexos."],
+                explicacao: "A Filosofia é radical porque busca a raiz dos problemas e não se satisfaz com o conhecimento superficial."
+            },
+            {
+                enunciado: "12. Leia o argumento: Premissa 1: Todos os peixes são animais que voam. Premissa 2: O tubarão é um peixe. Conclusão: Logo, o tubarão é um animal que voa. Avaliando esse argumento sob a ótica estrita da Lógica Formal aristotélica, é correto afirmar obrigatoriamente que:",
+                opcoes: ["O argumento é logicamente válido em sua estrutura, embora contenha uma premissa materialmente falsa.", "O argumento é estruturalmente inválido, pois é impossível organizar frases em que animais tenham asas.", "O raciocínio foge das regras da lógica, uma vez que a conclusão não deriva das premissas apresentadas.", "Trata-se de um silogismo verdadeiro em todos os aspectos empíricos, comprovado pelas ciências naturais."],
+                explicacao: "Na Lógica Formal, a validade refere-se à estrutura da dedução, não à veracidade empírica das frases."
+            },
+            {
+                enunciado: "13. No ônibus, após ler uma notícia criminal, um passageiro grita: 'A solução é simples: olho por olho, dente por dente!'. Algumas pessoas concordam imediatamente, sem refletir sobre as consequências disso para o Estado de Direito. Do ponto de vista filosófico, a exclamação do passageiro representa:",
+                opcoes: ["A reprodução do senso comum, caracterizado por juízos superficiais, irrefletidos e movidos por emoção.", "Um princípio ético universal e rigoroso, defendido por vertentes da filosofia política contemporânea.", "Uma aplicação do pensamento científico, que usa dados estatísticos para propor políticas de segurança.", "A ruptura com o pensamento mítico tradicional, estabelecendo uma nova ordem jurídica fundamentada."],
+                explicacao: "Respostas imediatistas, baseadas em vingança ou emoção não reflexiva, são típicas do senso comum."
+            },
+            {
+                enunciado: "14. Antes do nascimento da Filosofia, a expansão marítima colocou os gregos em contato com egípcios e persas. Eles perceberam que outros povos tinham deuses diferentes e outras explicações para a origem do universo. Como esse contato com o 'diferente' colaborou para o pensamento filosófico?",
+                opcoes: ["Gerou ceticismo em relação às próprias tradições míticas, estimulando a busca por explicações racionais.", "Demonstrou que os deuses gregos eram os únicos verdadeiros, fortalecendo e confirmando a mitologia.", "Destruiu a economia de Atenas, forçando os cidadãos a abandonarem o comércio e a viverem de reflexão.", "Fez com que os gregos abandonassem completamente a escrita, passando a transmitir a cultura de forma oral."],
+                explicacao: "O choque cultural quebra o dogmatismo mítico e incentiva a busca por uma verdade universal baseada na razão."
+            },
+            {
+                enunciado: "15. Ao mergulhar um canudo reto em um copo com água, ele parece estar quebrado devido à refração da luz. No entanto, ao retirar o canudo, você constata com o tato que ele continua perfeitamente reto. Essa experiência simples e cotidiana ilustra um importante debate da Teoria do Conhecimento que questiona:",
+                opcoes: ["A confiabilidade dos nossos órgãos dos sentidos para apreender a realidade de maneira livre de enganos.", "A superioridade absoluta do conhecimento mítico sobre a capacidade humana de realizar experimentos.", "A validade das normas morais que determinam o uso correto de utensílios na alta sociedade de consumo.", "A existência do chamado mundo das ideias, onde todos os copos são imperfeitos e propensos a deformações."],
+                explicacao: "O engano visual levanta a dúvida epistemológica: podemos confiar puramente nos nossos sentidos?"
+            },
+            {
+                enunciado: "16. Durante uma pandemia, cientistas buscam vacinas. Simultaneamente, governantes precisam decidir se fecham comércios para evitar o contágio ou os mantêm abertos, arriscando vidas. Qual é o papel específico da reflexão filosófica diante de um cenário tão complexo que envolve tantas áreas distintas?",
+                opcoes: ["Analisar os fundamentos éticos das decisões políticas e os limites da ciência frente ao bem-estar social.", "Substituir os cientistas, visto que o método filosófico produz vacinas mais rapidamente e com menos custos.", "Ignorar os dilemas políticos e focar na metafísica abstrata, pois a vida material não é objeto filosófico.", "Exigir que a economia determine as decisões, já que a sobrevivência financeira é o único valor absoluto."],
+                explicacao: "A Filosofia avalia as justificativas morais e os limites do conhecimento aplicado às decisões de poder."
+            },
+            {
+                enunciado: "17. Ao chegar à adolescência, Laura passa a questionar as roupas que usa, o gosto musical e a religião familiar. Sente que tudo o que 'é' foi uma cópia dos pais, e deseja descobrir o que é genuinamente seu. O processo de angústia vivenciado por Laura é fundamental na Filosofia porque representa:",
+                opcoes: ["O movimento de autoconhecimento, exigindo desconstrução de certezas para criar uma identidade autônoma.", "Um retrocesso intelectual, pois o verdadeiro sábio aceita as tradições da família sem questionamentos.", "Uma falha no raciocínio lógico-formal, visto que gostos musicais podem ser provados por matemática.", "A vitória do senso comum sobre a ciência, já que ela passa a se guiar apenas por rebeldia irracional."],
+                explicacao: "O conhecimento de si exige afastar as influências externas impostas e formar uma consciência própria."
+            },
+            {
+                enunciado: "18. Um grupo recebe uma notícia sobre a cura imediata de uma doença usando vinagre. Três repassam a mensagem imediatamente. O quarto amigo decide pesquisar em fontes médicas e descobre ser falso. Qual atitude do quarto amigo o aproxima intrinsecamente do que chamamos de 'atitude filosófica'?",
+                opcoes: ["A aplicação metódica da dúvida crítica, não aceitando uma informação como verdade sem investigar sua base.", "A necessidade compulsiva de discordar dos amigos apenas para se sentir superior intelectualmente no grupo.", "A fé inabalável nas curas naturais, substituindo mitos antigos por novos saberes circulantes na internet.", "O uso da metafísica clássica para comprovar que o universo não permite o adoecimento de boas pessoas."],
+                explicacao: "A atitude filosófica inicia-se com a dúvida e a recusa em aceitar fatos sem fundamentação ou evidência."
+            },
+            {
+                enunciado: "19. Durante séculos, acreditou-se no modelo geocêntrico. Posteriormente, Copérnico e Galileu propuseram o heliocentrismo, alterando radicalmente o entendimento do cosmos e enfrentando resistência. Segundo o estudo da Filosofia da Ciência, esse grande evento histórico da humanidade evidencia fortemente que:",
+                opcoes: ["O avanço da ciência pode ocorrer por 'revoluções' que quebram velhos paradigmas e instauram novos modelos.", "O conhecimento científico é uma verdade imutável que jamais passa por revisões após ser inicialmente aceito.", "A mitologia sempre esteve certa sobre os planetas, sendo o modelo de Galileu um delírio matemático.", "Os cientistas devem subordinar suas descobertas empíricas aos interesses dogmáticos da religião dominante."],
+                explicacao: "A ciência não avança de forma linear perfeita, mas passa por rupturas teóricas e mudanças de paradigma."
+            },
+            {
+                enunciado: "20. Nas obras de Homero, deuses sentem raiva e interferem em guerras humanas. Posteriormente, o filósofo Heráclito afirmou que o universo é regido por uma razão universal (Logos) e obedece a leis de mudança. A transição das narrativas homéricas para o pensamento dos pré-socráticos ilustra diretamente:",
+                opcoes: ["A substituição de explicações sobrenaturais personificadas por princípios racionais e de ordem do cosmos.", "A permanência de um pensamento baseado em deuses com forma humana para tentar explicar a natureza viva.", "A adoção do pensamento mágico como base sólida para a clínica moderna e a criação das leis atenienses.", "O fracasso da racionalidade grega, que recorreu aos deuses para justificar a constante mudança material."],
+                explicacao: "Ilustra o deslocamento da mitologia (vontades divinas) para a cosmologia filosófica (leis da natureza)."
+            },
+            {
+                enunciado: "21. O filósofo John Locke utilizou a metáfora da 'tábula rasa' (folha em branco) para descrever a mente humana no nascimento. Segundo ele, todo o conteúdo mental tem origem nas experiências empíricas e percepções do mundo. Essa visão teórica opõe-se vigorosamente a qual outra concepção rigorosa de conhecimento?",
+                opcoes: ["Ao inatismo, que defende que os seres humanos já nascem com ideias e verdades impressas em sua mente.", "Ao empirismo radical, que afirma que a experiência sensorial é uma grande ilusão e não serve para nada.", "Ao dogmatismo religioso, que acredita que a mente é formada apenas pelas sensações corporais do adulto.", "Ao método científico, que utiliza a observação de laboratório apenas para apagar memórias traumatizantes."],
+                explicacao: "A Teoria do Conhecimento divide-se classicamente entre Empiristas (tábula rasa) e Inatistas (ideias de nascença)."
+            },
+            {
+                enunciado: "22. É comum ouvir frases como 'Certas profissões são naturalmente femininas'. Tais afirmações costumam ser aceitas passivamente sem investigação. A partir de uma perspectiva reflexiva filosófica e social estrutural, essas generalizações devem ser imediatamente tratadas e combatidas em sala de aula como:",
+                opcoes: ["Construções do senso comum que naturalizam comportamentos e escondem preconceitos sob a máscara do óbvio.", "Verdades científicas comprovadas pela genética humana ao longo da evolução das mais variadas espécies.", "Argumentos lógicos formais impecáveis, derivados de deduções silogísticas estudadas na antiguidade.", "Princípios metafísicos imutáveis que garantem o equilíbrio das energias espirituais na sociedade moderna."],
+                explicacao: "O senso comum costuma justificar desigualdades culturais tratando-as falsamente como leis da 'natureza'."
+            },
+            {
+                enunciado: "23. Em um debate, o Candidato X apresenta uma proposta de trânsito baseada em gráficos. O Candidato Y ignora os dados e diz: 'Não deem ouvidos ao Candidato X, ele se divorciou e não sabe cuidar do próprio casamento!'. O Candidato Y cometeu um grave erro argumentativo estudado pela Lógica, que consiste em:",
+                opcoes: ["Atacar a pessoa (falácia ad hominem) em vez de atacar o argumento ou a proposta política apresentada.", "Validar a premissa maior do argumento através da demonstração de fatos da vida privada do opositor.", "Utilizar o método empírico indutivo, generalizando um fato da vida particular para validar a qualidade.", "Exercer uma atitude puramente filosófica, preocupando-se mais com a moralidade do que com o asfalto."],
+                explicacao: "O ataque direto às características pessoais do debatedor é uma falácia lógica conhecida como Argumentum ad Hominem."
+            },
+            {
+                enunciado: "24. Um filme de ficção científica aborda a possibilidade de fazermos 'upload' de nossas mentes para vivermos eternamente em um servidor digital. O roteiro questiona se essas mentes seriam 'humanas'. Ao produzir a obra, a linguagem cinematográfica apropria-se de uma discussão da Filosofia com o objetivo direto de:",
+                opcoes: ["Provocar uma reflexão existencial e metafísica sobre a consciência e os limites entre homem e máquina.", "Ensinar o espectador a programar sistemas complexos de armazenamento na nuvem usando lógica matemática.", "Desvalorizar a investigação científica, sugerindo que apenas a intuição resolve os problemas de hardware.", "Confirmar dogmas do senso comum de que a tecnologia de computação é destrutiva para o corpo e o espírito."],
+                explicacao: "A Arte (Cinema) funciona como ferramenta de pensamento para debater conceitos filosóficos (identidade, consciência)."
+            },
+            {
+                enunciado: "25. Em um mundo hiperconectado, recebemos centenas de notificações e não processamos quase nada com profundidade. Um professor sugere que a turma desligue o celular por 24h para pensar sobre o propósito de suas vidas. Nesse contexto atual da informação, a atitude proposta resgata integralmente a Filosofia como:",
+                opcoes: ["Um espaço de pausa, contemplação e distanciamento crítico necessário para escapar da alienação imediata.", "Um instrumento de utilidade comercial rápida para aumentar o engajamento produtivo no mercado digital.", "Uma técnica de memorização intensa que permite decorar todos os dados antes que as redes caiam de vez.", "Um método ultrapassado e inútil de negação do progresso que deve ser rejeitado para garantir sucesso."],
+                explicacao: "A atitude filosófica exige reflexão lenta, em total oposição ao imediatismo e à superficialidade tecnológica."
+            },
+            {
+                enunciado: "26. Uma indústria cria uma pílula que elimina a necessidade de dormir, prometendo dobrar a produtividade. Comprovada a segurança biológica, surge o debate se as empresas poderiam obrigar funcionários a tomá-la. Nesse cenário de inovação, qual é a contribuição fundamental e específica exigida da Filosofia?",
+                opcoes: ["Discutir limites éticos da invenção e os impactos morais de uma vida devotada inteiramente ao trabalho.", "Validar metodologicamente a composição química da pílula para evitar falsificações na cadeia produtiva.", "Ignorar as preocupações trabalhistas humanas, pois o progresso científico prático deve estar acima de tudo.", "Utilizar o pensamento mítico para proibir a pílula de imediato, alegando que o sono é um dom divino."],
+                explicacao: "A Filosofia (Ética) debate os valores envolvidos no avanço tecnológico, protegendo a dignidade humana."
+            },
+            {
+                enunciado: "27. Um estudante faz intercâmbio em país onde consomem insetos. Inicialmente sente repulsa e julga como 'errado'. Depois, ele pesquisa o valor nutricional, entende o contexto de escassez e passa a respeitar o hábito, mesmo sem querer consumi-los. Do ponto de vista filosófico sobre a alteridade, isso evidencia:",
+                opcoes: ["O exercício da compreensão do outro, superando o forte etnocentrismo por meio da análise reflexiva crítica.", "A comprovação de que o senso comum materno é o único padrão moral válido para julgar a alimentação.", "A falha em seu raciocínio formal, que deveria impedi-lo intelectualmente de aceitar práticas não ocidentais.", "A submissão irracional de sua própria identidade cultural orgânica aos instintos míticos de nova religião."],
+                explicacao: "O conhecimento do outro exige empatia, contexto e o abandono de julgamentos pautados exclusivamente na própria cultura."
+            },
+            {
+                enunciado: "28. Na Grécia Antiga, o uso da moeda substituiu o escambo direto. A moeda permitiu que o valor fosse calculado de forma abstrata, estimulando o raciocínio matemático nas transações dos comerciantes de diferentes regiões. Como esse fator puramente econômico contribuiu de forma estrutural para o nascimento da Filosofia?",
+                opcoes: ["Estimulou a capacidade de abstração intelectual e o cálculo racional, ferramentas essenciais ao filosofar.", "Aumentou o misticismo local profundo, já que as moedas carregavam sempre os rostos de antigas divindades.", "Destruiu o interesse dos jovens pela política, pois os cidadãos atenienses passaram a viver só do lucro.", "Exigiu a criação de teorias científicas muito modernas de laboratório para avaliar a pureza do metal."],
+                explicacao: "O uso do dinheiro ensinou as mentes a lidarem com valores universais e abstratos, preparando o terreno para a razão."
+            },
+            {
+                enunciado: "29. Um idoso visita a escola onde estudou. Repara que o prédio mudou, professores são outros e alunos usam tecnologia. No entanto, ele aponta para a estrutura e diz com firmeza: 'Esta é a minha velha escola'. O sentimento de que algo permanece o mesmo apesar de todas mudanças físicas remete a qual área filosófica?",
+                opcoes: ["À metafísica, que investiga a profunda relação entre o que é passageiro (aparência) e permanente (essência).", "À lógica formal, que exige invariavelmente a permanência exata dos mesmos átomos para validar a obra civil.", "À filosofia da ciência, que mede o rápido envelhecimento dos materiais escolares através do método empírico.", "Ao conhecimento mítico mágico, que crê fielmente na existência de espíritos assombrando as escolas."],
+                explicacao: "O debate sobre aparência vs. essência (o que muda e o que permanece) é central na reflexão Metafísica."
+            },
+            {
+                enunciado: "30. Um influenciador publica: 'Sou a favor da liberdade absoluta de expressão, sem restrições! Mas acho que as pessoas que criticam meu conteúdo na internet deveriam ser multadas e proibidas de usar redes, pois espalham negatividade'. Avaliando a fala sob os princípios da Lógica, nota-se que ele cometeu:",
+                opcoes: ["Uma contradição evidente, pois a conclusão de proibir duras críticas anula sua premissa de total liberdade.", "Um silogismo altamente perfeito, estruturando suas premissas de forma a chegar a uma dedução lógica clara.", "Um juízo empírico rigoroso, baseado matematicamente em dados coletados fielmente de seus seguidores.", "Um salto puramente metafísico, transcendendo as duras limitações verbais para atingir a verdade plena."],
+                explicacao: "A Lógica impede a contradição; uma premissa universal absoluta é destruída por uma exceção oposta imediata."
+            },
+            {
+                enunciado: "31. Por muito tempo, o senso comum dizia que certas famílias tinham 'sangue ruim' e estavam predestinadas ao crime, justificando punições mesmo sem delitos. A passagem dessa crença punitiva absurda para um sistema de justiça contemporâneo reflexivo, equilibrado e pautado no direito civil exigiu e fundamentou-se na:",
+                opcoes: ["Superação analítica do senso comum altamente preconceituoso através da reflexão crítica e direitos humanos.", "Revitalização e o forte fortalecimento do pensamento mítico antigo para justificar severas perseguições.", "Aplicação técnica direta da lógica matemática avançada para poder calcular o nível exato de maldade humana.", "Negação completa de absolutamente todas teorias de conhecimento, criando caos e anarquia nos tribunais."],
+                explicacao: "O papel do pensamento reflexivo (filosófico/crítico) é desmontar dogmas sociais prejudiciais do senso comum."
+            },
+            {
+                enunciado: "32. Durante terremotos antigos, relatava-se que Poseidon havia batido seu tridente em fúria. Hoje, geólogos explicam o tremor pelas placas tectônicas movimentadas pelo intenso calor do manto. A diferença teórica e metodológica fundamental que distingue as duas formas de narrativa humana acerca do mesmo abalo reside no fato de que:",
+                opcoes: ["O mito recorre a vontades sobrenaturais ocultas, enquanto a ciência busca engrenagens e mecanismos naturais.", "O relato do mito é uma grande verdade irrefutável e a ciência representa apenas uma pequena opinião instável.", "A ciência moderna apenas utiliza nomes diferentes e disfarçados para velhos deuses de força física grega.", "A rica filosofia da antiguidade sempre concordou com deuses em detrimento da rígida observação factual."],
+                explicacao: "A ciência busca causas impessoais na própria natureza material; o mito recorre às vontades divinas subjetivas."
+            },
+            {
+                enunciado: "33. Um jovem passa 15 horas de óculos de realidade virtual, onde tem luxo e poder financeiro. Ao tirar, vê o quarto e lembra que está desempregado. Começa a se questionar constantemente sobre qual das duas vidas seria a 'verdadeira'. A forte angústia existencial do rapaz ilustra perfeitamente qual dilema filosófico?",
+                opcoes: ["A contínua dificuldade teórica de distinguir a ilusão projetada aos sentidos e a crua realidade material.", "A incapacidade de políticas estatais de oferecer moradia apropriada para amantes da tecnologia de ponta.", "A total certeza matemática dedutiva de que o universo deixará de existir sem computadores conectados.", "A incontestável validade do senso comum clássico que defende a vida extraterrestre nos meios digitais."],
+                explicacao: "O Mito da Caverna de Platão atualizado: o questionamento epistemológico entre a simulação e a realidade."
+            },
+            {
+                enunciado: "34. Uma jovem em dúvida vocacional lê estatísticas de emprego (saber científico) e frequenta missas pedindo direção divina (saber religioso). Sobre a convivência desses tipos de conhecimento na vida diária da mesma pessoa em contextos de grande ansiedade, é correto e filosoficamente coerente considerar que eles:",
+                opcoes: ["Atuam em esferas distintas da vida humana: um lida com métricas factuais, outro atende à busca de sentido.", "Anulam-se obrigatoriamente, tornando sempre impossível mesclar o rigor do planejamento com oração íntima.", "Unem-se integralmente na química demonstrando que qualquer fé é uma fórmula de sucesso material certo.", "Comprovam cientificamente que a escolha profissional sempre será ineficiente quando pautada em dados."],
+                explicacao: "A pluralidade dos saberes mostra que religião e ciência respondem a necessidades diferentes da condição humana."
+            },
+            {
+                enunciado: "35. Sócrates andava em praças públicas fazendo perguntas incisivas a generais e políticos até provar que eles não sabiam definir o que era coragem ou justiça, deixando-os extremamente irritados. A atitude provocativa de Sócrates (A mosca de Atenas) revela de forma emblemática que a natureza da Filosofia consiste em ser:",
+                opcoes: ["Uma investigação sempre incômoda que desafia certezas estabelecidas e promove a reflexão sobre valores.", "Um simples conjunto de inquestionáveis dogmas políticos necessários para a manutenção da ordem civil pacífica.", "Uma rotineira e lucrativa prática financeira focada unicamente na rápida cobrança de impostos pelo Estado.", "Uma antiga forma de intenso pensamento místico que exigia sacrifícios de animais perante grandes plateias."],
+                explicacao: "Filosofar tira o ser humano da zona de conforto e destrói opiniões que não se sustentam racionalmente."
+            },
+            {
+                enunciado: "36. Um pesquisador avista cem cisnes brancos em um parque isolado. Baseado nisso, conclui e publica: 'Todos os cisnes do mundo são definitivamente brancos'. Anos depois, cisnes negros são encontrados em outro país. O precipitado erro do cientista ilustra um famoso problema da estrutura metodológica referente ao método:",
+                opcoes: ["Indutivo empírico, que retirou uma conclusão generalista e absoluta a partir da observação de poucos casos.", "Dedutivo matemático puro, que iniciou a pesquisa com uma premissa universal impecável e sem problemas.", "Metafísico místico, visto que a linda cor branca apenas representa sinais sagrados ignorados no estudo.", "Sociológico estrutural, que tentou relacionar cor de aves migratórias com o intenso desenvolvimento urbano."],
+                explicacao: "O problema da indução é extrapolar certezas absolutas a partir da observação de fenômenos restritos e parciais."
+            },
+            {
+                enunciado: "37. Num museu moderno, alguém vê um urinol invertido assinado com pseudônimo (Duchamp) e exclama com raiva: 'Isso não é arte, é peça de banheiro!'. A área filosófica que estuda essas discussões complexas sobre os sentimentos visuais (Estética) defende historicamente como contra-argumentação reflexiva válida que a Arte:",
+                opcoes: ["Pode ser repensada e bastante expandida, valorizando a ideia e a intenção do criador acima do objeto físico.", "Deve ser sempre composta unicamente por pinturas a óleo incrivelmente realistas e que agradam o público.", "É fruto de um intenso cálculo matemático da engenharia civil aplicada nas finas decorações dos banheiros.", "Representa a vitória inegável do pensamento mágico sobre os modernos e frios centros tecnológicos atuais."],
+                explicacao: "A Estética questiona a própria definição do que é belo ou do que possui status de manifestação artística."
+            },
+            {
+                enunciado: "38. Livros de ficção científica abordam com frequência o tema do 'último ser humano na terra'. Nos contos, os personagens solitários começam a falar com objetos inanimados, perdendo a noção identitária ao longo dos anos. Sob a forte ótica da relação existencial entre o 'eu' e o 'outro', tais narrativas sugerem fortemente que:",
+                opcoes: ["O contínuo e orgânico autoconhecimento e a sanidade psíquica dependem fundamentalmente da interação social.", "O isolamento completo é o verdadeiro atalho comprovado para o mais profundo raciocínio dedutivo matemático.", "A convivência sempre atrasa e prejudica a grande evolução neurológica e moral de pessoas superdotadas.", "As pressões sociais civilizatórias impedem categoricamente o humano de entender a fauna animal e botânica."],
+                explicacao: "A consciência de si não existe no vácuo; ela é construída e mantida através da relação com a alteridade."
+            },
+            {
+                enunciado: "39. Um astrólogo lança teoria afirmando que 'Pessoas do signo X são muito nervosas, exceto se aprenderem a ter total autocontrole'. A cientista rebate argumentando que a frase cria uma desculpa automática, impossibilitando testes reais. O argumento da cientista remete a qual pilar clássico da rigorosa Filosofia da Ciência?",
+                opcoes: ["Para que uma proposição seja científica, precisa ser falsificável, abrindo-se ao risco de testes a refutarem.", "A formulação teórica necessita basear-se no dogmatismo, blindando a pesquisa de críticas e experimentações.", "A popularidade e clareza voltadas para o simples senso comum são a base única de qualquer estudo aceitável.", "A comprovação ocorre quando autoridades religiosas outorgam a completa veracidade da pesquisa universitária."],
+                explicacao: "Karl Popper instituiu que o princípio da demarcação científica é a 'falsificabilidade' da teoria proposta."
+            },
+            {
+                enunciado: "40. Ao observar os códigos e correntes elétricas de um robô que sorri artificialmente, o próprio programador humano se questiona profundamente em seu laboratório: 'Terão as máquinas avançadas algum tipo de alma no futuro?'. A sensível indagação atual do criador reacende essencialmente qual antigo e profundo debate metafísico?",
+                opcoes: ["O dualismo milenar entre a natureza complexa da mente orgânica e o funcionamento do corpo apenas material.", "O temor biológico e militar gerado nas culturas terrestres frente a iminentes invasões tecnológicas de fora.", "O uso intensivo do senso comum para tentar impedir grandes lucros na comercialização das peças eletrônicas.", "A inegável falácia que tenta atacar o formato estético da máquina em vez de analisar seu duro código-fonte."],
+                explicacao: "A Metafísica investiga se a 'consciência' seria imaterial (alma/mente) ou mero resultado físico da matéria (cérebro/hardware)."
+            },
+            {
+                enunciado: "41. Hoje, os cinemas estão cheios de filmes com deuses heroicos e forças obscuras travando imensas batalhas cósmicas para tentar salvar ou destruir o universo. Especialistas da narrativa atestam que o imenso apelo popular dessas obras prova que, assim como o antigo pensamento mítico grego clássico, essas histórias:",
+                opcoes: ["Oferecem modelos profundamente simbólicos focados em valores, sacrifícios e medos que orientam as pessoas.", "Demonstram rigorosos fatos de documentários altamente históricos sobre o passado inegável e real da terra.", "Foram formuladas puramente para auxiliar na matemática avançada através da visualização óptica complexa.", "Acabam destruindo irremediavelmente a capacidade natural neurológica de deduzir qualquer sistema lógico."],
+                explicacao: "O Mito não morreu; ele sobrevive na cultura de massas como veículo alegórico de conflitos humanos (bem, mal, heroísmo)."
+            },
+            {
+                enunciado: "42. Durante discussão térmica numa forte tempestade de neve, um parente nega os gráficos da NASA sobre elevação global de temperaturas dizendo: 'Isso é sua visão científica, mas a minha verdade é o intenso frio que sinto nos ossos agora!'. A argumentação familiar representa qual problema para a robusta Teoria do Conhecimento?",
+                opcoes: ["A alta confusão entre a limitada percepção sensorial subjetiva do indivíduo com o dado e a métrica objetiva.", "A incapacidade completa dos laboratórios espaciais de prever climas regionais curtos com a devida exatidão.", "O formidável sucesso absoluto das antigas filosofias focadas exclusivamente na mera análise gramatical verbal.", "O excelente raciocínio empirista radical e dedutivo sendo usado adequadamente para demolir fatos espaciais."],
+                explicacao: "Senso comum não distingue sentimento individual local (está frio aqui) de realidade sistêmica (o clima planetário)."
+            },
+            {
+                enunciado: "43. Ao deparar-se com práticas corporativas inúteis, uma funcionária recém-chegada recusa o ditado interno de que 'As coisas antigas sempre foram feitas dessa maneira aqui' e propõe novos fluxos inovadores de trabalho. Ao analisar a raiz das soluções ineficazes e agir, a inteligente postura da nova colaboradora evidencia que:",
+                opcoes: ["A tradição mecânica e o simples costume não reflexivo devem ceder espaço à atitude questionadora racional.", "O respeito religioso às velhas lendas corporativas é a única garantia empírica de forte sucesso financeiro.", "As velhas ações e atitudes que duram muito tempo alcançam matematicamente o máximo de rigor acadêmico.", "O pensamento reflexivo gera exclusivamente ineficiência e muita confusão burocrática em rotinas modernas."],
+                explicacao: "A atitude filosófica não aceita o tradicionalismo automático, buscando justificativas lógicas eficientes."
+            },
+            {
+                enunciado: "44. Pré-socráticos abandonaram as antigas Cosmogonias gregas (narrações sobre nascimentos de grandes deuses colossais) para formular e sistematizar pela primeira vez a inovadora Cosmologia racional. A histórica e imensa transição entre esses métodos revolucionou completamente a sociedade, visto que representou notadamente a:",
+                opcoes: ["Busca efetiva por princípios físicos naturais (physis/arché), abandonando histórias repletas de divindades.", "Valorização massiva e intensificada da mitologia oral homérica deixando as ciências de laboratório exatas.", "Supressão totalitária, imediata e altamente burocrática das cultuadas religiões pelas praças das cidades.", "Aplicação dedutiva extrema das difíceis equações trigonométricas sobre antigos pergaminhos de sacerdotes."],
+                explicacao: "A passagem da crença na genealogia divina para a busca pelo princípio natural originário da matéria (Água, Ar, Fogo, Terra)."
+            },
+            {
+                enunciado: "45. Senhora observa piso úmido na manhã e diz corretamente: 'Sereno cai no frio intenso'. Meteorologista constata o mesmo, mas mensura a umidade relativa e descreve os cálculos exatos da forte condensação térmica molecular. Embora cheguem a verdades eficientes e muito reais, as referidas abordagens separam-se fundamentalmente entre:",
+                opcoes: ["A superficial observação prática útil e cotidiana em contraponto com a rígida busca por causas sistemáticas.", "O inegável pensamento mítico pagão e abstrato confrontando as mais exigentes leis morais criadas na política.", "A pesada falácia silogística aristotélica diante dos eficientes modelos lógicos universais e matemáticos.", "As velhas formas de espiritualidade metafísica perante potentes testes indutivos que avaliam os pássaros."],
+                explicacao: "O senso comum visa utilidade empírica; a ciência busca a sistematização metódica e compreensão profunda das leis."
+            },
+            {
+                enunciado: "46. Bombardeado por manipulações de inteligência artificial (vídeos perfeitos, falas sintetizadas falsas, as chamadas deepfakes) nas diversas mídias da rede, um jovem declara com enorme tristeza: 'Ninguém sabe de nada, a verdade de fato não existe mais'. A radical atitude adotada pelo internauta assusta e alinha-se ao antigo e rigoroso:",
+                opcoes: ["Ceticismo radical, doutrina que afirma a total e absoluta incapacidade da mente humana atingir a realidade.", "Dogmatismo passivo, que estimula o jovem a acolher todas inovações e mídias visuais como dados factuais.", "Pensamento empírico da ciência moderna, embasado nos testes que os grandes sistemas informáticos efetuam.", "Modelo clássico estrutural mítico, repassando culpas éticas das falhas técnicas aos antigos deuses gregos."],
+                explicacao: "Quando a pessoa desacredita totalmente da possibilidade do conhecimento confiável, adota a posição de cético absoluto."
+            },
+            {
+                enunciado: "47. Adolescente sente ansiedade pela frequente comparação social com fotos nas redes. Um bom psiquiatra receita o rápido remédio químico e o analista de TI mede curtidas. Diante dessa contemporânea teia de profissionais tentando sanar uma grave dor humana moderna, a específica função intelectual e crítica da disciplina da Filosofia atua para:",
+                opcoes: ["Refletir criticamente sobre alienação identitária e os sentidos da existência em tempos hiperconectados e velozes.", "Determinar as velozes reações químicas para produzir de modo industrial remédios alternativos milagrosos.", "Criar legislações e banir violentamente aparelhos das menores de idade dentro de toda e qualquer instituição.", "Computar complexos gráficos em linguagem de programação para melhorar os fluxos digitais mercadológicos."],
+                explicacao: "Enquanto as outras áreas tratam sintomas materiais e logísticos, a Filosofia trata o sentido subjacente e a angústia existencial."
+            },
+            {
+                enunciado: "48. Na Grécia Antiga, a Praça era o local público fundamental do embate civil de múltiplas ideias conflitantes. Hoje, a grande internet deveria exercer esse papel de fórum digital irrestrito, mas invisíveis linhas de códigos algorítmicos filtram severamente opiniões divergentes nas timelines. A principal grave consequência ética para as estruturas da Pólis é:",
+                opcoes: ["O drástico prejuízo à essencial pluralidade humana que fomenta e mantém o raciocínio prático e a cidadania.", "O benéfico resgate dos intelectuais, pois elimina a demora nas votações públicas que sempre atrasam o governo.", "O rápido estabelecimento da política pura da tecnologia, na qual apenas engenheiros devem guiar uma nação.", "O retorno formidável do pensamento religioso pacificador e solidário a fim de guiar cegamente a moral pública."],
+                explicacao: "A eliminação do 'contraditório' pelas bolhas das redes sociais destrói o fundamento basilar do pensar democrático plural."
+            },
+            {
+                enunciado: "49. Analisando o raciocínio escrito por aluno em avaliação: 1ª Premissa: 'Os planetas da galáxia Andrômeda são queijos'. 2ª Premissa: 'Marte é de Andrômeda'. Conclusão final: 'Marte é feito de um ótimo e derretido queijo'. Embora contenha um enorme e terrível engano científico factual básico, a Lógica Formal aristotélica avaliaria que esse silogismo consiste em:",
+                opcoes: ["Dedução validada impecavelmente na estrutura conectiva de organização interna de proposições gramaticais.", "Construção inválida estruturalmente devido ao absoluto rompimento visível com as modernas leis cinemáticas.", "Pensamento inteiramente sintático inútil por descumprir as antigas regras das deduções teológicas católicas.", "Argumentação materialista e muito verdadeira apoiada por sondas e potentes fotografias astronômicas reais."],
+                explicacao: "Um argumento pode ter validade lógica formal (conexões perfeitas) mesmo com afirmações empíricas surreais ou mentirosas."
+            },
+            {
+                enunciado: "50. O antigo dito que afirma cruelmente que 'Pau que nasce torto morre inevitavelmente torto' tenta eternizar destinos limitantes nas classes baixas urbanas. Contrariando essa violenta visão fatalista, o incansável educador consegue transformar positivamente a realidade de inúmeros jovens. A persistente prática desse abnegado e lúcido professor demonstra:",
+                opcoes: ["O enfrentamento e superação dos dolorosos determinismos populares mediante intensa ação crítica reflexiva.", "O extremo reforço prático empírico comprovado confirmando que o imenso fatalismo sempre direciona vidas.", "O complexo cálculo dedutivo e lógico aplicando formas de ângulos nos antigos instrumentos de escola rural.", "A aceitação teórica pacífica mostrando passividade escolar diante das intransponíveis limitações genéticas divinas."],
+                explicacao: "A intervenção sociopedagógica recusa os limites do senso comum fatalista e prova que o ser humano não é determinado."
+            },
+            {
+                enunciado: "51. Criticada por parentes por trocar e romper com o centenário curso familiar obrigatório, a aluna argumenta: 'Nenhum caminho ou essência estava escrito para mim, farei minha história por mim mesma agora!'. A postura convicta de insubmissão baseia-se nos modernos princípios existencialistas, os quais afirmam categoricamente e amplamente a noção de que:",
+                opcoes: ["O sujeito necessita arcar sozinho com o profundo fardo de inventar em liberdade total seus próprios valores.", "As identidades devem conformar-se perfeitamente aos sólidos capitais das grandes engrenagens financeiras.", "O passado psíquico sempre decide as antigas predisposições genéticas das novas atuações dos universitários.", "O isolamento moral imposto pela obediência garante estabilidade pacífica e lucros para grandes empresas."],
+                explicacao: "O existencialismo sartreano (Conhecimento de si) decreta que não há natureza ou essência fixa: a existência vem antes."
+            },
+            {
+                enunciado: "52. Diferentemente das fantásticas antigas histórias sobre a fúria chorosa das velhas ninfas para transbordar de modo agressivo o Nilo, o primeiro filósofo Tales tentou demonstrar que apenas a força da Água seria o princípio causal universal da terra inteira. A novidade histórica grandiosa estabelecida nesse ato de Tales fundamentou-se basicamente em tentar:",
+                opcoes: ["Explicar os fenômenos complexos recorrendo inteiramente e unicamente a elementos físicos internos da natureza.", "Utilizar tubos químicos inovadores complexos para misturar compostos sintéticos em ambientes fechados.", "Resgatar antigos pergaminhos de velhos folclores mágicos persas que tratavam dos mares gregos antigos.", "Constituir uma seita de ordem fechada visando dominar e cobrar impostos das perigosas navegações marítimas."],
+                explicacao: "Surgimento da atitude teórica: Tales abandona divindades extranaturais e usa apenas a matéria visível para a cosmologia."
+            },
+            {
+                enunciado: "53. Após o anúncio de uma milagrosa resina material supercondutora de altíssima eficiência global, dezenas de experientes cientistas refazem exaustivamente e reprovam o modelo original em diversos laboratórios do mundo por severas falhas estruturais. O ágil e implacável banimento científico demonstra rigorosamente que o método da pesquisa universitária exige fortemente a:",
+                opcoes: ["Concordância de reprodutibilidade aberta a duros exames permitindo a iminente refutação teórica estruturada.", "Garantia burocrática dos governantes antes da verificação física para evitar desgastes de materiais úteis.", "Dogmatização dos resultados iniciais assim que o projeto entra e viraliza pelas velozes redes sociais modernas.", "Adoração aos primeiros intelectuais que lideram com forte inspiração pessoal intuitiva e visão espiritual pura."],
+                explicacao: "Na ciência, a prova da verdade reside na falseabilidade, reprodução independente, análise empírica e revisão constante."
+            },
+            {
+                enunciado: "54. Ao colocar minúscula e dura semente em sua palma espessa e posteriormente contemplar longo cedro alcançando alto céu com grandes folhas espessas, Aristóteles afirmaria que semente invisível carrega imenso futuro orgânico interno inerente nela mesma. A complexa e racional reflexão conceitual sobre 'Potência e Ato' integra a importante área conhecida estruturalmente como a:",
+                opcoes: ["Metafísica, focada estritamente nas imutáveis naturezas do ser, seus elementos constituintes vitais e mudança.", "Política, empenhada violentamente em garantir legislação que preveja distribuição igualitária nas fábricas.", "Técnica fabril industrial, dedicada ao brutal extrativismo contínuo promovendo rápidas inovações elétricas.", "Lógica sintática e pura focada nas regras silogísticas matemáticas aplicadas nas falas sem falácias discursivas."],
+                explicacao: "Aton e potência (movimento, mudança, o que algo é e o que ele pode vir a ser) pertencem à Ontologia (parte da Metafísica)."
+            },
+            {
+                enunciado: "55. Protagonistas heroicos das populares trilogias épicas literárias cumprem severas provações físicas (Luta contra grandes vilões perversos, Sacrifícios enormes corporais e a Volta redentora para casa), imitando narrativas extremamente presentes nas sagas nórdicas antigas. A equivalência do padrão enraizado demonstra solidamente que a cultura mítica ancestral humana hoje:",
+                opcoes: ["Permanecem expressando desafios, traumas dolorosos da formação moral íntima que nos ensinam virtudes sociais.", "Atrasam intensamente o jovem raciocínio reflexivo da moderna compreensão profunda logico-matemática exata.", "Foram eliminados para dar integral prioridade empírica absoluta nas exatas descobertas de novos astros cósmicos.", "Constituem imenso obstáculo psicológico focado para angariar gigantes rendas comerciais de bilheterias."],
+                explicacao: "Arquétipos míticos permanecem sendo uma importante ferramenta pedagógica sobre a superação de dilemas e formação de caráter."
+            },
+            {
+                enunciado: "56. Família rural obedece a antigas lendas sobre luas exatas mantendo colheitas ricas ininterruptas há muitas e sucessivas gerações. Pesquisador de biologia utiliza umidade e desenvolve plano de igual capacidade. A convivência desses dois mundos evidencia aos estudiosos profundos da epistemologia do pensar a formidável assertiva reflexiva analítica de que, frequentemente:",
+                opcoes: ["Múltiplas correntes baseadas em premissas radicalmente diferentes fornecem compreensões úteis dos fenômenos.", "A crença mágica tradicional supera sempre e infinitamente a frieza rígida inútil e frágil dos aparelhos modernos.", "Saberes populares atrasam gravemente a economia comercial e impedem avanço de ricas regiões populosas.", "O empirismo de cientistas aniquila crenças erradas mostrando impossibilidade completa de culturas do campo."],
+                explicacao: "Diferentes tipos de saber (tradicional/popular e rigoroso/científico) cumprem variadas utilidades operacionais de maneira legítima."
+            },
+            {
+                enunciado: "57. Com o famoso e poderoso grito iluminista de 'Ouse fortemente o imenso ato de saber por você', o prussiano mestre teórico Kant instava vigorosamente a Europa. Ao transportar e adequar a famosa e exigente convocação para redes abarrotadas de intensos engajamentos midiáticos voláteis, essa grande ideia prega ativamente para combater e reprimir fortemente a contínua e iminente:",
+                opcoes: ["Acomodação mental na pesada menoridade reprodutiva acrítica de apenas reproduzir ideias ou seguir tutores.", "Leitura sistemática árdua dos desgastantes volumes antigos católicos que moldaram o sombrio mundo medieval.", "Fugaz vontade individualista de fechar mídias e apostar agressivamente todos fundos de pensões modernos.", "Aceitação submissa perante a enorme eficiência material alcançada pela avançada técnica robótica automotiva."],
+                explicacao: "Kant exige a autonomia do pensamento ('esclarecimento'), fugindo da passividade de sermos apenas seguidores das ideias dos outros."
+            },
+            {
+                enunciado: "58. Inovações profundas de edição de códigos vitais celulares trazem potentes métodos laboratoriais de extermínios biológicos plenos contra graves hereditariedades raras de doenças. Contudo, corporações poderiam permitir ricas famílias a customizarem genéticas e visuais perfeitos em suas luxuosas futuras gerações. Esse imenso avanço instaura pesados dilemas éticos profundos apontando e expondo duramente a complexa:",
+                opcoes: ["Urgência de uma rígida regulação filosófica de fronteiras éticas ponderando cura médica benéfica versus arrogância eugênica.", "Forçosa aplicação empírica imediata sem freios da manipulação em laboratórios químicos com equações algorítmicas imensas.", "Defesa intransigente do preconceito popular místico do interior focado em paralisar o incrível ritmo acadêmico progressista.", "Eternização massiva e cruel dos defeitos sistêmicos com objetivo de garantir fortes e constantes altos lucros na farmacêutica."],
+                explicacao: "O conhecimento puramente científico não decide o que é moral. A Bioética intervém para evitar abusos no avanço genético."
+            },
+            {
+                enunciado: "59. Há enormes e ruidosos galpões globais montando engrenagens mecânicas incessantemente. Milhares de solitários e cansados obreiros apertam diuturnamente roscas metálicas pequenas das ricas e potentes montadoras transnacionais lucrando intensamente com a produção fragmentada e veloz. Sob a leitura analítica das grandes interações e do trabalho da época histórica globalizada e massiva, a consequente perigosa alienação gerada ali caracteriza-se duramente como a:",
+                opcoes: ["Trágica redução humana a mero instrumento técnico repetitivo que não reconhece sequer o sentido na totalidade complexa criativa do maquinário que executa.", "Fase de transição evolutiva e espiritual gloriosa focado intensamente no sucesso moral das comunidades atentas na dura linha moderna mercantil.", "Especialização benéfica acadêmica dos velozes movimentos manuais orgânicos e cerebrais fortalecendo fortemente e muito duramente inteligência física natural humana.", "Abolição de perigos dos antigos acidentes operacionais fabris com adoção em massa de eficientes metodologias industriais."],
+                explicacao: "Alienação técnica significa o afastamento do indivíduo de si próprio e do outro pela massificação utilitária do sujeito."
+            },
+            {
+                enunciado: "60. Grandes sistemas analíticos e imensos intelectuais apontam que a Filosofia se diferencia bastante radicalmente do rotineiro empirismo por buscar investigar e exigir profundamente os 'porquês' de a organização social estruturada funcionar como funciona no longo do denso espaço. De acordo estritamente e formalmente com a fundacional raiz teórica originária e aristotélica, tal questionador impulso nasce invariavelmente, organicamente e poderosamente quando ocorre imediata e forte:",
+                opcoes: ["Quebra súbita, vigorosa e admirativa da banalidade imposta pelo dia a dia provocando espanto e muita perplexidade racional íntima e reflexiva.", "Estrutura rígida de formidáveis premissas complexas deduzindo as regras exatas inquestionáveis sem a intervenção subjetiva humana natural do pesquisador.", "Isolamento asséptico absoluto de minúsculos fenômenos para garantir medições padronizadas exatas dos fluidos moleculares e biológicos e químicos.", "Submissão dogmática ao conhecimento estritamente voltado a garantir rentabilidade econômica das massas que trabalham e produzem em tempos sombrios globais."],
+                explicacao: "Aristóteles dizia que a filosofia tem origem no 'thaumázein' (espanto, admiração), que tira as pessoas da repetição e normalidade cega do senso comum."
+            }
+        ];
+
+        let questaoAtual = 0;
+        let acertos = 0;
+        let primeiraTentativa = true;
+        let timerLeitura; 
+        let indiceCorretoDaQuestaoEmbaralhada = 0;
+
+        const uiElements = {
+            content: document.getElementById('quiz-content'),
+            result: document.getElementById('result-content'),
+            questionText: document.getElementById('question-text'),
+            optionsContainer: document.getElementById('options-container'),
+            progress: document.getElementById('progress'),
+            questionCounter: document.getElementById('question-counter'),
+            scoreCounter: document.getElementById('score-counter'),
+            modal: document.getElementById('feedback-modal'),
+            modalBox: document.getElementById('modal-box'),
+            modalIcon: document.getElementById('modal-icon'),
+            modalTitle: document.getElementById('modal-title'),
+            modalMessage: document.getElementById('modal-message'),
+            modalBtn: document.getElementById('modal-btn'),
+            finalScore: document.getElementById('final-score'),
+            finalMessage: document.getElementById('final-message'),
+            readingTimerBlock: document.getElementById('reading-timer'),
+            timerCountSpan: document.getElementById('timer-count')
+        };
+
+        function iniciarQuiz() {
+            questaoAtual = 0;
+            acertos = 0;
+            document.getElementById('header-info').style.display = 'block';
+            uiElements.content.style.display = 'block';
+            uiElements.result.style.display = 'none';
+            carregarQuestao();
+        }
+
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        function carregarQuestao() {
+            primeiraTentativa = true; 
+            clearInterval(timerLeitura); 
+            
+            const q = questoes[questaoAtual];
+            uiElements.questionText.textContent = q.enunciado;
+            uiElements.optionsContainer.innerHTML = '';
+            
+            const progressoPct = ((questaoAtual) / questoes.length) * 100;
+            uiElements.progress.style.width = `${progressoPct}%`;
+            uiElements.questionCounter.textContent = `Questão ${questaoAtual + 1} de ${questoes.length}`;
+            uiElements.scoreCounter.textContent = `Acertos (1ª tentativa): ${acertos}`;
+
+            let indices = [0, 1, 2, 3];
+            shuffle(indices);
+            indiceCorretoDaQuestaoEmbaralhada = indices.indexOf(0);
+            
+            const letrasAlfabeto = ["A) ", "B) ", "C) ", "D) "];
+
+            indices.forEach((indiceAntigo, indexVisual) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.disabled = true; 
+                btn.textContent = letrasAlfabeto[indexVisual] + q.opcoes[indiceAntigo];
+                btn.onclick = () => verificarResposta(indexVisual);
+                uiElements.optionsContainer.appendChild(btn);
+            });
+
+            iniciarTimerLeitura();
+        }
+
+        function iniciarTimerLeitura() {
+            let tempoRestante = TEMPO_LEITURA_SEGUNDOS;
+            uiElements.readingTimerBlock.style.display = 'block';
+            uiElements.timerCountSpan.textContent = tempoRestante;
+
+            timerLeitura = setInterval(() => {
+                tempoRestante--;
+                uiElements.timerCountSpan.textContent = tempoRestante;
+
+                if (tempoRestante <= 0) {
+                    clearInterval(timerLeitura);
+                    uiElements.readingTimerBlock.style.display = 'none'; 
+                    const botoes = document.querySelectorAll('.option-btn');
+                    botoes.forEach(btn => btn.disabled = false);
+                }
+            }, 1000);
+        }
+
+        function verificarResposta(indiceSelecionado) {
+            const q = questoes[questaoAtual];
+            const acertou = (indiceSelecionado === indiceCorretoDaQuestaoEmbaralhada);
+
+            if (acertou) {
+                if (primeiraTentativa) {
+                    acertos++;
+                    uiElements.scoreCounter.textContent = `Acertos (1ª tentativa): ${acertos}`;
+                }
+                mostrarModal(true, q.explicacao);
+            } else {
+                primeiraTentativa = false; 
+                mostrarModal(false, `A resposta correta não é essa. Tente novamente!<br><br><strong>Dica Filosófica:</strong> ${q.explicacao}`);
+            }
+        }
+
+        function mostrarModal(acertou, mensagem) {
+            uiElements.modal.style.display = 'flex';
+            if (acertou) {
+                uiElements.modalBox.className = 'modal-content correct-theme';
+                uiElements.modalIcon.textContent = '✓';
+                uiElements.modalTitle.textContent = 'Você Acertou!';
+                uiElements.modalMessage.innerHTML = mensagem;
+                uiElements.modalBtn.disabled = false;
+                uiElements.modalBtn.textContent = "Próxima Questão";
+                uiElements.modalBtn.onclick = avancarQuestao;
+            } else {
+                uiElements.modalBox.className = 'modal-content wrong-theme';
+                uiElements.modalIcon.textContent = '✗';
+                uiElements.modalTitle.textContent = 'Resposta Incorreta';
+                uiElements.modalMessage.innerHTML = mensagem;
+                uiElements.modalBtn.disabled = false;
+                uiElements.modalBtn.textContent = "Tentar Novamente";
+                uiElements.modalBtn.onclick = tentarNovamente;
+            }
+        }
+
+        function tentarNovamente() {
+            uiElements.modal.style.display = 'none';
+        }
+
+        function avancarQuestao() {
+            uiElements.modal.style.display = 'none';
+            questaoAtual++;
+            if (questaoAtual < questoes.length) {
+                carregarQuestao();
+            } else {
+                mostrarResultado();
+            }
+        }
+
+        function mostrarResultado() {
+            document.getElementById('header-info').style.display = 'none';
+            uiElements.content.style.display = 'none';
+            uiElements.result.style.display = 'block';
+            
+            const porcentagem = Math.round((acertos / questoes.length) * 100);
+            uiElements.finalScore.textContent = `${porcentagem}%`;
+            
+            let mensagem = "";
+            if (porcentagem >= 80) mensagem = "Excelente! Você demonstrou foco e leitura crítica acertando a maior parte das questões de primeira.";
+            else if (porcentagem >= 50) mensagem = "Bom trabalho! Continue exercitando sua racionalidade e pensamento ético sobre as ideias filosóficas.";
+            else mensagem = "Não se preocupe com os erros! O mais importante foi ler as explicações e exercitar a reflexão sistemática.";
+            
+            uiElements.finalMessage.textContent = mensagem;
+        }
+
+        window.onload = iniciarQuiz;
+    </script>
+</body>
+</html>
