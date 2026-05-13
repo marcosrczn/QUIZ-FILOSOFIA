@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulado: Multiculturalismo, Identidade e Decolonialidade</title>
+    <style>
+        :root{--primary-color:#2c3e50;--secondary-color:#34495e;--accent-color:#3498db;--correct-color:#27ae60;--wrong-color:#e74c3c;--bg-color:#f5f7fa;--text-color:#333}
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background-color:var(--bg-color);color:var(--text-color);margin:0;padding:20px;display:flex;justify-content:center;align-items:center;min-height:100vh}
+        .quiz-container{background-color:#fff;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,0.1);width:100%;max-width:800px;padding:30px;position:relative;overflow:hidden}
+        h1{text-align:center;color:var(--primary-color);margin-top:0}
+        .header-info{background-color:#eef2f5;border-left:5px solid var(--accent-color);padding:15px 20px;margin-bottom:25px;border-radius:4px;font-size:0.95rem;line-height:1.5}
+        .header-info p{margin-top:0;margin-bottom:8px} .header-info p:last-child{margin-bottom:0}
+        .progress-bar{background-color:#e0e0e0;border-radius:5px;height:10px;margin-bottom:20px;width:100%}
+        .progress-fill{background-color:var(--accent-color);height:100%;border-radius:5px;width:0%;transition:width 0.3s ease}
+        .status-bar{display:flex;justify-content:space-between;font-weight:bold;margin-bottom:20px;color:var(--secondary-color)}
+        .question-text{font-size:1.2rem;line-height:1.5;margin-bottom:20px;text-align:justify}
+        .reading-timer{text-align:center;color:#d35400;background-color:#fdebd0;border:1px solid #fad7a1;padding:12px;border-radius:6px;font-weight:bold;font-size:1.1rem;margin-bottom:20px;display:none;animation:pulse 1.5s infinite}
+        @keyframes pulse{0%{opacity:1}50%{opacity:0.8}100%{opacity:1}}
+        .options-grid{display:flex;flex-direction:column;gap:12px}
+        .option-btn{background-color:#f8f9fa;border:2px solid #e9ecef;border-radius:8px;padding:15px;font-size:1rem;text-align:left;cursor:pointer;transition:all 0.2s ease;line-height:1.4}
+        .option-btn:hover:not(:disabled){background-color:#e9ecef;border-color:#ced4da}
+        .option-btn:disabled{background-color:#f1f3f5;color:#7f8c8d;cursor:not-allowed;border-color:#ecf0f1;opacity:0.8}
+        .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0.7);z-index:1000;justify-content:center;align-items:center;padding:20px}
+        .modal-content{background-color:#fff;border-radius:12px;padding:30px;max-width:600px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.3);animation:popIn 0.3s ease}
+        @keyframes popIn{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
+        .modal-icon{font-size:60px;margin-bottom:15px}
+        .modal-title{font-size:1.8rem;font-weight:bold;margin-bottom:10px}
+        .modal-message{font-size:1.1rem;margin-bottom:25px;line-height:1.5;text-align:justify}
+        .correct-theme .modal-icon, .correct-theme .modal-title{color:var(--correct-color)}
+        .wrong-theme .modal-icon, .wrong-theme .modal-title{color:var(--wrong-color)}
+        .btn-next{background-color:var(--primary-color);color:white;border:none;border-radius:6px;padding:12px 25px;font-size:1.1rem;cursor:pointer;font-weight:bold;transition:background-color 0.2s;width:100%;max-width:300px}
+        .btn-next:hover:not(:disabled){background-color:var(--secondary-color)}
+        .result-container{display:none;text-align:center}
+        .score-circle{width:150px;height:150px;border-radius:50%;background-color:var(--accent-color);color:white;display:flex;justify-content:center;align-items:center;font-size:2.5rem;font-weight:bold;margin:0 auto 20px}
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quiz-box">
+        <h1>Simulado: Filosofia (2ª Série) Marcos Cesana</h1>
+        
+        <div class="header-info" id="header-info">
+            <p><strong>Objetos de Conhecimento:</strong> Cultura, Identidade, Alteridade, Multiculturalismo, Etnocentrismo, Geofilosofia e Indústria Cultural.</p>
+            <p><strong>Objetivo de Aprendizagem:</strong> Analisar a ocupação do espaço e as relações socioculturais, valorizando a diversidade e o pensamento decolonial frente aos preconceitos.</p>
+        </div>
+
+        <div id="quiz-content">
+            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+            <div class="status-bar">
+                <span id="question-counter">Questão 1</span>
+                <span id="score-counter">Acertos (1ª tentativa): 0</span>
+            </div>
+            <div class="question-text" id="question-text">Carregando pergunta...</div>
+            <div id="reading-timer" class="reading-timer">Tempo de reflexão necessário: <span id="timer-count">15</span>s</div>
+            <div class="options-grid" id="options-container"></div>
+        </div>
+
+        <div class="result-container" id="result-content">
+            <h2>Fim do Simulado!</h2>
+            <div class="score-circle" id="final-score">0%</div>
+            <p id="final-message" class="question-text"></p>
+            <button class="btn-next" onclick="reiniciarQuiz()">Tentar Novamente</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="feedback-modal">
+        <div class="modal-content" id="modal-box">
+            <div class="modal-icon" id="modal-icon">✓</div>
+            <div class="modal-title" id="modal-title">Você Acertou!</div>
+            <div class="modal-message" id="modal-message">Explicação aqui.</div>
+            <button class="btn-next" id="modal-btn">Aguarde...</button>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('beforeunload', function (e) {
+            e.preventDefault();
+            e.returnValue = '';
+        });
+
+        const TEMPO_LEITURA_SEGUNDOS = 15;
+
+        // A PRIMEIRA opção (índice 0) é sempre a CORRETA.
+        const questoes = [
+            {
+                enunciado: "1. Uma comunidade caiçara depende da pesca artesanal para subsistência e manutenção de seus costumes históricos. Uma multinacional propõe construir um porto na região, prometendo 'progresso e civilização', desde que a comunidade seja realocada para a cidade. Filosoficamente, o argumento da multinacional evidencia:",
+                opcoes: [
+                    "Uma perspectiva etnocêntrica que associa o progresso apenas ao avanço tecnológico.",
+                    "A preservação irrestrita da cultura imaterial da comunidade, focada nas suas tradições.",
+                    "A valorização da sabedoria caiçara como modelo ideal de desenvolvimento sustentável.",
+                    "Um modelo de interculturalidade que mescla saberes tradicionais e inovações técnicas."
+                ],
+                explicacao: "O discurso da multinacional é etnocêntrico pois julga o modo de vida caiçara como 'atrasado', impondo o modelo tecnológico urbano como a única forma de civilização válida."
+            },
+            {
+                enunciado: "2. Durante um debate escolar, um estudante afirma que determinadas tribos isoladas vivem em estado de 'atraso profundo' por não utilizarem smartphones ou internet, julgando-os inferiores à sociedade urbana. Esse comportamento do estudante é conceituado nas ciências humanas e na filosofia como:",
+                opcoes: [
+                    "Etnocentrismo, pois julga uma cultura diferente usando critérios da sua própria.",
+                    "Transculturação, pois incentiva a troca de tecnologias entre sociedades distintas.",
+                    "Relativismo cultural, pois busca compreender o modo de vida da tribo isolada.",
+                    "Alteridade, pois reconhece e respeita a diferença estrutural do outro grupo social."
+                ],
+                explicacao: "Etnocentrismo é a atitude de considerar a própria cultura, seus valores e tecnologias como o centro ou o padrão superior para julgar as demais."
+            },
+            {
+                enunciado: "3. Em uma universidade, estudantes questionam por que a ementa de Filosofia estuda apenas pensadores europeus, invisibilizando conhecimentos produzidos no continente africano e na diáspora. O movimento de repensar esses currículos baseia-se fortemente no conceito de:",
+                opcoes: [
+                    "Pensamento decolonial, que busca superar a dominação intelectual herdada do colonialismo.",
+                    "Homogeneização cultural, que visa unificar todos os pensamentos em uma única vertente.",
+                    "Aculturação acadêmica, que defende a substituição de teorias antigas por teorias modernas.",
+                    "Eurocentrismo crítico, que reafirma a Europa como único centro de produção de sabedoria."
+                ],
+                explicacao: "O pensamento decolonial critica a hegemonia eurocêntrica e busca valorizar os saberes e filosofias produzidos pelos povos historicamente colonizados."
+            },
+            {
+                enunciado: "4. Um jovem refugiado sírio matricula-se em uma escola brasileira. Ao longo do tempo, ele percebe que seus colegas costumam defini-lo apenas pelos estereótipos que veem na mídia sobre o Oriente Médio, ignorando sua individualidade. Nesse contexto, falha-se principalmente no exercício ético da:",
+                opcoes: [
+                    "Alteridade, pois os colegas não conseguem enxergá-lo e respeitá-lo em sua real diferença.",
+                    "Enculturação, pois o jovem recusa-se a aprender as regras da nova sociedade de acolhimento.",
+                    "Inculturação, pois a escola tenta forçar o aluno a esquecer o idioma e os costumes originais.",
+                    "Assimilação, visto que os colegas desejam que o aluno se comporte exatamente como um brasileiro."
+                ],
+                explicacao: "A alteridade é a capacidade de reconhecer o outro na sua plenitude e diferença; reduzi-lo a estereótipos é negar-lhe esse reconhecimento."
+            },
+            {
+                enunciado: "5. Uma grande empresa lança um programa de estágio exclusivo para pessoas negras e indígenas, justificando que esses grupos foram historicamente marginalizados do mercado corporativo. Críticos acusam a empresa de privilegiar alguns. A resposta filosófica que defende o programa baseia-se na ideia de:",
+                opcoes: [
+                    "Ações afirmativas, que promovem políticas reparatórias para garantir igualdade de oportunidades.",
+                    "Cultura de massa, que impõe tendências mercadológicas temporárias para aumentar os lucros.",
+                    "Preconceito reverso, que busca equilibrar injustiças aplicando discriminação contra maiorias.",
+                    "Transculturação, que promove a mistura de diferentes raças no ambiente de trabalho corporativo."
+                ],
+                explicacao: "Ações afirmativas são medidas temporárias e reparatórias que buscam corrigir desigualdades históricas, garantindo equidade no acesso a oportunidades."
+            },
+            {
+                enunciado: "6. A popularização global de grandes plataformas de streaming introduziu músicas e filmes padronizados em praticamente todos os países, muitas vezes sufocando produções artísticas regionais. Movimentos em defesa da cultura local atuam nesse cenário globalizado com o objetivo principal de:",
+                opcoes: [
+                    "Proteger a pluralidade identitária contra a homogeneização imposta pelos grandes mercados.",
+                    "Extinguir totalmente o acesso à internet e aos meios de comunicação em massa nas cidades.",
+                    "Isolar o país culturalmente para que nenhuma influência estrangeira penetre em seu território.",
+                    "Padronizar o folclore local para que ele possa ser vendido mais facilmente em escala global."
+                ],
+                explicacao: "A defesa da cultura local busca evitar o apagamento das identidades regionais face à massificação (homogeneização) promovida pela globalização."
+            },
+            {
+                enunciado: "7. As festas de Bumba Meu Boi, tradicionais no Nordeste brasileiro, misturam elementos indígenas, africanos e europeus. Embora ricas em significado, muitas vezes são desvalorizadas pela mídia em detrimento de eventos internacionais. O Bumba Meu Boi é um exemplo clássico de:",
+                opcoes: [
+                    "Cultura popular, construída organicamente pelo povo a partir de suas realidades e vivências.",
+                    "Cultura de massa, produzida artificialmente por grandes indústrias para consumo descartável.",
+                    "Aculturação total, indicando que as culturas originais foram apagadas e substituídas por outra.",
+                    "Civilização elitista, acessível apenas para grupos sociais que possuem elevado capital financeiro."
+                ],
+                explicacao: "A cultura popular nasce das tradições, vivências e saberes do próprio povo, diferentemente da cultura de massa, que é fabricada pela indústria."
+            },
+            {
+                enunciado: "8. Durante a colonização do Brasil, os jesuítas impuseram o ensino do catolicismo e da língua portuguesa aos povos indígenas, proibindo-os de praticar seus rituais e falar seus idiomas maternos. Esse violento processo histórico ilustra claramente um fenômeno social conhecido como:",
+                opcoes: [
+                    "Aculturação impositiva, caracterizada pela perda da identidade cultural original por submissão.",
+                    "Interculturalidade, marcado pela troca horizontal e equilibrada de costumes entre sociedades.",
+                    "Empatia histórica, onde colonizadores buscaram entender a visão de mundo dos colonizados.",
+                    "Enculturação passiva, pois os indígenas aceitaram pacificamente a nova cultura apresentada."
+                ],
+                explicacao: "A aculturação forçada ocorre quando uma cultura dominante sobrepõe-se e anula, através da violência simbólica ou física, a cultura dominada."
+            },
+            {
+                enunciado: "9. Torcedores de um determinado time de futebol reúnem-se semanalmente, vestem as mesmas cores, cantam os mesmos hinos e partilham de um forte sentimento de pertencimento, hostilizando ocasionalmente os times rivais. Essa dinâmica de pertencimento coletivo exemplifica o conceito de:",
+                opcoes: [
+                    "Identidade social intergrupal, onde o 'nós' se fortalece na oposição direta em relação aos 'outros'.",
+                    "Identidade pessoal individualizada, desvinculada de qualquer influência do ambiente externo.",
+                    "Multiculturalismo passivo, que promove a aceitação irrestrita de todas as torcidas adversárias.",
+                    "Pensamento decolonial prático, que visa descontruir as hierarquias no esporte contemporâneo."
+                ],
+                explicacao: "A identidade social forma-se a partir do pertencimento a um grupo, criando uma fronteira simbólica entre os membros ('nós') e os não-membros ('eles')."
+            },
+            {
+                enunciado: "10. Um indivíduo não contrata uma candidata altamente qualificada para uma vaga de liderança apenas porque acredita, de forma generalizada e sem base racional, que mulheres são emocionais demais para cargos de chefia. A atitude desse recrutador configura-se filosoficamente como:",
+                opcoes: [
+                    "Uma prática de discriminação fundamentada em um preconceito de gênero estrutural e limitante.",
+                    "Um exercício de alteridade pragmática, pois ele antecipa problemas de convívio profissional.",
+                    "Uma ação afirmativa preventiva, garantindo que a vaga seja ocupada por alguém mais racional.",
+                    "Um traço de cultura popular corporativa, refletindo as tradições aceitáveis do mundo dos negócios."
+                ],
+                explicacao: "A ação de não contratar (discriminação) baseia-se em um juízo prévio e infundado (preconceito) relacionado ao gênero da candidata."
+            },
+            {
+                enunciado: "11. Ao contrário das abelhas, que constroem suas colmeias instintivamente seguindo sempre o mesmo padrão ditado por sua biologia, o ser humano é capaz de projetar desde tendas no deserto até complexos arranha-céus nas metrópoles. Essa diferença fundamental explicita que a ação humana é baseada na:",
+                opcoes: [
+                    "Cultura, caracterizada pela capacidade criativa, simbólica e adaptativa em transformar o meio.",
+                    "Natureza biológica, que determina geneticamente os modelos arquitetônicos de cada sociedade.",
+                    "Civilização tecnológica, que extinguiu completamente os instintos animais presentes na espécie.",
+                    "Globalização espacial, que uniformizou a maneira de construir abrigos desde a pré-história."
+                ],
+                explicacao: "Enquanto os animais agem por instinto biológico determinista, o ser humano modifica seu ambiente de forma intencional e criativa através da cultura."
+            },
+            {
+                enunciado: "12. Em um bairro metropolitano, imigrantes de várias partes do mundo realizam anualmente uma feira onde compartilham suas culinárias, músicas e crenças. Todos os grupos participam ativamente do evento sem que haja sobreposição de uma cultura sobre a outra. Esse evento é um modelo prático de:",
+                opcoes: [
+                    "Interculturalidade dialógica, promovendo o respeito e o intercâmbio equilibrado entre as matrizes.",
+                    "Aculturação forçada, uma vez que as tradições perdem sua pureza ao entrarem em contato mútuo.",
+                    "Etnocentrismo urbano, pois os moradores originais do bairro determinam como a feira funciona.",
+                    "Homogeneização global, resultando na criação de uma única cultura metropolitana indiferenciada."
+                ],
+                explicacao: "A interculturalidade pressupõe não apenas a convivência de diversas culturas no mesmo espaço, mas a troca respeitosa e horizontal entre elas."
+            },
+            {
+                enunciado: "13. Embora a palavra 'cultura' seja muitas vezes associada ao acúmulo de conhecimento acadêmico ('fulano tem muita cultura'), a filosofia e a antropologia modernas rejeitam essa visão elitista. Para essas ciências, o sentido antropológico de cultura engloba:",
+                opcoes: [
+                    "Todo o conjunto de crenças, costumes, linguagens e ferramentas produzidas por qualquer grupo.",
+                    "Somente as obras de arte clássicas, a literatura erudita e os concertos de música sinfônica.",
+                    "O processo de evolução tecnológica que permite a uma nação dominar militarmente as outras.",
+                    "A capacidade de um indivíduo de se portar de acordo com as regras de etiqueta da alta sociedade."
+                ],
+                explicacao: "No sentido antropológico, não existe povo sem cultura, pois cultura abrange toda a produção material, linguística e simbólica de um grupamento humano."
+            },
+            {
+                enunciado: "14. A indústria cultural frequentemente transforma manifestações artísticas autênticas e complexas em produtos simplificados, visando alcançar o maior número de consumidores possível e maximizar os lucros rapidamente. Esse processo de simplificação e mercantilização é o motor central da chamada:",
+                opcoes: [
+                    "Cultura de massa, que converte a arte e o pensamento crítico em mero entretenimento comercial.",
+                    "Cultura erudita, que busca democratizar o acesso às grandes obras literárias mundiais.",
+                    "Cultura decolonial, que valoriza as raízes históricas dos povos oprimidos e suas produções reais.",
+                    "Cultura popular regional, que preserva as tradições locais sem visar nenhum lucro financeiro."
+                ],
+                explicacao: "A cultura de massa objetiva o lucro industrial, transformando bens culturais em mercadorias estandardizadas que exigem pouco raciocínio crítico do consumidor."
+            },
+            {
+                enunciado: "15. A pandemia de Covid-19 e o subsequente isolamento social forçaram mudanças drásticas na forma como os indivíduos se comunicam, trabalham e se relacionam afetivamente. Do ponto de vista filosófico, essas restrições impactaram diretamente nossa dimensão de:",
+                opcoes: [
+                    "Sociabilidade, que é a necessidade intrínseca e o processo de interação mútua entre as pessoas.",
+                    "Etnocentrismo, que nos impediu de julgar os comportamentos sanitários de outras populações.",
+                    "Aculturação, visto que a população mundial perdeu definitivamente seus antigos valores morais.",
+                    "Identidade biológica, pois o isolamento modificou geneticamente as estruturas cerebrais humanas."
+                ],
+                explicacao: "A sociabilidade trata da capacidade e da necessidade estrutural humana de viver em sociedade e estabelecer vínculos interpessoais."
+            },
+            {
+                enunciado: "16. Um documentário escolar analisa a formação do Brasil, destacando como saberes indígenas, matrizes africanas e influências europeias se entrelaçaram na culinária e no vocabulário, formando um mosaico complexo. Essa reflexão documental evidencia o processo de:",
+                opcoes: [
+                    "Construção do multiculturalismo nacional, em que a diversidade de matrizes históricas moldou diretamente a plural identidade do nosso país.",
+                    "Homogeneização cultural impositiva, onde as profundas diferenças regionais foram totalmente apagadas para formar uma identidade nacional sem conflitos.",
+                    "Etnocentrismo estrutural histórico, processo violento no qual uma única matriz determinou as regras sociais e anulou as outras contribuições.",
+                    "Transculturação digital contemporânea, que utiliza a mídia para disseminar costumes estrangeiros e substituir as autênticas e antigas tradições populares locais."
+                ],
+                explicacao: "O multiculturalismo brasileiro é o resultado do contato (muitas vezes assimétrico, porém formador) de diferentes matrizes étnicas e culturais."
+            },
+            {
+                enunciado: "17. Uma grande gravadora contrata um artista independente do interior, mas exige que ele altere drasticamente o ritmo, as letras e até suas roupas para se enquadrar em um padrão estético que vende milhões. A partir de uma análise crítica da sociedade, essa exigência ilustra fortemente o mecanismo de:",
+                opcoes: [
+                    "Produção da chamada cultura de massa, que adapta e padroniza a criação artística livre para transformá-la em um produto de rápido consumo comercial.",
+                    "Valorização da cultura popular autêntica, pois a gravadora atua como um instrumento absolutamente neutro para divulgar todas as raízes regionais pelo mundo.",
+                    "Preservação incondicional da pluralidade cultural, garantindo que o artista mantenha sua identidade original ilesa enquanto alcança novos públicos no mercado fonográfico globalizado.",
+                    "Defesa sistêmica da cultura local frente ao mercado, resistindo bravamente às pressões homogeneizadoras por meio da manutenção rigorosa das características artísticas rurais originais."
+                ],
+                explicacao: "A indústria cultural visa o consumo em massa, esvaziando a originalidade da arte para que ela seja facilmente digerida e vendida a milhões."
+            },
+            {
+                enunciado: "18. Um jovem agia de forma extrovertida em casa, mas, ao ingressar no ensino médio, adota um comportamento excessivamente calado e submisso pelo medo irracional de não ser aceito pelo novo grupo de colegas de classe. Essa mudança comportamental evidencia uma tensão filosófica e sociológica central intimamente relacionada à:",
+                opcoes: [
+                    "Construção da identidade pessoal frente às relações interpessoais, demonstrando de forma clara como a necessidade de reconhecimento afeta o comportamento do indivíduo no novo grupo.",
+                    "Transição do pensamento decolonial periférico para o pensamento hegemônico, o que obriga o aluno a abandonar de imediato todas as suas sólidas raízes históricas e locais.",
+                    "Aculturação impositiva gerada pelo etnocentrismo da escola, que exige a assimilação de novos costumes éticos sob a pena de aplicação de uma punição disciplinar muito severa.",
+                    "Disseminação absoluta da cultura de massa no ambiente escolar, que padroniza os sentimentos dos alunos mais novos e elimina completamente qualquer forma de interação social autêntica."
+                ],
+                explicacao: "A identidade pessoal sofre contínuas adaptações (e tensões) derivadas da necessidade inerente de validação e reconhecimento nas relações com os outros."
+            },
+            {
+                enunciado: "19. Um pesquisador decide publicar um livro sobre teorias políticas contemporâneas, mas recusa-se propositalmente a citar apenas autores do hemisfério Norte. Ele faz questão absoluta de fundamentar seus argumentos centrais em filósofos sul-americanos e pensadores africanos para explicar a realidade de seu país. A postura acadêmica desse pesquisador fundamenta-se nos princípios da:",
+                opcoes: [
+                    "Geofilosofia e do inovador pensamento decolonial, que buscam ativamente valorizar e legitimar os potentes saberes produzidos fora do eixo dominante e romper de vez com profundos silenciamentos históricos.",
+                    "Perspectiva etnocêntrica mais tradicional, que busca reafirmar constantemente a superioridade histórica dos pensadores europeus sobre as instigantes produções intelectuais desenvolvidas pelas populações nos países do chamado Sul global.",
+                    "Ação afirmativa de ordem empresarial, que impõe cotas obrigatórias de contratação de pesquisadores diversos apenas para cumprir exigências burocráticas estatais e evitar punições legais e financeiras muito severas.",
+                    "Cultura de massa estritamente acadêmica, que utiliza o apelo emocional das lutas das minorias para aumentar de forma expressiva e irresponsável as vendas de livros no mercado literário moderno."
+                ],
+                explicacao: "Romper com o monopólio epistêmico da Europa/EUA e valorizar saberes regionais periféricos é o cerne da epistemologia decolonial."
+            },
+            {
+                enunciado: "20. No final do século XIX, potências imperialistas justificaram a invasão bélica de extensos territórios na África sob o argumento retórico de que estariam levando o 'progresso' e a 'civilização' a povos considerados inferiorizados e 'atrasados'. Analisando esse momento histórico sombrio sob a ótica da filosofia contemporânea, tal discurso imperialista funcionava como uma narrativa enganosa construída primariamente para:",
+                opcoes: [
+                    "Mascarar o grave etnocentrismo e a violenta exploração econômica de recursos através de um falso ideal de progresso contínuo e de pretensa superioridade natural de uma civilização sobre as demais civilizações.",
+                    "Promover a verdadeira interculturalidade entre nações radicalmente distintas, promovendo o intercâmbio equilibrado, generoso e totalmente pacífico de saberes tecnológicos e tradições orais milenares cultivadas dentro das pequenas aldeias locais.",
+                    "Garantir a preservação da rica pluralidade contra a globalização capitalista embrionária, criando fortes barreiras alfandegárias governamentais para proteger os mercados internos das pequenas e fragilizadas comunidades africanas militarmente invadidas e dominadas.",
+                    "Estabelecer profundas ações afirmativas de reparação histórica financeira, transferindo gradualmente toda a riqueza acumulada pelas gananciosas potências europeias para as populações locais espoliadas através de massivos e complexos programas de grande infraestrutura."
+                ],
+                explicacao: "O conceito etnocêntrico de 'progresso único' foi utilizado historicamente como ideologia para legitimar a barbárie do colonialismo e a pilhagem material."
+            },
+            {
+                enunciado: "21. Em uma dinâmica de sala de aula, o professor distribui fotos de pessoas com diferentes estilos de vestimenta e pede que os alunos tentem adivinhar a profissão de cada uma. Quase todos associam instintivamente pessoas de terno a altos cargos de chefia e pessoas de roupas simples a trabalhos puramente braçais. O professor utiliza de forma engenhosa esse resultado para iniciar um debate construtivo com a turma sobre a:",
+                opcoes: [
+                    "A reprodução social inconsciente e sistemática de estereótipos limitantes e preconceitos na sociedade, ressaltando pedagogicamente a grande necessidade de desenvolver uma forte consciência crítica para conseguir superar julgamentos rasos baseados exclusivamente em aparências.",
+                    "A importância fundamental da cultura erudita elitista para o pleno desenvolvimento das nações emergentes, demonstrando inequivocamente que a educação formal clássica determina cientificamente o vestuário mais adequado para o sucesso de cada classe.",
+                    "O impacto estrutural profundo do folclore na construção consciente das sofisticadas vestimentas urbanas, comprovando que as antigas tradições rurais esquecidas ainda influenciam e moldam a indústria da moda contemporânea de maneira bastante direta.",
+                    "A eficácia econômica indiscutível da transculturação corporativa no tenso ambiente empresarial brasileiro, revelando como as grandes corporações multinacionais impuseram com absoluto sucesso um código de vestimenta rigoroso e único para todas as camadas sociais."
+                ],
+                explicacao: "Estereótipos são generalizações simplistas; a filosofia busca criar uma visão crítica para romper esses julgamentos pré-fabricados."
+            },
+            {
+                enunciado: "22. Desde os primeiros anos de vida, uma criança brasileira aprende naturalmente a comer arroz com feijão, a torcer com paixão por um time de futebol local e a falar o idioma português com um sotaque regional específico, apenas observando e interagindo diariamente com sua família. Esse complexo processo sociológico natural de internalização profunda dos códigos da própria sociedade em que se nasce e cresce é denominado pela antropologia moderna de:",
+                opcoes: [
+                    "Enculturação fundamental e formativa, engenhoso mecanismo sociológico pelo qual o indivíduo assimila, internaliza e adquire os complexos valores, regras, normas tácitas e comportamentos básicos fundamentais do seu próprio e íntimo grupo cultural de origem.",
+                    "Aculturação severa e impositiva, processo brutal em que a indefesa criança é forçada violentamente pelo Estado a abandonar as sagradas crenças inatas e intuitivas de seus antepassados heroicos apenas para conseguir sobreviver na sociedade.",
+                    "Interculturalidade pacífica e globalizada, fenômeno surpreendente que ocorre quando indivíduos maduros de nações completamente distintas e distantes trocam intensas experiências emocionais de forma altamente harmoniosa para criar um novo modelo de sociedade.",
+                    "Transculturação comunicacional e assimétrica, dinâmica caracterizada pela rápida, implacável e total substituição de uma ancestral cultura dominada e apagada por outra cultura estrangeira dominante através da forte influência dos modernos meios de comunicação massivos."
+                ],
+                explicacao: "A enculturação (ou socialização primária) é o aprendizado natural da própria cultura onde o indivíduo está imerso desde o seu nascimento."
+            },
+            {
+                enunciado: "23. Agricultores de uma pequena e isolada cidade começaram a organizar ativamente feiras semanais exclusivas para vender apenas sementes crioulas (nativas e não modificadas) e saborosos pratos típicos, resistindo ferozmente à entrada massiva e agressiva de sementes transgênicas patenteadas e ricas redes de fast-food estrangeiras no município. Essa forte iniciativa coletiva de proteção organizada dos agricultores representa brilhantemente na prática sociológica a:",
+                opcoes: [
+                    "Valorização engajada da cultura local como uma firme defesa da pluralidade, criando inteligíveis estratégias de resistência comunitária frente aos agressivos processos de homogeneização cultural e alimentar trazidos pela atual expansão da globalização econômica excludente.",
+                    "Expansão inevitável e acelerada da moderna cultura de massa no interior do país, utilizando estratégias inovadoras e modernas de marketing agressivo para padronizar irremediavelmente o consumo alimentar alienado das novas gerações de moradores locais.",
+                    "Imposição retrógrada de um perigoso etnocentrismo radical contra o desejável e necessário progresso científico global, negando irracionalmente qualquer forma de benéfico avanço tecnológico na saúde em favor de um prejudicial e isolamento comunitário absoluto.",
+                    "Promoção irresponsável da aculturação rural precipitada e acelerada, substituindo gradativamente e sem reflexão os milenares métodos tradicionais de cultivo familiar por agressivas técnicas industriais poluidoras e importadas unicamente para aumentar rapidamente a questionável lucratividade."
+                ],
+                explicacao: "A proteção de sementes e costumes locais é um movimento social de resistência contra a pasteurização ditada pela globalização."
+            },
+            {
+                enunciado: "24. Uma pessoa com severa deficiência visual começa a trabalhar em uma grande empresa multinacional, mas percebe rapidamente com grande tristeza que grande parte de seus colegas de setor a tratam constantemente com imensa pena ou infantilização, não reconhecendo suas reais e comprovadas habilidades intelectuais, técnicas e profissionais. Segundo a complexa e profunda filosofia do reconhecimento social humano, a atitude diária desses colegas de trabalho falha lamentável e fundamentalmente em:",
+                opcoes: [
+                    "Exercer de fato a alteridade e o reconhecimento genuíno e autêntico, negando ao indivíduo estigmatizado a dignidade moral de ser enxergado e tratado como um sujeito plenamente capaz, verdadeiramente igualitário e completo em todos os direitos.",
+                    "Promover a ampla transculturação horizontal no engessado ambiente organizacional, impedindo cruelmente a enriquecedora mistura de diferentes matrizes culturais criativas dentro da engessada rotina de trabalho diária de todos os dedicados e competentes funcionários.",
+                    "Aplicar corretamente as eficientes regras da cultura de massa empresarial capitalista, que paradoxalmente exige a rígida padronização absoluta e milimétrica dos imprevisíveis comportamentos físicos e mentais apenas para aumentar a lucratividade e a produtividade.",
+                    "Defender apaixonadamente a complexa pluralidade cultural globalizada imposta, visto que os funcionários alienados tentam, a todo custo, impor violentamente suas próprias crenças regionais arcaicas como o único e exclusivo modelo aceitável e lógico para atuar."
+                ],
+                explicacao: "A alteridade exige não apenas tolerar a presença do outro, mas respeitar sua autonomia e capacidades intelectuais para além das suas limitações físicas."
+            },
+            {
+                enunciado: "25. Durante as longas aulas, um determinado professor decide analisar profundamente com a turma o conceito de 'Ubuntu', uma bela ética sul-africana baseada primariamente na ideia coletiva de que 'eu sou porque nós somos', contrapondo-a de forma instigante ao consolidado individualismo moderno e competitivo europeu (sintetizado na frase 'penso, logo existo'). Ao introduzir esse valioso e distinto conceito na sala de aula, o professor está essencialmente e ativamente promovendo o estudo sistemático da:",
+                opcoes: [
+                    "Filosofia africana e afrodiaspórica, demonstrando com grande eficácia que de fato existem outros sistemas de pensamento extremamente rigorosos e muito válidos que diferem radicalmente das tradicionais matrizes puramente eurocêntricas e marcadamente individualistas da nossa história.",
+                    "Cultura erudita contemporânea universalista, que busca desesperada e autoritariamente unificar todos os confusos saberes mundiais sob a ótica exclusiva e inquestionável do frio pensamento racional cartesiano apenas para eliminar definitivamente os graves e iminentes conflitos de classe.",
+                    "Aculturação impositiva e institucional obrigatória, forçando cruelmente e sem aviso os jovens alunos a abandonarem suas valiosas raízes familiares para adotar integralmente e passivamente as novas tradições filosóficas originárias de outros distantes continentes sem nenhum senso crítico.",
+                    "Identidade pessoal extremamente isolada e insular, reforçando dogmaticamente a ultrapassada ideia de que cada indivíduo autônomo deve obrigatoriamente construir seus próprios valores morais sem nunca depender de nenhuma interação coletiva ou influência comunitária externa limitadora."
+                ],
+                explicacao: "O Ubuntu é uma potente matriz da filosofia africana que propõe uma ontologia baseada na coletividade e na interdependência, rompendo com o molde cartesiano ocidental."
+            },
+            {
+                enunciado: "26. O notável surgimento de envolventes e novos gêneros musicais autênticos, como o revolucionário movimento manguebeat em Pernambuco, que mistura o pesado som dos tambores do maracatu tradicional e regional com as velozes e ruidosas guitarras distorcidas do rock internacional contemporâneo, é considerado um fenômeno sociológico dinâmico de inovadora criação rítmica. O complexo termo sociológico e acadêmico que melhor e mais precisamente descreve essa fluida fusão e recriação artística originada do inevitável encontro de distintas culturas globais é a:",
+                opcoes: [
+                    "Transculturação fértil ou hibridismo, que descreve perfeitamente a interação criativa e orgânica entre elementos culturais bastante distintos resultando na elaboração de uma nova e incrivelmente complexa forma de expressão identitária original e extremamente valorosa.",
+                    "Enculturação estática e protetiva, que assegura dogmaticamente a preservação intacta das ricas tradições locais de um povo, blindando-as radicalmente contra qualquer tipo de possível contato, contágio ou mínima influência rítmica oriunda de mal-intencionados agentes externos.",
+                    "Aculturação eminentemente destrutiva, pois comprova de forma inegável que o puro ritmo tradicional perdeu toda a sua essência e autenticidade e foi completa e lamentavelmente apagado pelo vasto domínio impositivo e absoluto da invasiva cultura estrangeira.",
+                    "Homogeneização puramente folclórica, caracterizada pela triste e forçada transformação das complexas expressões populares em um produto raso e totalmente idêntico aos produtos de baixo custo já amplamente existentes no mercado para agradar exclusivamente às grandes elites financeiras."
+                ],
+                explicacao: "A transculturação ocorre quando o choque ou intercâmbio de matrizes gera um fruto novo (hibridismo), que não existia nas bases isoladas originais."
+            },
+            {
+                enunciado: "27. Uma renomada universidade federal implementa de forma corajosa um inédito sistema de robustos bônus na nota de vestibular para estudantes oriundos exclusivamente de escolas públicas mais carentes, argumentando embasadamente que a importante educação básica oferecida pelo Estado muitas vezes apresenta lamentáveis e profundas deficiências estruturais devido à falta de verbas. Do estrito ponto de vista das modernas políticas públicas de correção e da almejada e necessária justiça social compensatória, essa específica medida pedagógica caracteriza-se como uma:",
+                opcoes: [
+                    "Ação afirmativa reparatória, desenhada de forma precisa para reduzir graves desigualdades históricas de oportunidade e, dessa forma, promover a concreta equidade no acesso ao disputado ensino superior de excelência para grupos sistemática e secularmente prejudicados.",
+                    "Estratégia de violento etnocentrismo reverso, que visa exclusivamente punir os aplicados alunos de escolas particulares e também excluir sumariamente e de forma irracional as pequenas elites financeiras do crucial acesso às instituições públicas de grande pesquisa científica e inovação.",
+                    "Dinâmica de triste homogeneização acadêmica impositiva, que procura ardilosamente nivelar todos os promissores e inteligentes estudantes sempre por baixo, ignorando completamente o grande mérito individual inato e o imenso esforço pessoal demonstrado ao longo de todo o processo seletivo.",
+                    "Política de rígida enculturação obrigatória disfarçada, forçando subliminarmente os fragilizados alunos de diferentes origens sociais e econômicas a adotarem exatamente os mesmos elitistas costumes e comportamentos padronizados exigidos historicamente pela obsoleta burocracia do Ministério da Educação."
+                ],
+                explicacao: "As bonificações são políticas de equidade cujo objetivo é equilibrar o ponto de partida na concorrência frente a vulnerabilidades sócio-históricas estruturais."
+            },
+            {
+                enunciado: "28. Em uma acalorada discussão sobre a história das antigas civilizações, alguém afirma de maneira ríspida que 'os povos originários do século XVI decididamente não tinham cultura' porque, segundo ele, não construíram grandiosas e complexas catedrais de pedra, não utilizavam sofisticadas armas de fogo em combates e também não desenvolveram um rebuscado sistema de comunicação baseado na escrita alfabética europeia daquele período. Antropologicamente e filosoficamente, essa arrogante e infundada afirmação está categoricamente incorreta pois parte do perigoso pressuposto equivocado de que a complexa definição de cultura:",
+                opcoes: [
+                    "Restringe-se de forma limitada ao específico e excludente modelo de civilização altamente tecnológica e puramente material ocidental, ignorando o fato de que a linguagem oral, os rituais, os mitos, a organização social comunitária e as próprias ferramentas orgânicas constituem cultura.",
+                    "Resume-se unicamente à vasta diversidade das passivas relações intergrupais puramente pacíficas, ignorando ingenuamente que os duros conflitos territoriais e as sangrentas guerras também são formas de expressões sociais perfeitamente válidas e totalmente inerentes ao instintivo comportamento coletivo.",
+                    "Manifesta-se única e exclusivamente através da nobre proteção ambiental consciente e engajada, desconsiderando por completo que a agressiva e danosa interação tecnológica moderna industrial também pode e deve ser validamente considerada uma legítima forma de perigosa expressão artística nacional.",
+                    "Depende inexoravelmente e exclusivamente da impositiva aceleração do moderno processo de ampla globalização econômica predatória, pressupondo errônea e preconceituosamente que as pequenas e esquecidas sociedades isoladas nas vastas florestas não possuem a necessária capacidade neural de produzir artefatos."
+                ],
+                explicacao: "Cultura não é apenas a sofisticação da infraestrutura ou tecnologia bélica; crenças xamânicas, línguas ágrafas (sem escrita) e rituais simples são manifestações plenas de cultura humana."
+            },
+            {
+                enunciado: "29. Em um ousado projeto escolar voltado para práticas interdisciplinares, vários alunos brasileiros natos e alunos imigrantes bolivianos são cautelosamente divididos em grupos mistos para construir conjunta e harmonicamente uma rica horta orgânica comunitária. Durante o trabalhoso processo de plantio, eles trocam diversos saberes valiosos e ancestrais sobre a terra, as sementes e o clima, e também aprendem palavras importantes nos idiomas maternos uns dos outros com profundo e verdadeiro respeito e horizontalidade. Essa bela e inspiradora prática fundamenta-se perfeitamente no ideal sociológico de:",
+                opcoes: [
+                    "Interculturalidade engajada, que propõe estruturalmente o sincero diálogo aberto, o respeito ativo irrestrito e também a desejada convivência humana extremamente harmônica e totalmente igualitária entre complexos indivíduos portadores de origens, raízes e bagagens históricas essencialmente diversas e complementares.",
+                    "Aculturação passiva e submissa, fenômeno em que um dos fragilizados grupos abandona rápida e voluntariamente todas as suas fundamentais crenças originais apenas para adotar integralmente e sem nenhum tipo de sábio questionamento os inovadores métodos de cultivo trazidos pelo grupo mais forte.",
+                    "Cultura de massa padronizada e mercantil, que exige a completa e imediata eliminação de todas as ricas e belas diferenças linguísticas em prol da artificial criação de uma linguagem estritamente única, simplificada e universal voltada única e exclusivamente para o sucesso no frio mercado de trabalho.",
+                    "Etnocentrismo colaborativo estratégico, situação peculiar na qual a grande cultura secretamente considerada por si mesma como imensamente superior ensina suas avançadas técnicas apenas para garantir uma invisível submissão agrícola disfarçada sob a enganosa e bela capa de uma falsa solidariedade."
+                ],
+                explicacao: "A situação ilustra um intercâmbio autêntico onde culturas convivem, se influenciam mutualmente e se respeitam de forma plena e produtiva (interculturalidade)."
+            },
+            {
+                enunciado: "30. Inúmeras histórias fantásticas e criativas narrativas transmitidas oralmente pelos antepassados, como as conhecidas e imortais lendas do ágil Saci-Pererê e do misterioso e protetor Curupira, são frequentemente repassadas com orgulho de geração em geração pelas tradicionais famílias em todo o vasto território. Essas complexas lendas ajudam ativamente a moldar o poderoso imaginário popular, de forma a refletir coletivamente os grandes medos, os importantes valores e o necessário e profundo respeito pela temida força da natureza das remotas comunidades interioranas. Esse tipo específico, lúdico e vital de maravilhosa e perene manifestação, é classicamente e rigorosamente classificado nos modernos estudos antropológicos e literários como:",
+                opcoes: [
+                    "Folclore tradicional, conceito denso que abrange e celebra inteligentemente o riquíssimo conjunto vivo e mutável das importantes tradições orais, crenças profundas, expressivos contos lúdicos, saberes locais e costumes populares criados e diariamente mantidos pela rica vivência direta e totalmente espontânea do povo comum.",
+                    "Cultura erudita puramente acadêmica, pois na realidade sempre exige incontáveis anos de um rigoroso, sistemático e solitário estudo formal em universidades conceituadas para ser adequadamente e minimamente compreendida, analisada cientificamente e perfeitamente reproduzida pelos refinados críticos de arte ocidentais.",
+                    "Progresso civilizatório ininterrupto, amplamente caracterizado pelo assombroso e acelerado avanço tecnológico das redes que permite finalmente e felizmente arquivar de forma digital todos os confusos e antigos mitos rurais em bibliotecas virtuais perfeitamente acessíveis exclusivamente para uma privilegiada elite intelectual.",
+                    "Geofilosofia internacional predatória, movimento que busca ativa e perigosamente importar de maneira totalmente sistemática as enraizadas e místicas crenças e lendas folclóricas de outros continentes apenas para substituir de forma gradativa e sorrateira as belas tradições orais genuinamente locais por contos globalizados."
+                ],
+                explicacao: "O folclore abarca a totalidade da produção empírica, mítica e oral de uma população voltada à explicação simbólica do seu entorno."
+            },
+            {
+                enunciado: "31. Um planejamento urbano tecnocrático decide friamente instalar gigantescas e poluidoras indústrias pesadas bem no meio de uma extensa área que era até então destinada única e exclusivamente à pequena, sustentável e orgânica agricultura familiar regional, forçando dolorosamente a mudança radical na rotina diária, na economia e no próprio sustento dos pequenos e esquecidos trabalhadores locais. Ao analisar profundamente e filosoficamente como essa imponente e repentina nova organização e reconfiguração de todo o vasto espaço físico afeta violentamente o modo de pensar coletivo e o sofrido estilo de viver tradicional daquela pequena população agrícola, o dedicado e crítico estudante está aplicando ativamente os modernos e necessários princípios analíticos relacionados ao vital:",
+                opcoes: [
+                    "Raciocínio geográfico e filosófico estruturado, método complexo e integrado que permite corajosamente investigar com olhar muito crítico e aguçado a intensa e complexa ocupação humana material, a invisível distribuição de poder oculto e também como as imponentes mudanças infraestruturais do disputado território realmente e concretamente moldam as intrincadas relações comunitárias e impactam profundamente os pensamentos.",
+                    "Relativismo moral inteiramente absoluto, que estranhamente considera de forma complacente que qualquer severa alteração climática e brutal invasão ambiental deve ser tratada como sendo eticamente neutra e também totalmente impossível de ser racionalmente julgada ou questionada pelos ativistas locais.",
+                    "Isolacionismo cultural puramente defensivo e primitivo, doutrina radical que prega inegociável e ilusoriamente o total e imediato fechamento bélico de todas as porosas fronteiras do pacato município apenas para garantir histericamente que os apavorados moradores originais da pequena região não entrem em contato algum com os rudes e alienígenas operários.",
+                    "Princípio da aculturação totalmente orgânica, teoria otimista e ingênua segundo a qual a frágil e resiliente comunidade local consegue milagrosamente absorver de maneira perfeitamente natural e incrivelmente passiva toda as chocantes inovações tecnológicas opressoras sem que absolutamente haja ou sequer se manifeste na superfície e de forma visível qualquer tipo de conflito."
+                ],
+                explicacao: "A união da geografia e da filosofia estuda como o poder transforma o território, e como a nova geografia altera irremediavelmente a mentalidade e cultura da população ali presente."
+            },
+            {
+                enunciado: "32. Durante uma divertida excursão a turismo, um experiente e rico viajante critica dura e severamente em público o milenar e enraizado costume da população humilde de um distante país periférico asiático que tem o saudável e comum hábito de comer todos os alimentos com as próprias mãos limpas. Ele condena essa prática simples julgando-a em voz alta como sendo um ato inaceitavelmente anti-higiênico, atrasado, rudimentar e primitivo, baseando-se orgulhosa e teimosamente em suas engessadas regras de etiqueta clássica burguesa que arduamente aprendeu na infância em seu próprio lar. Filosoficamente e eticamente, para conseguir superar ativamente e cognitivamente essa limitadora e empobrecida visão mesquinha de mundo, o ranzinza viajante precisaria exercitar de fato a tão necessária e construtiva virtude relacional amplamente conhecida e divulgada academicamente e sociologicamente como a bela:",
+                opcoes: [
+                    "Alteridade relacional plena, definida pela elogiável capacidade de o sujeito conseguir se descentrar, de afastar temporariamente as próprias certezas enraizadas e reconhecer empatica e honestamente o sujeito estrangeiro e diferente em sua total integridade moral e complexidade cultural.",
+                    "Miscigenação biológica forçada e dogmática, adotando integralmente, imediatamente e de forma definitiva a questionada dieta nativa desconhecida do país estrangeiro apenas para tentar provar de forma falsa aos outros presentes que perdeu subitamente todos os seus próprios e fortes traços culturais identitários.",
+                    "Transculturação comunicacional puramente assimétrica e desigual, que infelizmente exige de forma velada a forte sobreposição da opressora cultura econômica imposta pelo viajante rico e ocidental sobre a modesta cultura material anfitriã através do hábil, enganoso e dissimulado convencimento verbal.",
+                    "Homogeneização culinária perfeitamente globalizada e impositiva, processo artificial e planejado que sempre propõe a fria criação de um rígido padrão inegociável e único de refinado comportamento em toda rede mundial de caros restaurantes e redes de luxuosos e cobiçados hotéis multinacionais."
+                ],
+                explicacao: "Alteridade é suspender o juízo imediato (etnocentrismo) para compreender o costume alheio sob a lógica e coerência interna da cultura do próprio anfitrião."
+            },
+            {
+                enunciado: "33. Após o triste registro institucional de inaceitáveis e recorrentes casos internos de cruel e sistemático bullying cometidos exclusivamente por adolescentes desorientados e motivados pela mais abjeta intolerância verbal contra vários alunos transferidos, a dedicada gestão da escola decide sabiamente convocar a comunidade. Todos os professores, em forte colaboração, se reúnem em conselho escolar e decidem sabiamente implementar um engenhoso, belo e ousado projeto pedagógico transversal focado na celebração construtiva da estonteante e indescritível riqueza da grande e vasta variação de nossos coloridos e sonoros sotaques e das diferentes e antigas tradições presentes nas vastas regiões de todo o incrível território nacional verde amarelo. O elogiável e ambicioso objetivo humanista, disciplinar, corretivo e também central de toda essa oportuna, fundamental e engenhosa intervenção pedagógica elaborada visa única, certeiramente e diretamente a:",
+                opcoes: [
+                    "Promoção reflexiva da bela cultura da grande paz solidária e efetiva convivência harmônica e constante, utilizando e celebrando exatamente a complexa e histórica valiosa formação multicultural para conscientizar empaticamente a todos na instituição e combater ativa, paciente e estruturalmente toda ignorância excludente discriminatória.",
+                    "Imposição sumária e exemplar de cruéis ações afirmativas apenas punitivas e excludentes, simplesmente expulsando definitivamente todos os insubordinados jovens agressores identificados do burocrático sistema para assim garantir, ainda que tiranicamente e sem qualquer piedade cristã laica, que a frágil homogeneidade de comportamento.",
+                    "Criação estratégica e fria de uma artificial e eficiente cultura de massa totalmente estudantil e superficial, padronizando rigorosamente e roboticamente todas as possíveis e lúdicas formas de falar de todos os matriculados ali apenas para tentar desesperadamente evitar e camuflar possíveis conflitos indesejáveis na rotina escolar de maneira permanente e indolor.",
+                    "Substituição abrupta e confusa de todo o tradicional currículo básico exigido formalmente pelo Estado pelo pensamento puramente decolonial regionalizado e excludente, simplesmente forçando agora e cruelmente todos os desorientados adolescentes e os próprios relutantes docentes a abandonarem as práticas antigas de convivência local aceitável e harmoniosa no espaço."
+                ],
+                explicacao: "A educação multicultural combate a discriminação ao ensinar o respeito prático pelas diversidades (cultura de paz) no ambiente coletivo."
+            },
+            {
+                enunciado: "34. Habilidosas rendeiras do quente sertão do nordeste tecem diariamente belas e incríveis peças absolutamente únicas de forma admirável, genial, inspiradora e milenarmente artesanal, pacientemente usando seu tempo para ir repassando lentamente toda a complexa e meticulosa e manual técnica oralmente e na prática visual de emocionada geração materna em afetuosa e reverente geração filha. Simultânea e paralelamente, do outro vasto lado de nosso gigantesco planeta azul, uma massiva e esmagadora e insensível fábrica global em acelerada rotina passa a produzir vertiginosa e diariamente dezenas de milhões e incontáveis fardos de cópias extremamente baratas de péssima qualidade de duríssimo plástico toxico que meramente copiam e pifiamente imitam aquele delicado mesmo padrão natural com o único, raso e exclusivo objetivo final de invadir prateleiras com velocidade, vencer os correntes concorrentes globais por pura esmagadora e suja guerra de preço desleal imposta covardemente. Esses tão discrepantes cenários simbolizam respectivamente uma total nítida dicotomia entre a autêntica:",
+                opcoes: [
+                    "Cultura popular verdadeiramente de raiz e de resistência silenciosa, pois a arte local retrata honestamente a rica identidade da comunidade e da alma do artesão, contraposta à predadora cultura da vasta e cega massa, cuja função cínica é baratear as próprias e rasas e plásticas reproduções focadas sempre em gerar grandes fortunas industriais.",
+                    "Dinâmica de benéfica e maravilhosa e utópica interculturalidade interativa colaborativa de saberes ancestrais misturados, maravilhosamente e globalmente caracterizada e reconhecida pela incrível, perfeita, altruísta, louvável, solidária e irrestrita generosa troca entre os pobres e esquecidos locais oprimidos e os magnânimos impérios benevolentes do atual mercado altamente aquecido focado no pequeno lucro sustentável de curto e longo prazo.",
+                    "Elogiável e rica forte manifestação geofilosófica local isolada impenetrável periférica subestimada, perfeitamente alinhada e harmonicamente aliada e pacificamente irmanada em solidariedade de grande e notável visão global da predatória ação colonizadora industrial asiática opressora dissimulada excludente alienante esmagadora massificante controladora centralizadora cruel destrutiva homogeneizadora opressiva dominadora irrefreável e totalmente inesgotável em todo mundo inteiro.",
+                    "Isolada, fria, e depressiva triste melancólica frágil passiva identitária local orgulhosa artesã solitária e esquecida, tristemente em dramático luto final contrastando intensamente na dor chorosa com a grandiosa e reluzente orgulhosa brilhante pujante triunfante iluminada gigantesca poderosa vitoriosa magnifica eficiente admirável colossal majestosa deslumbrante espetacular divina gloriosa insuperável formidável fenomenal espantosa magnânima suprema esmagadora fábrica imbatível do futuro próximo inevitável e assustador."
+                ],
+                explicacao: "O texto explicita a colisão material entre a criação artesanal cheia de sentido comunitário e a apropriação barata e mercadológica promovida pelas indústrias para obter lucros rasos."
+            },
+            {
+                enunciado: "35. Durante todo o longo e triste sombrio inaceitável e brutal violento perverso e histórico regime racista excludente totalitário denominado politicamente e internacionalmente repulsivo e lamentável apartheid ocorrido covardemente em toda grande África do Sul, a enorme população esmagadora local civil oprimida violentada escravizada cerceada monitorada desarmada aterrorizada açoitada perseguida e negra era totalmente por força da cruel e rígida e imoral inconstitucional nefasta injusta e absurda implacável autoritária excludente impositiva ilegítima lei segregacionista impedida de ir às praias públicas gratuitas arenosas banhadas pelo lindo mar e bairros centrais habitados desfrutados. Analisando a fria excludente controlada ocupação militar armada do físico espaço e todas dinâmicas das esmagadas cruéis relações tensas, opressoras, desiguais, doentias submissas intergrupais de terror constante, esse nefasto terrível sistema covarde abjeto, cruel histórico criminoso vergonhoso doloroso e repulsivo e revoltante caso sociológico mundial de grande proporção reflete sem grandes margens para qualquer dúvida de forma exata e cristalina uma extrema situação abominável imperdoável perfeitamente e classicamente chamada em teoria política exata de:",
+                opcoes: [
+                    "Violenta e institucional discriminação sistêmica de grave natureza estrutural opressora e excludente e segregacionista racista perversa criminosa ditatorial cruel e letal impositiva impiedosa insensível abusiva escandalosa degradante aviltante e asquerosa, utilizada unicamente de forma cínica e sistemática hipócrita egoísta dissimulada sádica calculista opressiva e brutal impune como letal cruel abjeta repugnante ferramenta estatal criminosa autoritária perversa repulsiva maldosa inescrupulosa perversa fria calculada planejada estruturada imoral para garantir sempre a absoluta manutenção infinita ininterrupta incontestável inquestionável inabalável perpétua de todos seus perversos grandes imensos e indevidos luxuosos e roubados grandes privilégios elitistas dos infames ricos gananciosos colonizadores assassinos dominadores.",
+                    "Pacifica e benéfica ação afirmativa governamental e paliativa caridosa, elaborada cautelosamente pelo temeroso e carinhoso frágil estado paternalista visando evitar qualquer conflito social violento e proteger humanitariamente minorias através do belo distanciamento social amigável generoso provisório temporário elogiável higiênico sanitário biológico geográfico e harmonioso com total aceitação geral de todos envolvidos no processo de civilidade nacional em harmonia de toda nação feliz alegre esperançosa próspera sem conflitos internos graves e sem rancor coletivo geral sem violência letal contínua ou terror.",
+                    "Engenhosa inteligente sagaz eficiente brilhante visionária sofisticada espetacular incrível fabulosa arrojada pioneira e moderna urbana civilizada enculturação impositiva, em onde os civilizados tolerantes europeus gentis justos bondosos tentavam ensinar amorosamente o respeito territorial cívico ao dócil passivo povo local que alegremente pacificamente ordeiramente voluntariamente aceitava sua nobre condição divina inferioridade e vivia eternamente grato por serem salvos de sua selvageria animalesca ignorância e trevas por magnânimos lordes coloniais sem que jamais ouvisse um só gemido lamento grito choro dor luto pranto angústia na região isolada ensolarada abençoada próspera inteira de paz celestial e sossego ininterrupto.",
+                    "Deliberada lenta cautelosa estratégica astuta morosa prolongada arrastada e longa benévola cuidadosa meticulosa planejada transculturação pacifica e serena amistosa separativa e provisória com objetivo estrito rigoroso ético nobre moral sacro divino admirável e respeitoso louvável bondoso fofo adorável e amável de longo complexo tolerante e sublime harmonioso e belo sublime esplêndido sublime magnífico deslumbrante prazo sublime perfeito celestial glorioso formidável visando salvar almas de forma mansa compreensiva delicada suave terna meiga fagueira serena placida tranquila pacata repousante calma quieta silente e doce como anjos voando num lindo ensolarado azul e límpido céu."
+                ],
+                explicacao: "O Apartheid organizou o espaço físico como mecanismo direto de opressão estrutural, usando a lei estatal para garantir dominação econômica e submissão física total."
+            },
+            {
+                enunciado: "36. Um aluno recém-chegado de uma comunidade rural enfrenta extremas dificuldades para se integrar na grande escola urbana, pois seus modos e falares são constantemente vistos pelos colegas locais como sendo ingênuos e antiquados. Do ponto de vista sociológico, o conflito retratado na convivência escolar evidencia que:",
+                opcoes: [
+                    "A falta de reconhecimento social adequado gera uma profunda crise identitária no indivíduo, evidenciando que a sociabilidade humana depende intrinsecamente da aceitação recíproca e do respeito genuíno às diferenças culturais.",
+                    "A sociabilidade na escola urbana exige a supressão imediata de todas as identidades rurais, garantindo a homogeneização do espaço e a paz social através do apagamento forçado da cultura de origem.",
+                    "O princípio ético da alteridade determina que a escola deve apenas tolerar fisicamente o novo aluno, sem necessariamente promover sua integração real ou validar seus saberes práticos comunitários e ancestrais.",
+                    "O etnocentrismo reverso é a melhor solução metodológica para este caso, obrigando todos os jovens urbanos a adotarem os costumes agrários para compensar o histórico apagamento das identidades camponesas locais."
+                ],
+                explicacao: "A falta de acolhimento sadio destrói a sociabilidade orgânica; a integração depende intrinsecamente do respeito recíproco às diferenças."
+            },
+            {
+                enunciado: "37. Atuais políticas públicas brasileiras que incentivam a valorização obrigatória do ensino da história e da cultura afro-brasileira dentro das escolas regulares visam corrigir enormes lacunas teóricas e práticas mantidas historicamente. Avaliando politicamente e filosoficamente essa legislação, compreende-se com clareza exata e fundamentada que:",
+                opcoes: [
+                    "O objetivo central dessas políticas é promover um multiculturalismo crítico, reconhecendo a vasta pluralidade formadora da nossa identidade social e combatendo o racismo estrutural presente nas instituições educativas.",
+                    "Tais medidas representam o apagamento proposital da história europeia, buscando substituir uma narrativa hegemônica por outra através da imposição obrigatória de tradições estrangeiras no currículo base nacional unificado.",
+                    "Essas leis promovem uma perigosa fragmentação identitária no país, impedindo que a nação alcance o desejado progresso civilizatório que só seria possível através da adoção de uma única cultura globalizada.",
+                    "A legislação garante a assimilação passiva das minorias, permitindo que a cultura de massa transforme as lutas sociais em meros produtos de consumo comercializáveis para as elites financeiras dominantes."
+                ],
+                explicacao: "Legislações antirracistas de matriz curricular pretendem valorizar a contribuição afro e construir o multiculturalismo crítico que corrige injustiças sistêmicas históricas."
+            },
+            {
+                enunciado: "38. As populares redes sociais modernas utilizam rotineiramente opacos algoritmos para recomendar de forma ininterrupta sempre os mesmos ritmos de música e formatos de vídeos de humor ágil, gerando constantes tendências virais e efêmeras. Essa lógica veloz, algorítmica e altamente mercadológica revela primariamente que:",
+                opcoes: [
+                    "A recomendação viciante de conteúdos efêmeros ilustra a força da indústria cultural contemporânea, que transforma a experiência estética em mero consumo massificado, desencorajando o raciocínio crítico autônomo e profundo.",
+                    "Essa padronização algorítmica fomenta a expansão da cultura erudita entre os jovens, facilitando o acesso universal e igualitário às grandes obras de arte reflexivas criadas nos séculos passados pelos intelectuais.",
+                    "O fenômeno fortalece o folclore popular tradicional, pois as plataformas digitais priorizam a divulgação orgânica das complexas narrativas orais desenvolvidas historicamente pelas pequenas comunidades isoladas das grandes e ruidosas metrópoles.",
+                    "A dinâmica citada promove o verdadeiro pensamento decolonial no ambiente digital, rompendo definitivamente com os padrões de consumo norte-americanos e valorizando exclusivamente as incipientes produções artísticas do hemisfério sul."
+                ],
+                explicacao: "As plataformas agem baseadas na lógica financeira da indústria cultural: reter atenção máxima mediante recompensas repetitivas superficiais limitando visões densas de mundo."
+            },
+            {
+                enunciado: "39. Críticos e pesquisadores latino-americanos propõem ativamente o fortalecimento da 'epistemologia do Sul', questionando incisivamente a ultrapassada ideia de que apenas a ciência dura e o pensamento produzidos nos ricos países centrais ocidentais seriam válidos. Dentro dos recentes estudos acadêmicos e geofilosóficos, compreende-se corretamente que:",
+                opcoes: [
+                    "Essa perspectiva decolonial visa reconhecer a validade dos conhecimentos marginais e tradicionais, descontruindo a hierarquia colonial que classifica os saberes dos povos colonizados como lendas primitivas, inferiores e supersticiosas.",
+                    "A proposta acadêmica defende a completa interrupção do desenvolvimento tecnológico nacional, sugerindo que as sociedades periféricas devem retornar obrigatoriamente aos modos de produção manual para garantir a preservação ambiental plena.",
+                    "O conceito legitima o etnocentrismo latino-americano contemporâneo, cujo objetivo final é subjugar intelectualmente as universidades europeias e impor os métodos científicos regionais como a única forma aceitável de racionalidade.",
+                    "Esse pensamento favorece a imediata transculturação acadêmica neoliberal, promovendo a venda de patentes de conhecimentos indígenas para que grandes corporações multinacionais maximizem seus lucros rapidamente no competitivo mercado farmacêutico."
+                ],
+                explicacao: "A epistemologia do Sul visa decolonizar o pensamento, mostrando que não existe apenas a visão de mundo americana ou europeia."
+            },
+            {
+                enunciado: "40. O crescimento intensivo, acelerado e muitas vezes totalmente desenfreado de vastas áreas urbanas periféricas invisíveis e com infraestrutura básica nula, gera grave segregação espacial e uma aguda e persistente desigualdade socioeconômica severa. Ao aplicar o raciocínio geográfico e sociológico a esse exato caso, infere-se validamente que:",
+                opcoes: [
+                    "A configuração desse espaço urbano reflete a profunda exclusão socioeconômica, evidenciando como a territorialidade nas metrópoles é desenhada pelo forte capital financeiro, o que empurra populações vulneráveis para as margens.",
+                    "O fenômeno descrito comprova a eficiência do progresso civilizatório moderno, que garante a todos os cidadãos, independentemente de sua classe social, oportunidades iguais de desenvolvimento habitacional seguro e confortável.",
+                    "A marginalização urbana decorre da vontade exclusiva e consciente dos próprios indivíduos pobres, que optam voluntariamente por residir em áreas isoladas para preservar suas raízes culturais contra as interferências externas.",
+                    "O processo de segregação territorial é uma consequência inevitável e benéfica do multiculturalismo urbano contemporâneo, visto que permite o isolamento pacífico e desejável de diferentes grupos étnicos em bairros fechados."
+                ],
+                explicacao: "A segregação urbana é a manifestação física do grande abismo de renda provocado pela territorialidade focada exclusivamente na concentração agressiva de renda material."
+            },
+            {
+                enunciado: "41. Projetos ostensivos de mineração em áreas próximas a milenares terras indígenas e ribeirinhas frequentemente justificam retoricamente a exploração agressiva afirmando em canais oficiais que aquelas matas fechadas são 'improdutivas'. Analisando este conflito discursivo e ideológico contemporâneo à luz da filosofia, observa-se que:",
+                opcoes: [
+                    "O discurso econômico baseia-se em um profundo etnocentrismo capitalista que deslegitima o modo de vida tradicional nativo, impondo a lógica do mercado como o único padrão admissível para o progresso.",
+                    "O uso do termo 'improdutivas' demonstra uma clara valorização da cultura indígena, atestando que o estado reconhece a imensa superioridade da relação contemplativa e poética desses povos com a biodiversidade.",
+                    "A exploração forçada promove uma interculturalidade extremamente saudável e igualitária, promovendo a troca amigável de tecnologias de extração mineral avançadas pelas ricas sementes nativas cultivadas nas pequenas reservas indígenas protegidas.",
+                    "A expansão mineradora simboliza uma ação afirmativa governamental compensatória, desenhada especificamente para inserir as vulneráveis e pequenas populações originárias de forma acelerada no competitivo mercado global de ações lucrativas internacionais."
+                ],
+                explicacao: "O julgamento mercadológico exclui os valores intangíveis de um território natural sagrado baseando-se unicamente no lucro imediatista cego ocidental (etnocentrismo de produção financeira)."
+            },
+            {
+                enunciado: "42. O secular e complexo artesanato utilitário de famosas panelas de barro negro no Espírito Santo, sendo uma atividade predominantemente feminina, comunitária e profundamente enraizada na região litorânea, teima incrivelmente em resistir frente à massiva e moderna substituição por brilhantes panelas industriais de aço. A permanência dessa tradição demonstra que:",
+                opcoes: [
+                    "A permanência secular desse valioso ofício evidencia o folclore como uma forma viva e contínua de resistência cultural, protegendo a pluralidade identitária local contra a massificação padronizada da indústria globalizada.",
+                    "Essa forte resistência artesanal representa a estagnação irreversível da cultura material capixaba contemporânea, que infelizmente recusa o necessário progresso civilizatório por puro apego saudosista e emocional a práticas culinárias ultrapassadas.",
+                    "A atividade oleira local ilustra a perigosa homogeneização cultural do Brasil moderno, indicando que todas as ricas expressões folclóricas estaduais foram apagadas e substituídas por um único padrão de consumo.",
+                    "Esse longo processo de manutenção técnica configura a chamada transculturação corporativa acelerada, onde as grandes fábricas multinacionais patrocinam ativamente o trabalho manual feminino apenas para evitar altas taxas de impostos."
+                ],
+                explicacao: "O folclore não é algo imóvel num museu; fabricar manualmente utensílios com raízes é uma prova concreta de força popular que sobrevive aos pesados assédios contínuos da grande mecânica."
+            },
+            {
+                enunciado: "43. O polêmico sistema legal e burocrático de cotas raciais e sociais atrelado ao disputado ingresso no concorrido e valorizado ensino superior público foi gradativamente criado e institucionalmente desenhado com a complexa finalidade de mitigar os danos sociais profundos deixados historicamente pela abolição da escravatura. Nesse preciso escopo ético e normativo, compreende-se que:",
+                opcoes: [
+                    "As cotas são essenciais instrumentos de justiça distributiva e ação afirmativa concreta, desenhadas para garantir igualdade material de oportunidades e romper com ciclos de exclusão perpetuados por séculos de preconceito.",
+                    "Essas políticas compensatórias operam contra o princípio constitucional da igualdade jurídica formal, pois desconsideram inteiramente o mérito puramente individual e estimulam diretamente o violento conflito racial dentro das universidades públicas.",
+                    "Tais medidas visam promover o etnocentrismo focado exclusivamente nas matrizes africanas, buscando erradicar progressivamente todo e qualquer tipo de conhecimento ocidental remanescente nas complexas grades curriculares do moderno ensino superior.",
+                    "O sistema garante a total assimilação cultural dos grupos vulneráveis, forçando os alunos cotistas a abandonarem suas ricas identidades originais para se adaptarem de forma obediente ao rigoroso padrão acadêmico."
+                ],
+                explicacao: "As cotas pretendem dar sentido concreto (ação política compensatória visível e prática) para igualar de fato jovens oprimidos geracionalmente antes de realizar o julgamento das médias de aprovação educacional final."
+            },
+            {
+                enunciado: "44. A precoce, profunda e diária imersão orgânica e sistemática das novas e conectadas gerações infantis em plataformas virtuais de entretenimento animado altera irremediavelmente e estruturalmente sua vital forma de comunicação humana e também seus essenciais e formativos primeiros valores éticos. Diante desse rápido impacto formador de base, percebe-se adequadamente que:",
+                opcoes: [
+                    "O atual fenômeno sociológico retrata um processo de enculturação predominantemente virtual, onde a aquisição progressiva dos complexos códigos de sociabilidade ocorre cada vez mais sob a influência de ambientes digitais.",
+                    "A crescente digitalização infantil comprova a teoria da pureza identitária, que garante que os valores morais familiares permanecem absolutamente ilesos e inalterados mesmo diante da exposição maciça à internet mundial.",
+                    "A modernidade forjou um inédito contexto de interculturalidade passiva total, em que os mais jovens rejeitam simultaneamente todas as culturas existentes para criar uma civilização sem qualquer base histórico-linguística anterior.",
+                    "O uso exacerbado dessas tecnologias reflete a eliminação da indústria cultural dominante, pois as redes virtuais democratizam o pensamento crítico e anulam a forte dependência de produtos voltados ao consumo."
+                ],
+                explicacao: "A enculturação formadora inicial agora escapou radicalmente das famílias e bairros para ocorrer também fortemente na grande massa contínua dos pesados algoritmos planetários artificiais operados em telas sensíveis móveis."
+            },
+            {
+                enunciado: "45. Movimentos sociais compostos por milhares de famílias rurais de humildes e desassistidos trabalhadores rurais frequentemente argumentam, frente às autoridades legislativas vigentes, que a terra devoluta tem de cumprir primeiramente sua rigorosa função social biológica plantando e gerando alimentos nutritivos acessíveis antes de ser destinada ao especulativo e cobiçado lucro imobiliário. Esse debate político elucida que:",
+                opcoes: [
+                    "A demanda reflete as tensões territoriais capitalistas, onde a ocupação do espaço é disputada entre os movimentos que priorizam a sobrevivência digna e o poder econômico focado na lucratividade financeira.",
+                    "A referida luta demonstra o apagamento da cultura de massa agrícola, favorecendo apenas o plantio desordenado que ignora as leis naturais e destrói o equilíbrio ecológico dos biomas permanentemente.",
+                    "A reivindicação agrária é fruto de um etnocentrismo urbano exacerbado, no qual a classe média impõe, de forma ditatorial, seus valores políticos às populações campestres que desejam vender suas terras.",
+                    "O debate expõe o sucesso pacífico do rápido multiculturalismo brasileiro moderno, provando que todos os trabalhadores rurais já possuem imensas propriedades legalizadas e convivem harmoniosamente com os grandes latifundiários internacionais."
+                ],
+                explicacao: "A posse e gestão de grandes faixas territoriais demarcam claramente os graves litígios estruturais entre especulação corporativa estrangeira vazia e o anseio biológico nutricional humano autêntico dos menos assistidos marginalmente."
+            },
+            {
+                enunciado: "46. Apesar de expressivos e constantes ganhos legislativos formais nos últimos anos, as recorrentes pesquisas institucionais do país apontam que mulheres recebem, via de regra, salários percentualmente muito menores que os rendimentos masculinos, mesmo possuindo qualificação idêntica e operando o mesmíssimo e rigoroso cargo executivo administrativo. Esse cenário fático comprova sociologicamente que:",
+                opcoes: [
+                    "A desigualdade expõe o cruel fenômeno da forte discriminação estrutural baseada no gênero, refletindo preconceitos ocultos que desvalorizam o complexo trabalho feminino e impactam negativamente as modernas relações intergrupais laborais.",
+                    "Essa gritante diferença salarial fundamenta-se validamente no aspecto puramente biológico humano, comprovando categoricamente que o mercado avalia o desempenho laboral seguindo estritos critérios técnicos infalíveis neutros e essencialmente sempre objetivos.",
+                    "O dado revela a nefasta influência das tradições folclóricas antigas dentro dos escritórios, indicando que os atuais gestores aplicam mitos rurais excludentes na definição matemática das modernas remunerações financeiras anuais.",
+                    "Essa grande discrepância corporativa comprova o alto grau de sucesso das atuais ações afirmativas de mercado, demonstrando que as lideranças femininas aceitam receber menos por pura solidariedade às empresas menores."
+                ],
+                explicacao: "As desigualdades não são acidentais; atitudes sistemáticas remuneratórias díspares são pautadas rigorosamente no terrível preconceito generalizado oculto baseado estritamente na natural matriz de gênero da contratada em questão nas firmas mundiais."
+            },
+            {
+                enunciado: "47. Com o avanço ininterrupto da ostensiva expansão imobiliária vertical, imensos, fechados, caros e reluzentes shoppings centers tornaram-se paulatinamente, para vastíssima e carente parcela de nossa exposta juventude urbana conectada, infelizmente a principal, e muitas vezes única, engessada forma segura de livre lazer semanal metropolitano. A análise detida sobre o comportamento citado aponta criticamente que:",
+                opcoes: [
+                    "A dinâmica evidencia a expansão progressiva de uma cultura de massa mercadológica profunda, onde a valiosa sociabilidade humana passa a ser mediada, condicionada e validada pelo intenso poder de compra.",
+                    "A prática consumista constante fortalece diretamente os genuínos movimentos de pensamento decolonial, desafiando ativamente as grandes corporações imperialistas e incentivando a profunda união comunitária autônoma e financeiramente consciente dos grupos.",
+                    "O comportamento indica que o multiculturalismo conseguiu extinguir a fútil alienação social capitalista, garantindo que os jovens utilizem os imensos templos de compra exclusivamente para grandiosos e profundos debates filosóficos.",
+                    "A referida situação representa o triste declínio da interculturalidade harmônica globalizada, pois impede permanentemente que diferentes grupos étnicos urbanos consigam trocar informações relevantes sobre suas origens nos grandes centros comerciais."
+                ],
+                explicacao: "A conversão do tempo inteiramente livre lúdico e do lazer interpessoal em atividades ligadas estritamente a comprar objetos padronizados artificiais reforça poderosamente e profundamente os pesados vínculos mentais condicionados criados ardilosamente pelas indústrias alienantes culturais."
+            },
+            {
+                enunciado: "48. É comum constatar no contemporâneo cenário virtual diário como o adoecido sujeito edita imagens e artificialmente constrói uma invejável 'persona' heroica nas badaladas redes de relacionamento cibernético, onde ele obstinadamente e metodicamente projeta uma ficcional vida alegre, escondendo de todos seus medos e pânicos na desesperada intenção de evadir julgamentos de supostos amigos. Esse doloroso paradoxo digital explica claramente que:",
+                opcoes: [
+                    "Esse doloroso fenômeno ilustra a atual hipervalorização da identidade pessoal frente às complexas relações interpessoais midiáticas, em que o desejo obsessivo por constante aprovação e reconhecimento falsifica a real autoimagem.",
+                    "A simulação cibernética referida anula por completo o conceito psicológico de alteridade reflexiva, demonstrando que o sujeito isolado adquire autonomia plena e desconsidera as duras opiniões externas com grande facilidade.",
+                    "A criação de falsas personas é incentivada pelas importantes ações afirmativas do governo, que buscam promover irrestritamente a completa equalização estética e visual de toda a confusa população digital brasileira.",
+                    "A camuflagem virtual do sofrimento denota um processo profundo de transculturação impositiva, em que a cultura estrangeira dominante erradica violentamente a melancolia biológica natural típica das sociedades periféricas subdesenvolvidas latinas."
+                ],
+                explicacao: "O ambiente tecnológico distorce gravemente e violentamente a autopercepção psíquica exigindo máscaras permanentes em prol de falsos reconhecimentos intergrupais constantes e estressantes exigidos diuturnamente pelos pesados algoritmos computacionais implacáveis do capitalismo cognitivo."
+            },
+            {
+                enunciado: "49. Habilidosos e cuidadosos grupos indígenas amazônicos conhecem as ervas e inteligentemente manejam a extensa floresta virgem há sucessivos e prósperos milênios de maneira primorosa, constantemente enriquecendo a biologia regional e otimizando a natural fertilidade química do úmido solo (conhecida Terra Preta) sem jamais degradar a complexa teia que liga as plantas e rios. Esse sofisticado método empírico demonstra que:",
+                opcoes: [
+                    "O histórico manejo demonstra uma rica produção do espaço onde natureza e cultura se articulam fortemente, revelando técnicas ambientais complexas e sustentáveis baseadas em avançados saberes empíricos não eurocêntricos profundos.",
+                    "A prática descrita apaga qualquer distinção real entre a natureza bruta e a cultura abstrata, atestando que os povos citados são meramente animais instintivos incapazes de complexo desenvolvimento tecnológico sofisticado.",
+                    "O método agrícola comprova a eficácia da impositiva aculturação rural contemporânea predatória, resultando na completa e irrecuperável devastação florestal para atender vorazmente à crescente e insaciável demanda do agronegócio internacional.",
+                    "A técnica reflete um severo etnocentrismo ecológico restritivo dogmático, pois tais comunidades forçam violentamente todas as nações ocidentais a abandonarem a ciência moderna para cultivar alimentos rudimentares de baixa qualidade."
+                ],
+                explicacao: "Saberes das terras tradicionais provam com fatos duradouros ao longo do longo tempo ininterrupto e estável biológico que a convivência de grupos não impõe necessariamente a total aniquilação destrutiva violenta do solo como habitualmente creem erroneamente os impérios mercadológicos invasores de florestas nativas centenárias americanas colonizadas do sul opresso globalmente capitalistas exaustivas ocidentais predatórias."
+            },
+            {
+                enunciado: "50. Na próspera, polêmica e também sombria década de 1970, o burocrático e militarizado Estado forte e centralizado brasileiro iniciou ostensivamente a implacável e destruidora construção predatória da extensa e monumental rodovia Transamazônica, simplesmente rasgando de trator as milenares terras originárias sob o falso discurso cívico do progresso inevitável e do patriotismo de resultados rápidos. A trágica narrativa revela que a colossal empreitada infraestrutural:",
+                opcoes: [
+                    "A construção expõe uma concepção de grande progresso econômico predatório etnocêntrico e autoritário, que considerava as populações originárias como obstáculos descartáveis, forçando um violento processo de aculturação, apagamento e extermínio.",
+                    "O grandioso projeto assegurou a total preservação das identidades locais periféricas, impedindo de forma contundente qualquer avanço perigoso e desordenado de mineradoras predatórias sobre os territórios indígenas historicamente e legalmente ocupados.",
+                    "A obra refletiu uma avançada interculturalidade respeitosa pacífica harmoniosa, onde os planejadores governamentais consultaram demoradamente os líderes nativos para adaptar perfeitamente o trajeto asfáltico às necessidades espirituais das vulneráveis tribos.",
+                    "O asfaltamento garantiu o desenvolvimento da geofilosofia afrodiaspórica igualitária, promovendo um intercâmbio de inestimável valor ético e cultural direto entre os construtores civis estrangeiros recém-chegados e a população negra da região."
+                ],
+                explicacao: "Estruturas físicas rodoviárias impostas de forma vertical violenta carregam nelas a intenção ideológica nefasta focada na destruição metódica dos habitantes originais que não compartilham passivamente e obedientemente as velozes noções abstratas cegas capitalistas baseadas em estradas ruidosas desmatadoras cinzas."
+            },
+            {
+                enunciado: "51. Após exaustivo e longo empenho de incansáveis professores intelectuais formadores, o fixo e engessado currículo rígido padrão do tradicional sistema educacional estadual do burocrático Espírito Santo passa louvavelmente a contemplar e exigir a complexa e vibrante história das intensas e corajosas resistências protagonizadas pelos esquecidos quilombolas de origem nativa em Queimado. Tal inovação programática infere perfeitamente e pedagogicamente que:",
+                opcoes: [
+                    "A medida reflete o urgente e engajado pensamento educativo decolonial crítico libertador, descentralizando a narrativa eurocêntrica exclusiva e resgatando a fundamental importância do povo negro como agente histórico construtor ativo.",
+                    "A alteração escolar citada desvirtua a verdadeira educação erudita técnica elitista, impondo falsas narrativas baseadas puramente no folclore oral irreal que atrapalham o severo ensino profissionalizante focado no mercado global.",
+                    "A nova ementa corrobora o cruel projeto de homogeneização cultural eurocêntrica racista ditatorial, visto que substitui rapidamente a complexa filosofia universal pelo raso conhecimento religioso imposto de forma velada autoritária.",
+                    "O formato garante a perigosa eliminação absoluta da importante interculturalidade pedagógica integradora universalista, limitando o confuso pensamento juvenil unicamente aos violentos conflitos bélicos internos, incitando perigosamente constantes retaliações físicas desnecessárias."
+                ],
+                explicacao: "Inserir história dos explorados diretamente nos engessados quadros negros pedagógicos tradicionais combate com maestria inegável o crônico silenciamento cruel da base matriz fundacional promovendo o pensamento não europeu na sala de aula diária massiva contínua formadora."
+            },
+            {
+                enunciado: "52. O charmoso, aclamado e elegante movimento artístico urbano e genial denominado Bossa Nova magistralmente e organicamente mesclou elementos sonoros e percussivos rítmicos marcantes do autêntico samba tradicional do Rio de Janeiro malandro com requintadas e difíceis harmonias teóricas consolidadas mundialmente no complexo jazz estadunidense criativo, originando rica estética sonora de ponta. Essa valorizada fusão indica sociologicamente que:",
+                opcoes: [
+                    "A rica fusão musical descrita constitui um clássico caso de transculturação criativa profunda e orgânica, onde diferentes matrizes rítmicas e estéticas interagem fortemente para originar um produto cultural genuinamente novo.",
+                    "O surgimento desse novo gênero exemplifica um impositivo processo de aculturação destrutiva imperialista forçada, no qual o puro ritmo nacional foi completamente aniquilado pelo agressivo domínio cultural econômico norte-americano dominador.",
+                    "O movimento denota o profundo etnocentrismo elitista restrito puramente clássico excludente das grandes massas, rejeitando de antemão toda e qualquer mínima influência estrangeira global para proteger desesperadamente a identidade original.",
+                    "A sonoridade resultante atesta o imenso fracasso da cultura de massa puramente nacionalista autêntica independente, pois comprova que nenhum ritmo interno sobrevive sem o aporte financeiro das grandes gravadoras internacionais."
+                ],
+                explicacao: "Fenômenos sociais complexos estéticos mostram claramente e sonoramente que fortes interações entre mundos geram incríveis soluções e ramificações complexas inéditas sem purismo cego reativo atrasado limitante paralisante folclórico passivo excludente temeroso dogmático fechado."
+            },
+            {
+                enunciado: "53. Ao se aproximar pacientemente da reluzente cabine de um rápido e caro avião particular executivo, um rico passageiro empresarial sente imediatamente incontrolável calafrio amedrontado irracional e enorme desconfiança odiosa repentina apenas e unicamente pelo simples fato de perceber de forma imediata que o experiente piloto responsável é um calmo homem negro uniformizado. Diante de cena tão absurda e vexatória, nota-se cristalinamente que:",
+                opcoes: [
+                    "A atitude paranoica revela a forte existência estrutural do enraizado preconceito social associado aos estereótipos discriminatórios excludentes, que infelizmente ainda duvidam sistematicamente da real capacidade e competência das parcelas negras.",
+                    "O comportamento ilustra a legítima prudência intelectual exigida pelas atuais teorias de alteridade reflexiva humanitária ética, que ensinam rigorosamente que diferenças visíveis sempre implicam perigosas diferenças biológicas de capacidade funcional.",
+                    "A desconfiança irracional denota o pleno funcionamento da chamada aculturação corretiva reparatória civilizatória contemporânea, onde a classe média impõe silenciosamente aos trabalhadores padrões inatingíveis de comportamentos e atitudes socialmente corretas.",
+                    "O referido medo atesta a completa eficácia do grande multiculturalismo passivo colaborativo harmonioso integrador amigável, pois o passageiro expressa apenas uma saudável e curiosa incerteza diante das complexas novidades cosmopolitas."
+                ],
+                explicacao: "Estereótipos associam equivocadamente postos de comando à branquitude ocidental criando reflexos instintivos medrosos reativos injustificáveis repletos de pura ignorância racista abjeta profunda contínua herdada."
+            },
+            {
+                enunciado: "54. A organizada, futurista, rica e muito industrial Coreia do Sul inteligentemente passou a formatar, embalar e então agressivamente exportar com grande sucesso astronômico o seu complexo estilo sonoro (conhecido popularmente K-Pop) coreografado e coloridos seriados caros (doramas), conquistando forte espaço cultural em países ocidentais como o vasto e influenciado Brasil. A exportação demonstra a clara faceta moderna em que:",
+                opcoes: [
+                    "A febre ilustra os atuais fluxos da grande indústria cultural midiática globalizada veloz moderna mercadológica, que permite a exportação e massificação rentável de produtos do entretenimento oriundos fora do eixo-Norte.",
+                    "A referida influência coreana maciça prova inequivocamente que a cruel globalização sempre homogeneíza os gostos das massas populares impondo exclusivamente e violentamente os antigos padrões puramente ocidentais e europeus estadunidenses.",
+                    "A disseminação representa uma dinâmica contemporânea de inculturação pacífica reversa isolada totalmente local excludente, onde as ricas populações latinas rejeitam instantaneamente tudo que foge ao seu tradicional e restrito folclore.",
+                    "O massivo consumo destes itens assegura a permanente eliminação efetiva e rápida das ações afirmativas políticas governamentais locais assistenciais progressistas, focando a grande e volátil atenção da forte juventude no leste."
+                ],
+                explicacao: "Mercados e indústrias culturais asiáticas mostram força mercadológica veloz impondo novos consumos na chamada periferia do ocidente alterando matrizes do entretenimento digital juvenil global massificado contínuo."
+            },
+            {
+                enunciado: "55. A predatória e invisível gentrificação veloz frequentemente modifica a paisagem de tranquilos bairros periféricos muito consolidados em grandes e requintadas áreas supervalorizadas encarecidas artificialmente, e dessa forma força cruelmente, através do astronômico e abusivo valor do aluguel, que todos antigos residentes tradicionais e feirantes pobres rapidamente os abandonem. Esse reordenamento cruel e geográfico indica filosoficamente que:",
+                opcoes: [
+                    "A expulsão expõe agressivos conflitos de forte territorialidade orientados fortemente pela perversa especulação capitalista financeira imobiliária, resultando trágica e violentamente na perda definitiva do histórico espaço de vital sociabilidade periférica.",
+                    "A drástica mudança estrutural consolida o ideal de progresso contínuo e civilização solidária comunitária equitativa igualitária justa moderna, garantindo sem exceções a necessária elevação do maravilhoso padrão material de toda classe.",
+                    "A elitização do local é um grande exemplo prático e contemporâneo de rica valorização do multiculturalismo harmônico unificador democrático horizontal acessível inclusivo, misturando ricos e pobres num verdadeiro e fraterno convívio.",
+                    "O encarecimento imobiliário reflete estritamente a aplicação rigorosa do vasto pensamento decolonial prático focado na sustentabilidade orgânica solidária inclusiva verde rural ecológica, protegendo carinhosamente a bela arquitetura das ruidosas construções."
+                ],
+                explicacao: "Muros invisíveis financeiros expulsam antigos trabalhadores forçando dolorosas reestruturações humanas territoriais que matam os antigos tecidos sociais empáticos de bairros inteiros."
+            },
+            {
+                enunciado: "56. Uma grande organização internacional chega a uma comunidade agrícola tradicional e exige de forma inflexível que os agricultores abandonem rapidamente seus métodos seculares de plantio orgânico para adotar maquinário pesado, sob a estrita justificativa de trazer inevitável 'progresso civilizatório' à região. Analisando o discurso adotado pela organização frente à comunidade, conclui-se que:",
+                opcoes: [
+                    "A imposição de métodos externos sob o falso e retórico pretexto de progresso técnico revela um forte viés etnocêntrico que desconsidera perigosamente os complexos saberes ecológicos tradicionais construídos de forma histórica local.",
+                    "A aceitação imediata das novas tecnologias agrícolas globais pelas populações tradicionais garante um salto evolutivo civilizatório, eliminando de forma definitiva todos os graves problemas nutricionais crônicos e sistêmicos da região.",
+                    "O projeto internacional fundamenta-se inteiramente no genuíno respeito à alteridade reflexiva, pois promove generosamente uma troca horizontal de saberes ancestrais sem causar qualquer impacto ou desequilíbrio na rica cultura nativa.",
+                    "A substituição veloz e total dos antigos hábitos de plantio reflete o notável sucesso da preservação multicultural, assegurando que o rico folclore regional seja magicamente mantido intacto e imaculado para as gerações mais jovens."
+                ],
+                explicacao: "Etnocentrismo impõe matriz exógena mecânica cegamente desrespeitando ecossistemas locais vitais seculares desenvolvidos pacificamente entre humanos e flora silvestre natural resistente sustentável originária."
+            },
+            {
+                enunciado: "57. Durante uma importante partida em um grande estádio, um grupo expressivo de torcedores utiliza cânticos coordenados para proferir insultos de cunho estritamente racial contra um jogador da equipe adversária, justificando o grave ato coletivo apenas como 'provocação normal e aceitável do esporte'. Do ponto de vista sociológico, essa lamentável dinâmica evidencia que:",
+                opcoes: [
+                    "O inaceitável episódio de agressão reflete lamentavelmente como a forte identidade grupal pode ser deturpada para normalizar ou banalizar severos preconceitos e graves violências sistemáticas contra indivíduos considerados como sendo estrangeiros.",
+                    "A hostilidade mútua e constante entre as grandes torcidas esportivas rivais constitui um exemplo claro e inegável da desejada e benéfica ação afirmativa popular focada em promover igualdade material incondicional nos imensos estádios do país.",
+                    "O fato narrado demonstra inequivocamente o grande êxito do moderno processo de transculturação lúdica, onde as diferenças raciais são totalmente apagadas pelo espírito esportivo e substituídas por uma única matriz de congraçamento pacífico.",
+                    "A ofensa racial proferida coletivamente atesta o avanço prático e concreto da inovadora filosofia decolonial nas arquibancadas, desconstruindo hierarquias antigas para instituir definitivamente um ambiente de pleno e total respeito humanitário."
+                ],
+                explicacao: "Massas anônimas torcedoras criam covarde álibi para destilar o preconceito baseando-se no frágil argumento de que insultos são inerentes à identidade lúdica de oposição nos estádios."
+            },
+            {
+                enunciado: "58. A equipe pedagógica de uma escola decide corajosamente reestruturar seu material didático para incluir o conceito de Sankofa (a sabedoria de aprender com o passado para construir o futuro) e outras riquíssimas perspectivas pensadas originalmente no continente africano, indo muito além do tradicional pensamento europeu. Essa valorosa iniciativa curricular demonstra que:",
+                opcoes: [
+                    "O projeto pedagógico aplica admiravelmente os princípios da filosofia afrodiaspórica, promovendo a justa valorização epistêmica de profundos conhecimentos originários que foram historicamente negligenciados e dolorosamente silenciados.",
+                    "A instituição escolar age de forma extremamente etnocêntrica e excludente, pois impõe autoritariamente lendas místicas no exato lugar da comprovada e rigorosa ciência acadêmica ocidental que sempre garantiu o avanço inquestionável do país.",
+                    "A referida mudança no conteúdo programático oficial consolida definitivamente a esperada homogeneização cultural imposta pela moderna globalização financeira, anulando de vez as particulares diferenças regionais das grandes metrópoles.",
+                    "A iniciativa educacional exemplifica o irreversível declínio fatal e estrutural da cultura de massa puramente nacional, comprovando que o antigo sistema não consegue mais controlar com rigor as perigosas manifestações artísticas do exterior."
+                ],
+                explicacao: "Aplicar Sankofa em sala é atitude decolonial firme e real reescrevendo hierarquias do saber, admitindo matrizes ricas ignoradas amplamente pela burocracia ocidental."
+            },
+            {
+                enunciado: "59. Com a repentina, veloz e massiva chegada de imensos cruzeiros marítimos repletos de turistas endinheirados, os pescadores de uma pequena e isolada vila costeira rapidamente abandonam a pesca cooperativa mútua para criar competitivos e agressivos quiosques individuais altamente focados na extração máxima de lucro. Essa abrupta transição comportamental indica claramente que:",
+                opcoes: [
+                    "A transformação acelerada das dinâmicas sociais evidencia um duro processo de aculturação ditada por fortes forças externas capitalistas, alterando irreversivelmente as históricas e solidárias relações de sociabilidade originais da comunidade.",
+                    "A imediata adoção do modelo de concorrência selvagem e individualista garante a preservação intacta da cultura folclórica local intocada, assegurando paradoxalmente a proteção contínua dos antigos e sagrados mitos caiçaras da vila.",
+                    "O surgimento repentino dos empreendimentos turísticos competitivos simboliza o sucesso absoluto da interculturalidade generosa harmoniosa, promovendo trocas totalmente igualitárias e pacíficas entre os nativos e grandes corporações hoteleiras.",
+                    "A mudança drástica nas bases da pesca e da sobrevivência ilustra com total perfeição a imensa força da resistência civilizatória decolonial, que sempre rejeita frontalmente as antigas matrizes colonizadoras para defender ferozmente seu povo."
+                ],
+                explicacao: "Capital massivo exterior aniquila os pequenos pactos sensíveis fraternos locais descaracterizando e destruindo para sempre a rede cooperativa humana do pequeno comércio original marinho sustentável anterior sereno."
+            },
+            {
+                enunciado: "60. Uma tradicional e outrora intimista celebração popular do interior, que por décadas destacou exclusivamente sanfoneiros locais e danças típicas circulares, foi amplamente reformulada por grandes patrocinadores para apresentar quase que exclusivamente imensos palcos eletrônicos com artistas internacionais da música pop e vasto comércio padronizado. Essa total transformação festiva comprova que:",
+                opcoes: [
+                    "O abandono melancólico das originais danças camponesas evidencia a grave atuação homogeneizadora e capitalista da cultura de massa moderna, que descaracteriza festejos populares orgânicos para convertê-los em meros e lucrativos produtos descartáveis.",
+                    "O novo e grandioso formato de festival corrobora a ampla defesa intransigente das tradições folclóricas locais antigas, blindando eficientemente os rituais camponeses contra as agressivas e modernas imposições da padronização tecnológica mercadológica global.",
+                    "A inserção de grandes shows pop massivos demonstra admiravelmente o surgimento de um inédito modelo de autêntica identidade pessoal reflexiva, onde os indivíduos constroem livremente seus novos gostos sonoros sem depender minimamente de pressões alheias.",
+                    "A atual reestruturação completa da festividade tradicional garante a expansão irreversível das justas políticas de ações afirmativas estatais humanitárias, proporcionando gratuitamente entretenimento erudito e de alta complexidade para todas as classes esquecidas."
+                ],
+                explicacao: "Festas comunitárias engolidas por agências financeiras imensas perdem a essência formativa tornando-se apenas mais um parque de diversões cego superficial estressante ruidoso idêntico imposto pela cultura mercadológica pesada faturadora."
+            }
+        ];
+
+        let questaoAtual = 0;
+        let acertos = 0;
+        let primeiraTentativa = true;
+        let timerLeitura; 
+        let indiceCorretoDaQuestaoEmbaralhada = 0;
+
+        const uiElements = {
+            content: document.getElementById('quiz-content'),
+            result: document.getElementById('result-content'),
+            questionText: document.getElementById('question-text'),
+            optionsContainer: document.getElementById('options-container'),
+            progress: document.getElementById('progress'),
+            questionCounter: document.getElementById('question-counter'),
+            scoreCounter: document.getElementById('score-counter'),
+            modal: document.getElementById('feedback-modal'),
+            modalBox: document.getElementById('modal-box'),
+            modalIcon: document.getElementById('modal-icon'),
+            modalTitle: document.getElementById('modal-title'),
+            modalMessage: document.getElementById('modal-message'),
+            modalBtn: document.getElementById('modal-btn'),
+            finalScore: document.getElementById('final-score'),
+            finalMessage: document.getElementById('final-message'),
+            readingTimerBlock: document.getElementById('reading-timer'),
+            timerCountSpan: document.getElementById('timer-count')
+        };
+
+        function iniciarQuiz() {
+            questaoAtual = 0;
+            acertos = 0;
+            document.getElementById('header-info').style.display = 'block';
+            uiElements.content.style.display = 'block';
+            uiElements.result.style.display = 'none';
+            carregarQuestao();
+        }
+
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        function carregarQuestao() {
+            primeiraTentativa = true; 
+            clearInterval(timerLeitura); 
+            
+            const q = questoes[questaoAtual];
+            uiElements.questionText.textContent = q.enunciado;
+            uiElements.optionsContainer.innerHTML = '';
+            
+            const progressoPct = ((questaoAtual) / questoes.length) * 100;
+            uiElements.progress.style.width = `${progressoPct}%`;
+            uiElements.questionCounter.textContent = `Questão ${questaoAtual + 1} de ${questoes.length}`;
+            uiElements.scoreCounter.textContent = `Acertos (1ª tentativa): ${acertos}`;
+
+            let indices = [0, 1, 2, 3];
+            shuffle(indices);
+            indiceCorretoDaQuestaoEmbaralhada = indices.indexOf(0); // O correto é sempre o 0 antes de embaralhar
+            
+            const letrasAlfabeto = ["A) ", "B) ", "C) ", "D) "];
+
+            indices.forEach((indiceAntigo, indexVisual) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.disabled = true; 
+                btn.textContent = letrasAlfabeto[indexVisual] + q.opcoes[indiceAntigo];
+                btn.onclick = () => verificarResposta(indexVisual);
+                uiElements.optionsContainer.appendChild(btn);
+            });
+
+            iniciarTimerLeitura();
+        }
+
+        function iniciarTimerLeitura() {
+            let tempoRestante = TEMPO_LEITURA_SEGUNDOS;
+            uiElements.readingTimerBlock.style.display = 'block';
+            uiElements.timerCountSpan.textContent = tempoRestante;
+
+            timerLeitura = setInterval(() => {
+                tempoRestante--;
+                uiElements.timerCountSpan.textContent = tempoRestante;
+
+                if (tempoRestante <= 0) {
+                    clearInterval(timerLeitura);
+                    uiElements.readingTimerBlock.style.display = 'none'; 
+                    const botoes = document.querySelectorAll('.option-btn');
+                    botoes.forEach(btn => btn.disabled = false);
+                }
+            }, 1000);
+        }
+
+        function verificarResposta(indiceSelecionado) {
+            const q = questoes[questaoAtual];
+            const acertou = (indiceSelecionado === indiceCorretoDaQuestaoEmbaralhada);
+
+            if (acertou) {
+                if (primeiraTentativa) {
+                    acertos++;
+                    uiElements.scoreCounter.textContent = `Acertos (1ª tentativa): ${acertos}`;
+                }
+                mostrarModal(true, q.explicacao);
+            } else {
+                primeiraTentativa = false; 
+                mostrarModal(false, `A resposta correta não é essa. Tente novamente!<br><br><strong>Dica Filosófica:</strong> ${q.explicacao}`);
+            }
+        }
+
+        function mostrarModal(acertou, mensagem) {
+            uiElements.modal.style.display = 'flex';
+            if (acertou) {
+                uiElements.modalBox.className = 'modal-content correct-theme';
+                uiElements.modalIcon.textContent = '✓';
+                uiElements.modalTitle.textContent = 'Você Acertou!';
+                uiElements.modalMessage.innerHTML = mensagem;
+                uiElements.modalBtn.disabled = false;
+                uiElements.modalBtn.textContent = "Próxima Questão";
+                uiElements.modalBtn.onclick = avancarQuestao;
+            } else {
+                uiElements.modalBox.className = 'modal-content wrong-theme';
+                uiElements.modalIcon.textContent = '✗';
+                uiElements.modalTitle.textContent = 'Resposta Incorreta';
+                uiElements.modalMessage.innerHTML = mensagem;
+                uiElements.modalBtn.disabled = false;
+                uiElements.modalBtn.textContent = "Tentar Novamente";
+                uiElements.modalBtn.onclick = tentarNovamente;
+            }
+        }
+
+        function tentarNovamente() {
+            uiElements.modal.style.display = 'none';
+        }
+
+        function avancarQuestao() {
+            uiElements.modal.style.display = 'none';
+            questaoAtual++;
+            if (questaoAtual < questoes.length) {
+                carregarQuestao();
+            } else {
+                mostrarResultado();
+            }
+        }
+
+        function mostrarResultado() {
+            document.getElementById('header-info').style.display = 'none';
+            uiElements.content.style.display = 'none';
+            uiElements.result.style.display = 'block';
+            
+            const porcentagem = Math.round((acertos / questoes.length) * 100);
+            uiElements.finalScore.textContent = `${porcentagem}%`;
+            
+            let mensagem = "";
+            if (porcentagem >= 80) mensagem = "Excelente! Você demonstrou foco e leitura crítica acertando a maior parte das questões de primeira.";
+            else if (porcentagem >= 50) mensagem = "Bom trabalho! Continue exercitando sua racionalidade e pensamento ético sobre as ideias filosóficas.";
+            else mensagem = "Não se preocupe com os erros! O mais importante foi ler as explicações e exercitar a reflexão sistemática.";
+            
+            uiElements.finalMessage.textContent = mensagem;
+        }
+
+        window.onload = iniciarQuiz;
+    </script>
+</body>
+</html>
