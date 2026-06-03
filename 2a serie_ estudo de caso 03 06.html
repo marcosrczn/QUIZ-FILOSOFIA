@@ -1,0 +1,371 @@
+html_content = """<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ágora Digital | Avaliação</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --bg-color: #ecf0f1;
+            --text-color: #333333;
+            --success-color: #2ecc71;
+            --warning-color: #e74c3c;
+        }
+
+        /* Desabilita seleção de texto para dificultar cópia */
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            user-select: none; /* Anti-cópia */
+            -webkit-user-select: none;
+        }
+
+        input, textarea {
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
+        .aviso-prova {
+            background-color: var(--warning-color);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(231, 76, 60, 0.3);
+            animation: piscar 2s infinite;
+        }
+
+        @keyframes piscar {
+            0% { opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 2.5em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        header h2 {
+            color: var(--accent-color);
+            margin: 5px 0 0 0;
+            font-weight: 400;
+        }
+
+        .info-box {
+            background-color: #f8f9fa;
+            border-left: 5px solid var(--accent-color);
+            padding: 15px 20px;
+            border-radius: 0 5px 5px 0;
+            margin-bottom: 30px;
+        }
+
+        .conteudo-justificado {
+            text-align: justify;
+        }
+
+        .estudo-caso {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+        }
+
+        .estudo-caso h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 10px;
+        }
+
+        .grupo-campo {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+            text-align: justify;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccd1d9;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        button.btn-enviar {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background-color 0.3s;
+        }
+
+        button.btn-enviar:hover:not(:disabled) {
+            background-color: var(--secondary-color);
+        }
+
+        button.btn-enviar:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        /* --- ESTILOS DO POP-UP --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .circulo-sucesso {
+            width: 80px; height: 80px;
+            background-color: rgba(46, 204, 113, 0.2);
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            margin: 0 auto 20px auto;
+        }
+
+        .circulo-sucesso svg {
+            width: 40px; height: 40px;
+            fill: var(--success-color);
+        }
+
+        .modal-content h3 {
+            color: var(--primary-color);
+            margin: 0 0 10px 0;
+            font-size: 1.5em;
+        }
+
+        .modal-content p {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .btn-fechar {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .btn-fechar:hover { background-color: #27ae60; }
+
+        @media (max-width: 600px) {
+            .container { padding: 20px; }
+            header h1 { font-size: 2em; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="aviso-prova">⚠️ MODO AVALIAÇÃO: Não recarregue a página nem troque de aba. O sistema monitora sua atividade.</div>
+
+    <div class="container">
+        <header>
+            <h1>Ágora Digital</h1>
+            <h2>Prof. Marcos Rogerio Cezana</h2>
+        </header>
+
+        <section class="info-box">
+            <p><strong>Objeto de Conhecimento:</strong> Ser humano: sensibilidade, existência e temporalidade (Antropologia filosófica, Dualismo, Indivíduo e ser social, Natureza x Condição humana).</p>
+            <p><strong>Habilidade:</strong> (EM13CHS101 / EM13CHS102).</p>
+            <p><strong>Objetivo de Aprendizagem:</strong> Analisar as tensões entre tradição e liberdade de escolha, refletindo criticamente sobre as dimensões física, social e intelectual da existência humana.</p>
+        </section>
+
+        <section class="estudo-caso conteudo-justificado">
+            <h3>Estudo de Caso: As Raízes e o Horizonte de Lucas</h3>
+            <p><strong>O Cenário:</strong> Lucas tem 17 anos e vive em uma região agrícola onde sua família cultiva café há três gerações. Desde pequeno, ele participa do trabalho na lavoura, lidando com o cansaço físico do campo, o sol forte e as incertezas do clima. Sua comunidade tem regras sociais rígidas e a expectativa de todos é que Lucas herde as terras e continue o ofício da família.</p>
+            <p>No entanto, ao ter contato com as aulas de Filosofia e História na escola da cidade, Lucas descobre uma paixão pela pesquisa e pelo ensino. Ele se vê diante de uma angústia profunda: seu corpo sente o peso da tradição e do trabalho manual, mas sua mente projeta um futuro diferente, estudando em uma universidade distante.</p>
+            <p>Ele ama sua comunidade, mas sente que ficar significaria sufocar sua própria identidade, criando uma tensão entre o seu papel social imposto pela realidade local e os seus sonhos enquanto indivíduo.</p>
+        </section>
+
+        <section class="formulario-questoes">
+            <form id="formEstudoCaso" action="https://script.google.com/macros/s/AKfycbyNFfZMNWzVQeSuRzppzgzgVAlEmg_EI1P1ddXxczJkHCs0N7u3bTIhN1VMY88_WJwR/exec" method="POST" target="hidden_iframe">
+                
+                <div class="grupo-campo">
+                    <label for="nome">Nome Completo do Estudante:</label>
+                    <input type="text" id="nome" name="nomeAluno" required placeholder="Digite seu nome completo" autocomplete="off">
+                </div>
+
+                <div class="grupo-campo">
+                    <label for="q1">1. O conceito de ser humano - antropologia filosófica: Considerando a antropologia filosófica, o ser humano costuma ser definido tanto pela sua capacidade de transformar a natureza pelo trabalho (homo faber) quanto pela sua capacidade racional de criar projetos de vida (homo sapiens). De que maneira o conflito vivenciado por Lucas ilustra a complexidade dessa definição? Explique se a identidade dele está restrita à herança do trabalho no campo ou se vai além dela.</label>
+                    <textarea id="q1" name="resposta_1" rows="4" required placeholder="Sua resposta aqui..." onpaste="return false;"></textarea>
+                </div>
+
+                <div class="grupo-campo">
+                    <label for="q2">2. Percepção e Dualismo corpo e alma: O texto destaca a dualidade entre a "exigência física do cultivo" e as "aspirações intelectuais" do jovem. Com base na visão filosófica do dualismo entre corpo (matéria/sensibilidade) e alma (mente/razão), analise como o cansaço físico gerado pelo trabalho na lavoura pode entrar em conflito com o desejo de desenvolvimento intelectual de Lucas.</label>
+                    <textarea id="q2" name="resposta_2" rows="4" required placeholder="Sua resposta aqui..." onpaste="return false;"></textarea>
+                </div>
+
+                <div class="grupo-campo">
+                    <label for="q3">3. O homem como indivíduo e o homem como ser social: Lucas enfrenta um choque direto entre os seus sonhos pessoais (estudar na universidade) e as expectativas de sua comunidade e família (herdar as terras e manter a tradição). Diante dessa tensão, disserte sobre os limites da influência da sociedade sobre o indivíduo: até que ponto as tradições de uma comunidade devem determinar o projeto de vida de um jovem?</label>
+                    <textarea id="q3" name="resposta_3" rows="4" required placeholder="Sua resposta aqui..." onpaste="return false;"></textarea>
+                </div>
+
+                <div class="grupo-campo">
+                    <label for="q4">4. Natureza humana X Condição Humana: Muitas vezes, a comunidade de Lucas encara o fato de ele ter nascido no campo como um "destino natural" e imutável. Utilizando a distinção filosófica entre natureza humana e condição humana, explique por que a situação de Lucas como trabalhador rural não é uma determinação biológica intransponível, mas sim um contexto histórico e social que ele pode alterar.</label>
+                    <textarea id="q4" name="resposta_4" rows="4" required placeholder="Sua resposta aqui..." onpaste="return false;"></textarea>
+                </div>
+
+                <div class="grupo-campo">
+                    <label for="q5">5. Síntese Crítica e Tomada de Decisão: Se Lucas finalmente decidir abandonar a lavoura para se tornar professor, ele estará negando suas raízes e sua cultura, ou estará exercendo a sua liberdade para construir uma nova forma de viver? Desenvolva um argumento filosófico justificando a sua resposta.</label>
+                    <textarea id="q5" name="resposta_5" rows="4" required placeholder="Sua resposta aqui..." onpaste="return false;"></textarea>
+                </div>
+
+                <button type="submit" class="btn-enviar" id="btnSubmit">Enviar Respostas</button>
+            </form>
+        </section>
+    </div>
+
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+
+    <div class="modal-overlay" id="modalSucesso">
+        <div class="modal-content">
+            <div class="circulo-sucesso">
+                <svg viewBox="0 0 24 24">
+                    <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+                </svg>
+            </div>
+            <h3>Enviado com Sucesso!</h3>
+            <p>Sua atividade foi registrada no sistema. Você já pode fechar esta página de forma segura.</p>
+            <button class="btn-fechar" onclick="fecharModal()">Compreendido</button>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('formEstudoCaso');
+        const btnSubmit = document.getElementById('btnSubmit');
+        const modal = document.getElementById('modalSucesso');
+        const iframe = document.getElementById('hidden_iframe');
+        let envioRealizado = false; 
+        let formulárioEnviado = false;
+
+        // Anti-Cópia: Bloqueia clique direito
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // Anti-Cola: Alerta de mudança de aba
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden && !envioRealizado) {
+                alert("⚠️ ALERTA DE SEGURANÇA:\\nO sistema Ágora Digital detectou que você mudou de aba ou minimizou a tela. Consultas externas não são permitidas.");
+            }
+        });
+
+        // Anti-Saída: Alerta antes de fechar a página acidentalmente
+        window.addEventListener('beforeunload', function (e) {
+            if (!envioRealizado) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+        // No momento em que o formulário é enviado para o Iframe
+        form.addEventListener('submit', function() {
+            formulárioEnviado = true;
+            btnSubmit.innerHTML = 'Enviando ao servidor...';
+            btnSubmit.disabled = true;
+        });
+
+        // Quando o Iframe terminar de carregar a resposta do Google
+        iframe.addEventListener('load', function() {
+            if (formulárioEnviado) {
+                envioRealizado = true; // Libera o aluno para fechar a página
+                modal.classList.add('active'); // Abre o Pop-up
+                form.reset(); // Limpa as respostas da tela
+                btnSubmit.innerHTML = 'Respostas Enviadas';
+            }
+        });
+
+        // Função do botão de fechar o pop-up
+        function fecharModal() {
+            modal.classList.remove('active');
+        }
+    </script>
+</body>
+</html>
+"""
+
+with open('/mnt/data/agora_digital_estudo_caso_lucas_v2.html', 'w', encoding='utf-8') as f:
+    f.write(html_content)
+    
+print("Arquivo gerado!")
