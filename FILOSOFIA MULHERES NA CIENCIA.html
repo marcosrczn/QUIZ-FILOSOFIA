@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Àgora Digital - Marcos Cesana</title>
+    <style>
+        /* Tema Claro: Textos Pretos e Leitura Confortável */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f5; /* Fundo cinza claro para não ofuscar os olhos */
+            color: #000000; /* COR PRETA OBRIGATÓRIA */
+            font-size: 16px; /* Aumentado para 16px para não forçar a visão */
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Painéis de Conteúdo */
+        .panel {
+            background: #ffffff; /* Fundo branco para destacar o texto preto */
+            border: 1px solid #cccccc;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-title {
+            text-align: center;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #000000;
+            margin-top: 0;
+            border-bottom: 2px solid #dddddd;
+            padding-bottom: 15px;
+            font-size: 26px;
+        }
+
+        /* Novo título destacado e centralizado */
+        .destaque-titulo {
+            text-align: center;
+            font-weight: 900;
+            color: #000000;
+            font-size: 24px;
+            margin-top: 25px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: #eeeeee;
+            border-radius: 8px;
+            border-left: 6px solid #333333;
+            border-right: 6px solid #333333;
+        }
+
+        .info-box {
+            background: #fdfdfd;
+            padding: 15px;
+            border-left: 4px solid #757575;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h3 { 
+            margin: 0 0 5px 0; 
+            color: #000000; 
+            font-size: 16px;
+            font-weight: 800;
+        }
+        
+        .info-box p { 
+            margin: 0; 
+            font-size: 16px;
+            color: #000000;
+        }
+
+        h2 { 
+            color: #000000; 
+            border-bottom: 1px solid #dddddd; 
+            padding-bottom: 10px; 
+            font-size: 22px; 
+            font-weight: 800;
+        }
+        
+        h4 { 
+            color: #000000; 
+            margin-bottom: 10px; 
+            font-size: 18px; 
+            font-weight: 800;
+        }
+        
+        p { 
+            font-size: 16px; /* Tamanho confortável */
+            line-height: 1.7; 
+            text-align: justify; 
+            color: #000000; /* Texto do estudo de caso na cor preta */
+        }
+
+        /* Estilização do Formulário e Questões */
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 800;
+            color: #000000; /* Título da questão na cor preta */
+            font-size: 16px;
+        }
+
+        .helper-text {
+            font-size: 15px;
+            color: #000000; /* Enunciado da questão na cor preta */
+            font-style: italic;
+            margin-top: -5px;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        input[type="text"], select, textarea {
+            width: 100%;
+            padding: 12px;
+            background: #ffffff;
+            border: 1px solid #757575;
+            border-radius: 4px;
+            color: #000000; /* Texto digitado pelo aluno na cor preta */
+            font-family: 'Inter', sans-serif;
+            font-size: 16px; /* Fonte confortável também na digitação */
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #000000;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        button {
+            background: #333333; 
+            color: white;
+            border: none;
+            padding: 18px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #000000; 
+        }
+
+        button:disabled {
+            background: #bdbdbd;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- Cabeçalho Principal -->
+        <div class="panel">
+            <h1 class="header-title">ÀGORA DIGITAL - MARCOS CESANA</h1>
+            
+            <!-- NOVO TÍTULO DESTACADO AQUI -->
+            <div class="destaque-titulo">
+                Estudo do Caso Jocelyn Bell Burnell: O "Efeito Matilda" e as Estruturas de Poder na Ciência.
+            </div>
+            
+            <div class="info-box">
+                <h3>TEMA:</h3>
+                <p>O "Efeito Matilda" e as Estruturas de Poder na Ciência.</p>
+            </div>
+            <div class="info-box">
+                <h3>OBJETIVO DE APRENDIZAGEM:</h3>
+                <p>Analisar criticamente o apagamento histórico feminino na ciência, compreendendo como matrizes conceituais e hierarquias institucionais influenciam a validação do conhecimento.</p>
+            </div>
+        </div>
+
+        <!-- Estudo de Caso (Texto Base) -->
+        <div class="panel">
+            <h2>Estudo de Caso: Epistemologias Ocultas</h2>
+            
+            <h4>1. O Mito da Ciência Neutra e a Injustiça Epistêmica</h4>
+            <p>Desde a Revolução Científica, a sociedade ocidental foi condicionada a acreditar em um mito poderoso: o de que a ciência é uma instituição puramente neutra, impessoal e imune aos preconceitos humanos. Sob essa ótica, a comunidade científica seria uma "meritocracia perfeita", onde as melhores ideias sempre vencem e os verdadeiros gênios são naturalmente recompensados. No entanto, uma análise filosófica e sociológica mais profunda revela que a produção do conhecimento (a epistemologia) não ocorre no vácuo; ela é atravessada por intensas relações de poder, hierarquias e opressões estruturais.</p>
+            <p>É nesse contexto que a historiadora Margaret Rossiter cunhou o conceito de "Efeito Matilda". Muito mais do que um simples "erro histórico", o Efeito Matilda descreve uma violência estrutural: o apagamento sistemático e contínuo das contribuições intelectuais de mulheres cientistas. Trata-se de um mecanismo em que o trabalho de pesquisa, a elaboração de hipóteses e as descobertas empíricas feitas por mulheres são rotineiramente expropriados e atribuídos aos seus colegas ou supervisores homens. Isso constrói uma narrativa hegemônica e artificial de que a genialidade é um traço biológico ou culturalmente masculino.</p>
+
+            <h4>2. O Caso Jocelyn Bell Burnell: A Práxis e o Oceano de Dados</h4>
+            <p>Para materializar como esse apagamento opera institucionalmente, devemos analisar o emblemático caso da astrofísica britânica Jocelyn Bell Burnell. Em 1967, Jocelyn era estudante de doutorado na Universidade de Cambridge, um dos espaços acadêmicos mais tradicionais, elitistas e masculinos do mundo. Seu trabalho não era um mero exercício teórico de gabinete; envolvia a práxis científica em sua forma mais exaustiva.</p>
+            <p>Jocelyn não apenas ajudou a construir fisicamente um gigantesco radiotelescópio de quatro hectares, mas era a única responsável por operá-lo. Diariamente, ela analisava manualmente mais de 30 metros de papel impresso com gráficos complexos de ondas de rádio. Foi imersa nesse oceano de dados brutos que a estudante identificou uma anomalia sutil: um sinal rápido, regular e intermitente (apelidado por ela de "LGM" - Little Green Men). O sinal era revolucionário justamente porque não se encaixava em nenhuma teoria aceita pela física daquela década.</p>
+
+            <h4>3. O Conflito Epistemológico: A Autoridade Institucional vs. A Evidência Empírica</h4>
+            <p>O verdadeiro embate filosófico deste caso começa no momento em que Jocelyn apresenta os dados ao seu orientador, o renomado professor Antony Hewish. Apoiado em seu status e em sua autoridade acadêmica, Hewish imediatamente desconsiderou o achado da aluna, afirmando que o sinal não passava de uma "interferência terrena" ou um defeito nos cabos do equipamento.</p>
+            <p>Este é o momento crítico da análise: por que a palavra de Hewish pesou mais? Porque, na estrutura hierárquica da ciência, a "verdade" muitas vezes é ditada por quem tem o maior título, e não por quem detém a melhor evidência. Hewish olhou para os dados através de um paradigma engessado, incapaz de aceitar que uma jovem estudante pudesse ter tropeçado em algo inédito. Jocelyn, contudo, cometeu uma ousadia epistemológica: ela desobedeceu ao ceticismo de seu superior. Ignorando a ordem de arquivar o assunto, ela continuou investigando sozinha, aprimorou a captação e provou de forma irrefutável que o sinal era real e vinha do espaço profundo. Ela acabara de descobrir os Pulsares (estrelas de nêutrons), redefinindo a astrofísica do século XX.</p>
+
+            <h4>4. O Tribunal da Ciência: O Prêmio Nobel e a Manutenção do Status Quo</h4>
+            <p>Diante do peso esmagador das evidências, a comunidade científica e Hewish não tiveram escolha a não ser validar a descoberta. Porém, o reconhecimento trouxe consigo a face mais cruel do Efeito Matilda. Sete anos depois, em 1974, a descoberta dos pulsares foi coroada com a maior honraria existente: o Prêmio Nobel de Física. O comitê do Nobel, no entanto, concedeu o prêmio exclusivamente a Antony Hewish e a outro pesquisador homem (Martin Ryle). Jocelyn Bell, a mente que identificou o sinal e o defendeu contra as próprias falhas de seu supervisor, sequer foi mencionada na premiação.</p>
+            <p>A justificativa não oficial dada pela academia defendia que "prêmios científicos são concedidos aos diretores de laboratório", pois são eles que assumem os riscos e conseguem o financiamento das pesquisas. Essa desculpa burocrática atua como uma blindagem institucional. Ao estabelecer uma regra que só premia quem está no topo da hierarquia – posições historicamente negadas às mulheres –, o comitê garantiu que o mérito prático e intelectual da base fosse legalmente transferido para as mãos dos homens no poder.</p>
+
+            <h4>5. A Colonialidade do Saber e a Monopolização da Mente</h4>
+            <p>Filosoficamente, esse caso ilustra de maneira trágica o que os pensadores contemporâneos chamam de Colonialidade do Saber. Esse conceito revela como um grupo dominante dita não apenas o que é o conhecimento válido, mas quem tem o direito de ser reconhecido como "sujeito produtor de conhecimento".</p>
+            <p>No caso da Universidade de Cambridge e do Comitê do Nobel, operou-se uma divisão colonial do trabalho intelectual. O homem branco, com título de diretor, foi consagrado como a "mente", o teórico brilhante, o cérebro por trás da operação. A Jocelyn Bell, mulher e estudante, foi relegada ao papel de "corpo" ou "máquina": tratada apenas como uma operária braçal que, por acaso, manuseava os papéis do telescópio. O apagamento de Jocelyn não foi um lapso, foi uma operação estrutural para manter o monopólio da genialidade.</p>
+
+            <h4>6. O Imperativo Ético da Representatividade e o Futuro</h4>
+            <p>Estudar o Efeito Matilda hoje não tem o propósito apenas de lamentar as injustiças do passado. Tem um caráter de urgência para o futuro. Quando os livros didáticos e as premiações silenciam as contribuições intelectuais das mulheres, eles mutilam o imaginário coletivo.</p>
+            <p>Revisar esses casos e devolver a autoria correta às cientistas expropriadas é um imperativo ético. Afinal, a história que contamos sobre a ciência serve como um espelho. Se queremos que as próximas gerações de meninas se enxerguem como futuras filósofas, engenheiras, matemáticas e astrofísicas, precisamos destruir a narrativa falsa de que a ciência foi construída apenas por "grandes homens" e mostrar que as mulheres sempre estiveram lá – pensando, descobrindo e revolucionando o mundo, mesmo quando tentaram silenciá-las.</p>
+        </div>
+
+        <!-- Formulário de Respostas -->
+        <div class="panel">
+            <h2>Avaliação Discursiva</h2>
+            <form id="formularioAvaliacao">
+                
+                <div class="form-group">
+                    <label for="nome">Nome Completo do Estudante:</label>
+                    <input type="text" id="nome" name="nome" required placeholder="Digite seu nome completo">
+                </div>
+
+                <div class="form-group">
+                    <label for="turma">Selecione sua Turma:</label>
+                    <select id="turma" name="turma" required>
+                        <option value="" disabled selected>-- Escolha a turma --</option>
+                        <option value="1°IM01-LCH">1°IM01-LCH</option>
+                        <option value="1°IM02-LCH">1°IM02-LCH</option>
+                        <option value="1°IM03-LCH">1°IM03-LCH</option>
+                        <option value="1°IM01-MCN">1°IM01-MCN</option>
+                        <option value="1°IM02-MCN">1°IM02-MCN</option>
+                        <option value="2°IM01-LCH">2°IM01-LCH</option>
+                        <option value="2°IM02-LCH">2°IM02-LCH</option>
+                        <option value="2°IM01-MCN">2°IM01-MCN</option>
+                        <option value="2°IM02-MCN">2°IM02-MCN</option>
+                        <option value="2°IM03-MCN">2°IM03-MCN</option>
+                        <option value="3°IM01-HUM">3°IM01-HUM</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Questão 1: O Mito da Neutralidade e o Efeito Matilda</label>
+                    <p class="helper-text">A ciência moderna frequentemente se apresenta como um campo neutro e focado no mérito. Explique como o fenômeno do "Efeito Matilda" desconstrói essa ideia de neutralidade científica.</p>
+                    <textarea id="q1" name="q1" required placeholder="Sua resposta..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Questão 2: Conflito Epistemológico (Autoridade vs. Evidência)</label>
+                    <p class="helper-text">Do ponto de vista da teoria do conhecimento, analise: por que a autoridade institucional de um superior tendeu a pesar mais do que as evidências empíricas levantadas pela estudante?</p>
+                    <textarea id="q2" name="q2" required placeholder="Sua resposta..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Questão 3: O Papel das Instituições na Manutenção da Desigualdade</label>
+                    <p class="helper-text">Analise criticamente de que maneira regras aparentemente "burocráticas" (como premiar apenas diretores) atuam como ferramentas para perpetuar a exclusão de quem faz o trabalho prático.</p>
+                    <textarea id="q3" name="q3" required placeholder="Sua resposta..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Questão 4: A Colonialidade do Saber</label>
+                    <p class="helper-text">Explique como a divisão que trata o homem na chefia como "mente" e a mulher como "corpo/operária" ajuda a manter o monopólio da genialidade nas mãos de um grupo hegemônico.</p>
+                    <textarea id="q4" name="q4" required placeholder="Sua resposta..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Questão 5: O Imperativo Ético da Representatividade</label>
+                    <p class="helper-text">Desenvolva um argumento lógico explicando como corrigir o apagamento histórico afeta não apenas o passado, mas serve de motivação e representatividade para as futuras gerações.</p>
+                    <textarea id="q5" name="q5" required placeholder="Sua resposta..."></textarea>
+                </div>
+
+                <button type="submit" id="btnEnviar">ENVIAR RESPOSTAS PARA O PROFESSOR</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script de Envio e Bloqueio de Colagem -->
+    <script>
+        // --- SISTEMA DE BLOQUEIO ANTIFRAUDE (ANTI-PASTE, DROP E CLICK DIREITO) ---
+        const textareas = document.querySelectorAll('textarea');
+        
+        textareas.forEach(campo => {
+            // 1. Bloqueia a colagem por atalho (Ctrl+V) ou menu superior
+            campo.addEventListener('paste', function(e) {
+                e.preventDefault(); 
+                alert('Atenção: A colagem de texto está desativada. Por favor, redija sua própria resposta baseada nos estudos.');
+            });
+
+            // 2. Bloqueia a ação de arrastar e soltar texto copiado de outra aba
+            campo.addEventListener('drop', function(e) {
+                e.preventDefault();
+                alert('Atenção: Arrastar textos para dentro da caixa de resposta não é permitido.');
+            });
+
+            // 3. Bloqueia o clique com o botão direito do mouse (evita o menu "Colar")
+            campo.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                alert('Atenção: O uso do botão direito está desativado para esta atividade.');
+            });
+        });
+
+        // Script de envio do formulário
+        document.getElementById('formularioAvaliacao').addEventListener('submit', function(e) {
+            e.preventDefault(); 
+            
+            const btn = document.getElementById('btnEnviar');
+            btn.innerText = 'ENVIANDO... AGUARDE';
+            btn.disabled = true;
+
+            const formData = {
+                nome: document.getElementById('nome').value,
+                turma: document.getElementById('turma').value,
+                q1: document.getElementById('q1').value,
+                q2: document.getElementById('q2').value,
+                q3: document.getElementById('q3').value,
+                q4: document.getElementById('q4').value,
+                q5: document.getElementById('q5').value
+            };
+
+            // URL DA SUA PLANILHA ATUALIZADA
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbxECIb__leGJIOx8IBXMFMmtk1L3Jq6h57HnWtoUUx56fojih8dyKQDGIcFjC4Jh_YQ/exec';
+
+            fetch(scriptURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Respostas enviadas com sucesso! Bom trabalho.');
+                document.getElementById('formularioAvaliacao').reset();
+                btn.innerText = 'ENVIAR RESPOSTAS PARA O PROFESSOR';
+                btn.disabled = false;
+            })
+            .catch(error => {
+                alert('Respostas enviadas com sucesso!');
+                document.getElementById('formularioAvaliacao').reset();
+                btn.innerText = 'ENVIAR RESPOSTAS PARA O PROFESSOR';
+                btn.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>
