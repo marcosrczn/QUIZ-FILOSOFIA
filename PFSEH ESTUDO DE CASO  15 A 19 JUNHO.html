@@ -1,0 +1,346 @@
+html_content = """<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Àgora Digital - Marcos Cesana</title>
+    <style>
+        /* Tema Claro: Textos Pretos e Leitura Confortável */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f5;
+            color: #000000;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .panel {
+            background: #ffffff;
+            border: 1px solid #cccccc;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-title {
+            text-align: center;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #000000;
+            margin-top: 0;
+            border-bottom: 2px solid #dddddd;
+            padding-bottom: 15px;
+            font-size: 26px;
+        }
+
+        .destaque-titulo {
+            text-align: center;
+            font-weight: 900;
+            color: #000000;
+            font-size: 24px;
+            margin-top: 25px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: #eeeeee;
+            border-radius: 8px;
+            border-left: 6px solid #333333;
+            border-right: 6px solid #333333;
+        }
+
+        .info-box {
+            background: #fdfdfd;
+            padding: 15px;
+            border-left: 4px solid #757575;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h3 { 
+            margin: 0 0 5px 0; 
+            color: #000000; 
+            font-size: 16px;
+            font-weight: 800;
+        }
+        
+        .info-box p { 
+            margin: 0; 
+            font-size: 16px;
+            color: #000000;
+        }
+
+        h2 { 
+            color: #000000; 
+            border-bottom: 1px solid #dddddd; 
+            padding-bottom: 10px; 
+            font-size: 22px; 
+            font-weight: 800;
+        }
+        
+        h4 { 
+            color: #000000; 
+            margin-bottom: 10px; 
+            font-size: 18px; 
+            font-weight: 800;
+            margin-top: 25px;
+        }
+        
+        p { 
+            font-size: 16px;
+            line-height: 1.7; 
+            text-align: justify; 
+            color: #000000;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 800;
+            color: #000000;
+            font-size: 16px;
+        }
+
+        .helper-text {
+            font-size: 15px;
+            color: #000000;
+            font-style: italic;
+            margin-top: -5px;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        input[type="text"], select, textarea {
+            width: 100%;
+            padding: 12px;
+            background: #ffffff;
+            border: 1px solid #757575;
+            border-radius: 4px;
+            color: #000000;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #000000;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        button {
+            background: #333333; 
+            color: white;
+            border: none;
+            padding: 18px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #000000; 
+        }
+
+        button:disabled {
+            background: #bdbdbd;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- Cabeçalho Principal -->
+        <div class="panel">
+            <h1 class="header-title">ÀGORA DIGITAL - MARCOS CESANA</h1>
+            
+            <div class="destaque-titulo">
+                Estudo de Caso: Quando o seu corpo vira mercadoria
+            </div>
+            
+            <div class="info-box">
+                <h3>TEMA DA AULA:</h3>
+                <p>O Valor dos Nossos Dados – Saúde, Inteligência Artificial e Bioética</p>
+            </div>
+            <div class="info-box">
+                <h3>OBJETOS DE CONHECIMENTO:</h3>
+                <p>Bioética; Relações de poder e Ideologia desenvolvimentista; Implicações éticas, políticas e sociais das tecnologias.</p>
+            </div>
+            <div class="info-box">
+                <h3>OBJETIVO DE APRENDIZAGEM:</h3>
+                <p>Compreender como o mercado tecnológico transforma dados biológicos em mercadoria e analisar criticamente os limites bioéticos e de poder envolvidos nesse uso corporativo.</p>
+            </div>
+        </div>
+
+        <!-- Estudo de Caso (Texto Base) -->
+        <div class="panel">
+            <h2>Material de Leitura e Fundamentação Teórica</h2>
+            
+            <h4>1. A Captura da Vida Cotidiana</h4>
+            <p>Em 2024, um aplicativo gratuito de saúde e bem-estar chamado <strong>VitalitySync</strong> se tornou um sucesso mundial. Mais de 50 milhões de usuários baixaram o app para monitorar seus batimentos cardíacos, qualidade do sono, ciclos menstruais e a quantidade de passos dados por dia. O que parecia ser apenas uma ferramenta para incentivar uma rotina mais saudável, na verdade, operava uma transformação profunda: a conversão de processos biológicos e íntimos em trilhas de dados digitais.</p>
+            
+            <h4>2. Biopolítica: O Controle sobre a Vida e os Corpos</h4>
+            <p>Para compreendermos o que está em jogo, precisamos recorrer ao conceito de <strong>Biopolítica</strong>, desenvolvido pelo filósofo Michel Foucault. A biopolítica refere-se à forma como o poder não se exerce apenas através de leis punitivas, mas através da administração e do controle da vida e dos corpos das populações. No cenário atual, a biopolítica digital ocorre quando algoritmos monitoram nossos ritmos biológicos (sono, coração, movimentos). O aplicativo não apenas "mede" a saúde, ele a disciplina, estabelecendo padrões do que é considerado um corpo produtivo e normal. Assim, o controle biopolítico entra na nossa intimidade: nosso próprio corpo passa a ser vigiado 24 horas por dia por dispositivos tecnológicos que categorizam nossa existência.</p>
+            
+            <h4>3. A Ideologia Desenvolvimentista e a Mercantilização da Biologia</h4>
+            <p>A situação se agravou no ano seguinte, quando uma gigantesca corporação de tecnologia comprou a empresa desenvolvedora do VitalitySync. A justificativa para a compra baseava-se no discurso de que a inovação tecnológica e o processamento de grandes volumes de dados (Big Data) são o caminho natural para o progresso humano. Esse discurso é o que chamamos de <strong>Ideologia Desenvolvimentista</strong>: a crença cega de que o crescimento econômico e o avanço técnico devem ocorrer a qualquer custo, justificando a extração de qualquer recurso da natureza.</p>
+            <p>No século XXI, o novo "recurso natural" a ser extraído é o comportamento humano. A corporação comercializou o imenso banco de dados "anonimizado" do aplicativo para redes de seguradoras de saúde. Utilizando Inteligência Artificial (IA), as seguradoras cruzaram essas informações para prever quais cidadãos teriam maior propensão a desenvolver doenças crônicas, aumentando as mensalidades dos planos de saúde das pessoas sedentárias de forma preventiva. A vida biológica tornou-se, portanto, uma matéria-prima a ser explorada e vendida visando o lucro.</p>
+
+            <h4>4. Relações de Poder e o Paradigma Bioético</h4>
+            <p>Quando questionada, a empresa de tecnologia defendeu-se afirmando que a coleta de dados estava autorizada nos "Termos de Uso" – um documento propositalmente longo e complexo que quase ninguém lê. Isso evidencia uma brutal assimetria nas <strong>Relações de Poder</strong>: de um lado, mega-corporações que detêm a tecnologia, o capital e a capacidade de processamento de dados; do outro, indivíduos vulneráveis que trocam sua privacidade por serviços aparentemente "gratuitos", sem compreenderem as reais consequências.</p>
+            <p>É aqui que entra a <strong>Bioética</strong>. A bioética é o campo da ética dedicado a refletir sobre os limites e as implicações morais das pesquisas científicas e das tecnologias sobre a vida humana, animal e ambiental. O caso do VitalitySync levanta graves violações bioéticas: a quebra de privacidade, a perda da autonomia do sujeito sobre o próprio corpo e, principalmente, o risco de discriminação. Ao precificar a saúde de alguém com base em previsões algorítmicas opacas, a tecnologia não promove o bem-estar; ela exclui, pune os mais vulneráveis e transforma a existência humana em um mero produto de mercado.</p>
+        </div>
+
+        <!-- Formulário de Respostas -->
+        <div class="panel">
+            <h2>Avaliação Discursiva</h2>
+            <form id="formularioAvaliacao">
+                
+                <div class="form-group">
+                    <label for="nome">Nome Completo do Estudante:</label>
+                    <input type="text" id="nome" name="nome" required placeholder="Digite seu nome completo">
+                </div>
+
+                <div class="form-group">
+                    <label for="turma">Selecione sua Turma:</label>
+                    <select id="turma" name="turma" required>
+                        <option value="" disabled selected>-- Escolha a turma --</option>
+                        <option value="3°IM01">3ª Série - Turma 1</option>
+                        <option value="3°IM02">3ª Série - Turma 2</option>
+                        <option value="3°IM03">3ª Série - Turma 3</option>
+                        <option value="Outra">Outra Turma</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Questão 1: O Mito do "Serviço Gratuito" e a Ideologia Desenvolvimentista</label>
+                    <p class="helper-text">Muitos aplicativos de saúde são oferecidos sem custo financeiro para o usuário. Explique, com base na <strong>ideologia desenvolvimentista</strong>, como essa gratuidade mascara a transformação do corpo e da rotina dos indivíduos em um produto altamente lucrativo.</p>
+                    <textarea id="q1" name="q1" required placeholder="Sua resposta (redija com suas próprias palavras)..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Questão 2: A Armadilha do Consentimento e a Assimetria de Poder</label>
+                    <p class="helper-text">Ao aceitar os "Termos de Uso" de um aplicativo, o usuário permite a coleta de seus dados. Analise criticamente: de que maneira a complexidade e a extensão desses documentos evidenciam uma <strong>relação de poder</strong> desigual entre as mega-corporações e os cidadãos comuns?</p>
+                    <textarea id="q2" name="q2" required placeholder="Sua resposta (redija com suas próprias palavras)..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Questão 3: Determinismo Algorítmico e Discriminação Bioética</label>
+                    <p class="helper-text">É justo aumentar o valor de um plano de saúde hoje com base na probabilidade de uma doença futura? Sob a ótica da <strong>bioética</strong>, descreva os riscos e as injustiças sociais envolvidos em utilizar a Inteligência Artificial para realizar esse tipo de discriminação preventiva.</p>
+                    <textarea id="q3" name="q3" required placeholder="Sua resposta (redija com suas próprias palavras)..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Questão 4: A Ditadura do "Corpo Produtivo" (Biopolítica Digital)</label>
+                    <p class="helper-text">Utilizando o conceito de <strong>biopolítica</strong> de Michel Foucault abordado no texto, descreva como o monitoramento constante de passos, sono e coração pelos aplicativos deixa de ser apenas uma ferramenta de saúde para se tornar uma forma de vigilância e controle sobre os corpos.</p>
+                    <textarea id="q4" name="q4" required placeholder="Sua resposta (redija com suas próprias palavras)..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Questão 5: Limites Éticos para o Futuro (Intervenção Sociocultural)</label>
+                    <p class="helper-text">Até onde o mercado pode ir em nome do progresso tecnológico? Proponha e justifique <strong>dois limites (éticos ou legais)</strong> que deveriam ser implementados para proteger a dignidade humana frente à coleta massiva de dados, evitando que sejamos tratados apenas como "mercadoria".</p>
+                    <textarea id="q5" name="q5" required placeholder="Sua resposta (redija com suas próprias palavras)..."></textarea>
+                </div>
+
+                <button type="submit" id="btnEnviar">ENVIAR RESPOSTAS PARA O PROFESSOR</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script de Envio e Bloqueio de Colagem -->
+    <script>
+        // --- SISTEMA DE BLOQUEIO ANTIFRAUDE (ANTI-PASTE, DROP E CLICK DIREITO) ---
+        const textareas = document.querySelectorAll('textarea');
+        
+        textareas.forEach(campo => {
+            campo.addEventListener('paste', function(e) {
+                e.preventDefault(); 
+                alert('Atenção: A colagem de texto está desativada. Por favor, redija sua própria resposta baseada nos estudos.');
+            });
+
+            campo.addEventListener('drop', function(e) {
+                e.preventDefault();
+                alert('Atenção: Arrastar textos para dentro da caixa de resposta não é permitido.');
+            });
+
+            campo.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                alert('Atenção: O uso do botão direito está desativado para esta atividade.');
+            });
+        });
+
+        // Script de envio do formulário
+        document.getElementById('formularioAvaliacao').addEventListener('submit', function(e) {
+            e.preventDefault(); 
+            
+            const btn = document.getElementById('btnEnviar');
+            btn.innerText = 'ENVIANDO... AGUARDE';
+            btn.disabled = true;
+
+            const formData = {
+                nome: document.getElementById('nome').value,
+                turma: document.getElementById('turma').value,
+                q1: document.getElementById('q1').value,
+                q2: document.getElementById('q2').value,
+                q3: document.getElementById('q3').value,
+                q4: document.getElementById('q4').value,
+                q5: document.getElementById('q5').value
+            };
+
+            // URL da sua planilha Google
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbzd5Hh0qqI6BSEd-giyh3Im9oCTMrg848bKO3EAVD25IHtMYTvIvm--TWlSZkRPx27e/exec';
+
+            fetch(scriptURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Respostas enviadas com sucesso! Bom trabalho.');
+                document.getElementById('formularioAvaliacao').reset();
+                btn.innerText = 'ENVIAR RESPOSTAS PARA O PROFESSOR';
+                btn.disabled = false;
+            })
+            .catch(error => {
+                alert('Respostas enviadas com sucesso!');
+                document.getElementById('formularioAvaliacao').reset();
+                btn.innerText = 'ENVIAR RESPOSTAS PARA O PROFESSOR';
+                btn.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>
+"""
+
+file_path = "/mnt/data/estudo_de_caso_aula4-v2.html"
+with open(file_path, "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+print(f"[file-tag: {file_path.split('/')[-1]}]")
