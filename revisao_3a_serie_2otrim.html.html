@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoLógica - Quiz Interativo de Filosofia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+        body { font-family: 'Poppins', sans-serif; }
+        .bg-nano-banana { background-color: #FACC15; } 
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .transition-all { transition: all 0.3s ease; }
+        .hidden-screen { display: none !important; }
+        .option-btn { border-bottom: 4px solid rgba(0,0,0,0.2); }
+        .option-btn:active { transform: translateY(4px); border-bottom: 0px; }
+        
+        /* Oculta a seta padrão do details/summary */
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+
+    <!-- MODAL DE FEEDBACK (POP-UP ACERTO/ERRO) -->
+    <div id="feedback-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 hidden-screen opacity-0 transition-opacity duration-300">
+        <div id="feedback-card" class="px-16 py-12 rounded-3xl shadow-2xl text-center transform scale-50 transition-transform duration-300 flex flex-col items-center justify-center">
+            <div id="feedback-icon" class="text-7xl mb-6"></div>
+            <h2 id="feedback-title" class="text-5xl font-extrabold mb-2 tracking-wide"></h2>
+            <p id="feedback-pts" class="text-2xl font-bold opacity-90"></p>
+        </div>
+    </div>
+
+    <!-- MODAL DE AJUDA (RELEMBRAR CONCEITOS) -->
+    <div id="help-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 hidden-screen opacity-0 transition-opacity duration-300 p-4">
+        <div id="help-card" class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col transform scale-95 transition-transform duration-300 overflow-hidden border-4 border-nano-banana">
+            <div class="p-6 bg-nano-banana flex justify-between items-center shadow-md z-10">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                    <span class="mr-3 text-3xl">💡</span> Relembrar Conceitos
+                </h2>
+                <button onclick="hideHelpModal()" class="text-gray-900 hover:text-red-600 font-extrabold text-4xl leading-none transition-colors">&times;</button>
+            </div>
+            <!-- Conteúdo da Ajuda (Mesmo da Tela Inicial) -->
+            <div class="p-6 overflow-y-auto flex-1 bg-gray-50">
+                <div class="space-y-4" id="help-accordion-container">
+                    <!-- O conteúdo será injetado via JS espelhando a tela inicial para facilitar a manutenção -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA INICIAL (CONCEITOS E BOTÃO INICIAR) -->
+    <div id="home-screen" class="flex-1 flex flex-col">
+        <header class="bg-nano-banana text-gray-900 py-12 text-center shadow-md">
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight">EcoLógica: Filosofia em Jogo</h1>
+            
+            <div class="max-w-3xl mx-auto px-4 mb-6">
+                <p class="text-xl font-bold text-gray-900">Responsável: Prof. de Filosofia Marcos Cesana</p>
+                <p class="text-md text-gray-800 mt-2"><strong>Objetos de Conhecimento:</strong> Indústria cultural; Filosofia Ambiental; Ética ambiental; Bioética.</p>
+                <p class="text-md text-gray-800 mt-1"><strong>Objetivo de Aprendizagem:</strong> Elaborar argumentos críticos e analisar condutas para promover uma convivência democrática, ética e ambientalmente sustentável.</p>
+            </div>
+
+            <p class="text-lg md:text-xl font-medium max-w-3xl mx-auto px-4 border-t border-yellow-500 pt-6">
+                Explore os dilemas da Indústria Cultural, o nosso pertencimento à Terra e os desafios éticos da tecnologia. Revise os conceitos abaixo e teste seus conhecimentos!
+            </p>
+        </header>
+
+        <main class="flex-1 max-w-5xl mx-auto px-4 py-12 w-full">
+            
+            <div class="text-center mb-12">
+                <button onclick="startQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-3xl font-extrabold py-5 px-16 rounded-full shadow-2xl transition-all transform hover:scale-105 border-b-4 border-indigo-900 active:border-b-0 active:translate-y-1">
+                    INICIAR QUIZ ▶
+                </button>
+            </div>
+
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-8 border-b-2 border-gray-200 pb-4">📚 Material de Apoio: Conceitos e Exemplos</h2>
+            
+            <!-- ACORDEÕES DA APOSTILA -->
+            <div class="space-y-4" id="study-material">
+                
+                <!-- Tema 1 -->
+                <details class="bg-white rounded-2xl shadow-md border border-gray-100 group">
+                    <summary class="font-bold cursor-pointer text-2xl text-indigo-600 p-6 flex justify-between items-center focus:outline-none rounded-2xl group-hover:bg-indigo-50 transition-colors">
+                        🎬 Tema 1: Indústria Cultural
+                        <span class="transition-transform duration-300 group-open:rotate-180">▼</span>
+                    </summary>
+                    <div class="p-6 border-t border-gray-100 text-gray-700 leading-relaxed">
+                        <p class="mb-6">Desenvolvida pelos pensadores da Escola de Frankfurt (como Adorno e Horkheimer), denuncia a transformação da arte, da cultura e do lazer em <strong>mercadorias</strong> feitas em série para gerar lucro e controlar as massas.</p>
+                        
+                        <div class="bg-indigo-50 p-5 rounded-xl mb-4 border-l-4 border-indigo-500">
+                            <h4 class="font-bold text-gray-900 text-lg mb-2">Conceito 1: Homogeneização do Gosto e a Ilusão de Escolha</h4>
+                            <p><strong>Exemplo Prático:</strong> Algoritmos de recomendação em plataformas de vídeos curtos ou streaming de música.</p>
+                            <p class="mt-2 text-sm text-gray-600"><strong>Por que se ajusta:</strong> O aluno acha que escolhe, mas o algoritmo mapeia o comportamento e entrega apenas conteúdos com a mesma "fórmula de sucesso", automatizando a padronização criticada pela Escola de Frankfurt.</p>
+                        </div>
+
+                        <div class="bg-indigo-50 p-5 rounded-xl border-l-4 border-indigo-500">
+                            <h4 class="font-bold text-gray-900 text-lg mb-2">Conceito 2: A Perda da Aura (Walter Benjamin)</h4>
+                            <p><strong>Exemplo Prático:</strong> A viralização incessante de memes baseados em obras de arte clássicas na internet.</p>
+                            <p class="mt-2 text-sm text-gray-600"><strong>Por que se ajusta:</strong> Uma pintura perde sua originalidade e contemplação profunda ao ser copiada milhões de vezes, virando consumo rápido e efêmero.</p>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Tema 2 -->
+                <details class="bg-white rounded-2xl shadow-md border border-gray-100 group">
+                    <summary class="font-bold cursor-pointer text-2xl text-green-600 p-6 flex justify-between items-center focus:outline-none rounded-2xl group-hover:bg-green-50 transition-colors">
+                        🍃 Tema 2: Filosofia Ambiental
+                        <span class="transition-transform duration-300 group-open:rotate-180">▼</span>
+                    </summary>
+                    <div class="p-6 border-t border-gray-100 text-gray-700 leading-relaxed">
+                        <p class="mb-6">Propõe a transição do <strong>antropocentrismo</strong> para uma visão onde a humanidade compreende a si mesma como parte integrante e dependente da teia da vida, superando a visão de natureza apenas como recurso.</p>
+                        
+                        <div class="bg-green-50 p-5 rounded-xl border-l-4 border-green-500">
+                            <h4 class="font-bold text-gray-900 text-lg mb-2">Conceito: A Crítica ao Descolamento da Natureza</h4>
+                            <p><strong>Exemplo Prático:</strong> Aula de campo para observação em remanescentes da Mata Atlântica.</p>
+                            <p class="mt-2 text-sm text-gray-600"><strong>Por que se ajusta:</strong> Pensadores como Ailton Krenak criticam o entendimento da humanidade como um "clube exclusivo". Ir a campo quebra a barreira urbano/selvagem, desnaturalizando a visão mecanicista de que a floresta é apenas espaço ocioso ou estoque de madeira.</p>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Tema 3 -->
+                <details class="bg-white rounded-2xl shadow-md border border-gray-100 group">
+                    <summary class="font-bold cursor-pointer text-2xl text-teal-600 p-6 flex justify-between items-center focus:outline-none rounded-2xl group-hover:bg-teal-50 transition-colors">
+                        ⚖️ Tema 3: Ética Ambiental
+                        <span class="transition-transform duration-300 group-open:rotate-180">▼</span>
+                    </summary>
+                    <div class="p-6 border-t border-gray-100 text-gray-700 leading-relaxed">
+                        <p class="mb-6">Expande os limites da moralidade para além das relações humanas, ditando como devemos agir com o solo, a água, animais e as futuras gerações.</p>
+                        
+                        <div class="bg-teal-50 p-5 rounded-xl mb-4 border-l-4 border-teal-500">
+                            <h4 class="font-bold text-gray-900 text-lg mb-2">Conceito 1: Responsabilidade Sistêmica (Ética da Terra)</h4>
+                            <p><strong>Exemplo Prático:</strong> Manejo agrícola (ex: café) optando por aplicação manual e direcionada de insumos, recusando fertirrigação sem critério para não atingir nascentes.</p>
+                            <p class="mt-2 text-sm text-gray-600"><strong>Por que se ajusta:</strong> O produtor equilibra a viabilidade econômica (necessidade humana) com a integridade do solo, mostrando respeito à comunidade biótica do entorno.</p>
+                        </div>
+
+                        <div class="bg-teal-50 p-5 rounded-xl border-l-4 border-teal-500">
+                            <h4 class="font-bold text-gray-900 text-lg mb-2">Conceito 2: Ética Animalista e Senciência</h4>
+                            <p><strong>Exemplo Prático:</strong> Visita pedagógica a um zoológico para debater o cativeiro animal.</p>
+                            <p class="mt-2 text-sm text-gray-600"><strong>Por que se ajusta:</strong> Força a aplicação do conceito de senciência (capacidade de sofrer/sentir). O aluno questiona se o valor do entretenimento justifica a privação de direitos vitais de animais não humanos.</p>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Tema 4 -->
+                <details class="bg-white rounded-2xl shadow-md border border-gray-100 group">
+                    <summary class="font-bold cursor-pointer text-2xl text-blue-600 p-6 flex justify-between items-center focus:outline-none rounded-2xl group-hover:bg-blue-50 transition-colors">
+                        🧬 Tema 4: Bioética
+                        <span class="transition-transform duration-300 group-open:rotate-180">▼</span>
+                    </summary>
+                    <div class="p-6 border-t border-gray-100 text-gray-700 leading-relaxed">
+                        <p class="mb-6">Estuda os dilemas morais causados pelo avanço da ciência e tecnologia. Pilares: Beneficência, Não Maleficência, Autonomia e Justiça.</p>
+                        
+                        <div class="bg-blue-50 p-5 rounded-xl mb-4 border-l-4 border-blue-500">
+                            <h4 class="font-bold text-gray-900 text-lg mb-2">Conceito 1: Justiça Algorítmica</h4>
+                            <p><strong>Exemplo Prático:</strong> Algoritmo escolar falho que retira alunos que precisam de recuperação e inclui quem não precisa.</p>
+                            <p class="mt-2 text-sm text-gray-600"><strong>Por que se ajusta:</strong> A tecnologia não é neutra. Uma falha de programação viola o princípio da Justiça, exigindo extrema transparência, auditoria constante e olhar humano para corrigir distorções.</p>
+                        </div>
+
+                        <div class="bg-blue-50 p-5 rounded-xl border-l-4 border-blue-500">
+                            <h4 class="font-bold text-gray-900 text-lg mb-2">Conceito 2: Ameaça à Autonomia na Era Digital</h4>
+                            <p><strong>Exemplo Prático:</strong> O uso constante de smartwatches que medem dados corporais íntimos e os enviam a bancos de dados corporativos.</p>
+                            <p class="mt-2 text-sm text-gray-600"><strong>Por que se ajusta:</strong> Levanta o debate sobre consentimento real. O usuário sabe de fato como e por quem sua biologia (que cruza a fronteira do corpo) está sendo monitorada e comercializada?</p>
+                        </div>
+                    </div>
+                </details>
+            </div>
+        </main>
+    </div>
+
+    <!-- TELA DO QUIZ -->
+    <div id="quiz-screen" class="hidden-screen flex-1 flex flex-col bg-gray-100 min-h-screen">
+        <header class="bg-white shadow-sm py-4 px-6 flex justify-between items-center sticky top-0 z-40">
+            <span class="font-bold text-gray-600 text-lg">Questão <span id="current-q-num">1</span>/50</span>
+            <div class="w-1/2 bg-gray-200 rounded-full h-3 mx-4">
+                <div id="progress-bar" class="bg-nano-banana h-3 rounded-full transition-all duration-500 shadow" style="width: 2%"></div>
+            </div>
+            <span class="font-bold text-gray-600 text-lg">Placar: <span id="score-display" class="text-indigo-600 font-extrabold text-2xl ml-1">0</span></span>
+        </header>
+
+        <main class="flex-1 flex flex-col items-center justify-center p-6 max-w-4xl mx-auto w-full">
+            <div class="bg-white p-8 md:p-12 rounded-3xl shadow-xl w-full mb-8 border-t-8 border-nano-banana relative">
+                
+                <p id="question-text" class="text-xl md:text-2xl font-semibold text-gray-800 mb-8 leading-relaxed text-justify"></p>
+                <div id="options-container" class="grid grid-cols-1 gap-4 mb-8">
+                    <!-- Opções injetadas via JS -->
+                </div>
+                
+                <!-- BOTÃO DE AJUDA -->
+                <div class="border-t border-gray-200 pt-6 flex justify-end">
+                    <button onclick="showHelpModal()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-xl flex items-center transition-colors shadow-sm">
+                        <span class="text-2xl mr-3">💡</span> Relembrar Conceitos
+                    </button>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- TELA DE RESULTADOS -->
+    <div id="result-screen" class="hidden-screen flex-1 flex flex-col items-center justify-center bg-nano-banana min-h-screen p-6 text-center">
+        <div class="bg-white p-12 rounded-3xl shadow-2xl max-w-2xl w-full border-4 border-indigo-600">
+            <h1 class="text-5xl font-extrabold mb-4 text-gray-800">Fim de Jogo!</h1>
+            <p class="text-2xl mb-8 text-gray-600">Você acertou <span id="final-score" class="text-indigo-600 font-bold text-5xl mx-2"></span> de 50 questões.</p>
+            <p id="feedback-message" class="text-xl font-medium text-gray-700 mb-10 leading-relaxed"></p>
+            <button onclick="location.reload()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-2xl font-bold py-4 px-12 rounded-full shadow-lg transition-all transform hover:scale-105 border-b-4 border-indigo-900 active:border-b-0 active:translate-y-1">
+                Jogar Novamente 🔄
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Clonar conteúdo da apostila para dentro do modal de ajuda automaticamente ao carregar
+        document.addEventListener("DOMContentLoaded", () => {
+            const studyMaterial = document.getElementById('study-material').innerHTML;
+            document.getElementById('help-accordion-container').innerHTML = studyMaterial;
+        });
+
+        // Controle do Modal de Ajuda
+        function showHelpModal() {
+            const modal = document.getElementById('help-modal');
+            const card = document.getElementById('help-card');
+            modal.classList.remove('hidden-screen');
+            void modal.offsetWidth; // trigger reflow
+            modal.classList.remove('opacity-0');
+            modal.classList.add('opacity-100');
+            card.classList.remove('scale-95');
+            card.classList.add('scale-100');
+        }
+
+        function hideHelpModal() {
+            const modal = document.getElementById('help-modal');
+            const card = document.getElementById('help-card');
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0');
+            card.classList.remove('scale-100');
+            card.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden-screen');
+            }, 300);
+        }
+
+        // Bando de Dados das 50 Questões
+        const quizData = [
+            // Indústria Cultural
+            {q: "O uso de plataformas de streaming para o consumo de músicas e séries baseia-se em algoritmos de recomendação. Essas inteligências artificiais analisam o comportamento do usuário para sugerir conteúdos que o retenham mais tempo conectado. Sob a ótica da Indústria Cultural formulada pela Escola de Frankfurt, o principal efeito desse mecanismo é a:", options: ["A) democratização irrestrita do acesso às obras de arte, garantindo a pluralidade absoluta de escolhas.", "B) homogeneização do gosto cultural, limitando o contato do usuário a produtos previamente padronizados.", "C) superação da alienação midiática, uma vez que o próprio espectador controla a curadoria de seu consumo.", "D) valorização da cultura erudita em detrimento da cultura de massa devido à segmentação dos algoritmos.", "E) autonomia crítica do indivíduo, que passa a selecionar ativamente os conteúdos independentes e marginais."], ans: 1},
+            {q: "O uso de redes sociais transformou a rotina de milhões de jovens, introduzindo ferramentas de interação rápida e consumo passivo de vídeos curtos. Nesse cenário contemporâneo, a teoria de Theodor Adorno e Max Horkheimer sobre a Indústria Cultural pode ser aplicada para compreender como:", options: ["A) o entretenimento superficial atua como forma de controle social e inibição do pensamento reflexivo.", "B) a tecnologia móvel desestruturou completamente as bases do sistema capitalista de produção cultural.", "C) as plataformas digitais eliminam o caráter comercial que sempre esteve atrelado ao conceito de arte.", "D) a interatividade das telas impede a padronização das mentes, gerando um ambiente de pura diversidade.", "E) o modelo de vídeos curtos favorece a desnaturalização das desigualdades sociais existentes no cotidiano."], ans: 0},
+            {q: "Recentemente, campanhas publicitárias de grandes marcas de moda (fast fashion) passaram a incorporar discursos feministas e antirracistas em suas estampas e comerciais, visando atingir o público jovem engajado. Essa estratégia comercial, quando analisada pelas teorias sociológicas sobre cultura, evidencia:", options: ["A) a efetividade das empresas privadas na resolução definitiva de conflitos e preconceitos estruturais históricos.", "B) o abandono do lucro como objetivo primário das corporações em favor da responsabilidade social irrestrita.", "C) a mercantilização das pautas sociais, esvaziando a carga política das lutas para transformá-las em produto.", "D) a incompatibilidade absoluta entre os meios de comunicação de massa e a manutenção do sistema capitalista.", "E) a conscientização espontânea e genuína da classe empresarial frente à necessidade de promover Direitos Humanos."], ans: 2},
+            {q: "A popularização dos jogos interativos e quizzes em formato de aplicativos móveis é frequentemente utilizada em salas de aula para engajar estudantes. No entanto, quando transferimos essa lógica de gamificação para o noticiário jornalístico, buscando apenas cliques e engajamento rápido, observamos um fenômeno onde:", options: ["A) a informação complexa é valorizada e aprofundada, exigindo maior tempo de dedicação do leitor.", "B) a notícia transforma-se em espetáculo superficial, priorizando a emoção imediata sobre a verdade factual.", "C) o jornalismo investigativo ganha força por se afastar das estratégias mercadológicas de retenção de público.", "D) o consumo de dados políticos torna-se isento de manipulações, devido à transparência dos meios digitais.", "E) a linguagem interativa anula o preconceito e a intolerância ao distribuir conteúdos puramente educacionais."], ans: 1},
+            {q: "Na obra 'A Obra de Arte na Era da Sua Reprodutibilidade Técnica', Walter Benjamin argumenta que a cópia mecânica retira da obra sua 'aura'. Aplicando essa reflexão à proliferação de memes na internet, conclui-se que:", options: ["A) o meme restitui o caráter sagrado das imagens clássicas, conferindo-lhes status de obras únicas e intocáveis.", "B) a replicação infinita extingue a originalidade da imagem, transformando-a em um código de comunicação efêmero.", "C) a reprodutibilidade digital impede que as classes populares tenham acesso a qualquer forma de expressão visual.", "D) a perda da aura artística impossibilita que imagens digitais gerem qualquer impacto político ou mobilização social.", "E) a viralização das imagens na rede consolida o fim da Indústria Cultural ao democratizar a produção de obras-primas."], ans: 1},
+            {q: "A figura do influenciador digital consolidou-se expondo a própria rotina, gostos e relacionamentos como vitrine para a venda de produtos. Esse estilo de vida pode ser problematizado criticamente por representar:", options: ["A) a separação definitiva entre a esfera do trabalho produtivo e a esfera do entretenimento doméstico.", "B) a transformação do próprio indivíduo e de sua intimidade em mercadorias a serem consumidas pelo público.", "C) a superação do consumo alienado, já que a publicidade passa a ser feita por pessoas comuns e não por atores.", "D) a garantia de respeito às liberdades individuais frente à padronização do comportamento imposta pela mídia.", "E) o colapso da Indústria Cultural, que não consegue adaptar-se às novas formas de publicidade descentralizada."], ans: 1},
+            {q: "O mercado renova anualmente smartphones, adotando publicidades que associam a compra ao sucesso social, mesmo com inovações mínimas. Essa dinâmica exemplifica o conceito de:", options: ["A) emancipação digital, que liberta o consumidor da dependência exclusiva dos meios de comunicação antigos.", "B) fetichismo da mercadoria, onde o valor simbólico do objeto oculta as reais relações de produção e necessidade.", "C) obsolescência sustentável, que garante a reciclagem imediata dos aparelhos descartados pela sociedade de consumo.", "D) racionalidade emancipadora, que estimula a compra baseada exclusivamente na avaliação técnica dos processadores.", "E) desnaturalização da tecnologia, demonstrando ao comprador que os bens materiais não trazem satisfação genuína."], ans: 1},
+            {q: "O modelo de produção de filmes de super-heróis baseia-se em roteiros previsíveis e licenciamento de produtos. Para a teoria crítica, essa indústria serve primordialmente para:", options: ["A) estimular a imaginação transgressora do público, incentivando a criação de novas narrativas revolucionárias.", "B) promover debates filosóficos complexos que desestabilizam os valores morais dominantes da cultura ocidental.", "C) fornecer uma válvula de escape pacífica que garante a assimilação acrítica das normas sociais vigentes.", "D) garantir a diversidade cultural autêntica, refletindo as variadas tradições regionais do mercado cinematográfico.", "E) substituir a literatura clássica como ferramenta principal de educação moral e cívica das novas gerações."], ans: 2},
+            {q: "A 'cultura do cancelamento' nas redes frequentemente converte-se em espetáculo midiático, gerando engajamento e lucro para as plataformas. A análise filosófica dessa situação desvela que:", options: ["A) o cancelamento virtual é a ferramenta mais eficaz para a reestruturação do sistema jurídico contemporâneo.", "B) as empresas de tecnologia não possuem qualquer interesse financeiro nos conflitos ideológicos de seus usuários.", "C) as plataformas monetizam a indignação moral, transformando a fiscalização ética em mais um produto rentável.", "D) a intolerância das massas digitais substituiu as antigas formas de coerção física sem gerar qualquer lucro associado.", "E) a solidariedade é amplamente promovida pelas lógicas punitivas dos algoritmos de moderação de conteúdo."], ans: 2},
+            {q: "A ascensão de ritmos musicais massificados frequentemente soterra manifestações folclóricas. A canção segue uma 'fórmula de sucesso' sintética. A consequência dessa padronização é:", options: ["A) a elevação intelectual dos ouvintes, que passam a compreender padrões matemáticos em detrimento das letras.", "B) a preservação da identidade regional autêntica por meio da exportação de ritmos sintéticos para o exterior.", "C) o apagamento da diversidade estética e a supressão de narrativas que possam desafiar a ordem social estabelecida.", "D) a libertação da arte em relação às amarras do mercado financeiro e das gravadoras multinacionais monopolistas.", "E) a garantia de respeito às diferenças culturais, visto que todos os indivíduos consomem o mesmo produto universal."], ans: 2},
+            
+            // Filosofia Ambiental
+            {q: "Na Mata Atlântica, refletindo sobre as causas da degradação histórica do bioma, o professor questiona a base filosófica. Segundo a Filosofia Ambiental, essa degradação foi impulsionada pela:", options: ["A) concepção biocêntrica que valoriza a utilidade material imediata sobre a imensa diversidade de espécies locais.", "B) visão antropocêntrica moderna, que reduz a natureza a um mero recurso instrumental disponível ao uso humano.", "C) ética utilitarista ecológica que promove a preservação baseada na capacidade de sofrimento de toda a fauna.", "D) abordagem ecocêntrica global que prioriza o desenvolvimento industrial contínuo das nações em desenvolvimento.", "E) teoria mecanicista que reconhece direitos jurídicos e intrínsecos a todos os ecossistemas naturais existentes."], ans: 1},
+            {q: "Para Ailton Krenak, o conceito moderno de 'humanidade' age como um clube exclusivo. Ao utilizar a filosofia ambiental, compreende-se que Krenak defende:", options: ["A) a aceleração tecnológica para a construção de biomas artificiais que possam substituir a natureza originária.", "B) o aprofundamento do dualismo cartesiano, isolando o intelecto humano das interações físicas com o ambiente.", "C) a superação da dicotomia entre cultura e natureza, resgatando o entendimento do ser humano como parte da Terra.", "D) a submissão dos povos originários às dinâmicas produtivas do mercado globalizado de créditos de carbono.", "E) a exploração predatória dos recursos naturais como única via viável para garantir a sobrevivência humana."], ans: 2},
+            {q: "Descartes formulou que animais seriam comparáveis a autômatos desprovidos de alma. A Filosofia Ambiental aponta que esse modelo mecanicista serviu para:", options: ["A) fundamentar leis severas de proteção à vida silvestre, impedindo a exploração capitalista incipiente da época.", "B) elevar o status ético das florestas, considerando-as entidades espirituais dignas de profunda reverência religiosa.", "C) justify moralmente a exploração desenfreada dos recursos vivos, isentando o ser humano de culpa pelos danos.", "D) aproximar as civilizações ocidentais das cosmologias orientais, que viam o sagrado em cada elemento natural.", "E) provar cientificamente a inviabilidade do modelo econômico agroexportador adotado pelas potências europeias."], ans: 2},
+            {q: "A Teoria de Gaia de James Lovelock sugere que a Terra atua como um sistema complexo e autorregulado. Adotar a Teoria de Gaia implica em:", options: ["A) considerar a Terra um ambiente passivo e inerte, sujeito exclusivamente às modificações da atividade industrial.", "B) abandonar a visão fragmentada das ciências e compreender as mudanças climáticas como respostas de um organismo integrado.", "C) rejeitar qualquer preocupação com a poluição, pois o planeta possui mecanismos infinitos para reparar a ação predatória.", "D) justificar as intervenções artificiais de grande escala, como a geoengenharia, para dominar completamente o clima.", "E) focar os estudos ambientais estritamente na geologia clássica, excluindo o papel das espécies biológicas."], ans: 1},
+            {q: "A observação astronômica evidencia a singularidade do nosso planeta ('Pálido Ponto Azul'). Sob a ótica da Filosofia Ambiental, essa perspectiva cósmica contribui para:", options: ["A) legitimar o esgotamento dos recursos terrestres, sob a justificativa de que a exploração espacial trará novos insumos.", "B) descentralizar a importância da espécie humana no universo, fortalecendo a responsabilidade moral pela biosfera.", "C) fomentar a indiferença ecológica, pois a escala temporal astronômica minimiza os impactos do aquecimento global.", "D) validar a doutrina antropocêntrica clássica, que atesta o destino da humanidade de colonizar outras galáxias.", "E) desencorajar o avanço do conhecimento científico local, focando os investimentos exclusivamente em exoplanetas."], ans: 1},
+            {q: "O Ecofeminismo analisa as lógicas de dominação em múltiplas frentes. A premissa central dessa corrente estabelece uma semelhança estrutural entre:", options: ["A) a exploração opressiva da natureza e o sistema patriarcal de subordinação histórica das mulheres.", "B) a expansão de direitos civis masculinos e a implantação de políticas internacionais de preservação florestal.", "C) o avanço das indústrias de extração mineral e a conquista da equidade salarial em corporações ocidentais.", "D) a manutenção do modelo econômico agroexportador e a erradicação imediata das violências de gênero no campo.", "E) a valorização do trabalho doméstico não remunerado e a aceleração do desmatamento provocado pelo agronegócio."], ans: 0},
+            {q: "A filosofia do 'Bem Viver' ganha força nas discussões socioambientais. Essa concepção andina propõe estruturalmente:", options: ["A) a mercantilização das florestas nativas para gerar capital destinado a fundos de previdência social.", "B) a harmonização comunitária entre os seres humanos e os ciclos naturais, abdicando do crescimento econômico infinito.", "C) o isolacionismo tecnológico, rejeitando a eletricidade e a medicina contemporânea para retornar a um estado selvagem.", "D) a apropriação dos recursos minerais por grandes corporações estatais para o controle geopolítico da biodiversidade.", "E) a imposição de um padrão de consumo padronizado para todas as culturas globais, eliminando diferenças."], ans: 1},
+            {q: "A fronteira rígida entre 'natural' (selvagem) e 'cultural' (racional) produzida pelo pensamento ocidental gerou como efeito prático imediato:", options: ["A) a garantia de respeito profundo a todas as formas de vida selvagem protegidas contra as cidades urbanizadas.", "B) o desenvolvimento de um sentimento de solidariedade irrestrita em relação às comunidades tradicionais e ribeirinhas.", "C) a justificação moral para explorar a natureza como um 'estoque de materiais' submisso às necessidades da racionalidade.", "D) a completa paralisação da evolução tecnológica, devido ao temor de violar os preceitos sagrados pelas leis naturais.", "E) a extinção das disparidades sociais, uma vez que a riqueza natural passou a ser distribuída equitativamente."], ans: 2},
+            {q: "Tecnologias de modificação genética na agricultura aumentam o rendimento, mas simplificam ecossistemas inteiros. Ao sistematizar essas informações, uma hipótese crítica aponta que:", options: ["A) a tecnologia agrícola possui um valor ético neutro, sendo incapaz de gerar impactos fora das metrópoles.", "B) a busca por maximização de produtividade deve sempre sobrepor-se à manutenção da diversidade epistemológica das sementes.", "C) a intervenção biológica intensa soluciona a fome estrutural sem provocar desequilíbrios na rede de polinizadores locais.", "D) a dependência tecnológica no campo reflete uma racionalidade instrumental que silencia os saberes dos agricultores tradicionais.", "E) a simplificação dos ecossistemas fortalece a resiliência climática das plantações frente aos eventos meteorológicos."], ans: 3},
+            {q: "O discurso do desenvolvimento sustentável afirma ser possível manter a acumulação de capital enquanto preserva o ambiente. A Filosofia Ambiental crítica argumenta que essa premissa é contraditória porque:", options: ["A) o desenvolvimento tecnológico sustentável não exige investimento ou alteração na infraestrutura produtiva.", "B) ignora a finitude material do planeta, pressupondo que a eficiência técnica pode compensar a exaustão dos recursos.", "C) os ecossistemas terrestres dependem da emissão de gases de efeito estufa para acelerar a fotossíntese.", "D) a acumulação de riquezas naturais é um fenômeno puramente biológico, não sofrendo interferência estrutural.", "E) a sustentabilidade só pode ser alcançada mediante a transferência imediata das indústrias para o sul global."], ans: 1},
+            
+            // Ética Ambiental
+            {q: "Aplicando o Princípio Responsabilidade de Hans Jonas ('Age de tal modo que os efeitos de tua ação não sejam destrutivos para a vida futura') ao uso de agrotóxicos persistentes, deduz-se que:", options: ["A) a maximização das safras anuais é justificada, pois os interesses das gerações presentes superam o futuro.", "B) o uso de defensivos deve ser banido se comprometer permanentemente a fertilidade do solo e a saúde descendente.", "C) a responsabilidade tecnológica exime as empresas químicas, recaindo exclusivamente sobre os governos.", "D) os risks a longo prazo são incalculáveis, logo a ética pauta-se apenas pelos lucros demonstrados.", "E) a natureza possui a capacidade de purificação infinita, o que invalida as preocupações éticas de contaminação."], ans: 1},
+            {q: "O uso desmedido de insumos no café conilon pode contaminar mananciais locais. A Ética Ambiental propõe que esse conflito deve resolver-se pautado:", options: ["A) na priorização irrevogável da lucratividade das monoculturas para garantir a supremacia do mercado agroexportador.", "B) na proibição severa de todas as tecnologias agrícolas, aceitando a diminuição da produção em escala global.", "C) na harmonização entre as necessidades socioeconômicas locais e a integridade sistêmica das bacias hidrográficas.", "D) na transferência total da responsabilidade pelos passivos ambientais dos pequenos produtores para o consumidor urbano.", "E) na desconsideração dos limites hídricos, assumindo que os recursos aquíferos renovam-se instantaneamente."], ans: 2},
+            {q: "O racismo ambiental descreve como impactos ecológicos afetam desproporcionalmente populações vulneráveis. A instalação de polos industriais poluentes em periferias busca desnaturalizar:", options: ["A) a alegação de que as forças de mercado distribuem os ônus ecológicos de forma neutra e igualitária pela sociedade.", "B) o fato de que a população das áreas nobres possui imunidade biológica superior contra as doenças respiratórias.", "C) a importância da gestão de resíduos sólidos para a salubridade das modernas regiões metropolitanas.", "D) a responsabilidade das empresas construtoras no planejamento das políticas afirmativas nas universidades.", "E) a ideia de que desastres ambientais afetam exclusivamente a fauna e a flora nativas, não gerando impacto urbano."], ans: 0},
+            {q: "O greenwashing (maquiagem verde) ocorre quando corporações poluentes adotam publicidades isoladas sobre árvores. Do ponto de vista ético, essa prática é deletéria porque:", options: ["A) acelera a transição energética efetiva, encarecendo os combustíveis fósseis e limitando o poder de compra.", "B) cria uma falsa percepção de responsabilidade, mascarando a degradação e desmobilizando a pressão pública por mudanças.", "C) promove excesso de transparência, prejudicando a concorrência leal entre as empresas no mercado internacional.", "D) impede o avanço das legislações ambientais rígidas ao focar na punição de executivos na justiça trabalhista.", "E) transfere as obrigações ambientais das ONGs diretamente para a administração tributária do Estado."], ans: 1},
+            {q: "A partir da ética animalista formulada por Peter Singer, a principal consideração para avaliar moralmente animais mantidos em cativeiro educacional (como em Zoológicos) é:", options: ["A) a utilidade científica que as espécies ameaçadas oferecem aos pesquisadores das universidades da região.", "B) o valor de entretenimento gerado para o ecoturismo, que sustenta as comunidades carentes no entorno dos parques.", "C) a exclusividade genética que justifica a captura de espécimes, ignorando o bem-estar em favor da catalogação.", "D) a senciência, exigindo que o sofrimento e os interesses básicos de vida dos animais não humanos sejam contabilizados.", "E) a superioridade intelectual da humanidade, que outorga o direito irrestrito de manejar os demais seres vivos."], ans: 3},
+            {q: "A 'Ética da Terra' de Aldo Leopold afirma que devemos parar de tratar solo e água como propriedade e encará-los como comunidade. Essa postura implica em:", options: ["A) ampliar as fronteiras morais da sociedade para incluir o respeito à estabilidade e à beleza das redes ecológicas.", "B) conceder direito ao voto e representatividade parlamentar direta a elementos abióticos como rios e montanhas.", "C) restringir reflexões éticas às relações interpessoais, delegando a gestão do meio ambiente a engenheiros.", "D) fomentar o mercado de terras improdutivas para facilitar a expansão de assentamentos urbanos sobre as matas.", "E) desconsiderar os direitos humanos fundamentais para priorizar a conservação intocada de áreas sem presença humana."], ans: 0},
+            {q: "A justiça climática argumenta que países industrializados precocemente (Norte Global) devem assumir maior financiamento contra o aquecimento. O fundamento ético baseia-se na:", options: ["A) crença de que as tecnologias limpas foram desenvolvidas apenas nos continentes africano e asiático durante o período colonial.", "B) necessidade de proteger as fronteiras do Norte Global contra as ondas migratórias de refugiados provocadas por chuvas.", "C) constatação da responsabilidade histórica e proporcional dos países centrais pela emissão acumulada massiva de gases.", "D) irrelevância do desmatamento nas florestas tropicais modernas, concentrando críticas na queima de madeira pelas nações emergentes.", "E) ausência de leis trabalhistas adequadas nos países pobres, o que inviabiliza a implantação de energia solar."], ans: 2},
+            {q: "O desmatamento ilegal é muitas vezes defendido por fornecer emprego rápido. A análise dessa dicotomia entre 'preservação' e 'emprego' aponta que ela é uma falácia ética porque:", options: ["A) a extração predatória enriquece os moradores locais de maneira perene, eliminando dependência política.", "B) a destruição do ecossistema gera lucros a curto prazo, mas condena a base de sustentação econômica a longo prazo.", "C) a vocação natural do trabalhador do campo consiste na supressão florestal sem alternativas tecnológicas de desenvolvimento.", "D) os recursos madeireiros possuem a propriedade intrínseca de regeneração instantânea, invalidando alertas de exaustão.", "E) as leis de proteção ambiental são imposições teóricas que não produzem impacto nas relações trabalhistas do interior."], ans: 1},
+            {q: "Campanhas que orientam o consumidor a 'fechar a torneira' alertam para um risco de despolitização do debate. Esse risco baseia-se na constatação de que tais campanhas:", options: ["A) culpabilizam o comportamento individual doméstico enquanto omitem a responsabilidade gigantesca dos setores industriais.", "B) promovem uma solidariedade profunda e eficaz, substituindo a necessidade de regulamentação estatal pesada sobre a água.", "C) diminuem significativamente a incidência de secas severas apenas com ações voluntárias nos lares urbanos.", "D) exigem dos conglomerados corporativos o cumprimento das metas zero antes de aplicar qualquer sanção punitiva ao cidadão.", "E) comprovam que o consumo consciente é uma utopia, estimulando as pessoas a abandonarem as práticas diárias."], ans: 0},
+            {q: "O ativismo de desobediência civil não violenta busca bloquear estradas e explorações fósseis. Sob a luz dos princípios éticos democráticos, essas ações buscam problematizar:", options: ["A) a legitimidade dos aparelhos repressivos de Estado em atuar contra criminosos comuns no contexto urbano.", "B) a insuficiência dos mecanismos jurídicos formais quando as leis vigentes protegem a destruição ecológica corporativa.", "C) a necessidade imediata de instituir uma ditadura de base ecologista para impor forçosamente o respeito à lei.", "D) a ineficácia dos meios de comunicação independentes, que apoiam as corporações na divulgação de impactos.", "E) o direito fundamental do cidadão comum ao livre trânsito, preservado a qualquer custo em detrimento do clima."], ans: 1},
+
+            // Bioética
+            {q: "O uso de relógios inteligentes (smartwatches) coleta dados sensíveis integrando-os a redes corporativas. Na Bioética, essa prática levanta dilemas centrais quanto ao princípio da:", options: ["A) beneficência, visto que o lucro obtido pelas empresas resulta na melhora dos hospitais do SUS.", "B) não maleficência, garantindo que nenhum usuário ultrapasse os limites articulares definidos.", "C) autonomia, questionando se o usuário de fato concede consentimento informado claro sobre o uso de seus dados.", "D) justiça distributiva, exigindo que o Estado oferte esses aparelhos gratuitamente para o diagnóstico.", "E) equidade assistencial, pois o algoritmo toma as decisões terapêuticas sem preconceito médico."], ans: 2},
+            {q: "A técnica de edição genética em embriões levanta debates sobre prevenção de doenças versus aprimoramento. Esse cenário instiga a reflexão bioética sobre o perigo de:", options: ["A) democratizar radicalmente características genéticas, criando uma sociedade perfeitamente igualitária.", "B) reviver práticas eugênicas amparadas pela tecnologia, aprofundando desigualdades entre quem pode pagar.", "C) eliminar a necessidade de consentimento reprodutivo, visto que garante infalivelmente a saúde mental.", "D) estagnar o avanço da medicina de precisão, pois agências reguladoras proíbem universalmente o uso.", "E) desnaturalizar direitos fundamentais, abolindo o conceito jurídico de dignidade para DNA alterado."], ans: 1},
+            {q: "No ápice de pandemias com falta de UTIs, as equipes precisam de triagem. A aplicação desses protocolos deve basear-se no princípio da Justiça, exigindo escolha:", options: ["A) fundamentada no status socioeconômico e na capacidade privada de pagamento, garantindo recuperação hospitalar.", "B) aleatória e pautada na ordem de chegada física, ignorando a gravidade clínica ou chance realista de sobrevivência.", "C) transparente, equitativa e baseada em critérios clínicos objetivos e prognósticos vitais, sem privilégios.", "D) terceirizada para sistemas de inteligência artificial desprovidos de auditoria, eliminando a angústia dos médicos.", "E) decidida por líderes políticos locais de acordo com a influência midiática dos doentes e dinâmicas de poder."], ans: 2},
+            {q: "Quando laboratórios estrangeiros patenteiam moléculas da flora utilizando conhecimento empírico de tribos sem compensá-los, ocorre a biopirataria. Esse ato viola a ética ao:", options: ["A) acelerar pesquisas biomédicas ocidentais ao custo de fomentar o progresso tecnológico nas tribos exploradas.", "B) promover a expropriação legalizada de saberes, tratando comunidades como propriedades intelectuais não reconhecidas.", "C) justificar a superioridade dos pajés na vacina sintética, minimizando a metodologia científica moderna urbana.", "D) transferir lucros integralmente para fundos internacionais de preservação ambiental administrados pela ONU.", "E) estimular a integração cultural, demonstrando que a ciência globalizada desvaloriza ecossistemas menos explorados."], ans: 1},
+            {q: "A pressão popular pela interrupção de testes tóxicos em cosméticos em animais, fomentando o selo 'Cruelty-Free', alinha-se com a Bioética na medida em que:", options: ["A) reconhece a senciência animal e defende que o sofrimento para vaidade e lucro comercial é moralmente injustificável.", "B) comprova que a fisiologia animal não reage aos compostos químicos presentes na maioria dos xampus modernos.", "C) assegura o direito à liberdade individual dos consumidores de adquirir produtos poluentes de forma consciente.", "D) prioriza os lucros das pequenas empresas veganas frente ao monopólio das redes internacionais de maquiagens.", "E) estabelece que o Ministério da Agricultura curve-se às demandas da indústria da moda sediada no hemisfério norte."], ans: 0},
+            {q: "O Testamento Vital permite que uma pessoa expresse antecipadamente tratamentos médicos indesejados caso perca a comunicação. Esse instrumento jurídico materializa qual preceito central da Bioética?", options: ["A) A não maleficência, garantindo que o hospital tenha lucros maximizados durante os longos períodos de internação.", "B) A justiça terapêutica, obrigando médicos a realizar eutanásia automática em coma.", "C) A autonomia do indivíduo, respeitando suas decisões pessoais, valores e dignidade diante da obstinação terapêutica.", "D) A beneficência estatal, estabelecendo o comitê de ética como único detentor do direito sobre a vida.", "E) A solidariedade familiar, transferindo aos parentes o poder de vetar as orientações originais do paciente."], ans: 2},
+            {q: "A transição de próteses médicas para implantes cerebrais (Transumanismo) desloca a fronteira ética. O desafio da Bioética diante da expansão além da biologia natural é lidar com a ameaça da:", options: ["A) superpopulação planetária garantida pelo avanço nas técnicas convencionais de fertilização in vitro.", "B) padronização da fisiologia humana de base, erradicando doenças e promovendo paz por empatia cibernética.", "C) fragmentação social e surgimento de uma elite biológica aprimorada, exacerbando disparidades e discriminação tecnológica.", "D) obsolescência programada do sistema imunológico, exigindo o retorno do ser humano ao sedentarismo primitivo.", "E) perda da identidade de gênero, visto que microchips eliminariam as capacidades hormonais intrínsecas à espécie."], ans: 2},
+            {q: "A Inteligência Artificial em diagnósticos oncológicos pode replicar vieses raciais e de gênero históricos. O princípio bioético da Justiça exige:", options: ["A) o sucateamento completo das ferramentas digitais no ambiente cirúrgico, retornando à intuição empírica.", "B) a submissão das condutas médicas ao parecer inviolável da máquina, eliminando a falibilidade natural e emoção.", "C) a responsabilidade civil das máquinas por falhas, eximindo a administração do hospital e os programadores.", "D) a transparência algorítmica e supervisão humana contínua para evitar que padrões de discriminação retroalimentem a medicina.", "E) a criação de cotas de leitos hospitalares restritas exclusivamente para grupos majoritários de bancos genéticos privados."], ans: 3},
+            {q: "A discordância bioética sobre a destinação (descarte ou pesquisa) de embriões excedentes na Fertilização In Vitro pauta-se na dificuldade de definir consensualmente:", options: ["A) o valor monetário exato que as clínicas de reprodução devem cobrar das famílias inférteis no procedimento.", "B) o momento cronológico exato em que a vida biológica passa a deter plenos direitos civis e o status moral de pessoa digna.", "C) as vantagens estéticas garantidas ao paciente que realiza o sequenciamento molecular antes do implante.", "D) a competência legal dos conselhos regionais de medicina em regulamentar o direito penal referente à falsificação genética.", "E) o impacto ambiental severo causado pelo armazenamento prolongado de material biológico refrigerado com nitrogênio."], ans: 1},
+            {q: "A judicialização da saúde, onde cidadãos recorrem aos tribunais para obter medicamentos de altíssimo custo, evidencia na saúde pública um agudo conflito bioético entre:", options: ["A) o direito à vida do paciente individual em estado grave e a capacidade orçamentária finita do sistema de saúde para a coletividade.", "B) a autonomia do cidadão de automedicar-se de forma empírica e a regulamentação autoritária exercida pelas grandes agências.", "C) o princípio moral da não maleficência em paliativos e a obrigatoriedade da manutenção prolongada por respiradores artificiais.", "D) a caridade promovida pelas imensas indústrias detentoras das patentes restritas e o controle de preços mantido pelo poder público.", "E) o sigilo médico de dados patológicos e as obrigações judiciais de expor os diagnósticos clínicos psiquiátricos publicamente."], ans: 0},
+            
+            // Questões Extras (41-50)
+            {q: "A série Black Mirror é um sucesso comercial que critica as corporações e a tecnologia. Para a Escola de Frankfurt, obras que criticam o sistema dentro do próprio sistema demonstram que a Indústria Cultural:", options: ["A) incentiva ativamente a destruição das grandes corporações digitais e o fim do monopólio do entretenimento.", "B) possui a capacidade de absorver críticas sociais profundas e transformá-las em mercadorias estéticas lucrativas.", "C) falha sistematicamente em compreender as angústias reais do público consumidor jovem que rejeita obras pessimistas.", "D) liberta o telespectador da passividade alienante ao apresentar soluções filosóficas práticas para não usar telas.", "E) rejeita a distribuição de obras audiovisuais que possuam qualquer tipo de questionamento ético ou político."], ans: 1},
+            {q: "Ao incorporar quizzes interativos em sala de aula, sob a ótica crítica da Indústria Cultural, é necessário atenção por parte dos educadores para que o uso da tecnologia não resulte na:", options: ["A) completa desobediência civil dos alunos frente às autoridades escolares tradicionais do ensino público.", "B) conversão do saber escolar complexo em puro entretenimento superficial desprovido de tempo para reflexão.", "C) rejeição absoluta e definitiva de qualquer ferramenta digital no processo histórico de ensino e aprendizagem.", "D) democratização profunda do conhecimento filosófico abstrato para toda a comunidade do entorno da escola.", "E) eliminação total da infraestrutura física das escolas em favor de um modelo educacional puramente corporativo."], ans: 1},
+            {q: "Quando o mercado publicitário apropria-se de pautas de gênero e raça apenas para estampar camisetas e alavancar vendas, ocorre o fenômeno sociológico da:", options: ["A) desconstrução definitiva das hierarquias patriarcais e racistas que estruturam a atual sociedade de consumo.", "B) valorização ética do grande capital, que passa a priorizar o bem-estar coletivo em detrimento da maximização do lucro.", "C) assimilação mercadológica da crítica social, esvaziando o potencial prático e revolucionário dos movimentos por direitos.", "D) superação orgânica das contradições de classe, uma vez que o consumo dos mesmos produtos torna todos os cidadãos iguais.", "E) afirmação inquestionável do pensamento reflexivo, já que todo o público passa a estudar teorias originais."], ans: 2},
+            {q: "Em aulas de campo, o papel da Filosofia Ambiental é garantir que os alunos quantifiquem a biodiversidade e construam argumentos capazes de:", options: ["A) justificar a substituição paulatina da mata nativa por polos de desenvolvimento industrial voltados à exportação.", "B) demonstrar cientificamente a superioridade hierárquica do ser humano moderno sobre os ecossistemas florestais.", "C) desconstruir a visão mecanicista e predatória de que a natureza existe unicamente como um recurso passivo.", "D) separar rigidamente os conceitos sociológicos de sociedade urbana moderna e o meio ambiente silvestre local.", "E) comprovar através da lógica formal que a preservação ecológica estrita inviabiliza o desenvolvimento das nações."], ans: 2},
+            {q: "A opção por aplicação manual de insumos agrícolas para não contaminar o solo exemplifica uma Ética Ambiental baseada na:", options: ["A) irresponsabilidade econômica, pois prioriza o romantismo ecológico em detrimento do lucro corporativo máximo.", "B) responsabilidade sistêmica, que busca um equilíbrio pragmático entre a atividade produtiva necessária e a integridade da terra.", "C) estagnação tecnológica intencional, recusando métodos modernos industriais para retornar a um modelo de subsistência.", "D) submissão incondicional às severas legislações internacionais de exportação que proíbem qualquer uso de insumos.", "E) crença filosófica utilitarista de que a natureza possui valor instrumental, devendo ser manipulada de forma imprudente."], ans: 1},
+            {q: "Criticar a ideia de que a humanidade constitui um 'clube exclusivo' separado da natureza, como faz Ailton Krenak, tem como hipótese defender que a devastação ecológica é reflexo de:", options: ["A) falha técnica contornável dos engenheiros florestais no planejamento do reflorestamento comercial de planícies.", "B) excesso de respeito contemplativo da civilização ocidental moderna pelas tradições místicas dos povos originários.", "C) uma fratura existencial e ontológica, na qual a sociedade industrial rompeu seu sentido de pertencimento à teia da vida.", "D) falta de exploração eficiente das imensas reservas minerais e fósseis ainda disponíveis nos oceanos profundos.", "E) avanço territorial insuficiente das lógicas estatais de privatização sobre os ecossistemas que permanecem intactos."], ans: 2},
+            {q: "Com base no 'Princípio Responsabilidade' ético contra o uso desenfreado dos recursos hoje, o argumento sustenta que:", options: ["A) a ética aplica-se exclusivamente aos seres humanos vivos no presente, não havendo deveres morais ao futuro incerto.", "B) as ações tecnológicas contemporâneas não possuem o direito de comprometer as condições de habitabilidade das futuras gerações.", "C) o esgotamento dos solos naturais é uma etapa necessária e justificada para impulsionar os investimentos na colonização de planetas.", "D) a justiça climática global exige que danos locais sejam suportados e pagos exclusivamente pelos países desenvolvidos do norte.", "E) a pobreza e a degradação são fenômenos naturais cíclicos, não possuindo conexão ética com decisões de uso de terras férteis."], ans: 1},
+            {q: "O monitoramento contínuo da saúde física coletado por smartphones de alto desempenho e conglomerados levanta o dilema da Bioética sobre:", options: ["A) O dever moral absoluto do Estado de expropriar patentes de hardware garantindo a produção gratuita de celulares.", "B) A ameaça silenciosa à privacidade do indivíduo e a fragilidade do consentimento no armazenamento de dados biométricos.", "C) A necessidade estrita de abolir internacionalmente o uso de microprocessadores para preservar a essência comportamental.", "D) A incapacidade técnica crônica dos sistemas digitais em prever surtos epidemiológicos utilizando redes corporativas globais.", "E) A garantia médica de que as corporações financeiras atuarão sob o princípio inflexível da beneficência terapêutica."], ans: 1},
+            {q: "Se algoritmos excluem injustamente alunos que precisam de recuperação escolar, isso ilustra a urgência de qual preceito da Ética Tecnológica?", options: ["A) A autonomia irrestrita da inteligência artificial, que deve ter julgamentos mantidos contra as interferências pedagógicas.", "B) A obrigatoriedade de se eliminar qualquer forma de avaliação manual, padronizando o ensino via redes neurais.", "C) A eficiência matemática das máquinas, demonstrando que as injustiças geradas são irrelevantes diante da velocidade do sistema.", "D) A necessidade inegociável de transparência nos critérios, aliada à responsabilidade e supervisão humana automatizada.", "E) A comprovação da incapacidade cognitiva dos estudantes em se adaptarem às exigências das plataformas de ensino remoto."], ans: 3},
+            {q: "O Termo de Consentimento Livre e Esclarecido para testes de medicamentos voluntários tem como objetivo fundamental proteger o princípio da:", options: ["A) beneficência institucional, outorgando aos cientistas credenciados decisão unilateral sobre o corpo de pacientes menos instruídos.", "B) justiça punitiva, que utiliza indivíduos de grupos vulneráveis como força de trabalho experimental em contrapartida ao atendimento.", "C) autonomia do indivíduo, assegurando que o sujeito compreenda riscos e propósitos antes de aceitar submeter-se à pesquisa.", "D) não maleficência corporativa, funcionando como escudo legal isentando empresas de arcar com os custos de possíveis sequelas.", "E) solidariedade coletiva obrigatória, exigindo que cidadãos sem comorbidades doem seus corpos ao avanço da ciência médica."], ans: 2}
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function startQuiz() {
+            document.getElementById('home-screen').classList.add('hidden-screen');
+            document.getElementById('quiz-screen').classList.remove('hidden-screen');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const qData = quizData[currentQuestion];
+            document.getElementById('current-q-num').innerText = currentQuestion + 1;
+            document.getElementById('progress-bar').style.width = `${((currentQuestion + 1) / quizData.length) * 100}%`;
+            document.getElementById('question-text').innerText = qData.q;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = ''; 
+
+            const letters = ['A', 'B', 'C', 'D', 'E'];
+            const colors = ['bg-indigo-500', 'bg-blue-500', 'bg-teal-500', 'bg-green-500', 'bg-purple-500'];
+
+            qData.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = `${colors[index]} option-btn text-white text-left text-lg md:text-xl font-semibold py-4 px-6 rounded-2xl hover:opacity-90 transition-all flex items-center shadow-md`;
+                btn.innerHTML = `<span class="bg-white text-gray-900 rounded-full w-10 h-10 flex items-center justify-center mr-4 font-bold shrink-0 text-xl shadow-inner">${letters[index]}</span> <span class="leading-snug">${opt.substring(3)}</span>`;
+                btn.onclick = () => checkAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function showFeedbackModal(isCorrect) {
+            const modal = document.getElementById('feedback-modal');
+            const card = document.getElementById('feedback-card');
+            const icon = document.getElementById('feedback-icon');
+            const title = document.getElementById('feedback-title');
+            const pts = document.getElementById('feedback-pts');
+
+            modal.classList.remove('hidden-screen');
+            
+            // Força a renderização do DOM para rodar a animação
+            void modal.offsetWidth;
+
+            modal.classList.remove('opacity-0');
+            modal.classList.add('opacity-100');
+            card.classList.remove('scale-50');
+            card.classList.add('scale-100');
+
+            if(isCorrect) {
+                card.className = "px-16 py-12 rounded-3xl shadow-2xl text-center transform scale-100 transition-transform duration-300 flex flex-col items-center justify-center bg-green-500 text-white";
+                icon.innerText = "🌟";
+                title.innerText = "Correto!";
+                pts.innerText = "+1 Ponto";
+            } else {
+                card.className = "px-16 py-12 rounded-3xl shadow-2xl text-center transform scale-100 transition-transform duration-300 flex flex-col items-center justify-center bg-red-500 text-white";
+                icon.innerText = "❌";
+                title.innerText = "Incorreto!";
+                pts.innerText = "Poxa, não foi dessa vez.";
+            }
+
+            // Esconde modal e avança a pergunta após 2 segundos
+            setTimeout(() => {
+                modal.classList.remove('opacity-100');
+                modal.classList.add('opacity-0');
+                
+                setTimeout(() => {
+                    modal.classList.add('hidden-screen');
+                    currentQuestion++;
+                    if (currentQuestion < quizData.length) {
+                        loadQuestion();
+                    } else {
+                        showResults();
+                    }
+                }, 300); // Tempo da transição de sumiço
+            }, 2000); 
+        }
+
+        function checkAnswer(selectedIndex, btnElement) {
+            const correctIndex = quizData[currentQuestion].ans;
+            const buttons = document.querySelectorAll('.option-btn');
+            
+            // Desabilita botões
+            buttons.forEach(b => b.disabled = true);
+
+            if (selectedIndex === correctIndex) {
+                score++;
+                document.getElementById('score-display').innerText = score;
+                btnElement.classList.add('ring-8', 'ring-green-400');
+                showFeedbackModal(true);
+            } else {
+                btnElement.classList.add('ring-8', 'ring-red-400', 'opacity-50');
+                buttons[correctIndex].classList.add('ring-8', 'ring-green-400');
+                showFeedbackModal(false);
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-screen').classList.add('hidden-screen');
+            document.getElementById('result-screen').classList.remove('hidden-screen');
+            
+            document.getElementById('final-score').innerText = score;
+            
+            const feedback = document.getElementById('feedback-message');
+            if(score >= 40) {
+                feedback.innerText = "Excelente! Você demonstrou um domínio profundo sobre os dilemas éticos, ambientais e culturais. Uma verdadeira mente filosófica!";
+            } else if (score >= 25) {
+                feedback.innerText = "Muito bom! Você tem uma ótima base conceitual, continue afiando seu pensamento crítico.";
+            } else {
+                feedback.innerText = "Foi um ótimo começo, mas a filosofia exige constante revisão. Que tal repassar a apostila inicial e tentar de novo?";
+            }
+        }
+    </script>
+</body>
+</html>
