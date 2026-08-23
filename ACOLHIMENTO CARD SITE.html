@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pesquisa de Acolhimento e Convivência Escolar - 8º e 9º Anos EF</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4F46E5;
+      --primary-hover: #4338CA;
+      --primary-light: #EEF2FF;
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+      --success: #10B981;
+      --shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.06), 0 8px 12px -6px rgba(0, 0, 0, 0.04);
+      --radius: 24px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+    }
+
+    /* Top Bar & Progress */
+    .header-bar {
+      margin-bottom: 20px;
+    }
+
+    .progress-container {
+      background: var(--border);
+      height: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .progress-fill {
+      background: linear-gradient(90deg, #4F46E5, #06B6D4);
+      height: 100%;
+      width: 0%;
+      transition: width 0.35s ease;
+      border-radius: 999px;
+    }
+
+    .progress-stats {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    /* Card Box */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      padding: 38px 32px;
+      display: none;
+      animation: cardFadeIn 0.3s ease forwards;
+    }
+
+    .card.active {
+      display: block;
+    }
+
+    @keyframes cardFadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Badges & Titles */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 12px;
+      line-height: 1.25;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 0.975rem;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    select {
+      width: 100%;
+      padding: 15px 18px;
+      border-radius: 14px;
+      border: 1.5px solid var(--border);
+      background: #FFFFFF;
+      font-size: 1rem;
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    /* Info Box Anonimato */
+    .anonymous-box {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: #F0FDF4;
+      border: 1.5px solid #BBF7D0;
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin-bottom: 24px;
+    }
+
+    .anonymous-icon {
+      font-size: 1.35rem;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .anonymous-text h3 {
+      font-size: 0.925rem;
+      font-weight: 700;
+      color: #166534;
+      margin-bottom: 4px;
+    }
+
+    .anonymous-text p {
+      font-size: 0.85rem;
+      color: #15803D;
+      line-height: 1.45;
+    }
+
+    /* Question Card Elements */
+    .question-title {
+      font-size: 1.22rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 24px;
+      line-height: 1.5;
+      min-height: 56px;
+    }
+
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    /* Wave Animation */
+    .option-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-radius: 16px;
+      border: 1.5px solid var(--border);
+      background: #FFFFFF;
+      cursor: pointer;
+      font-size: 0.975rem;
+      font-weight: 600;
+      color: var(--text-main);
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                  background-color 0.2s ease, 
+                  border-color 0.2s ease, 
+                  box-shadow 0.2s ease;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+    }
+
+    .option-btn.wave-active {
+      animation: waveIn 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    @keyframes waveIn {
+      0% {
+        opacity: 0;
+        transform: translateY(22px) scale(0.96);
+      }
+      70% {
+        transform: translateY(-3px) scale(1.01);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .option-btn:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      transform: translateX(6px);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.08);
+    }
+
+    .option-btn.selected {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: #FFFFFF;
+      transform: scale(1.02);
+      box-shadow: 0 6px 18px rgba(79, 70, 229, 0.25);
+    }
+
+    .option-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .option-emoji {
+      font-size: 1.35rem;
+      line-height: 1;
+    }
+
+    .option-indicator {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 800;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .option-btn.selected .option-indicator {
+      border-color: #FFFFFF;
+      background: #FFFFFF;
+      color: var(--primary);
+    }
+
+    /* Actions */
+    .card-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 15px 24px;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #FFFFFF;
+      flex-grow: 1;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1.5px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: #F1F5F9;
+      color: var(--text-main);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Success Card */
+    .success-icon {
+      width: 68px;
+      height: 68px;
+      background: #DCFCE7;
+      color: var(--success);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      margin: 0 auto 20px;
+    }
+
+    .center-content {
+      text-align: center;
+    }
+
+    .loading-spinner {
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 3px solid #FFFFFF;
+      width: 20px;
+      height: 20px;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header com Barra de Progresso -->
+  <div class="header-bar" id="headerBar" style="display: none;">
+    <div class="progress-container">
+      <div class="progress-fill" id="progressBar"></div>
+    </div>
+    <div class="progress-stats">
+      <span id="currentDimText">Dimensão 1</span>
+      <span id="progressText">Questão 1 de 30</span>
+    </div>
+  </div>
+
+  <!-- Card 1: Seleção de Turma & Aviso de Anonimato -->
+  <div class="card active" id="cardIntro">
+    <div class="badge">🌱 Clima & Convivência Escolar</div>
+    <h1>Pesquisa de Acolhimento</h1>
+    <p class="subtitle">
+      Queremos saber como você percebe o ambiente da nossa escola! Suas respostas sinceras nos ajudam a fortalecer o respeito mútuo, a segurança e a aprendizagem de todos.
+    </p>
+
+    <!-- Aviso de Anonimato -->
+    <div class="anonymous-box">
+      <div class="anonymous-icon">🔒</div>
+      <div class="anonymous-text">
+        <h3>Sua resposta é 100% anônima</h3>
+        <p>Não coletamos seu nome ou dados pessoais. Apenas as respostas e a turma informada serão registradas para diagnóstico pedagógico.</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="turmaSelect">Selecione sua Turma: *</label>
+      <select id="turmaSelect" autocomplete="off" required>
+        <option value="" disabled selected hidden>Clique para selecionar a turma...</option>
+        <option value="8º 01 EF">8º 01 EF</option>
+        <option value="8º 02 EF">8º 02 EF</option>
+        <option value="9º ano EF">9º ano EF</option>
+      </select>
+    </div>
+
+    <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="startSurvey()">
+      Iniciar Pesquisa →
+    </button>
+  </div>
+
+  <!-- Card 2: Perguntas com Efeito de Onda -->
+  <div class="card" id="cardQuestion">
+    <div class="badge" id="badgeDimension">Dimensão</div>
+    <h2 class="question-title" id="questionText">Texto da pergunta</h2>
+
+    <div class="options-grid" id="optionsContainer">
+      <button class="option-btn" onclick="selectOption(1)">
+        <div class="option-content">
+          <span class="option-emoji">🙁</span>
+          <span>Nunca / Quase nunca</span>
+        </div>
+        <div class="option-indicator">1</div>
+      </button>
+      <button class="option-btn" onclick="selectOption(2)">
+        <div class="option-content">
+          <span class="option-emoji">😕</span>
+          <span>Raramente</span>
+        </div>
+        <div class="option-indicator">2</div>
+      </button>
+      <button class="option-btn" onclick="selectOption(3)">
+        <div class="option-content">
+          <span class="option-emoji">😐</span>
+          <span>Às vezes</span>
+        </div>
+        <div class="option-indicator">3</div>
+      </button>
+      <button class="option-btn" onclick="selectOption(4)">
+        <div class="option-content">
+          <span class="option-emoji">🙂</span>
+          <span>Na maioria das vezes</span>
+        </div>
+        <div class="option-indicator">4</div>
+      </button>
+      <button class="option-btn" onclick="selectOption(5)">
+        <div class="option-content">
+          <span class="option-emoji">😃</span>
+          <span>Sempre / Quase sempre</span>
+        </div>
+        <div class="option-indicator">5</div>
+      </button>
+    </div>
+
+    <div class="card-actions">
+      <button class="btn btn-secondary" onclick="prevQuestion()" id="btnPrev">← Voltar</button>
+      <button class="btn btn-primary" onclick="nextQuestion()" id="btnNext" disabled>Avançar →</button>
+    </div>
+  </div>
+
+  <!-- Card 3: Revisão -->
+  <div class="card" id="cardReview">
+    <div class="badge">📝 Finalização</div>
+    <h1>Tudo pronto!</h1>
+    <p class="subtitle">
+      Você respondeu a todas as 30 perguntas. Clique no botão abaixo para enviar suas respostas diretamente para a planilha da escola.
+    </p>
+
+    <div style="background: #F1F5F9; padding: 18px; border-radius: 14px; margin-bottom: 24px;">
+      <p style="font-size: 0.95rem; color: #475569; line-height: 1.7;">
+        <strong>Turma informada:</strong> <span id="summaryTurma">-</span><br>
+        <strong>Formato de Envio:</strong> Resposta Anônima e Confidencial 🔒
+      </p>
+    </div>
+
+    <div class="card-actions">
+      <button class="btn btn-secondary" onclick="backToQuestions()">Revisar Respostas</button>
+      <button class="btn btn-primary" id="btnSubmit" onclick="submitSurvey()">
+        <span id="btnSubmitText">Enviar Respostas</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Card 4: Sucesso -->
+  <div class="card center-content" id="cardSuccess">
+    <div class="success-icon">✓</div>
+    <h1>Obrigado por Participar!</h1>
+    <p class="subtitle">
+      Sua contribuição é essencial para construirmos uma escola cada vez mais justa, segura e acolhedora para todos.
+    </p>
+    <button class="btn btn-secondary" onclick="resetAndRestart()">Nova Resposta</button>
+  </div>
+</div>
+
+<script>
+  // Link do Google Apps Script configurado:
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzxZvrp56sAuvCzhV2DnWNQTPwFUbPLPFMahx2jF6KsXvmmJZqZ3jZl61z92PPry8tKyg/exec";
+
+  // Garante que o campo de turma sempre inicie desmarcado
+  function resetTurmaSelect() {
+    const sel = document.getElementById('turmaSelect');
+    if (sel) {
+      sel.value = "";
+      sel.selectedIndex = 0;
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', resetTurmaSelect);
+  window.addEventListener('pageshow', resetTurmaSelect);
+
+  const questions = [
+    // Dimensão 1: Convivência, Pertencimento e Respeito Mútuo
+    { d: "Convivência & Respeito Mútuo", q: "Sinto-me integrado(a) e aceito(a) na comunidade escolar no dia a dia." },
+    { d: "Convivência & Respeito Mútuo", q: "Procuro conviver em harmonia e tratar meus colegas com respeito e educação." },
+    { d: "Convivência & Respeito Mútuo", q: "Encontro abertura na turma para interagir, participar dos grupos e fazer amizades." },
+    { d: "Convivência & Respeito Mútuo", q: "Respeito as diferenças de opinião e o jeito de ser dos outros estudantes." },
+    { d: "Convivência & Respeito Mútuo", q: "Percebo cooperação entre os colegas quando realizamos trabalhos e projetos em equipe." },
+    { d: "Convivência & Respeito Mútuo", q: "Procuro colaborar para que o ambiente da sala de aula seja agradável e favorável aos estudos." },
+
+    // Dimensão 2: Relação Pedagógica, Esforço e Apoio aos Estudos
+    { d: "Relação Pedagógica & Estudos", q: "Quando procuro os professores para tirar dúvidas ou pedir ajuda, recebo a devida atenção." },
+    { d: "Relação Pedagógica & Estudos", q: "Reconheço que os professores se dedicam para explicar a matéria de forma compreensível." },
+    { d: "Relação Pedagógica & Estudos", q: "Quando me dedico e realizo as atividades, sinto que meu esforço é reconhecido pelos educadores." },
+    { d: "Relação Pedagógica & Estudos", q: "Os critérios de avaliação e as orientações das atividades são explicados com clareza." },
+    { d: "Relação Pedagógica & Estudos", q: "A escola oferece oportunidades e orientações para quem precisa recuperar conteúdos e notas." },
+    { d: "Relação Pedagógica & Estudos", q: "Sinto que os professores mantêm uma postura de respeito e diálogo com a turma." },
+
+    // Dimensão 3: Normas de Convivência, Segurança e Mediação
+    { d: "Normas & Segurança", q: "Reconheço a importância das regras e normas para a segurança e organização da escola." },
+    { d: "Normas & Segurança", q: "A escola orienta os alunos e intervém com seriedade diante de agressões ou desrespeito." },
+    { d: "Normas & Segurança", q: "Sei que tenho liberdade para me expressar desde que respeite os direitos dos outros." },
+    { d: "Normas & Segurança", q: "Sei a quais profissionais recorrer na escola em caso de brigas, conflitos ou intimidação." },
+    { d: "Normas & Segurança", q: "Quando ocorrem divergências entre alunos, a escola busca conversar e orientar as partes." },
+    { d: "Normas & Segurança", q: "Cuido dos espaços comuns (pátio, salas e banheiros) para que continuem seguros e preservados." },
+
+    // Dimensão 4: Escuta, Apoio Socioemocional e Autorresponsabilidade
+    { d: "Apoio Emocional & Autorresponsabilidade", q: "A equipe pedagógica e a coordenação mantêm as portas abertas para quem necessita de orientação." },
+    { d: "Apoio Emocional & Autorresponsabilidade", q: "Compreendo que cometer erros nas atividades faz parte do processo de aprendizagem." },
+    { d: "Apoio Emocional & Autorresponsabilidade", q: "A escola promove diálogos e reflexões sobre convivência, emoções e projetos de vida." },
+    { d: "Apoio Emocional & Autorresponsabilidade", q: "Procuro ser sincero(a) e assumir minha parte de responsabilidade nas atitudes escolares." },
+    { d: "Apoio Emocional & Autorresponsabilidade", q: "Quando um colega passa por dificuldades, procuro ser solidário(a) ou avisar a equipe escolar." },
+    { d: "Apoio Emocional & Autorresponsabilidade", q: "Reconheço que minha presença e minha postura fazem diferença para o clima da turma." },
+
+    // Dimensão 5: Participação, Espaços e Construção Coletiva
+    { d: "Espaços & Construção Coletiva", q: "Contribuo para manter as salas de aula e os ambientes de convivência limpos e organizados." },
+    { d: "Espaços & Construção Coletiva", q: "A escola promove momentos de integração, esportes, gincanas ou projetos culturais." },
+    { d: "Espaços & Construção Coletiva", q: "Os estudantes têm canais e oportunidades para dar sugestões e expressar opiniões." },
+    { d: "Espaços & Construção Coletiva", q: "As atividades de acolhida no retorno às aulas foram planejadas para aproximar a comunidade escolar." },
+    { d: "Espaços & Construção Coletiva", q: "Reconheço a importância da parceria e do diálogo entre a escola e minha família." },
+    { d: "Espaços & Construção Coletiva", q: "Entendo que o acolhimento na escola é uma construção coletiva, que depende de todos nós." }
+  ];
+
+  let currentIdx = 0;
+  let answers = new Array(questions.length).fill(null);
+  let turma = "";
+
+  function showCard(cardId) {
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+    document.getElementById(cardId).classList.add('active');
+  }
+
+  function startSurvey() {
+    const sel = document.getElementById('turmaSelect');
+    if (!sel.value) {
+      alert("Por favor, selecione sua turma para continuar.");
+      return;
+    }
+    turma = sel.value;
+
+    document.getElementById('headerBar').style.display = 'block';
+    currentIdx = 0;
+    renderQuestion();
+    showCard('cardQuestion');
+  }
+
+  function renderQuestion() {
+    const q = questions[currentIdx];
+    document.getElementById('badgeDimension').innerText = `Dimensão: ${q.d}`;
+    document.getElementById('currentDimText').innerText = q.d;
+    document.getElementById('questionText').innerText = `${currentIdx + 1}. ${q.q}`;
+    document.getElementById('progressText').innerText = `Questão ${currentIdx + 1} de ${questions.length}`;
+    
+    const percent = Math.round(((currentIdx) / questions.length) * 100);
+    document.getElementById('progressBar').style.width = `${percent}%`;
+
+    const btns = document.querySelectorAll('.option-btn');
+    
+    // Animação de onda em cascata
+    btns.forEach((b, i) => {
+      b.classList.remove('wave-active', 'selected');
+      void b.offsetWidth; // Reflow para reiniciar a animação
+      b.style.animationDelay = `${i * 65}ms`;
+      b.classList.add('wave-active');
+
+      if (answers[currentIdx] === (i + 1)) {
+        b.classList.add('selected');
+      }
+    });
+
+    document.getElementById('btnPrev').style.visibility = currentIdx === 0 ? 'hidden' : 'visible';
+    document.getElementById('btnNext').disabled = answers[currentIdx] === null;
+  }
+
+  function selectOption(val) {
+    answers[currentIdx] = val;
+    
+    const btns = document.querySelectorAll('.option-btn');
+    btns.forEach((b, i) => {
+      if (i + 1 === val) {
+        b.classList.add('selected');
+      } else {
+        b.classList.remove('selected');
+      }
+    });
+
+    document.getElementById('btnNext').disabled = false;
+
+    // Avanço automático suave
+    setTimeout(() => {
+      nextQuestion();
+    }, 220);
+  }
+
+  function nextQuestion() {
+    if (answers[currentIdx] === null) return;
+    if (currentIdx < questions.length - 1) {
+      currentIdx++;
+      renderQuestion();
+    } else {
+      document.getElementById('headerBar').style.display = 'none';
+      document.getElementById('summaryTurma').innerText = turma;
+      showCard('cardReview');
+    }
+  }
+
+  function prevQuestion() {
+    if (currentIdx > 0) {
+      currentIdx--;
+      renderQuestion();
+    }
+  }
+
+  function backToQuestions() {
+    document.getElementById('headerBar').style.display = 'block';
+    renderQuestion();
+    showCard('cardQuestion');
+  }
+
+  async function submitSurvey() {
+    const btn = document.getElementById('btnSubmit');
+    const btnText = document.getElementById('btnSubmitText');
+    btn.disabled = true;
+    btnText.innerHTML = `<span class="loading-spinner"></span> Enviando...`;
+
+    const payload = {
+      turma: turma,
+      estudante: "Anônimo",
+      respostas: answers
+    };
+
+    try {
+      await fetch(WEB_APP_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      showCard('cardSuccess');
+    } catch (err) {
+      alert("Houve um erro no envio. Verifique sua conexão e tente novamente.");
+      btn.disabled = false;
+      btnText.innerText = "Enviar Respostas";
+    }
+  }
+
+  function resetAndRestart() {
+    answers = new Array(questions.length).fill(null);
+    turma = "";
+    currentIdx = 0;
+    resetTurmaSelect();
+    showCard('cardIntro');
+  }
+</script>
+</body>
+</html>
