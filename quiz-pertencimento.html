@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: O Termômetro do Clima Escolar</title>
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --primary: #4F46E5;
+            --secondary: #4338CA;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --white: #ffffff;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 25px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .progress-container {
+            background-color: #e0e7ff;
+            height: 10px;
+            width: 100%;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #FCD34D;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .intro-screen, .end-screen {
+            text-align: center;
+        }
+
+        .question-screen {
+            display: none;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background-color: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 18px 20px;
+            font-size: 1.05rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .option-btn:hover {
+            background-color: #e0e7ff;
+            border-color: var(--primary);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .feedback-box {
+            display: none;
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            animation: fadeIn 0.5s;
+        }
+
+        .feedback-box h3 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .feedback-box p {
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .btn-action {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn-action:hover {
+            background-color: var(--secondary);
+        }
+
+        .profile-result {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 20px 0;
+            color: var(--primary);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <div class="header">
+        <h1>Termômetro do Clima Escolar</h1>
+        <p>Suas atitudes constroem a escola que você estuda.</p>
+    </div>
+    
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <div class="content">
+        <!-- TELA INICIAL -->
+        <div class="intro-screen" id="intro-screen">
+            <h2 style="margin-bottom: 15px;">Bem-vindo(a) ao Laboratório de Casos!</h2>
+            <p style="margin-bottom: 25px; color: var(--text-light); line-height: 1.6;">
+                Neste quiz, você não será avaliado por matérias, mas pelas suas atitudes. 
+                Você enfrentará 15 situações reais do cotidiano da nossa escola. <br><br>
+                <strong>Regra:</strong> Leia a situação, escolha a atitude que você REALMENTE tomaria e leia com muita atenção a reflexão que aparecerá depois. 
+                Sua missão é descobrir qual é o seu papel no clima escolar.
+            </p>
+            <button class="btn-action" onclick="startQuiz()">Iniciar o Quiz</button>
+        </div>
+
+        <!-- TELA DE QUESTÕES -->
+        <div class="question-screen" id="question-screen">
+            <div style="color: var(--text-light); font-weight: bold; margin-bottom: 10px;" id="question-counter">Questão 1 de 15</div>
+            <div class="question-text" id="question-text">Pergunta vai aqui</div>
+            
+            <div class="options-grid" id="options-grid">
+                <!-- Botões gerados via JS -->
+            </div>
+
+            <div class="feedback-box" id="feedback-box">
+                <h3 id="feedback-title">Feedback</h3>
+                <p id="feedback-text">Texto do feedback.</p>
+                <button class="btn-action" id="next-btn" onclick="nextQuestion()" style="width: 100%;">Próxima Situação</button>
+            </div>
+        </div>
+
+        <!-- TELA FINAL -->
+        <div class="end-screen" id="end-screen" style="display: none;">
+            <h2>Análise Concluída!</h2>
+            <div class="profile-result" id="profile-title">Seu Perfil</div>
+            <p id="profile-desc" style="line-height: 1.6; margin-bottom: 30px; font-size: 1.1rem; color: var(--text-dark);"></p>
+            <button class="btn-action" onclick="location.reload()">Refazer o Quiz</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            text: "Cenário 1: Um estudante novo chegou na sua turma hoje. Durante o recreio, ele está sentado sozinho num canto, mexendo no celular de cabeça baixa.",
+            options: [
+                { text: "A) Sinto pena, mas fico na minha roda de amigos. A coordenação ou os professores deveriam enturmar ele.", score: 0, 
+                  feedbackTitle: "Fuga de Responsabilidade ⚠️", 
+                  feedbackText: "Esperar que um adulto resolva a convivência social é abrir mão do seu poder. O pertencimento entre os alunos é criado POR alunos. Ao ignorar, você validou o isolamento." },
+                { text: "B) Dou um 'oi' se passar por perto, mas não chamo pro meu grupo porque meus amigos podem não gostar.", score: 1, 
+                  feedbackTitle: "Espectador Passivo 😐", 
+                  feedbackText: "Você teve empatia, mas o medo do julgamento do seu próprio grupo te paralisou. Isso mantém as 'panelinhas' ativas e o clima escolar fechado." },
+                { text: "C) Vou até ele, me apresento e convido para sentar com o meu grupo, mesmo que ele recuse por timidez.", score: 3, 
+                  feedbackTitle: "Protagonista do Acolhimento 🌟", 
+                  feedbackText: "Excelente! A escola só vira 'nossa' quando acolhemos quem chega. Você exerceu a corresponsabilidade na prática, criando um ambiente seguro." }
+            ]
+        },
+        {
+            text: "Cenário 2: Bateu o sinal do intervalo. A sala de aula ficou cheia de papéis amassados, embalagens de biscoito e garrafas vazias no chão.",
+            options: [
+                { text: "A) Reclamo que a sala está um lixo. Mas como não fui eu que sujei tudo, vou embora. A equipe de limpeza é paga para isso.", score: 0, 
+                  feedbackTitle: "Postura de Cliente 🛒", 
+                  feedbackText: "Tratar a escola como um shopping onde você é apenas um 'cliente' destrói o pertencimento. A equipe de limpeza faz a manutenção, mas a obrigação de não sujar é sua." },
+                { text: "B) Pego apenas o meu lixo e jogo na lixeira. O que os outros fizeram não é problema meu.", score: 1, 
+                  feedbackTitle: "Individualista 😐", 
+                  feedbackText: "Você fez o mínimo, o que é bom, mas o clima coletivo ainda perde. O ambiente onde VOCÊ estuda continuará ruim por causa da omissão coletiva." },
+                { text: "C) Recolho o meu lixo, pego uns papéis que estão perto e falo em voz alta: 'Galera, bora dar uma moral e não deixar a sala assim!'", score: 3, 
+                  feedbackTitle: "Líder de Ambiente 🌟", 
+                  feedbackText: "Perfeito! Você não apenas cuida do seu, mas influencia positivamente o ambiente. Isso é ter noção de comunidade e cuidado com o patrimônio de todos." }
+            ]
+        },
+        {
+            text: "Cenário 3: No grupo de WhatsApp da turma, alguém cria uma figurinha humilhando um colega por causa da aparência física dele.",
+            options: [
+                { text: "A) Dou risada e mando uns emojis. É só brincadeira, não tem por que levar a sério.", score: 0, 
+                  feedbackTitle: "Apoiador de Agressão ⚠️", 
+                  feedbackText: "Não existe 'brincadeira' quando o outro sofre. Ao rir, você se torna conivente e diretamente responsável pela destruição da saúde mental do seu colega." },
+                { text: "B) Acho errado e não dou risada, mas fico quieto para não sobrar para mim.", score: 1, 
+                  feedbackTitle: "Omissão por Medo 😐", 
+                  feedbackText: "O silêncio dos bons é o que fortalece o bullying. A vítima não sabe que você a apoia se você não disser nada." },
+                { text: "C) Mando uma mensagem cortando o assunto: 'Galera, isso não é engraçado, apaga isso', e chamo a pessoa afetada no privado para apoiar.", score: 3, 
+                  feedbackTitle: "Escudo Ativo 🌟", 
+                  feedbackText: "Você quebrou o ciclo de violência! O cyberbullying só sobrevive onde há plateia. Ao se posicionar, você protege o clima escolar e a vida de um colega." }
+            ]
+        },
+        {
+            text: "Cenário 4: O professor está tentando explicar um conteúdo super importante, mas metade da sala não para de conversar e fazer piada.",
+            options: [
+                { text: "A) Entro na onda e começo a conversar também. Se a aula tá chata, o professor que dê um jeito de controlar a turma.", score: 0, 
+                  feedbackTitle: "Terceirização de Culpa ⚠️", 
+                  feedbackText: "A culpa não é exclusiva do professor. A aprendizagem é uma via de mão dupla. Boicotar a aula prejudica o seu próprio futuro e o dos colegas." },
+                { text: "B) Fico quieto no meu canto, deito a cabeça na mesa e espero a bagunça acabar.", score: 1, 
+                  feedbackTitle: "Desconectado 😐", 
+                  feedbackText: "Você não atrapalhou, mas também se isolou do processo. O sentimento de não pertencimento começa quando a gente desiste de prestar atenção." },
+                { text: "C) Tento focar, faço perguntas sobre a matéria para trazer a atenção de volta e, se preciso, dou um toque nos colegas mais próximos para focarem.", score: 3, 
+                  feedbackTitle: "Foco no Futuro 🌟", 
+                  feedbackText: "Incrível! Você entende que o seu Projeto de Vida não pode ser pausado pela falta de maturidade da turma. Você assumiu as rédeas do seu aprendizado." }
+            ]
+        },
+        {
+            text: "Cenário 5: Um professor cometeu um erro na correção da sua prova ou foi ríspido com você sem você ter feito nada.",
+            options: [
+                { text: "A) Bato boca na frente da sala toda para mostrar que ele está errado e eu estou certo.", score: 0, 
+                  feedbackTitle: "Reativo ⚠️", 
+                  feedbackText: "Para exigir respeito, é preciso oferecer respeito. Gritar tira sua razão e cria um clima de guerra na sala de aula. Você escolheu o ataque ao invés do diálogo." },
+                { text: "B) Engulo seco, aceito a nota baixa e fico com raiva do professor o ano inteiro.", score: 1, 
+                  feedbackTitle: "Ressentido 😐", 
+                  feedbackText: "O ressentimento silencioso só faz mal a você mesmo. Você abriu mão do seu direito de defesa por não saber como se comunicar." },
+                { text: "C) Espero o fim da aula, vou até a mesa dele e, com educação e firmeza, mostro o erro e peço para ele reavaliar.", score: 3, 
+                  feedbackTitle: "Comunicação Assertiva 🌟", 
+                  feedbackText: "Maturidade nível máximo! Professores também erram. Abordar o problema com respeito constrói pontes e garante que você seja ouvido como um jovem adulto." }
+            ]
+        },
+        {
+            text: "Cenário 6: É dia de trabalho em grupo. Uma pessoa que tem muita dificuldade na matéria ou que é mais lenta acabou ficando de fora das equipes.",
+            options: [
+                { text: "A) Não faço nada. Meu grupo já está cheio e a gente quer tirar nota boa. Problema de quem não se enturma.", score: 0, 
+                  feedbackTitle: "Filtro de Exclusão ⚠️", 
+                  feedbackText: "A exclusão intelectual é uma das piores formas de bullying. Você priorizou uma nota em vez do desenvolvimento humano e do clima da sala." },
+                { text: "B) Sinto pena, olho para a pessoa, mas espero que o professor obrigue algum grupo a aceitá-la.", score: 1, 
+                  feedbackTitle: "Terceirização da Empatia 😐", 
+                  feedbackText: "Esperar a intervenção do professor cria uma situação humilhante para o colega (o famoso 'grupo que foi obrigado a aceitar')." },
+                { text: "C) Chamo a pessoa para o meu grupo e divido as tarefas de um jeito que ela consiga contribuir e aprender junto.", score: 3, 
+                  feedbackTitle: "Líder Inclusivo 🌟", 
+                  feedbackText: "A verdadeira liderança levanta os outros. Ao fazer isso, você transformou a sala num ambiente de cooperação e fortaleceu o sentimento de capacidade do seu colega." }
+            ]
+        },
+        {
+            text: "Cenário 7: Você vê um colega da sua turma arranhando a porta do banheiro ou quebrando um equipamento da escola.",
+            options: [
+                { text: "A) Acho maneiro ou não ligo. A escola é do governo mesmo, eles que consertem.", score: 0, 
+                  feedbackTitle: "Ignorância Cidadã ⚠️", 
+                  feedbackText: "A escola não é 'do governo', a escola é SUA. O dinheiro usado para consertar o que foi quebrado sai do bolso dos seus pais e falta para outras melhorias." },
+                { text: "B) Saio de perto e finjo que não vi nada para não me chamarem de 'dedo-duro'.", score: 1, 
+                  feedbackTitle: "Conivência Silenciosa 😐", 
+                  feedbackText: "O medo de julgamento fez você ser cúmplice da destruição do seu próprio espaço. A conivência gera um ambiente degradado." },
+                { text: "C) Dou um toque no colega: 'Cara, para com isso, nós que usamos esse espaço', ou aviso a gestão discretamente para evitar a depredação.", score: 3, 
+                  feedbackTitle: "Protetor do Bem Comum 🌟", 
+                  feedbackText: "Cuidar do espaço coletivo é a base do pertencimento. Você demonstrou que tem voz ativa para defender o ambiente onde passa grande parte da sua vida." }
+            ]
+        },
+        {
+            text: "Cenário 8: Você tem uma ideia muito legal para melhorar algo na escola (um torneio, um clube de leitura, uma horta).",
+            options: [
+                { text: "A) Fico só reclamando que a escola é chata e nunca tem nada legal para fazer.", score: 0, 
+                  feedbackTitle: "Reclamão Profissional ⚠️", 
+                  feedbackText: "Vitimização. É muito fácil apontar os defeitos esperando que os outros criem o entretenimento para você. Isso não muda a realidade." },
+                { text: "B) Comento com um amigo que 'seria legal se tivesse', mas não falo com nenhum professor porque acho que não vão dar bola.", score: 1, 
+                  feedbackTitle: "Sonhador Passivo 😐", 
+                  feedbackText: "Ideias na cabeça não mudam o clima da escola. A autossabotagem de achar que não será ouvido te impede de exercitar o protagonismo." },
+                { text: "C) Escrevo a ideia no papel, junto uns amigos que pensam igual e vou apresentar a proposta para um professor ou para a diretora.", score: 3, 
+                  feedbackTitle: "Agente de Transformação 🌟", 
+                  feedbackText: "É assim que o mundo avança! Transformar reclamação em projeto e ir até a gestão é a atitude exigida de grandes profissionais no seu Projeto de Vida." }
+            ]
+        },
+        {
+            text: "Cenário 9: As regras da escola determinam um horário ou uniforme específico e você não concorda com isso.",
+            options: [
+                { text: "A) Quebro a regra de propósito para desafiar a escola e causo tumulto na portaria.", score: 0, 
+                  feedbackTitle: "Rebeldia Sem Causa ⚠️", 
+                  feedbackText: "Desobedecer por desobedecer não é questionamento, é imaturidade. Em qualquer emprego futuro, regras existirão. Bater de frente cria atrito, não solução." },
+                { text: "B) Cumpro a regra emburrado(a), xingando a escola nas redes sociais.", score: 1, 
+                  feedbackTitle: "Acumulador de Estresse 😐", 
+                  feedbackText: "Você evita a punição, mas envenena o clima escolar espalhando negatividade sem tentar resolver a raiz do que te incomoda." },
+                { text: "C) Cumpro a regra, mas organizo um abaixo-assinado ou procuro o grêmio/coordenação para propor, com argumentos, por que a regra deve mudar.", score: 3, 
+                  feedbackTitle: "Cidadania Ativa 🌟", 
+                  feedbackText: "Democracia pura. Você respeita o pacto coletivo atual, mas usa as vias corretas e argumentação lógica para propor melhorias. Você tem postura adulta." }
+            ]
+        },
+        {
+            text: "Cenário 10: Um boato pesado (fofoca falsa) sobre a vida pessoal de uma menina da sua turma começa a circular no recreio.",
+            options: [
+                { text: "A) Escuto, fico chocado e vou correndo contar para os meus amigos porque a fofoca é muito boa.", score: 0, 
+                  feedbackTitle: "Motor da Fofoca ⚠️", 
+                  feedbackText: "Você ativou o modo destruição. A maioria dos casos graves de saúde mental e evasão escolar começa exatamente quando pessoas espalham fofocas." },
+                { text: "B) Eu escuto, não repasso para ninguém, mas também não faço nada para desmentir.", score: 1, 
+                  feedbackTitle: "Receptor Neutro 😐", 
+                  feedbackText: "Você não piorou as coisas, mas o boato continuou circulando. Omissão não machuca quem fala, mas continua ferindo quem é o alvo." },
+                { text: "C) Corto imediatamente quem me contou: 'Isso é mentira, e mesmo que fosse verdade, não é da nossa conta. Parem de espalhar isso.'", score: 3, 
+                  feedbackTitle: "Quebra-Correntes 🌟", 
+                  feedbackText: "Responsabilidade emocional! Você usou sua influência para estancar o dano. Um clima de pertencimento exige que as pessoas se sintam seguras contra difamações." }
+            ]
+        },
+        {
+            text: "Cenário 11: Dois amigos seus começam a discutir muito feio na sala, quase chegando às vias de fato (agressão).",
+            options: [
+                { text: "A) Pego o celular para gravar e grito 'Briga! Briga!' para botar fogo na discussão.", score: 0, 
+                  feedbackTitle: "Promotor do Caos ⚠️", 
+                  feedbackText: "Falta total de empatia. Transformar o desespero e a raiva dos outros em entretenimento destrói a confiança coletiva da turma." },
+                { text: "B) Fico na minha carteira só olhando. Não quero me meter e sobrar um soco pra mim.", score: 1, 
+                  feedbackTitle: "Espectador Comum 😐", 
+                  feedbackText: "O instinto de autopreservação é normal, mas em uma comunidade, assistir passivamente à violência normaliza a agressão no ambiente." },
+                { text: "C) Entro no meio com firmeza, chamo outras pessoas para ajudar a separar e digo: 'Galera, parou! Vamos respirar e resolver isso sem violência.'", score: 3, 
+                  feedbackTitle: "Pacificador de Crises 🌟", 
+                  feedbackText: "Liderança e controle emocional! Você evitou uma suspensão para os seus amigos e manteve o espaço da sala de aula como um local de paz." }
+            ]
+        },
+        {
+            text: "Cenário 12: A escola organiza uma palestra sobre saúde emocional ou projeto de vida, mas o palestrante não é muito animado.",
+            options: [
+                { text: "A) Pego o celular, coloco o fone de ouvido ou começo a conversar alto com o colega de trás.", score: 0, 
+                  feedbackTitle: "Boicotador ⚠️", 
+                  feedbackText: "Desrespeito direto com o tempo do outro e com os colegas que tentam prestar atenção. É a atitude do 'só ligo para mim mesmo'." },
+                { text: "B) Fico em silêncio absoluto para não levar bronca, mas durmo de olhos abertos.", score: 1, 
+                  feedbackTitle: "Corpo Presente, Mente Ausente 😐", 
+                  feedbackText: "Você cumpre a regra social do silêncio, mas perdeu uma oportunidade. Mesmo em situações chatas, treinar a atenção é uma habilidade para a vida." },
+                { text: "C) Mantenho postura de respeito, tento filtrar o que há de útil na fala e, no final, dou um feedback construtivo na pesquisa de satisfação.", score: 3, 
+                  feedbackTitle: "Respeito e Foco 🌟", 
+                  feedbackText: "Isso é maturidade. Respeitar quem está falando à frente (seja professor, colega ou convidado) é a base de um clima escolar maduro." }
+            ]
+        },
+        {
+            text: "Cenário 13: O prazo final para entregar um trabalho bimestral gigante está chegando e sua equipe não fez nada ainda.",
+            options: [
+                { text: "A) Coloco a culpa nos outros membros do grupo que 'não ajudam', me faço de vítima e entrego qualquer coisa.", score: 0, 
+                  feedbackTitle: "Síndrome de Vítima ⚠️", 
+                  feedbackText: "Culpar os outros não muda a nota. Se você está no grupo, a responsabilidade de puxar a frente ou cobrar a galera também era sua." },
+                { text: "B) Faço o trabalho inteiro sozinho de madrugada, coloco o nome de todo mundo e fico morrendo de raiva.", score: 1, 
+                  feedbackTitle: "Salvador Mártir 😐", 
+                  feedbackText: "Você resolveu o sintoma, mas não o problema. Fazer tudo sozinho ensina aos seus colegas que eles podem sempre encostar em você." },
+                { text: "C) Chamo o grupo no WhatsApp, divido as tarefas com prazos curtos (para hoje) e aviso: 'Quem não enviar sua parte, vai ficar sem o nome'.", score: 3, 
+                  feedbackTitle: "Gestor de Equipe 🌟", 
+                  feedbackText: "Atitude profissional. No Projeto de Vida, saber gerenciar pessoas, cobrar prazos e impor limites éticos é fundamental para qualquer carreira." }
+            ]
+        },
+        {
+            text: "Cenário 14: Um professor aplica uma atividade muito difícil. Muita gente da sala tirou nota vermelha.",
+            options: [
+                { text: "A) Digo que o professor é péssimo, que a prova foi injusta e que a matéria não serve para nada.", score: 0, 
+                  feedbackTitle: "Modo Defesa ⚠️", 
+                  feedbackText: "Reação clássica de quem não quer encarar a própria falha. Atacar a matéria ou o professor é um mecanismo para não ter que estudar mais." },
+                { text: "B) Aceito a nota vermelha calado, acho que sou burro e que nunca vou aprender essa disciplina.", score: 1, 
+                  feedbackTitle: "Derrotista 😐", 
+                  feedbackText: "Você interiorizou o fracasso. O clima escolar afunda quando os alunos perdem a confiança na própria capacidade de aprender e melhorar." },
+                { text: "C) Analiso o que errei. Peço ao professor que retome aquele conteúdo e organizo um grupo de estudos com quem entendeu a matéria.", score: 3, 
+                  feedbackTitle: "Mentalidade de Crescimento 🌟", 
+                  feedbackText: "Visão estratégica! Um erro é apenas um dado. Ao invés de culpar o professor ou se culpar, você mapeou o problema e buscou uma solução." }
+            ]
+        },
+        {
+            text: "Cenário 15 (Final): No fundo, de quem você acha que é a responsabilidade de fazer esta escola ser um lugar maravilhoso de se estudar?",
+            options: [
+                { text: "A) Do Governo, da Sedu, da Diretora e dos Professores. Eles são pagos para isso. Eu sou só um aluno.", score: 0, 
+                  feedbackTitle: "Passividade Total ⚠️", 
+                  feedbackText: "A maior armadilha do clima escolar é acreditar que o bem-estar pode ser 'comprado' ou 'oferecido' por uma autoridade. Isso não é verdade." },
+                { text: "B) Metade da direção/professores para arrumar a estrutura, e metade dos meus colegas, que são muito bagunceiros.", score: 1, 
+                  feedbackTitle: "Quase lá, mas excluiu você 😐", 
+                  feedbackText: "Você enxergou os outros, mas esqueceu que VOCÊ também é parte do problema ou da solução diariamente." },
+                { text: "C) É NOSSA. De cada aluno que senta na carteira, de cada professor e da gestão. A escola é o que nós fazemos dela todos os dias.", score: 3, 
+                  feedbackTitle: "Corresponsabilidade Real 🌟", 
+                  feedbackText: "É isso! O sentimento de pertencimento só nasce quando nos sentimos donos do espaço e responsáveis pelos resultados. O poder está com você." }
+            ]
+        }
+    ];
+
+    let currentQuestion = 0;
+    let totalScore = 0;
+
+    const introScreen = document.getElementById('intro-screen');
+    const questionScreen = document.getElementById('question-screen');
+    const endScreen = document.getElementById('end-screen');
+    
+    const questionCounter = document.getElementById('question-counter');
+    const questionText = document.getElementById('question-text');
+    const optionsGrid = document.getElementById('options-grid');
+    const feedbackBox = document.getElementById('feedback-box');
+    const feedbackTitle = document.getElementById('feedback-title');
+    const feedbackText = document.getElementById('feedback-text');
+    const nextBtn = document.getElementById('next-btn');
+    const progressBar = document.getElementById('progress-bar');
+
+    function startQuiz() {
+        introScreen.style.display = 'none';
+        questionScreen.style.display = 'block';
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        const q = questions[currentQuestion];
+        questionCounter.innerText = `Análise ${currentQuestion + 1} de ${questions.length}`;
+        questionText.innerText = q.text;
+        
+        // Atualiza a barra de progresso
+        const progress = (currentQuestion / questions.length) * 100;
+        progressBar.style.width = `${progress}%`;
+
+        // Esconde feedback
+        feedbackBox.style.display = 'none';
+        
+        // Limpa as opções e cria os botões novos
+        optionsGrid.innerHTML = '';
+        q.options.forEach((opt, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt.text;
+            btn.onclick = () => selectOption(opt, btn);
+            optionsGrid.appendChild(btn);
+        });
+    }
+
+    function selectOption(selectedOption, clickedButton) {
+        // Desabilita todos os botões para não clicar duas vezes
+        const allButtons = document.querySelectorAll('.option-btn');
+        allButtons.forEach(btn => btn.disabled = true);
+
+        // Estiliza o botão clicado
+        clickedButton.style.backgroundColor = '#e0e7ff';
+        clickedButton.style.borderColor = '#4F46E5';
+        clickedButton.style.fontWeight = 'bold';
+
+        // Atualiza os pontos
+        totalScore += selectedOption.score;
+
+        // Mostra o feedback customizado dependendo do peso da resposta
+        feedbackTitle.innerText = selectedOption.feedbackTitle;
+        feedbackText.innerText = selectedOption.feedbackText;
+        
+        if(selectedOption.score === 3) {
+            feedbackBox.style.backgroundColor = '#ecfdf5'; // verde claro
+            feedbackTitle.style.color = '#047857';
+        } else if (selectedOption.score === 1) {
+            feedbackBox.style.backgroundColor = '#fffbeb'; // amarelo claro
+            feedbackTitle.style.color = '#b45309';
+        } else {
+            feedbackBox.style.backgroundColor = '#fef2f2'; // vermelho claro
+            feedbackTitle.style.color = '#b91c1c';
+        }
+
+        feedbackBox.style.display = 'block';
+        
+        // Altera texto do botão final se for a última pergunta
+        if(currentQuestion === questions.length - 1) {
+            nextBtn.innerText = "Ver Meu Resultado Final";
+        }
+    }
+
+    function nextQuestion() {
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        questionScreen.style.display = 'none';
+        endScreen.style.display = 'block';
+        progressBar.style.width = '100%';
+
+        const pTitle = document.getElementById('profile-title');
+        const pDesc = document.getElementById('profile-desc');
+
+        if (totalScore >= 38) {
+            pTitle.innerText = "🔵 Protagonista do Clima Escolar";
+            pTitle.style.color = "#2563eb";
+            pDesc.innerHTML = "Incrível! Você entende perfeitamente que o ambiente escolar é construído pelas suas ações. Você defende colegas, cuida do espaço e dialoga com a gestão e professores. O seu <strong>Projeto de Vida</strong> está muito bem estruturado, pois você tem postura de liderança, empatia e responsabilidade. Continue assim!";
+        } else if (totalScore >= 20) {
+            pTitle.innerText = "🟡 O Espectador Neutro";
+            pTitle.style.color = "#d97706";
+            pDesc.innerHTML = "Você é uma boa pessoa e não costuma causar problemas na escola. Porém, você se omite. Ao não defender quem sofre bullying ou não questionar o que está errado, você permite que o clima escolar fique ruim. Para alcançar o sucesso no seu futuro, você precisará sair da zona de conforto e começar a se posicionar mais!";
+        } else {
+            pTitle.innerText = "🔴 Nível de Alerta Máximo";
+            pTitle.style.color = "#dc2626";
+            pDesc.innerHTML = "Atenção! Suas respostas indicam que você tem uma postura de 'vitimização' ou de terceirizar a culpa sempre para os professores, escola ou colegas. Isso trava o seu desenvolvimento. O mundo lá fora exige pessoas que resolvam problemas, e não pessoas que apenas reclamam ou atacam os outros. Está na hora de repensar suas atitudes urgentes.";
+        }
+    }
+</script>
+
+</body>
+</html>
