@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula de Filosofia - Estética e Arte</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --text: #e6edf3;
+    --accent-yellow: #ffeb3b; 
+    --accent-cyan: #00e5ff;
+    --box-bg: #161b22;
+  }
+  
+  body {
+    margin: 0;
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 3.5vw;
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+  }
+
+  section {
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 3vw 5vw;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  h1 { 
+    color: var(--accent-yellow); 
+    font-size: 6vw; 
+    margin: 0 0 0.2em 0; 
+    text-align: center; 
+    text-transform: uppercase; 
+    line-height: 1.1; 
+  }
+
+  h2 { 
+    color: var(--accent-cyan); 
+    font-size: 4.5vw; 
+    margin: 0 0 0.5em 0; 
+    border-bottom: 0.5vw solid #30363d; 
+    padding-bottom: 2vh; 
+  }
+
+  .objetos { 
+    font-size: 2vw; 
+    color: #8b949e; 
+    text-align: center; 
+    margin-bottom: 1.5em; 
+    line-height: 1.4; 
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .objetivo { 
+    background: rgba(0, 229, 255, 0.05); 
+    border-left: 1.5vw solid var(--accent-cyan); 
+    padding: 3vh 4vw; 
+    font-weight: bold; 
+    font-size: 3.2vw; 
+    margin-bottom: 1em;
+    border-radius: 0 15px 15px 0;
+  }
+
+  p { 
+    margin: 0 0 1.2em 0; 
+    line-height: 1.4; 
+  }
+
+  .destaque { 
+    color: var(--accent-yellow); 
+    font-weight: bold; 
+  }
+
+  .pergunta-box {
+    background: var(--box-bg);
+    border-left: 1vw solid var(--accent-yellow);
+    padding: 2.5vh 3vw;
+    margin-bottom: 2.5vh;
+    font-size: 2.7vw; /* Reduzido levemente para caber as perguntas mais longas */
+    line-height: 1.4;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+
+  .titulo-pergunta {
+    color: var(--accent-cyan);
+    font-weight: bold;
+    display: block;
+    margin-bottom: 1vh;
+    font-size: 2.5vw;
+    text-transform: uppercase;
+  }
+
+  .numero {
+    color: var(--accent-yellow);
+    font-size: 3vw;
+    font-weight: 900;
+    margin-right: 10px;
+  }
+
+  .footer { 
+    font-size: 1.8vw; 
+    text-align: center; 
+    color: #484f58; 
+    margin-top: auto; 
+    padding-top: 2vh; 
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: ABERTURA -->
+<section>
+  <h1>Filosofia & Arte</h1>
+  
+  <div class="objetos">
+    Arte e Filosofia • A estética • O gosto, o belo e o sublime • Belo artístico e natural • Tipos de arte • Literatura • Arte de elite e popular • Engajamento social • Indústria do entretenimento
+  </div>
+  
+  <div class="objetivo">
+    OBJETIVO: Compreender e questionar o papel da arte, a definição do belo e os impactos da Indústria Cultural na nossa sociedade.
+  </div>
+  
+  <div class="footer">Prof. Marcos Cesana | Filosofia - 1ª Série Ensino Médio</div>
+</section>
+
+<!-- SLIDE 2: EXPLICAÇÃO PARTE 1 -->
+<section>
+  <h2>O que é Estética e Beleza?</h2>
+  <p>A <span class="destaque">Estética</span> é a área da Filosofia que investiga a essência da arte e do que consideramos belo.</p>
+  <p>Mas afinal, a beleza está no objeto ou nos olhos de quem vê? O nosso <span class="destaque">"bom gosto"</span> é natural ou é ensinado pela sociedade em que vivemos?</p>
+  <p>Além da beleza, a arte e a natureza podem despertar o <span class="destaque">Sublime</span>: um sentimento de choque, fascínio e até temor diante de algo grandioso (como a imensidão do universo).</p>
+</section>
+
+<!-- SLIDE 3: EXPLICAÇÃO PARTE 2 -->
+<section>
+  <h2>A Arte na Sociedade</h2>
+  <p>A arte não serve apenas para enfeitar. Ela é uma poderosa ferramenta de <span class="destaque">engajamento e resistência</span>, usada para dar voz aos marginalizados e denunciar injustiças.</p>
+  <p>Porém, vivemos sob forte influência da <span class="destaque">Indústria Cultural</span>. Ela transforma a arte em um produto padronizado e feito em massa para gerar lucro, dividindo o que consumimos entre "arte de elite" e "arte popular".</p>
+</section>
+
+<!-- SLIDE 4: ATIVIDADE PARTE 1 -->
+<section>
+  <h2>Hora do Debate (1/4)</h2>
+  
+  <div class="pergunta-box">
+    <span class="titulo-pergunta"><span class="numero">1.</span>Arte e Sociedade</span>
+    A arte precisa ser apenas "bonita"? Dê exemplos e explique como expressões como a música, o grafite ou o teatro podem funcionar como ferramentas de denúncia social e de resistência política.
+  </div>
+  
+  <div class="pergunta-box">
+    <span class="titulo-pergunta"><span class="numero">2.</span>Literatura e Empatia</span>
+    Como a leitura de um livro ou história de ficção nos ajuda a "entrar na pele" dos personagens e a desenvolver empatia por pessoas que vivem realidades totalmente diferentes da nossa?
+  </div>
+</section>
+
+<!-- SLIDE 5: ATIVIDADE PARTE 2 -->
+<section>
+  <h2>Hora do Debate (2/4)</h2>
+  
+  <div class="pergunta-box">
+    <span class="titulo-pergunta"><span class="numero">3.</span>Arte e IA</span>
+    Com o avanço das tecnologias de IA, uma imagem gerada por computador pode ser considerada uma obra de arte verdadeira? Se sim, quem é o artista: a máquina ou a pessoa que digitou o prompt (comando)? Defenda sua ideia.
+  </div>
+  
+  <div class="pergunta-box">
+    <span class="titulo-pergunta"><span class="numero">4.</span>Saúde Mental</span>
+    De que maneira criar arte (como desenhar, escrever, dançar ou tocar um instrumento) pode ajudar os jovens a expressarem suas angústias e a cuidarem da própria saúde mental?
+  </div>
+</section>
+
+<!-- SLIDE 6: ATIVIDADE PARTE 3 -->
+<section>
+  <h2>Hora do Debate (3/4)</h2>
+  
+  <div class="pergunta-box">
+    <span class="titulo-pergunta"><span class="numero">5.</span>Indústria Cultural</span>
+    Pense em como muitos filmes de super-heróis ou músicas pop parecem ser iguais uns aos outros. Segundo os pensadores da Escola de Frankfurt, por que a indústria do entretenimento prefere transformar a arte em um produto padronizado e repetitivo, focado em dar lucro, em vez de criar obras originais que nos façam pensar?
+  </div>
+  
+  <div class="pergunta-box">
+    <span class="titulo-pergunta"><span class="numero">6.</span>Natureza da Beleza</span>
+    O que é bonito depende exclusivamente do gosto de cada pessoa (subjetivo) ou será que existem regras e padrões universais que definem a beleza (objetivo)? Qual é a sua opinião sobre isso?
+  </div>
+</section>
+
+<!-- SLIDE 7: ATIVIDADE PARTE 4 -->
+<section>
+  <h2>Hora do Debate (4/4)</h2>
+  
+  <div class="pergunta-box">
+    <span class="titulo-pergunta"><span class="numero">7.</span>Belo Natural vs. Artístico</span>
+    Por que ficamos maravilhados ao ver um pôr do sol ao vivo, mas temos um sentimento diferente (e também encantador) ao ver uma pintura ou uma fotografia muito bem tirada desse mesmo pôr do sol?
+  </div>
+  
+  <div class="pergunta-box">
+    <span class="titulo-pergunta"><span class="numero">8.</span>A Construção do Gosto</span>
+    Ter "bom gosto" para roupas, músicas e filmes é algo que já nasce com a pessoa, ou será que o nosso gosto é moldado, ensinado e até imposto pela cultura e pela classe social em que vivemos? Justifique sua resposta.
+  </div>
+</section>
+
+</body>
+</html>
