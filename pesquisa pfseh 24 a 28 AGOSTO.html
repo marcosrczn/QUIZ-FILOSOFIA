@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PFSEH - Evolução Humana</title>
+    <style>
+        :root {
+            --bg-color: #0d1117; 
+            --card-bg: #161b22;
+            --text-color: #ffffff;
+            --accent-yellow: #ffcc00;
+            --accent-blue: #58a6ff;
+            --border-radius: 16px;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body, html {
+            min-height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
+            overflow-y: auto; /* Habilita a rolagem vertical */
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            gap: 40px;
+            max-width: 100%;
+        }
+
+        .header {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            border-left: 12px solid var(--accent-blue);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+        }
+
+        .header h1 {
+            font-size: 42px;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        
+        .header h2 {
+            font-size: 32px;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .header p {
+            font-size: 26px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            color: #c9d1d9;
+        }
+
+        .header strong {
+            color: var(--accent-yellow);
+        }
+
+        .cards-grid {
+            display: flex;
+            flex-direction: column; /* Coloca as questões uma abaixo da outra */
+            gap: 40px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            display: flex;
+            flex-direction: column;
+            border: 2px solid #30363d;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+
+        .card-title {
+            font-size: 34px;
+            color: var(--accent-yellow);
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .card-text {
+            font-size: 28px;
+            line-height: 1.6;
+            font-weight: 500;
+            text-align: justify;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <!-- CABEÇALHO -->
+        <div class="header">
+            <h1>PERCURSO FILOSÓFICO SOBRE EVOLUÇÃO HUMANA - PFSEH</h1>
+            <h2>3ª Série (2º Trimestre)</h2>
+            <p><strong>Objetos de Conhecimento:</strong> Bioética; Relações de poder e Ideologia desenvolvimentista; Implicações éticas das tecnologias.</p>
+            <p><strong>Objetivo de Aprendizagem:</strong> Refletir sobre ética, tecnologia e sustentabilidade para propor soluções criativas aos desafios futuros da evolução humana.</p>
+        </div>
+
+        <!-- LISTA DE QUESTÕES -->
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-title">Questão 1</div>
+                <div class="card-text">Imagine um futuro próximo em que aparelhos conectados ao cérebro permitam acessar a internet diretamente pelo pensamento. Se grandes empresas de tecnologia controlarem esses equipamentos, como a Bioética pode agir para garantir que nossos pensamentos não sejam vigiados ou vendidos como mercadorias?</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Questão 2</div>
+                <div class="card-text">A humanidade já planeja explorar recursos de asteroides e construir colônias em outros planetas. Como podemos evitar que essa busca acelerada por desenvolvimento econômico no espaço repita os mesmos erros de destruição ambiental e esgotamento de recursos que causamos no planeta Terra?</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Questão 3</div>
+                <div class="card-text">Se passarmos a usar sistemas de Inteligência Artificial para julgar conflitos sociais e aplicar leis, sob a justificativa de que as máquinas são mais "neutras e rápidas", quais são os perigos de perdermos a empatia humana e a capacidade de compreender as diferenças culturais na hora de resolver um problema da sociedade?</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Questão 4</div>
+                <div class="card-text">A bioengenharia já permite alterar o DNA de seres vivos. Se uma empresa decidir substituir as árvores naturais de uma cidade por árvores modificadas em laboratório que brilham no escuro (para substituir os postes de luz), quais problemas éticos essa troca da natureza orgânica por uma invenção tecnológica e comercial pode gerar?</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Questão 5</div>
+                <div class="card-text">Imagine que, no futuro, a maior parte dos empregos, do aprendizado e das relações sociais aconteça dentro de ambientes de realidade virtual. O que acontecerá com as comunidades tradicionais e os grupos que não tiverem acesso a essas tecnologias de ponta? Como podemos evitar que suas culturas sejam apagadas e excluídas do novo mundo?</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
