@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Filosófico: Estética, Arte e Indústria Cultural</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #12072b;
+      --bg-card: #1f1147;
+      --accent-purple: #864cbf;
+      --accent-gold: #ffd600;
+      --kahoot-red: #e21b3c;
+      --kahoot-blue: #1368ce;
+      --kahoot-yellow: #d89e00;
+      --kahoot-green: #26890c;
+      --text-main: #ffffff;
+      --text-muted: #b8a9d9;
+      --correct: #2ecc71;
+      --wrong: #e74c3c;
+      --font-title: 'Montserrat', sans-serif;
+      --font-body: 'Poppins', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: radial-gradient(circle at center, #2e1065 0%, #0f051d 100%);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 960px;
+      margin: auto;
+    }
+
+    .screen {
+      background: rgba(31, 17, 71, 0.94);
+      backdrop-filter: blur(16px);
+      border: 2px solid rgba(134, 76, 191, 0.4);
+      border-radius: 28px;
+      padding: 36px 32px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      display: none;
+      flex-direction: column;
+      animation: fadeIn 0.3s ease-out;
+    }
+    .screen.active { display: flex; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .badge-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .badge {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .badge.highlight {
+      background: linear-gradient(135deg, #ffd600, #ff8c00);
+      color: #000;
+      font-weight: 800;
+      border: none;
+    }
+
+    h1 {
+      font-family: var(--font-title);
+      font-size: 2.1rem;
+      font-weight: 900;
+      text-align: center;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #ffffff 40%, #d8b4fe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .info-box {
+      background: rgba(14, 5, 33, 0.7);
+      border: 1px solid rgba(134, 76, 191, 0.35);
+      border-radius: 18px;
+      padding: 20px;
+      margin: 18px 0;
+    }
+    .info-title {
+      font-weight: 700;
+      color: #ffd600;
+      font-size: 0.92rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .info-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 8px;
+      list-style: none;
+      margin-bottom: 12px;
+    }
+    .info-list li {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      border-left: 3px solid #864cbf;
+    }
+    .obj-box {
+      background: linear-gradient(90deg, rgba(134,76,191,0.2), rgba(255,214,0,0.1));
+      border-left: 4px solid #ffd600;
+      padding: 12px 14px;
+      border-radius: 0 10px 10px 0;
+      font-size: 0.9rem;
+      color: #ffffff;
+      line-height: 1.4;
+    }
+
+    .player-input {
+      background: rgba(0, 0, 0, 0.4);
+      border: 2px solid rgba(134, 76, 191, 0.5);
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-size: 1.05rem;
+      color: #fff;
+      outline: none;
+      width: 100%;
+      margin: 10px 0 16px 0;
+    }
+    .player-input:focus {
+      border-color: #ffd600;
+    }
+
+    .btn-main {
+      background: linear-gradient(135deg, #864cbf 0%, #6022a6 100%);
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      padding: 16px 24px;
+      font-family: var(--font-title);
+      font-size: 1.1rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(134, 76, 191, 0.5);
+      transition: all 0.2s;
+      width: 100%;
+    }
+    .btn-main:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.1);
+    }
+
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .score-badge {
+      background: rgba(255, 214, 0, 0.15);
+      border: 1.5px solid #ffd600;
+      color: #ffd600;
+      font-weight: 800;
+      padding: 8px 16px;
+      border-radius: 20px;
+    }
+    .timer-badge {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 700;
+    }
+    .timer-badge.urgent {
+      background: rgba(226, 27, 60, 0.3);
+      border-color: #e21b3c;
+      color: #ff6b81;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #864cbf, #ffd600);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .question-card {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 22px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .q-category {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #d8b4fe;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 6px;
+    }
+    .q-text {
+      font-size: 1.15rem;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 700px) {
+      .options-grid { grid-template-columns: 1fr; }
+      .screen { padding: 20px 16px; }
+      h1 { font-size: 1.5rem; }
+    }
+
+    .kahoot-btn {
+      border: none;
+      border-radius: 16px;
+      padding: 18px 16px;
+      color: #ffffff;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 5px 0 rgba(0, 0, 0, 0.3);
+      transition: transform 0.12s;
+    }
+    .kahoot-btn:hover:not(:disabled) { transform: translateY(-2px); }
+    .kahoot-btn:disabled { opacity: 0.45; cursor: default; }
+
+    .btn-red { background: var(--kahoot-red); }
+    .btn-blue { background: var(--kahoot-blue); }
+    .btn-yellow { background: var(--kahoot-yellow); }
+    .btn-green { background: var(--kahoot-green); }
+
+    .opt-icon {
+      font-size: 1.3rem;
+      width: 32px;
+      height: 32px;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .feedback-box {
+      border-radius: 18px;
+      padding: 18px;
+      margin-top: 10px;
+      display: none;
+    }
+    .feedback-box.correct {
+      background: rgba(38, 137, 12, 0.25);
+      border: 2px solid var(--correct);
+    }
+    .feedback-box.wrong {
+      background: rgba(226, 27, 60, 0.25);
+      border: 2px solid var(--wrong);
+    }
+    .fb-header {
+      font-family: var(--font-title);
+      font-weight: 800;
+      font-size: 1.2rem;
+      margin-bottom: 6px;
+    }
+    .fb-header.correct { color: #2ecc71; }
+    .fb-header.wrong { color: #ff6b81; }
+
+    .justification-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #ffd600;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+    .justification-text {
+      font-size: 0.92rem;
+      color: #f1f5f9;
+      line-height: 1.45;
+    }
+
+    .kahoot-btn.selected-correct { border: 3px solid #fff; box-shadow: 0 0 20px #2ecc71; opacity: 1 !important; }
+    .kahoot-btn.selected-wrong { border: 3px solid #fff; box-shadow: 0 0 20px #e74c3c; }
+    .kahoot-btn.is-answer { border: 3px dashed #2ecc71; opacity: 1 !important; }
+
+    .final-score {
+      font-family: var(--font-title);
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: #ffd600;
+      text-align: center;
+      margin: 10px 0;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .stat-card {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+    }
+    .stat-val { font-size: 1.5rem; font-weight: 800; color: #fff; }
+    .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+
+    .review-accordion {
+      max-height: 350px;
+      overflow-y: auto;
+      margin: 16px 0;
+      text-align: left;
+    }
+    .review-item {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      border-left: 4px solid #864cbf;
+    }
+    .review-item.rev-correct { border-left-color: #2ecc71; }
+    .review-item.rev-wrong { border-left-color: #e74c3c; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- 1. TELA INICIAL -->
+    <div id="start-screen" class="screen active">
+      <div class="badge-bar">
+        <span class="badge highlight">🎯 30 QUESTÕES</span>
+        <span class="badge">1ª Série EM • Filosofia</span>
+        <span class="badge">2º Trimestre</span>
+      </div>
+
+      <h1>QUIZ DE FILOSOFIA</h1>
+      <p style="text-align: center; margin-bottom: 14px; color: var(--text-muted);">Estética, Valores da Arte e a Crítica da Indústria Cultural</p>
+
+      <div class="info-box">
+        <div class="info-title">📚 Objetos de Conhecimento</div>
+        <ul class="info-list">
+          <li>Arte e Filosofia</li>
+          <li>O belo e a arte – a estética</li>
+          <li>O gosto, o belo e o sublime</li>
+          <li>Belo artístico e belo natural</li>
+          <li>Tipos de arte e Literatura</li>
+          <li>Arte de elite e arte popular?</li>
+          <li>Arte e engajamento político e social</li>
+          <li>Indústria do entretenimento e consumo</li>
+        </ul>
+
+        <div class="info-title" style="margin-top: 10px;">🎯 Objetivo de Aprendizagem</div>
+        <div class="obj-box">
+          Analisar criticamente os conceitos estéticos do belo e do sublime, as relações de poder na cultura e os impactos da inteligência artificial e da indústria cultural na autonomia do pensamento.
+        </div>
+      </div>
+
+      <label style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600;">Nome ou Apelido do(a) Estudante / Equipe:</label>
+      <input type="text" id="player-name" class="player-input" placeholder="Ex: Filósofo(a) da 1ª Série..." maxlength="25">
+      <button id="btn-start" class="btn-main">🚀 Iniciar Quiz Estilo Kahoot</button>
+    </div>
+
+    <!-- 2. TELA DO JOGO -->
+    <div id="game-screen" class="screen">
+      <div class="game-header">
+        <span id="q-counter" class="badge">Pergunta 1/30</span>
+        <div id="timer" class="timer-badge">⏱️ <span id="timer-val">30</span>s</div>
+        <div class="score-badge">🏆 <span id="score-val">0</span> pts</div>
+      </div>
+
+      <div class="progress-track">
+        <div id="progress-bar" class="progress-fill"></div>
+      </div>
+
+      <div class="question-card">
+        <div id="q-category" class="q-category">CATEGORIA</div>
+        <div id="q-text" class="q-text">Enunciado da questão...</div>
+      </div>
+
+      <div class="options-grid">
+        <button class="kahoot-btn btn-red" data-index="0"><div class="opt-icon">▲</div><span id="opt-0">Opção 1</span></button>
+        <button class="kahoot-btn btn-blue" data-index="1"><div class="opt-icon">◆</div><span id="opt-1">Opção 2</span></button>
+        <button class="kahoot-btn btn-yellow" data-index="2"><div class="opt-icon">●</div><span id="opt-2">Opção 3</span></button>
+        <button class="kahoot-btn btn-green" data-index="3"><div class="opt-icon">■</div><span id="opt-3">Opção 4</span></button>
+      </div>
+
+      <div id="feedback-box" class="feedback-box">
+        <div id="fb-header" class="fb-header"><span id="fb-icon"></span> <span id="fb-title"></span></div>
+        <div class="justification-title">💡 Justificativa Filosófica:</div>
+        <div id="fb-justification" class="justification-text"></div>
+        <button id="btn-next" class="btn-main" style="margin-top: 14px;">Próxima Questão ➔</button>
+      </div>
+    </div>
+
+    <!-- 3. TELA DE RESULTADOS -->
+    <div id="result-screen" class="screen">
+      <h1 style="text-align: center;">🏆 Desafio Concluído!</h1>
+      <p id="player-congrats" style="text-align: center; color: #fff; margin-top: 4px;"></p>
+      <div id="final-score-val" class="final-score">0 pts</div>
+
+      <div class="stats-grid">
+        <div class="stat-card"><div id="stat-correct" class="stat-val" style="color: #2ecc71;">0</div><div class="stat-label">Acertos (de 30)</div></div>
+        <div class="stat-card"><div id="stat-accuracy" class="stat-val" style="color: #ffd600;">0%</div><div class="stat-label">Aproveitamento</div></div>
+        <div class="stat-card"><div id="stat-streak" class="stat-val" style="color: #a855f7;">0</div><div class="stat-label">Maior Sequência</div></div>
+      </div>
+
+      <h3 style="color: #ffd600; font-size: 1rem; margin-top: 10px;">📖 Gabarito e Justificativas Completas:</h3>
+      <div id="review-list" class="review-accordion"></div>
+
+      <button id="btn-restart" class="btn-main" style="margin-top: 14px;">🔄 Jogar Novamente</button>
+    </div>
+
+  </div>
+
+  <script>
+    // Inserção das 30 questões integradas diretamente no script
+    const questions = [
+      {
+        id: 1, category: "Arte e Filosofia",
+        question: "Um estudante utilizou um gerador de Inteligência Artificial para criar em 3 segundos uma imagem hiper-realista a partir do comando: 'guerreiro triste na tempestade'. Do ponto de vista da reflexão filosófica sobre a arte, essa imagem gerada por algoritmo difere de uma pintura humana autêntica principalmente porque:",
+        options: ["A IA não utiliza cores do círculo cromático tradicional nas suas criações.", "Falta à máquina a consciência, a vivência subjetiva e a intencionalidade humana que fundamentam a criação artística.", "As imagens digitais nunca podem ser exibidas em museus ou galerias de arte contemporânea.", "O computador não consegue alcançar a perfeição técnica e o realismo visual necessários."],
+        answer: 1, justification: "Para a Filosofia, a arte não é mero produto de combinações probabilísticas de dados. Ela pressupõe consciência, intencionalidade e a expressão da experiência vivida e sensível do ser humano, algo que algoritmos e máquinas não possuem."
+      },
+      {
+        id: 2, category: "Arte e Filosofia",
+        question: "Na Grécia Antiga, Platão e Aristóteles debateram o conceito de 'mimese' (imitação da realidade). Enquanto Platão desconfiava dos artistas por criarem 'cópias de cópias' afastadas da verdade ideal, Aristóteles defendia que a arte:",
+        options: ["Deveria ser proibida na pólis por enganar os cidadãos com ilusões visuais.", "É uma forma legítima de conhecimento que permite purificar as emoções (catarse) e compreender ações humanas.", "Tem como única função servir de propaganda política para os governantes do Estado.", "Deve se limitar a copiar fielmente a natureza sem acrescentar criatividade."],
+        answer: 1, justification: "Aristóteles via a arte e a tragédia como instrumentos educativos e filosóficos fundamentais, capazes de provocar a 'catarse' (purificação das paixões) e revelar verdades universais sobre a condição humana."
+      },
+      {
+        id: 3, category: "Arte e Filosofia",
+        question: "Em 1917, Marcel Duchamp colocou um mictório de louça invertido em uma exposição de arte com o título 'A Fonte'. Com essa atitude (os chamados 'ready-mades'), o artista provocou a filosofia a entender que a arte:",
+        options: ["Depende exclusivamente do tempo e da habilidade manual que o artesão leva para esculpir uma peça.", "Está no conceito, na provocação e na escolha do artista em ressignificar o objeto, e não apenas no valor material da peça.", "Perdeu todo o seu valor e deveria ser substituída pelo trabalho industrial prático.", "Só pode ser considerada legítima se for bonita, agradável e feita de ouro ou mármore."],
+        answer: 1, justification: "Duchamp inaugurou a arte conceitual ao demonstrar que o estatuto artístico de um objeto não reside na sua utilidade prática ou perícia manual tradicional, mas na ideia e na reflexão crítica que ele suscita."
+      },
+      {
+        id: 4, category: "Arte e Filosofia",
+        question: "Se compararmos um manual de instruções de montagem de um móvel com um poema sobre o tempo e a saudade, qual é a diferença fundamental no modo como a linguagem é utilizada?",
+        options: ["O manual usa linguagem poética livre, enquanto o poema tem função estritamente utilitária e comercial.", "O poema utiliza a arte para abrir múltiplos sentidos e expressar a sensibilidade humana, enquanto o manual busca uma função utilitária e direta.", "Não há diferença filosófica, pois ambos são apenas textos escritos com palavras do dicionário.", "O manual é uma manifestação de arte contemporânea superior à literatura poética."],
+        answer: 1, justification: "A arte e a literatura exploram a polissemia, a metáfora e a subjetividade, enquanto os textos utilitários visam à clareza unívoca e à eficácia prática operacional."
+      },
+      {
+        id: 5, category: "O belo e a arte – a estética",
+        question: "A palavra 'Estética' foi consolidada como disciplina filosófica moderna no século XVIII por Alexander Baumgarten a partir do termo grego 'Aisthesis'. O significado original desse termo grego remete a:",
+        options: ["Regras formais para embelezamento físico e cosmética corporal.", "Percepção pelos sentidos, sensibilidade e experiência sensível do ser humano.", "Técnicas científicas de medição de proporções matemáticas em edifícios.", "Normas morais de conduta para punir obras que ofendam os costumes."],
+        answer: 1, justification: "'Aisthesis' refere-se à faculdade da sensibilidade e da percepção sensível. A Estética nasceu como uma teoria do conhecimento sensível antes de se fixar como filosofia da arte."
+      },
+      {
+        id: 6, category: "O belo e a arte – a estética",
+        question: "Durante a Idade Média e o Renascimento, muitos filósofos associavam o Belo à harmonia e à ordem divina. No entanto, a arte moderna e contemporânea passou a incluir também o feio, o bizarro e o grotesco. Isso demonstra que a Estética:",
+        options: ["Entrou em decadência e deixou de ser um campo de reflexão filosófica séria.", "Não se limita à busca de uma beleza padrão, mas investiga todas as manifestações que provocam a sensibilidade e o pensamento crítico.", "Passou a proibir que artistas pintem paisagens e figuras humanas harmoniosas.", "Exige que toda obra agrade instantaneamente a todos os espectadores sem causar desconforto."],
+        answer: 1, justification: "A Estética contemporânea compreende que o grotesco, o trágico e o dissonante são categorias fundamentais para expressar as fraturas e contradições da existência humana."
+      },
+      {
+        id: 7, category: "O belo e a arte – a estética",
+        question: "Um visitante observa um quadro expressionista que retrata o horror e o desespero da guerra com figuras deformadas. O visitante sente angústia, mas reconhece a força da obra. Essa experiência comprova que:",
+        options: ["Uma obra de arte não precisa ser agradável aos sentidos para ter profundo valor estético e reflexivo.", "O quadro não pode ser considerado arte, pois a verdadeira arte só deve gerar riso e diversão.", "O visitante cometeu um erro de interpretação, pois quadros sempre buscam a paz visual.", "A arte perde sua função quando retrata acontecimentos históricos trágicos."],
+        answer: 0, justification: "O valor estético de uma obra transcende o mero agrado sensorial; a arte tem o poder de confrontar o espectador com a dor e as injustiças humanas, gerando comoção e consciência crítica."
+      },
+      {
+        id: 8, category: "O belo e a arte – a estética",
+        question: "Para a Filosofia da Arte, qual é o principal equívoco da frase do senso comum 'isso não é arte porque eu não achei bonito'?",
+        options: ["Achar que toda arte é feita exclusivamente para vencer concursos internacionais.", "Reduzir a complexidade, o significado e a intencionalidade de uma obra ao mero agrado visual subjetivo do observador.", "Ignorar que apenas pinturas a óleo clássicas têm o direito de serem chamadas de arte.", "Supor que os museus aceitam apenas objetos doados por historiadores."],
+        answer: 1, justification: "A arte não se reduz a um padrão decorativo de 'boniteza'. Reduzir a arte ao agrado visual desconsidera seus aspectos conceituais, históricos, simbólicos e sociais."
+      },
+      {
+        id: 9, category: "O gosto, o belo e o sublime",
+        question: "Na obra 'Crítica da Faculdade do Juízo', o filósofo Immanuel Kant afirma que o 'juízo de gosto' sobre o belo é um 'prazer desinteressado'. Isso significa que apreciamos o belo:",
+        options: ["Apenas quando pretendemos comprar o objeto para revendê-lo por um preço maior no mercado.", "Pela simples contemplação da forma do objeto, sem desejar consumi-lo, possuí-lo ou obter vantagem prática com ele.", "Somente quando a obra de arte tem uma utilidade mecânica para a nossa vida diária.", "Porque fomos obrigados por uma autoridade religiosa ou governamental a elogiar a obra."],
+        answer: 1, justification: "Para Kant, o prazer estético puro é desinteressado porque não busca posse ou lucro prático, residindo na harmonia livre entre imaginação e entendimento durante a contemplação."
+      },
+      {
+        id: 10, category: "O gosto, o belo e o sublime",
+        question: "Filósofos como Edmund Burke e Immanuel Kant distinguiram o 'Belo' do 'Sublime'. Diante de qual das seguintes situações a experiência vivida é categorizada filosoficamente como 'Sublime'?",
+        options: ["Apreciar um vaso de porcelana perfeitamente pintado com pequenas flores simétricas.", "Olhar para um mar revolto durante uma tempestade avassaladora ou a imensidão do cosmos, sentindo assombro, respeito e pequenez.", "Ouvir uma cantiga de ninar suave que ajuda uma criança a adormecer em paz.", "Comer uma sobremesa equilibrada e saborosa em um restaurante tranquilo."],
+        answer: 1, justification: "O Sublime é a experiência estética desencadeada pelo incomensurável e desmedido na natureza ou na arte, provocando temor, respeito e vertigem diante da nossa pequenez."
+      },
+      {
+        id: 11, category: "O gosto, o belo e o sublime",
+        question: "Quando alguém afirma que 'gosto não se discute', a Filosofia problematiza essa ideia demonstrando que o nosso gosto:",
+        options: ["É determinado exclusivamente pelo nosso código genético desde o momento do nascimento.", "É construído socialmente através da educação, da cultura, da classe social e das vivências históricas de cada indivíduo.", "Nunca muda ao longo da vida e permanece idêntico em todas as civilizações humanas.", "Não sofre nenhuma influência de amigos, redes sociais, propaganda ou escola."],
+        answer: 1, justification: "O gosto não é um dado puramente biológico nem neutro. Ele é educado e historicamente condicionado pelas relações sociais e pelo meio cultural em que vivemos."
+      },
+      {
+        id: 12, category: "O gosto, o belo e o sublime",
+        question: "De acordo com a estética kantiana, quando dizemos 'esta música é bela', esperamos que os outros também reconheçam essa beleza porque o juízo estético:",
+        options: ["Tem uma pretensão de universalidade comunicável, baseada no livre jogo das faculdades humanas, diferindo de uma simples preferência individual (como preferir sorvete de baunilha).", "Foi comprovado por uma fórmula matemática incontestável em laboratório.", "É uma ordem impositiva que deve ser aceita por lei por toda a sociedade.", "Depende do valor financeiro do ingresso cobrado para ouvir a canção."],
+        answer: 0, justification: "Kant explica que o juízo sobre o belo é subjetivo, mas possui uma pretensão de universalidade (uma expectativa de partilha), diferindo do mero 'agradável' sensorial particular."
+      },
+      {
+        id: 13, category: "Belo artístico e belo natural",
+        question: "O filósofo Hegel argumentava que o 'Belo Artístico' é superior ao 'Belo Natural'. O principal argumento hegeliano para defender essa tese é que:",
+        options: ["A natureza é feia e cheia de imperfeições que devem ser destruídas pela ação humana.", "A obra de arte é uma criação do espírito e da consciência humana, carregando pensamento, liberdade e reflexão, enquanto o belo natural é inconsciente.", "As pinturas humanas duram mais tempo no mundo do que as montanhas e as florestas.", "A arte pode ser comprada e vendida, gerando riqueza econômica que a natureza não produz."],
+        answer: 1, justification: "Hegel afirmava que a arte é a manifestação sensível da consciência. O belo natural é fruto da necessidade cega da natureza, enquanto o belo artístico é fruto da liberdade e reflexão humana."
+      },
+      {
+        id: 14, category: "Belo artístico e belo natural",
+        question: "Considere duas situações: (1) Um pôr do sol alaranjado sobre as montanhas; (2) O quadro 'Impressão, nascer do sol' de Claude Monet. Qual é a diferença ontológica entre as duas belezas?",
+        options: ["O pôr do sol real possui intencionalidade artística consciente, enquanto a pintura de Monet é um evento físico acidental.", "O pôr do sol é um fenômeno físico espontâneo da natureza, enquanto o quadro de Monet é um artefato cultural mediado pela técnica, percepção e intencionalidade humana.", "Não há qualquer diferença, pois a pintura é uma cópia perfeita e idêntica aos raios de luz do sol.", "O quadro de Monet não tem valor estético por ter sido pintado há mais de cem anos."],
+        answer: 1, justification: "O belo natural ocorre sem premeditação consciente; o belo artístico é mediado por escolhas poéticas e técnicas do artista, que ressignifica o mundo visível."
+      },
+      {
+        id: 15, category: "Belo artístico e belo natural",
+        question: "Ao fotografar uma árvore no pátio da escola com um enquadramento específico, jogo de sombras e edição de contraste, o fotógrafo produz uma obra artística porque:",
+        options: ["A câmera fotográfica substituiu o cérebro humano em todas as decisões visuais.", "Ele interferiu na realidade através de escolhas estéticas intencionais, transformando o elemento natural em uma linguagem visual com sentido.", "Árvores só se tornam bonitas após passarem por filtros digitais de redes sociais.", "A fotografia obriga a árvore a crescer mais rápido no mundo real."],
+        answer: 1, justification: "A fotografia artística envolve enquadramento, iluminação, perspectiva e sensibilidade do fotógrafo, conferindo intencionalidade criativa ao olhar."
+      },
+      {
+        id: 16, category: "Tipos de arte e Literatura",
+        question: "As linguagens artísticas se desdobram em artes visuais, cênicas, sonoras e literárias. A Literatura se destaca como manifestação artística porque trabalha a palavra:",
+        options: ["Exclusivamente para registrar dados burocráticos e leis comerciais do Estado.", "Como matéria-prima estética e poética, criando universos imaginários, recriando a memória e aprofundando a subjetividade humana.", "De forma idêntica à matemática pura, eliminando qualquer tipo de sentimento ou metáfora.", "Apenas com o objetivo de ensinar gramática normativa sem reflexão."],
+        answer: 1, justification: "A Literatura utiliza a linguagem verbal para explorar o potencial simbólico, estético, existencial e político da palavra."
+      },
+      {
+        id: 17, category: "Tipos de arte e Literatura",
+        question: "Na obra literária 'Vidas Secas', de Graciliano Ramos, a linguagem seca e concisa reflete a aridez da paisagem e o sofrimento dos retirantes no sertão brasileiro. Essa escolha estética evidencia que a literatura:",
+        options: ["É incapaz de retratar problemas sociais e deveria focar apenas em contos de fadas mágicos.", "Articula forma estética e conteúdo social para denunciar realidades históricas e dar visibilidade à condição dos marginalizados.", "Busca apenas entreter o leitor com aventuras engraçadas e sem peso existencial.", "É ultrapassada em relação ao cinema e não consegue transmitir emoções profundas."],
+        answer: 1, justification: "Grandes obras literárias articulam forma e conteúdo para expressar as tensões sociais, éticas e existenciais de sua época."
+      },
+      {
+        id: 18, category: "Tipos de arte e Literatura",
+        question: "O teatro grego antigo, a dança contemporânea e a performance artística utilizam o corpo como suporte principal. Na Filosofia da Arte, essas linguagens mostram que:",
+        options: ["O corpo humano é apenas uma máquina biológica sem capacidade de gerar pensamento ou sentido.", "A experiência estética é corporificada; o gesto, o movimento e a presença física são formas potentes de comunicação de ideias e questionamento social.", "A verdadeira arte deve ocorrer apenas na mente, sem qualquer envolvimento do corpo físico.", "Apenas as artes que utilizam papel e tinta podem ser levadas a sério academicamente."],
+        answer: 1, justification: "As artes do corpo demonstram a indissociabilidade entre mente, corpo e sensibilidade, desafiando a visão cartesiana que separa corpo e pensamento."
+      },
+      {
+        id: 19, category: "Arte de elite e arte popular?",
+        question: "O sociólogo francês Pierre Bourdieu demonstrou que a distinção entre o que é considerado 'alta cultura' (arte de elite) e 'baixa cultura' (arte popular) funciona frequentemente como:",
+        options: ["Um reflexo exato e puramente científico da beleza intrínseca dos objetos.", "Um instrumento de dominação e 'distinção social', no qual as classes dominantes impõem seu próprio gosto como universalmente superior para manter seu prestígio e poder.", "Uma regra biológica universal aceita por todos os povos desde a pré-história.", "Uma forma democrática de distribuir renda igualmente para todos os artistas de rua."],
+        answer: 1, justification: "Bourdieu demonstrou que o capital cultural e os critérios de 'bom gosto' são usados pelas elites para legitimar privilégios e marcar fronteiras de classe social."
+      },
+      {
+        id: 20, category: "Arte de elite e arte popular?",
+        question: "O Grafite e o Funk brasileiro nasceram nas periferias e durante décadas sofreram perseguição policial e desdém da crítica tradicional. Hoje, muitos grafites estão em galerias internacionais e o funk é patrimônio cultural. Isso demonstra que:",
+        options: ["A legitimidade artística não é fixa; o que é considerado arte ou crime depende de disputas sociais, históricas e políticas de reconhecimento.", "A arte popular só ganha valor quando é proibida pelo Estado e pela justiça.", "As pessoas ricas sempre foram as maiores incentivadoras das batalhas de rima e dos bailes de rua.", "O grafite e o funk deixaram de ser populares e se transformaram em ópera clássica."],
+        answer: 0, justification: "Os limites entre cultura marginalizada e patrimônio artístico são fluidos e resultam de disputas por visibilidade e legitimação social."
+      },
+      {
+        id: 21, category: "Arte de elite e arte popular?",
+        question: "A Arte Popular (como o repente nordestino, a cerâmica do Vale do Jequitinhonha e as festas de congo) difere da chamada arte de elite principalmente porque:",
+        options: ["A arte popular não possui técnica, criatividade nem respeito às tradições ancestrais.", "A arte popular está enraizada nas vivências comunitárias, na memória coletiva e na identidade do povo, transmitida de geração em geração.", "A arte popular só pode ser produzida por pessoas que estudaram em academias de Belas Artes.", "A arte de elite não necessita de recursos financeiros para manter seus teatros e museus."],
+        answer: 1, justification: "A arte popular expressa a sabedoria, as lutas e as tradições de comunidades vivas, tendo imenso valor estético que independe de academias formais."
+      },
+      {
+        id: 22, category: "Arte de elite e arte popular?",
+        question: "Quando uma pessoa de classe alta vai a uma galeria e paga 1 milhão de reais por um quadro conceitual de uma tela em branco, mas considera o trabalho de um artesão de rua 'lixo', essa atitude revela:",
+        options: ["Um julgamento estético puramente técnico e livre de qualquer preconceito social.", "O funcionamento do preconceito de classe e da validação institucional do mercado de arte sobre o valor estético.", "Que a tela em branco possui mais horas de trabalho manual do que a escultura do artesão.", "Que o mercado de arte contemporânea nunca comete erros de avaliação de preços."],
+        answer: 1, justification: "As instituições e o mercado de arte frequentemente legitimam obras pelo capital simbólico e financeiro, ao mesmo tempo em que desqualificam a produção das classes populares."
+      },
+      {
+        id: 23, category: "Arte e engajamento político e social",
+        question: "Em 1937, Pablo Picasso pintou o mural 'Guernica' em resposta ao bombardeio aéreo nazista contra a população civil durante a Guerra Civil Espanhola. Essa obra é um clássico exemplo de:",
+        options: ["Arte decorativa que visava apenas embelezar a sala de estar de um general.", "Arte engajada, que utiliza a linguagem pictórica para denunciar a barbárie, o fascismo e a violência da guerra.", "Produto comercial feito para promover empresas de aviação militar.", "Belo natural que retratou o clima harmonioso da primavera espanhola."],
+        answer: 1, justification: "Guernica tornou-se o maior símbolo universal do repúdio à guerra e ao fascismo, demonstrando como a arte engajada pode imortalizar a dor das vítimas e servir de manifesto político."
+      },
+      {
+        id: 24, category: "Arte e engajamento político e social",
+        question: "Durante a Ditadura Militar no Brasil (1964-1985), compositores como Chico Buarque, Gilberto Gil e Elis Regina usavam metáforas sofisticadas em suas letras para:",
+        options: ["Apoiar as medidas autoritárias e o fechamento do Congresso Nacional.", "Burlar a censura estatal e comunicar protestos contra a repressão, a tortura e a falta de liberdade aos cidadãos.", "Vender discos exclusivamente no mercado internacional de luxo.", "Evitar que as músicas fossem tocadas nas rádios populares do país."],
+        answer: 1, justification: "A arte e a MPB atuaram como trincheiras de resistência democrática, utilizando poesia de duplo sentido para driblar censores e mobilizar a consciência social."
+      },
+      {
+        id: 25, category: "Arte e engajamento político e social",
+        question: "O debate entre 'Arte pela Arte' (esteticismo) e 'Arte Engajada' (compromisso político) questiona se o artista deve tomar partido. Para defensores da Arte Engajada (como Jean-Paul Sartre):",
+        options: ["O artista é livre para se calar e ignorar as injustiças da sua época sem qualquer responsabilidade ética.", "O escritor e o artista estão situados em sua época; calar-se diante da opressão já é uma escolha política de conivência.", "A arte só deve falar de animais e flores para não irritar os governantes.", "A política deve ditar cada traço e cada cor que o pintor utiliza na tela."],
+        answer: 1, justification: "Sartre defendia que o intelectual e o artista estão 'em situação'. A palavra e a imagem têm poder de ação no mundo, e a omissão diante da tirania é também um ato de cumplicidade."
+      },
+      {
+        id: 26, category: "Arte e engajamento político e social",
+        question: "Coletivos de grafite que pintam murais denunciando a destruição da Floresta Amazônica e a contaminação dos rios estão exercendo uma prática artística que se conecta com:",
+        options: ["A alienação da juventude em relação aos problemas contemporâneos.", "O ativismo socioambiental, transformando o espaço público em um território de conscientização ecológica.", "A indústria do turismo de luxo que busca privatizar as florestas.", "A busca por aprovação de leis que proíbam o uso de tintas coloridas nas cidades."],
+        answer: 1, justification: "O grafite socioambiental territorializa a crítica, levando a discussão urgente da crise ecológica diretamente aos olhos dos cidadãos nos centros urbanos."
+      },
+      {
+        id: 27, category: "Indústria do entretenimento: padronização e consumo",
+        question: "Os filósofos Theodor Adorno e Max Horkheimer cunharam o conceito de 'Indústria Cultural' para explicar como o capitalismo moderno:",
+        options: ["Transformou a arte e a cultura em mercadorias produzidas em série para gerar lucro e manter a população passiva e conformada.", "Permitiu que todas as pessoas se tornassem pintores e escultores profissionais de forma gratuita.", "Acabou com o comércio de ingressos de cinema para favorecer os trabalhadores.", "Eliminou completamente o rádio, a televisão e a música gravada da sociedade."],
+        answer: 0, justification: "Adorno e Horkheimer denunciaram que a cultura de massa segue a lógica industrial: produz bens padronizados para consumo rápido que anestesiam o senso crítico dos indivíduos."
+      },
+      {
+        id: 28, category: "Indústria do entretenimento: padronização e consumo",
+        question: "Hoje, muitas músicas pop e hits de redes sociais têm a mesma estrutura harmônica básica, duração média inferior a 2 minutos e coreografias para vídeos curtos. Essa homogeneização é explicada filosoficamente por:",
+        options: ["Autonomia absoluta e liberdade poética irrestrita do artista contemporâneo.", "Padronização da Indústria Cultural, na qual a criação é subordinada às exigências do algoritmo, do mercado e do consumo veloz.", "Evolução natural do ouvido humano, que se tornou incapaz de escutar sons com mais de 30 segundos.", "Proibição legal de produzir músicas com instrumentos acústicos tradicionais."],
+        answer: 1, justification: "A padronização musical moderna decorre da submissão da arte à lógica algorítmica e mercantil de plataformas que recompensam a repetitividade e o estímulo imediato."
+      },
+      {
+        id: 29, category: "Indústria do entretenimento: padronização e consumo",
+        question: "Qual é a principal crítica filosófica ao efeito dos algoritmos de recomendação personalizados nas plataformas de streaming de música e vídeo?",
+        options: ["Eles obrigam os usuários a pagarem o dobro do valor da mensalidade a cada clique.", "Eles tendem a criar 'bolhas' e reforçar o consumo do que já é familiar, desestimulando o estranhamento estético e o contato com a diversidade artística e o pensamento divergente.", "Eles impedem que as pessoas ouçam músicas gravadas antes do ano 2000.", "Eles forçam os ouvintes a escutarem apenas música clássica erudita instrumental."],
+        answer: 1, justification: "Os algoritmos de retenção priorizam a familiaridade e o consumo constante do mesmo padrão, limitando a experiência estética enriquecedora do inesperado."
+      },
+      {
+        id: 30, category: "Indústria do entretenimento: padronização e consumo",
+        question: "Walter Benjamin, no ensaio 'A Obra de Arte na Era de sua Reprodutibilidade Técnica', apontou que a reprodução técnica provocou a perda da 'aura' da obra de arte tradicional, significando que:",
+        options: ["As pessoas deixaram de comprar televisores e computadores para viver no campo.", "A obra perdeu seu caráter único de 'aqui e agora' e seu valor de culto sagrado, mas abriu caminho para a politização e democratização do acesso às imagens.", "A arte passou a ser proibida para as classes populares em todo o planeta.", "As câmeras fotográficas destruíram todas as pinturas a óleo antigas existentes."],
+        answer: 1, justification: "Para Walter Benjamin, a perda da 'aura' (o valor de culto do objeto único) retirou a arte dos palácios fechados e permitiu que ela fosse apropriada pelas massas com potencial político."
+      }
+    ];
+
+    let currentQ = 0, score = 0, correctCount = 0, currentStreak = 0, maxStreak = 0, timerInterval = null, timeLeft = 30, answersRecord = [], playerName = "Estudante";
+
+    // Web Audio API para efeitos sonoros
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+    function initAudio() { if (!audioCtx) audioCtx = new AudioContext(); }
+    function playTone(freq, type, duration, delay=0) {
+      if (!audioCtx) return;
+      setTimeout(() => {
+        try {
+          const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+          osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(); osc.stop(audioCtx.currentTime + duration);
+        } catch(e){}
+      }, delay * 1000);
+    }
+    function playCorrect() { playTone(523.25, 'sine', 0.15, 0); playTone(659.25, 'sine', 0.15, 0.08); playTone(783.99, 'sine', 0.25, 0.16); }
+    function playWrong() { playTone(220, 'sawtooth', 0.2, 0); playTone(170, 'sawtooth', 0.3, 0.12); }
+    function playTick() { playTone(800, 'triangle', 0.04, 0); }
+
+    const startScreen = document.getElementById('start-screen');
+    const gameScreen = document.getElementById('game-screen');
+    const resultScreen = document.getElementById('result-screen');
+    const playerInput = document.getElementById('player-name');
+    const btnStart = document.getElementById('btn-start');
+    const qCounter = document.getElementById('q-counter');
+    const timerVal = document.getElementById('timer-val');
+    const timerBadge = document.getElementById('timer');
+    const scoreVal = document.getElementById('score-val');
+    const progressBar = document.getElementById('progress-bar');
+    const qCategory = document.getElementById('q-category');
+    const qText = document.getElementById('q-text');
+    const optionBtns = document.querySelectorAll('.kahoot-btn');
+    const feedbackBox = document.getElementById('feedback-box');
+    const fbHeader = document.getElementById('fb-header');
+    const fbIcon = document.getElementById('fb-icon');
+    const fbTitle = document.getElementById('fb-title');
+    const fbJustification = document.getElementById('fb-justification');
+    const btnNext = document.getElementById('btn-next');
+    const btnRestart = document.getElementById('btn-restart');
+
+    btnStart.addEventListener('click', () => {
+      initAudio();
+      const n = playerInput.value.trim();
+      if (n) playerName = n;
+      startGame();
+    });
+
+    btnNext.addEventListener('click', () => {
+      currentQ++;
+      if (currentQ < questions.length) loadQuestion();
+      else showResults();
+    });
+
+    btnRestart.addEventListener('click', startGame);
+
+    optionBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        handleAnswer(parseInt(btn.getAttribute('data-index')));
+      });
+    });
+
+    function startGame() {
+      currentQ = 0; score = 0; correctCount = 0; currentStreak = 0; maxStreak = 0; answersRecord = [];
+      startScreen.classList.remove('active'); resultScreen.classList.remove('active'); gameScreen.classList.add('active');
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      clearInterval(timerInterval);
+      const q = questions[currentQ];
+      qCounter.textContent = `Pergunta ${currentQ + 1} de ${questions.length}`;
+      qCategory.textContent = q.category;
+      qText.textContent = q.question;
+      scoreVal.textContent = score;
+      progressBar.style.width = `${(currentQ / questions.length) * 100}%`;
+
+      optionBtns.forEach((btn, i) => {
+        btn.disabled = false;
+        btn.className = `kahoot-btn btn-${['red', 'blue', 'yellow', 'green'][i]}`;
+        document.getElementById(`opt-${i}`).textContent = q.options[i];
+      });
+
+      feedbackBox.style.display = 'none';
+      timeLeft = 30; timerVal.textContent = timeLeft; timerBadge.classList.remove('urgent');
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        timerVal.textContent = timeLeft;
+        if (timeLeft <= 5 && timeLeft > 0) { timerBadge.classList.add('urgent'); playTick(); }
+        if (timeLeft <= 0) { clearInterval(timerInterval); handleAnswer(-1); }
+      }, 1000);
+    }
+
+    function handleAnswer(selected) {
+      clearInterval(timerInterval);
+      const q = questions[currentQ];
+      const isCorrect = (selected === q.answer);
+      optionBtns.forEach(b => b.disabled = true);
+
+      answersRecord.push({
+        question: q.question, selected: selected, correct: q.answer, options: q.options, justification: q.justification, isCorrect: isCorrect
+      });
+
+      if (isCorrect) {
+        playCorrect();
+        currentStreak++;
+        if (currentStreak > maxStreak) maxStreak = currentStreak;
+        const pts = 1000 + (timeLeft * 15) + (currentStreak > 1 ? currentStreak * 50 : 0);
+        score += pts; correctCount++;
+        scoreVal.textContent = score;
+
+        feedbackBox.className = 'feedback-box correct';
+        fbHeader.className = 'fb-header correct';
+        fbIcon.textContent = '🎉';
+        fbTitle.textContent = `CORRETO! (+${pts} pts)`;
+        if (selected >= 0) optionBtns[selected].classList.add('selected-correct');
+      } else {
+        playWrong();
+        currentStreak = 0;
+        feedbackBox.className = 'feedback-box wrong';
+        fbHeader.className = 'fb-header wrong';
+        fbIcon.textContent = '❌';
+        fbTitle.textContent = (selected === -1) ? 'TEMPO ESGOTADO!' : 'INCORRETO!';
+        if (selected >= 0) optionBtns[selected].classList.add('selected-wrong');
+        optionBtns[q.answer].classList.add('is-answer');
+      }
+
+      fbJustification.textContent = q.justification;
+      feedbackBox.style.display = 'block';
+      btnNext.textContent = (currentQ === questions.length - 1) ? 'Ver Resultado Final 🏆' : 'Próxima Questão ➔';
+    }
+
+    function showResults() {
+      gameScreen.classList.remove('active'); resultScreen.classList.add('active');
+      document.getElementById('player-congrats').textContent = `Excelente desempenho, ${playerName}!`;
+      document.getElementById('final-score-val').textContent = `${score} pts`;
+      document.getElementById('stat-correct').textContent = `${correctCount}/30`;
+      document.getElementById('stat-accuracy').textContent = `${Math.round((correctCount / questions.length) * 100)}%`;
+      document.getElementById('stat-streak').textContent = `${maxStreak} 🔥`;
+
+      const reviewList = document.getElementById('review-list');
+      reviewList.innerHTML = '';
+      answersRecord.forEach((rec, idx) => {
+        const item = document.createElement('div');
+        item.className = `review-item ${rec.isCorrect ? 'rev-correct' : 'rev-wrong'}`;
+        item.innerHTML = `
+          <div style="font-weight:600; font-size:0.92rem; color:#fff; margin-bottom:4px;">Q${idx + 1}: ${rec.question}</div>
+          <div style="font-size:0.85rem; color:#d8b4fe;">
+            <strong>Sua resposta:</strong> ${rec.isCorrect ? '✅ ' : '❌ '}${rec.selected >= 0 ? rec.options[rec.selected] : 'Tempo Esgotado'}
+            ${!rec.isCorrect ? `<br><strong style="color:#2ecc71;">Correta:</strong> ${rec.options[rec.correct]}` : ''}
+          </div>
+          <div style="font-size:0.82rem; color:#cbd5e1; margin-top:4px;"><strong>💡 Justificativa:</strong> ${rec.justification}</div>
+        `;
+        reviewList.appendChild(item);
+      });
+    }
+  </script>
+</body>
+</html>
