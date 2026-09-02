@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FiloQuiz: Estudo de Caso Rio São José | Filosofia 3ª Série</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-purple: #46178f;
+      --bg-purple-dark: #2f0d69;
+      --bg-purple-light: #5d25b5;
+      --kahoot-red: #e21b3c;
+      --kahoot-red-dark: #b8132e;
+      --kahoot-blue: #1368ce;
+      --kahoot-blue-dark: #0f4ea0;
+      --kahoot-yellow: #d89e00;
+      --kahoot-yellow-dark: #b28200;
+      --kahoot-green: #26890c;
+      --kahoot-green-dark: #1e6c09;
+      --white: #ffffff;
+      --gray-light: #f2f2f2;
+      --text-dark: #333333;
+      --shadow: 0 6px 0 rgba(0,0,0,0.2);
+      --shadow-pressed: 0 2px 0 rgba(0,0,0,0.2);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: radial-gradient(circle at center, var(--bg-purple) 0%, var(--bg-purple-dark) 100%);
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Top Bar */
+    header {
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(8px);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid rgba(255,255,255,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .logo-icon {
+      background: #ffa602;
+      color: var(--bg-purple-dark);
+      font-weight: 900;
+      padding: 6px 14px;
+      border-radius: 12px;
+      font-size: 1.4rem;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.25);
+      letter-spacing: -1px;
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-sub {
+      font-size: 0.75rem;
+      opacity: 0.8;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sound-btn, .pill-btn {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .sound-btn:hover, .pill-btn:hover {
+      background: rgba(255,255,255,0.25);
+      transform: translateY(-2px);
+    }
+
+    /* Screen Container */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .screen {
+      display: none;
+      width: 100%;
+      max-width: 1000px;
+      animation: fadeIn 0.35s ease-out;
+    }
+
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Start Screen */
+    .hero-card {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 24px;
+      padding: 36px;
+      text-align: center;
+      width: 100%;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: #ffa602;
+      color: #33136b;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 6px 16px;
+      border-radius: 30px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+    }
+
+    .hero-title {
+      font-size: 2.3rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .hero-desc {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.1rem;
+      max-width: 780px;
+      margin: 0 auto 24px auto;
+      line-height: 1.6;
+      color: #e2d9f3;
+    }
+
+    .meta-box {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .meta-tag {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mode-selection {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin: 24px 0;
+      width: 100%;
+    }
+
+    .mode-card {
+      background: rgba(255,255,255,0.06);
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 18px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-align: left;
+    }
+
+    .mode-card:hover, .mode-card.selected {
+      background: rgba(255,255,255,0.16);
+      border-color: #ffa602;
+      transform: translateY(-4px);
+    }
+
+    .mode-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mode-card p {
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem;
+      color: #d1c4e9;
+      line-height: 1.4;
+    }
+
+    .config-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin: 20px 0;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .config-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,0,0,0.2);
+      padding: 8px 16px;
+      border-radius: 12px;
+    }
+
+    select, input[type="text"] {
+      background: #2a0845;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .btn-start {
+      background: #ffa602;
+      color: #2b0c5a;
+      font-weight: 900;
+      font-size: 1.4rem;
+      padding: 16px 48px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 8px 0 #b37400, 0 12px 24px rgba(0,0,0,0.35);
+      transition: all 0.15s ease;
+      letter-spacing: 0.5px;
+      margin-top: 10px;
+    }
+
+    .btn-start:hover {
+      background: #ffb732;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 0 #b37400, 0 16px 30px rgba(0,0,0,0.4);
+    }
+
+    .btn-start:active {
+      transform: translateY(6px);
+      box-shadow: 0 2px 0 #b37400;
+    }
+
+    /* Gameplay Screen */
+    .game-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .progress-pill {
+      background: rgba(0,0,0,0.35);
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 1rem;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .score-pill {
+      background: rgba(0,0,0,0.35);
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: #ffa602;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .streak-badge {
+      background: #e21b3c;
+      color: white;
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      border-radius: 12px;
+      margin-left: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Question Box */
+    .question-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .question-card {
+      background: var(--white);
+      color: var(--text-dark);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      position: relative;
+    }
+
+    .question-theme {
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--bg-purple);
+      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .question-context {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      background: #f8f9fa;
+      border-left: 5px solid var(--bg-purple);
+      padding: 14px 18px;
+      border-radius: 0 10px 10px 0;
+      margin-bottom: 16px;
+      color: #2c3e50;
+      font-style: italic;
+    }
+
+    .question-prompt {
+      font-size: 1.25rem;
+      font-weight: 800;
+      line-height: 1.45;
+      color: #1a1a1a;
+    }
+
+    /* Timer & Controls */
+    .timer-bar-container {
+      width: 100%;
+      height: 12px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 8px 0;
+      position: relative;
+    }
+
+    .timer-bar-fill {
+      height: 100%;
+      width: 100%;
+      background: #ffa602;
+      transition: width 0.1s linear, background-color 0.3s;
+    }
+
+    .timer-circle {
+      position: absolute;
+      right: 18px;
+      top: 18px;
+      background: var(--bg-purple);
+      color: white;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      font-weight: 900;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    /* Answer Grid (Kahoot-style 4 quadrants) */
+    .answers-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      width: 100%;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 768px) {
+      .answers-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .answer-btn {
+      border: none;
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--white);
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      text-align: left;
+      line-height: 1.4;
+      transition: all 0.12s ease;
+      min-height: 100px;
+    }
+
+    .answer-btn:hover:not(:disabled) {
+      transform: translateY(-3px);
+      filter: brightness(1.08);
+    }
+
+    .answer-btn:active:not(:disabled) {
+      transform: translateY(3px);
+    }
+
+    .answer-btn:disabled {
+      cursor: default;
+    }
+
+    .shape-icon {
+      font-size: 1.8rem;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+
+    /* Kahoot Colors & Shapes */
+    .ans-red {
+      background: var(--kahoot-red);
+      box-shadow: 0 6px 0 var(--kahoot-red-dark);
+    }
+    .ans-blue {
+      background: var(--kahoot-blue);
+      box-shadow: 0 6px 0 var(--kahoot-blue-dark);
+    }
+    .ans-yellow {
+      background: var(--kahoot-yellow);
+      box-shadow: 0 6px 0 var(--kahoot-yellow-dark);
+    }
+    .ans-green {
+      background: var(--kahoot-green);
+      box-shadow: 0 6px 0 var(--kahoot-green-dark);
+    }
+
+    /* After choice is made */
+    .answer-btn.dimmed {
+      opacity: 0.35;
+      filter: grayscale(0.5);
+    }
+
+    .answer-btn.correct-highlight {
+      border: 4px solid #ffffff;
+      transform: scale(1.02);
+      filter: brightness(1.2);
+      box-shadow: 0 0 20px rgba(255,255,255,0.7);
+    }
+
+    /* Feedback Screen (post-question) */
+    .feedback-card {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 30px;
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.2);
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .feedback-banner {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-size: 1.4rem;
+      font-weight: 900;
+    }
+
+    .feedback-banner.correct {
+      background: var(--kahoot-green);
+      box-shadow: 0 4px 0 var(--kahoot-green-dark);
+    }
+
+    .feedback-banner.wrong {
+      background: var(--kahoot-red);
+      box-shadow: 0 4px 0 var(--kahoot-red-dark);
+    }
+
+    .feedback-banner.timeout {
+      background: #555555;
+      box-shadow: 0 4px 0 #333333;
+    }
+
+    .explanation-box {
+      background: rgba(0,0,0,0.3);
+      padding: 18px;
+      border-radius: 14px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      border-left: 4px solid #ffa602;
+    }
+
+    .explanation-title {
+      font-weight: 800;
+      color: #ffa602;
+      margin-bottom: 6px;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-next {
+      align-self: flex-end;
+      background: var(--white);
+      color: var(--bg-purple-dark);
+      font-size: 1.2rem;
+      font-weight: 900;
+      padding: 14px 36px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #cccccc;
+      transition: all 0.15s;
+    }
+
+    .btn-next:hover {
+      background: #f0f0f0;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 0 #cccccc;
+    }
+
+    /* Podium / End Screen */
+    .podium-container {
+      width: 100%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .podium-card {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 24px;
+      padding: 36px;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+    }
+
+    .trophy {
+      font-size: 4rem;
+      margin-bottom: 10px;
+      animation: bounce 1.5s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .final-score-title {
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: #ffa602;
+      margin-bottom: 6px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+      width: 100%;
+    }
+
+    .stat-box {
+      background: rgba(0,0,0,0.25);
+      padding: 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .stat-val {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #ffa602;
+    }
+
+    .stat-lbl {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      font-family: 'Nunito', sans-serif;
+      margin-top: 4px;
+    }
+
+    /* Review Accordion */
+    .review-section {
+      width: 100%;
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .review-item {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .review-item.correct {
+      border-left: 6px solid var(--kahoot-green);
+    }
+
+    .review-item.wrong {
+      border-left: 6px solid var(--kahoot-red);
+    }
+
+    .review-q {
+      font-weight: 800;
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: white;
+    }
+
+    .review-ans {
+      font-size: 0.95rem;
+      color: #e0d0f5;
+      margin-bottom: 6px;
+    }
+
+    .review-exp {
+      font-size: 0.9rem;
+      color: #ffd27f;
+      background: rgba(0,0,0,0.2);
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+
+    .end-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    /* Canvas for Confetti */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .hero-title { font-size: 1.8rem; }
+      header { padding: 10px 16px; }
+      .brand-title { font-size: 1rem; }
+      .answer-btn { min-height: 80px; padding: 14px 16px; font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Header -->
+  <header>
+    <div class="brand" onclick="goHome()">
+      <div class="logo-icon">K!</div>
+      <div>
+        <div class="brand-title">FiloQuiz ENEM • Rio São José</div>
+        <div class="brand-sub">CEEFMTI Gov. Gerson Camata • Prof. Marcos R. Cesana</div>
+      </div>
+    </div>
+    <div class="header-controls">
+      <button class="sound-btn" id="soundToggleBtn" onclick="toggleSound()">
+        <span id="soundIcon">🔊</span> Som
+      </button>
+      <button class="pill-btn" onclick="showAboutModal()">ℹ️ Caso</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Screen 1: Home / Setup -->
+    <div id="screen-home" class="screen active">
+      <div class="hero-card">
+        <span class="hero-badge">Filosofia • 3ª Série EM • PBL</span>
+        <h1 class="hero-title">O Conflito das Águas no Rio São José</h1>
+        <p class="hero-desc">
+          30 questões contextualizadas no padrão ENEM sobre poder, legalidade versus legitimidade, democracia, ética socioambiental, reconhecimento e desigualdade estrutural.
+        </p>
+
+        <div class="meta-box">
+          <div class="meta-tag">🏛️ Filosofia Política</div>
+          <div class="meta-tag">⚖️ Legalidade vs. Legitimidade</div>
+          <div class="meta-tag">👥 Reconhecimento & Classe</div>
+          <div class="meta-tag">🌱 Bioética & Bem Comum</div>
+        </div>
+
+        <div class="mode-selection">
+          <div class="mode-card selected" id="mode-solo" onclick="selectMode('solo')">
+            <h3>🎯 Modo Estudante (Solo)</h3>
+            <p>Responda contra o relógio, acumule pontos por rapidez e assertividade, dispute combos e revise o gabarito comentado ao final.</p>
+          </div>
+          <div class="mode-card" id="mode-class" onclick="selectMode('class')">
+            <h3>📽️ Modo Sala de Aula / Projetor</h3>
+            <p>Ideal para exibição em data-show pelo professor. Discussão aberta da ementa, votação pelos grupos e revelação do gabarito reflexivo.</p>
+          </div>
+        </div>
+
+        <div class="config-row">
+          <div class="config-item">
+            <label for="questionCount">Quantidade de Questões:</label>
+            <select id="questionCount">
+              <option value="30" selected>Todas as 30 questões (Completo)</option>
+              <option value="15">15 questões (Express)</option>
+              <option value="10">10 questões (Rápido)</option>
+            </select>
+          </div>
+          <div class="config-item">
+            <label for="timerSetting">Tempo por Questão:</label>
+            <select id="timerSetting">
+              <option value="30" selected>30 segundos (Dinâmico)</option>
+              <option value="45">45 segundos (Moderado)</option>
+              <option value="60">60 segundos (ENEM Leitura)</option>
+              <option value="0">Sem limite (Reflexão livre)</option>
+            </select>
+          </div>
+          <div class="config-item">
+            <label for="shuffleToggle">Embaralhar:</label>
+            <select id="shuffleToggle">
+              <option value="true" selected>Sim (Ordem aleatória)</option>
+              <option value="false">Não (Ordem cronológica)</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn-start" onclick="startGame()">COMEÇAR O QUIZ ▶</button>
+      </div>
+    </div>
+
+    <!-- Screen 2: Question & Gameplay -->
+    <div id="screen-game" class="screen">
+      <div class="game-header">
+        <div class="progress-pill">
+          Questão <span id="currentQNum">1</span> de <span id="totalQNum">30</span>
+        </div>
+        <div class="score-pill">
+          <span id="playerScore">0</span> pts
+          <span class="streak-badge" id="streakBadge" style="display: none;">🔥 <span id="streakCount">0</span></span>
+        </div>
+      </div>
+
+      <div class="question-container">
+        <div class="question-card">
+          <div class="timer-circle" id="timerDisplay">30</div>
+          <div class="question-theme" id="questionTheme">Tema</div>
+          <div class="question-context" id="questionContext">Contexto da questão...</div>
+          <div class="question-prompt" id="questionPrompt">Comando da questão...</div>
+        </div>
+
+        <div class="timer-bar-container">
+          <div class="timer-bar-fill" id="timerBarFill"></div>
+        </div>
+
+        <div class="answers-grid">
+          <button class="answer-btn ans-red" id="opt-0" onclick="handleSelectAnswer(0)">
+            <div class="shape-icon">▲</div>
+            <div class="ans-text" id="ansText-0">Opção A</div>
+          </button>
+          <button class="answer-btn ans-blue" id="opt-1" onclick="handleSelectAnswer(1)">
+            <div class="shape-icon">◆</div>
+            <div class="ans-text" id="ansText-1">Opção B</div>
+          </button>
+          <button class="answer-btn ans-yellow" id="opt-2" onclick="handleSelectAnswer(2)">
+            <div class="shape-icon">●</div>
+            <div class="ans-text" id="ansText-2">Opção C</div>
+          </button>
+          <button class="answer-btn ans-green" id="opt-3" onclick="handleSelectAnswer(3)">
+            <div class="shape-icon">■</div>
+            <div class="ans-text" id="ansText-3">Opção D</div>
+          </button>
+        </div>
+
+        <!-- Feedback Box shown after answer -->
+        <div class="feedback-card" id="feedbackCard" style="display: none;">
+          <div class="feedback-banner" id="feedbackBanner">
+            <span id="feedbackIcon">🎉</span>
+            <span id="feedbackTitle">RESPOSTA CORRETA!</span>
+          </div>
+          <div class="explanation-box">
+            <div class="explanation-title">💡 Comentário Pedagógico & Filosófico:</div>
+            <div id="feedbackExplanation">Explicação aqui...</div>
+          </div>
+          <button class="btn-next" onclick="nextQuestion()">PRÓXIMA ➔</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 3: Final Results & Review -->
+    <div id="screen-result" class="screen">
+      <div class="podium-card">
+        <div class="trophy">🏆</div>
+        <h2 class="final-score-title"><span id="finalScore">0</span> PONTOS</h2>
+        <p style="font-size: 1.2rem; margin-bottom: 12px; font-family: 'Nunito', sans-serif;" id="resultMessage">
+          Excelente desempenho na análise crítica socioambiental!
+        </p>
+
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-val"><span id="correctCount">0</span>/<span id="answeredTotal">30</span></div>
+            <div class="stat-lbl">Acertos Totais</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val" id="accuracyPct">0%</div>
+            <div class="stat-lbl">Taxa de Precisão</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val" id="maxStreakVal">0</div>
+            <div class="stat-lbl">Maior Sequência 🔥</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val" id="avgTimeVal">0s</div>
+            <div class="stat-lbl">Tempo Médio / Q</div>
+          </div>
+        </div>
+
+        <div class="end-actions">
+          <button class="btn-start" style="font-size: 1.1rem; padding: 12px 36px;" onclick="restartQuiz()">🔄 JOGAR NOVAMENTE</button>
+          <button class="pill-btn" style="font-size: 1.1rem; padding: 12px 24px;" onclick="toggleReview()">📋 REVISAR TODAS AS QUESTÕES</button>
+        </div>
+
+        <div class="review-section" id="reviewSection" style="display: none;">
+          <h3 style="margin: 20px 0 10px 0; font-size: 1.3rem;">Caderno de Questões e Gabarito Comentado</h3>
+          <div id="reviewContainer"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal do Estudo de Caso -->
+  <div id="caseModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 999; justify-content: center; align-items: center; padding: 20px;">
+    <div style="background: #2a0845; color: white; border: 2px solid #ffa602; border-radius: 20px; max-width: 800px; max-height: 85vh; overflow-y: auto; padding: 30px; position: relative;">
+      <button onclick="closeAboutModal()" style="position: absolute; right: 18px; top: 18px; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">✖</button>
+      <h2 style="color: #ffa602; font-size: 1.6rem; margin-bottom: 12px;">Estudo de Caso: A Seca no Rio São José</h2>
+      <p style="font-family: 'Nunito', sans-serif; line-height: 1.6; font-size: 0.95rem; color: #ddd; margin-bottom: 14px;">
+        <strong>Município:</strong> São Gabriel da Palha, Noroeste do Espírito Santo.<br>
+        <strong>Contexto:</strong> A Câmara Municipal aprovou lei de Zoneamento de Interesse Econômico e o órgão ambiental concedeu outorga hídrica para um grande grupo agroindustrial instalar bombas de alta capacidade no Rio São José para abastecer pivôs de monocultura.
+      </p>
+      <p style="font-family: 'Nunito', sans-serif; line-height: 1.6; font-size: 0.95rem; color: #ddd; margin-bottom: 14px;">
+        <strong>Conflito:</strong> A vazão do rio despencou, inviabilizando a irrigação do café conilon dos pequenos produtores familiares no momento crítico de enchimento dos grãos. Trabalhadores rurais (meeiros e diaristas) foram demitidos, e poços comunitários secaram. A marcha pacífica até a estação de captação foi barrada pela Polícia Militar com base em um interdito proibitório emitido pelo Poder Judiciário.
+      </p>
+      <h3 style="color: #ffa602; font-size: 1.2rem; margin: 16px 0 8px 0;">Grupos Mobilizados no PBL:</h3>
+      <ul style="font-family: 'Nunito', sans-serif; line-height: 1.6; font-size: 0.9rem; padding-left: 20px; color: #ccc;">
+        <li><strong>Grupo 1 - Aparelho Estatal & Capital Agroindustrial:</strong> Poder Institucional, Democracia Representativa, Monopólio da Coerção (Weber).</li>
+        <li><strong>Grupo 2 - Pequenos Produtores de Conilon:</strong> Política no Cotidiano, Legalidade vs. Legitimidade, O homem como ser social (Aristóteles).</li>
+        <li><strong>Grupo 3 - Trabalhadores Sazonais & População Periférica:</strong> Identidade e Reconhecimento (Honneth), Intersecção Classe e Raça, Invisibilidade Social.</li>
+        <li><strong>Grupo 4 - Promotoria de Justiça & Direitos Humanos:</strong> Dignidade da Pessoa Humana (Kant), Bioética Ambiental (Hans Jonas), Equidade (Rawls).</li>
+      </ul>
+      <div style="text-align: center; margin-top: 24px;">
+        <button onclick="closeAboutModal()" class="btn-start" style="font-size: 1rem; padding: 10px 30px;">FECHAR</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- DATABASE OF 30 QUESTIONS ---
+    const RAW_QUESTIONS = [{"id": 1, "theme": "Poder, Política e Democracia", "context": "No caso do Rio São José, a Polícia Militar foi acionada para cumprir um interdito proibitório, impedindo que produtores rurais se aproximassem das bombas de captação da empresa. A atuação policial fundamentou-se em decisão judicial que garantiu a operação da agroindústria.", "question": "Sob a perspectiva sociológica de Max Weber sobre a constituição do Estado moderno, a intervenção das forças de segurança nesse episódio expressa:", "options": ["A prevalência da legitimidade carismática sobre os regulamentos legais.", "A derrogação da soberania estatal em favor do direito consuetudinário camponês.", "O exercício do monopólio da coerção física legítima em defesa da ordem jurídica.", "A dissolução do poder institucional diante da contestação popular direta."], "correct": 2, "explanation": "Max Weber define o Estado moderno pela reivindicação do monopólio do uso legítimo da força física em um território. Ao cumprir a ordem judicial para proteger as instalações privadas autorizadas, o Estado mobilizou seu aparato coercitivo legal."}, {"id": 2, "theme": "Conceitos Fundamentais de Filosofia Política", "context": "A agroindústria detinha uma outorga hídrica emitida pelo órgão ambiental e amparada por lei municipal. No entanto, a comunidade ribeirinha e os cafeicultores denunciaram que a exaustão do rio e a destruição da economia familiar tornavam a medida inaceitável.", "question": "A oposição manifestada pelos pequenos agricultores evidencia a tensão filosófico-política entre:", "options": ["Direito divino dos governantes e arbítrio da iniciativa privada mercantil.", "Legalidade formal dos atos estatais e legitimidade material das demandas sociais.", "Autoritarismo dos pequenos produtores e benevolência da administração pública.", "Anarquia comunitária e obediência cega ao pacto contratual hobbesiano."], "correct": 1, "explanation": "O conflito expõe o abismo entre a 'legalidade' (conformidade estrita com normas positivas vigentes) e a 'legitimidade' (reconhecimento moral e justiça substantiva do ato perante o corpo social afetado)."}, {"id": 3, "theme": "O Homem como Indivíduo e Ser Social", "context": "Os agricultores familiares argumentaram que a propriedade de café conilon não é mero patrimônio mercantilizável, mas o suporte de laços comunitários, tradição geracional e convivência coletiva em São Gabriel da Palha.", "question": "Essa concepção da vida comunitária rural dialoga diretamente com a tese aristotélica de que o ser humano:", "options": ["É um indivíduo isolado que busca o isolamento para alcançar a pureza da alma.", "É por natureza um animal político (zoon politikon), cuja plenitude se realiza na pólis.", "Encontra sua dignidade exclusivamente na acumulação irrestrita de bens materiais.", "Precisa de um soberano absoluto com força armada para domesticar seus instintos belicosos."], "correct": 1, "explanation": "Para Aristóteles em 'Política', o ser humano é naturalmente sociável (zoon politikon). A vida em comunidade não é mero acordo comercial, mas espaço de compartilhamento ético e realização existencial."}, {"id": 4, "theme": "Igualdade, Identidade e Reconhecimento", "context": "Meeiros, diaristas e moradores das periferias relataram sentir-se tratados como 'meros efeitos colaterais', sem direito à palavra na Câmara de Vereadores ou nos gabinetes técnicos que autorizaram a outorga da água.", "question": "Na filosofia social de Axel Honneth ('Luta por Reconhecimento'), a situação vivida por esses trabalhadores configura uma experiência de:", "options": ["Equilíbrio funcional entre classes garantido pela divisão racional do trabalho.", "Meritocracia distributiva em que cada sujeito colhe exatamente o valor de seus títulos formais.", "Reconhecimento intersubjetivo pleno alcançado por meio da aceitação passiva do destino.", "Dano moral e invisibilidade social decorrente da negação de estima social e direitos."], "correct": 3, "explanation": "Honneth demonstra que a privação de direitos e a degradação social geram desrespeito moral (invisibilidade e humilhação), motivando a luta social por reconhecimento e cidadania efetiva."}, {"id": 5, "theme": "Conceitos Fundamentais de Filosofia Política / Ética", "context": "A Promotoria de Justiça destacou que o desenvolvimento econômico do município não pode ocorrer ao custo da privação de água potável para os moradores periféricos e do desamparo de dezenas de famílias trabalhadoras.", "question": "À luz do imperativo categórico kantiano, essa advertência jurídica fundamenta-se no princípio de que o ser humano:", "options": ["Pode ter seus direitos sacrificados se a maioria representativa assim deliberar.", "Subordina sua autonomia moral às necessidades fiscais da administração municipal.", "Tem valor relativo determinado pelas forças de mercado e sua capacidade produtiva.", "Deve ser tratado sempre como um fim em si mesmo, e nunca apenas como meio."], "correct": 3, "explanation": "Segundo Immanuel Kant na 'Fundamentação da Metafísica dos Costumes', os seres humanos possuem dignidade (não preço) e jamais devem ser instrumentalizados como meros meios para o lucro ou conveniência alheia."}, {"id": 6, "theme": "Filosofia Social / Ética Ambiental", "context": "A captação intensiva por pivôs centrais rebaixou criticamente o lençol freático e o fluxo da bacia do Rio São José, ameaçando a perenidade dos ecossistemas locais e o abastecimento de gerações futuras.", "question": "A mobilização da Bioética e da Ética Ambiental nesse cenário encontra respaldo no 'Princípio Responsabilidade' de Hans Jonas, que preconiza:", "options": ["O dever ético contemporâneo de agir de modo a preservar a integridade da vida humana e natural futura.", "A crença de que a tecnologia futura resolverá espontaneamente qualquer colapso ecológico.", "A exploração irrestrita dos bens hídricos enquanto durar a vigência dos títulos contratuais.", "A transferência da gestão de rios inteiros a conglomerados privados internacionais."], "correct": 0, "explanation": "Hans Jonas formula um imperativo ecológico: agir de tal forma que os efeitos das ações sejam compatíveis com a permanência da vida autêntica na Terra, impondo limites éticos ao poder tecnológico e econômico."}, {"id": 7, "theme": "Poder, Política e Democracia", "context": "A Câmara Municipal de São Gabriel da Palha aprovou a lei de zoneamento econômico sem audiências públicas prévias com a comunidade atingida, amparando-se no mandato parlamentar conferido pelo voto nas urnas.", "question": "A insatisfação popular com essa deliberação evidencia a defasagem entre:", "options": ["A representação delegada e a soberania popular participativa na tomada de decisões vitais.", "A ausência total de leis no país e a necessidade urgente de dissolver os poderes constituídos.", "O voto secreto obrigatório e o retorno à democracia direta aristocrática censitária.", "A ditadura militar burocrática e a anarquia parlamentar descentralizada."], "correct": 0, "explanation": "A crise revela o déficit democrático quando a democracia puramente representativa desconsidera a participação popular deliberativa (audiências, consultas públicas) na gestão de bens públicos comuns."}, {"id": 8, "theme": "Classe e Raça", "context": "Estudos sociológicos indicam que a escassez severa e a contaminação de mananciais atingem com maior rigor os bairros periféricos e populações negras e pobres, que dependem de cacimbas e poços rasos.", "question": "O conceito sociológico e filosófico que explica a distribuição desproporcional de danos ecológicos sobre grupos subalternizados é:", "options": ["Determinismo biológico na seleção natural dos ecossistemas urbanos.", "Racismo ambiental decorrente de vulnerabilidades estruturais.", "Equidade ecológica orientada pelas livres forças de mercado.", "Neutralidade técnica dos impactos climáticos."], "correct": 1, "explanation": "O 'racismo ambiental' e a 'injustiça ambiental' descrevem como o ônus da degradação ecológica e do desabastecimento recai desproporcionalmente sobre populações de menor renda e etnicamente vulnerabilizadas."}, {"id": 9, "theme": "A Política no Cotidiano", "context": "Diante da recusa inicial de diálogo pelos agentes estatais e empresariais, movimentos sociais locais propuseram fóruns públicos comunitários com mediação do Ministério Público para renegociar o acesso à água.", "question": "Do ponto de vista da teoria da Ação Comunicativa de Jürgen Habermas, esse encaminhamento visa a restabelecer:", "options": ["A razão instrumental baseada unicamente no cálculo estratégico de lucros e coerção.", "O entendimento intersubjetivo por meio de um discurso livre de coações e voltado ao consenso.", "O cancelamento do espaço público em benefício de acordos econômicos confidenciais.", "A subjugação irrevogável dos interesses coletivos aos pareceres burocráticos fechados."], "correct": 1, "explanation": "Habermas propõe a racionalidade comunicativa: o diálogo aberto e participativo em que o melhor argumento, e não o poderio financeiro ou a coerção armada, baliza o consenso democrático sobre o bem comum."}, {"id": 10, "theme": "Filosofia Social / Conceitos Fundamentais", "context": "No estudo de caso, a promotoria sustentou que 'tratar igualmente sujeitos profundamente desiguais apenas aprofunda a tirania dos mais fortes', defendendo medidas preferenciais de proteção aos pequenos agricultores.", "question": "Essa linha de argumentação jurídica e moral alinha-se à teoria da 'Justiça como Equidade' de John Rawls, cujo princípio postula que:", "options": ["A igualdade formal perante a lei anula a necessidade de políticas corretivas de amparo estatal.", "Todos os cidadãos devem receber quotas idênticas de recursos hídricos, independentemente da escala de suas atividades.", "As desigualdades socioeconômicas só se justificam se beneficiarem os membros menos favorecidos da sociedade.", "A distribuição de recursos vitais deve premiar exclusivamente os agentes que apresentarem maior rentabilidade financeira."], "correct": 2, "explanation": "John Rawls, em 'Uma Teoria da Justiça' (Princípio da Diferença), defende que as desigualdades só são moralmente toleráveis se operarem em máximo benefício dos indivíduos em pior situação socioeconômica."}, {"id": 11, "theme": "Poder, Política e Democracia", "context": "Ao justificar a presença da tropa armada no Rio São José, o governo alegou que, sem a imposição incontestável das ordens judiciais, o município cairia no caos, na violência generalizada e na desordem civil.", "question": "Esse argumento de manutenção da paz social a qualquer preço ecoa a filosofia política de Thomas Hobbes, que sustenta que:", "options": ["A desobediência civil constante é a base reguladora dos regimes republicanos modernos.", "O poder soberano do Leviatã é indispensável para conter a guerra de todos contra todos.", "O estado de natureza é pacífico e o Estado civil surge apenas para garantir a propriedade da terra.", "As leis positivas devem subordinar-se sempre às decisões deliberadas em assembleias de praça pública."], "correct": 1, "explanation": "Thomas Hobbes ('Leviatã') defende que, para escapar da vida bruta e insegura do estado de natureza ('guerra de todos contra todos'), os homens conferem ao soberano o poder coercitivo supremo para manter a paz civil."}, {"id": 12, "theme": "Conceitos Fundamentais de Filosofia Política", "context": "Os pequenos proprietários rurais dedicaram décadas ao cultivo do solo e à implantação de lavouras de café conilon com o trabalho da própria família, vendo suas terras ameaçadas por corretores a serviço do grande grupo.", "question": "Na tradição liberal clássica de John Locke, a legitimidade da posse da terra vincula-se originariamente ao(à):", "options": ["Revogação universal de qualquer título particular em benefício de estatais.", "Decreto monárquico discricionário que outorga o monopólio das bacias hídricas.", "Uso predatório de tecnologias de alto impacto para especulação imobiliária.", "Mistura do trabalho humano com a natureza e à conservação da própria subsistência."], "correct": 3, "explanation": "Para John Locke ('Segundo Tratado sobre o Governo'), a propriedade privada surge do direito natural à vida e à liberdade quando o indivíduo incorpora seu trabalho à terra, devendo o Estado protegê-la contra expropriações injustas."}, {"id": 13, "theme": "Filosofia Social", "context": "A água, elemento essencial e abundante na formação histórica da comunidade de São Gabriel da Palha, foi submetida a um regime intensivo de apropriação privada, tornando-se vetor de enriquecimento empresarial e penúria dos trabalhadores.", "question": "Sob a ótica da crítica marxista da economia política, esse fenômeno expressa a:", "options": ["Superação definitiva dos conflitos materiais graças à racionalidade administrativa moderna.", "Consolidação de uma sociedade sem classes estruturada pelo cooperativismo solidário.", "Prevalência do valor de uso ecológico sobre a dinâmica do valor de troca nas bolsas de mercadorias.", "Transformação de bens vitais de uso comum em mercadorias inseridas na acumulação de capital."], "correct": 3, "explanation": "Karl Marx analisa como o capitalismo privatiza e mercantiliza a natureza e os bens comuns (cercamento/enclosure), subordinando as necessidades vitais da reprodução humana à lógica da valorização do capital."}, {"id": 14, "theme": "Poder, Política e Democracia", "context": "A dominação exercida sobre a bacia hídrica não ocorreu apenas pela força policial nas margens do rio, mas também por relatórios técnicos herméticos, normas burocráticas e decretos administrativos fechados.", "question": "Na concepção foucaultiana sobre o poder, essa multiplicidade de dispositivos demonstra que o poder:", "options": ["Reside exclusivamente no palácio governamental e atua de maneira centralizada e visível.", "É uma substância estática que pertence para sempre àqueles que possuem mais terras.", "Circula em rede, operando por meio de saberes técnicos, normas e mecanismos disciplinares capilares.", "Deixa de existir sempre que os cidadãos elegem novos representantes nas urnas municipais."], "correct": 2, "explanation": "Para Michel Foucault, o poder não é mero objeto possuído pelo Estado central, mas uma teia capilar de relações (biopolítica/governamentalidade) exercida através de discursos periciais, laudos técnicos e normas burocráticas."}, {"id": 15, "theme": "A Política no Cotidiano", "context": "Ao constatarem a inércia dos canais formais da Câmara Municipal, os meeiros, diaristas e cafeicultores reuniram-se nas praças, fecharam acessos rodoviários e denunciaram o desastre socioambiental nas redes sociais.", "question": "Essa atuação no âmbito da 'política no cotidiano' revela que a cidadania plena:", "options": ["Consiste em aguardar pacientemente a benevolência dos gestores públicos e dirigentes de empresas.", "Esgota-se na prática periódica do voto eleitoral e no cumprimento silencioso dos decretos.", "Exige engajamento ativo, auto-organização coletiva e pressão pública sobre os centros de poder.", "É incompatível com qualquer manifestação coletiva em espaços e logradouros públicos."], "correct": 2, "explanation": "A cidadania ativa transcende o mero comparecimento às urnas a cada dois anos; efetiva-se na vigilância diária, na mobilização comunitária e na luta coletiva por direitos civis, políticos e socioambientais."}, {"id": 16, "theme": "Igualdade, Identidade e Reconhecimento", "context": "A população atingida pela seca do Rio São José enfrenta tanto o desemprego e a ruína financeira das lavouras familiares quanto a exclusão deliberada de suas vozes nos conselhos municipais de meio ambiente.", "question": "De acordo com a teórica contemporânea Nancy Fraser, a resolução desse conflito exige uma concepção de justiça bimodal que articule:", "options": ["Aceitação resignada da segregação hídrica e priorização do superávit contábil do município.", "Punição penal aos pequenos produtores e isenção tributária para o grupo industrial.", "Separação radical entre os problemas de renda e as pautas culturais de participação política.", "Redistribuição material de recursos econômicos e reconhecimento do status político das identidades vulneradas."], "correct": 3, "explanation": "Nancy Fraser formula o modelo bidimensional de justiça social, afirmando que a emancipação real requer atacar tanto a injustiça econômica (redistribuição de recursos) quanto a injustiça cultural-política (reconhecimento e representação)."}, {"id": 17, "theme": "Conceitos Fundamentais de Filosofia Política", "context": "A liderança da empresa agroindustrial e as autoridades municipais argumentaram que 'decisões duras de investimento devem priorizar a atração de capital, ainda que gerem descontentamentos locais momentâneos'.", "question": "No pensamento político de Nicolau Maquiavel ('O Príncipe'), essa postura afina-se ao realismo político pelo qual:", "options": ["A política rege-se por uma lógica autônoma da moralidade religiosa idealizada, focada na eficácia dos resultados.", "A vontade unânime do povo mais fraco constitui o único guia de sobrevivência dos governos.", "As ações estatais devem ser julgadas pela intenção poética de seus idealizadores, e não por sua eficácia fática.", "O governante deve sempre seguir as virtudes cristãs da caridade, mesmo que isso acabe com o Estado."], "correct": 0, "explanation": "Maquiavel inaugura a autonomia da ciência política moderna, desvinculando o agir político da moral transcendental e focando na 'verità effettuale' (verdade efetiva das coisas) e na manutenção e eficácia do poder ('virtù' e 'fortuna')."}, {"id": 18, "theme": "Poder, Política e Democracia", "context": "A lei municipal foi aprovada beneficiando exclusivamente um grupo agroindustrial privado em detrimento do sustento vital e hídrico de toda a coletividade do Rio São José.", "question": "Sob a perspectiva de Jean-Jacques Rousseau em 'Do Contrato Social', tal deliberação legal falhou em expressar a:", "options": ["Monarquia de direito divino que prescinde de qualquer ratificação social.", "Vontade Geral, que deve buscar o bem comum e a igualdade civil de todos os associados.", "Vontade Particular dos acionistas, que deveria imperar irrestritamente sobre o pacto.", "Necessidade de escravidão natural para garantir o abastecimento de gêneros agrícolas."], "correct": 1, "explanation": "Para Rousseau, a soberania popular legítima manifesta-se na 'Vontade Geral', que visa ao interesse público e ao bem comum. Quando a lei reflete a soma de interesses egoístas particulares em prejuízo do povo, degenera o contrato social."}, {"id": 19, "theme": "A Política no Cotidiano", "context": "Diante do interdito proibitório emitido pelo Judiciário, líderes comunitários ponderaram sobre a legitimidade de desobedecer à ordem de afastamento caso o desabastecimento colocasse em risco vidas e plantações.", "question": "Na tradição do pensamento sobre 'desobediência civil' (como em H. D. Thoreau e Hannah Arendt), esse ato político justifica-se quando:", "options": ["O cidadão deseja instalar um regime anárquico caótico isento de responsabilidades coletivas.", "Qualquer norma estatal entra em choque com as preferências estéticas individuais de grupos isolados.", "A lei positiva fere direitos fundamentais inalienáveis e os canais institucionais de correção mostram-se bloqueados.", "Indivíduos buscam auferir privilégios pecuniários particulares burlando a tributação legal."], "correct": 2, "explanation": "A desobediência civil é um recurso ético e público de resistência não violenta empregado quando leis e ordens vigentes contrariam gravemente a justiça substantiva e os direitos humanos, visando a reparar a ordem democrática."}, {"id": 20, "theme": "Poder, Política e Democracia", "context": "A repressão policial à marcha dos trabalhadores rurais esvaziou a margem do rio e impediu que as queixas dos meeiros fossem verbalizadas e testemunhadas pelos concidadãos e pela imprensa.", "question": "Na filosofia política de Hannah Arendt ('A Condição Humana'), a supressão do protesto atinge o cerne da política porque elimina o(a):", "options": ["Espaço público de aparição, no qual os seres humanos exercem a liberdade através do discurso e da ação compartilhada.", "Produtividade das fábricas ao impedir que os trabalhadores se concentrem no trabalho físico diário.", "Mercado livre de compra e venda de terras que prescinde do contato humano direto.", "Direito da polícia de governar o município sem a interferência incômoda do judiciário."], "correct": 0, "explanation": "Para Hannah Arendt, o espaço público é o lugar da visibilidade (o 'espaço de aparição') onde a liberdade se concretiza pela palavra (logos) e pela ação coletiva (praxis), fundando o tecido da verdadeira política democrática."}, {"id": 21, "theme": "O Homem como Indivíduo e Ser Social / Filosofia Social", "context": "Os trabalhadores diaristas da colheita do café conilon não possuem contratos formais de trabalho estáveis. Quando o rio secou e as lavouras pararam, eles simplesmente foram dispensados, sem aviso prévio ou indenização.", "question": "No campo da Filosofia Social, essa condição caracteriza o fenômeno da:", "options": ["Plena emancipação do trabalhador moderno diante das amarras do sindicalismo arcaico.", "Proteção previdenciária ampla proporcionada pelo modelo neoliberal contemporâneo.", "Precarização estrutural do trabalho e descarte social da força produtiva na periferia do capital.", "Equivalência contratual justa em que partes autônomas negociaram livremente suas perdas."], "correct": 2, "explanation": "A situação dos diaristas rurais revela a vulnerabilidade e precarização extrema do trabalho sazonal, no qual os indivíduos são tratados como insumos descartáveis na esteira da degradação socioambiental."}, {"id": 22, "theme": "Conceitos Fundamentais de Filosofia Política", "context": "A água de uma bacia hidrográfica pertence a um domínio público e destina-se prioritariamente ao consumo humano e à dessedentação de animais, conforme as diretrizes gerais dos recursos hídricos nacionais.", "question": "Ao priorizar a outorga maciça para a irrigação de monocultura exportadora em detrimento da subsistência da bacia, o poder público inverteu a premissa de que:", "options": ["As cidades não possuem responsabilidade ecológica sobre o destino dos leitos de seus rios.", "A natureza existe como um recurso ilimitado cuja titularidade cabe a quem primeiro perfurar poços.", "O interesse privado com maior capacidade financeira deve guiar a distribuição de bens ambientais essenciais.", "O bem comum e a sobrevivência coletiva devem ter primazia axiológica sobre a valorização privada do capital."], "correct": 3, "explanation": "Na tradição da filosofia política republicana e do direito socioambiental, os recursos vitais comuns (como a água potável) constituem patrimônio coletivo essencial, sobre o qual o bem comum deve imperar."}, {"id": 23, "theme": "Filosofia Social", "context": "Aproveitando-se da quebra de safra do café conilon induzida pela seca das bombas, corretores ligados à agroindústria abordaram produtores endividados oferecendo valores irrisórios por suas terras familiares.", "question": "Essa prática ilustra um processo de coerção econômica que solapa a autonomia dos proprietários familiares, demonstrando que no mercado desregulado:", "options": ["A liberdade de contrato pode ser cooptada pela assimetria brutal de poder econômico entre os contratantes.", "O endividamento do pequeno proprietário é fruto exclusivo de sua incapacidade técnica individual.", "A perfeita concorrência sempre garante a valorização justa dos bens dos mais fracos.", "A solidariedade entre competidores corporativos impede a ocorrência de compras depreciadas."], "correct": 0, "explanation": "A assimetria material desfaz a ilusão da igualdade formal entre as partes no contrato; a necessidade extrema e o endividamento forçado convertem a 'livre negociação' em expropriação predatória."}, {"id": 24, "theme": "Poder, Política e Democracia / Cidadania", "context": "Ao receber as denúncias sobre a secagem do Rio São José, o Ministério Público preparou uma Ação Civil Pública solicitando judicialmente a suspensão emergencial da outorga de captação concedida pelo Estado.", "question": "No arranjo democrático republicano, a Ação Civil Pública funciona como um instrumento institucional de:", "options": ["Defesa discricionária dos interesses mercantis de grandes investidores transnacionais.", "Substituição autoritária do poder legislativo pela vontade arbitrária dos promotores de justiça.", "Eliminação sumária da divisão entre os três poderes republicanos preconizada por Montesquieu.", "Tutela judicial de direitos difusos, coletivos e socioambientais da coletividade vulnerada."], "correct": 3, "explanation": "A Ação Civil Pública é instrumento fundamental da cidadania e do Estado Democrático de Direito para defender interesses difusos e coletivos (como o meio ambiente e o acesso à água potável) contra abusos estatais ou privados."}, {"id": 25, "theme": "Conceitos Fundamentais de Filosofia Política", "context": "Quando o Poder Executivo (órgão ambiental) concedeu a licença e a Câmara Municipal legislou a favor do empreendimento, coube ao Poder Judiciário ser provocado para apreciar a legalidade e a constitucionalidade das medidas.", "question": "A teoria dos freios e contrapesos elaborada por Montesquieu em 'O Espírito das Leis' concebe a divisão tripartite dos poderes com a finalidade primordial de:", "options": ["Acelerar a concessão de outorgas ambientais sem a necessidade de fiscalização judicial.", "Limitar o poder pelo próprio poder, impedindo o surgimento da tirania e resguardando a liberdade dos cidadãos.", "Concentrar o arbítrio soberano em um monarca infalível respaldado pela corte militar.", "Garantir que os representantes eleitos não precisem prestar contas de seus atos perante o povo."], "correct": 1, "explanation": "Montesquieu propôs a tripartição das funções estatais (Executivo, Legislativo, Judiciário) para que o poder controle o poder, prevenindo o despotismo e garantindo a vigência das liberdades fundamentais."}, {"id": 26, "theme": "Classe e Raça", "context": "Em sua obra sobre as raízes da desigualdade no Brasil, teóricos contemporâneos apontam que a distribuição desigual de terras, saneamento e recursos hídricos não é mera casualidade, mas produto de uma formação histórica e social hierarquizada.", "question": "A análise das assimetrias vivenciadas pelos meeiros e ribeirinhos de São Gabriel da Palha sob esse prisma teórico revela:", "options": ["A completa inexistência de desigualdades sociais no meio rural do interior brasileiro.", "O caráter estrutural das relações de poder, no qual raça e classe definem quem tem prioridade sobre a vida e a riqueza.", "Uma falha pontual de comunicação que pode ser resolvida com palestras motivacionais de gestão.", "A neutralidade benevolente das instituições públicas frente às pressões do agronegócio exportador."], "correct": 1, "explanation": "Como argumenta Silvio Almeida ('Racismo Estrutural') e teóricos da sociologia crítica brasileira, as instituições não operam de modo neutro; a ordenação jurídica e espacial reflete e perpetua privilégios históricos de raça e classe."}, {"id": 27, "theme": "O Homem como Indivíduo e Ser Social", "context": "No Noroeste capixaba, o cultivo do café conilon molda a identidade, os ritos de colheita e o calendário comunitário das famílias rurais. A secagem dos córregos desestrutura a própria base cultural da região.", "question": "Filosoficamente, o território para essas famílias de agricultores deve ser compreendido como:", "options": ["Uma área desprovida de história que só ganha valor ético quando submetida a monoculturas industriais.", "Uma mercadoria fria cuja única função é a rápida liquidação em busca de ganhos em dinheiro.", "Um obstáculo primitivo ao avanço do progresso científico que deve ser pavimentado com urgência.", "Um espaço geográfico e existencial habitado, gerador de identidade, memórias e sociabilidade afetiva."], "correct": 3, "explanation": "O território não é mera coordenada física ou lote contábil; constitui um espaço vivido (geografia existencial e social), em que o trabalho agrícola, a família e a cultura forjam o sentimento de pertencimento humano."}, {"id": 28, "theme": "Poder, Política e Democracia / Ética", "context": "O princípio fundamental da Ética do Discurso estabelece que só são válidas as normas e decisões com as quais todos os concernidos (afetados diretos e indiretos) possam concordar como participantes de um debate livre.", "question": "A aprovação da outorga de captação de água no Rio São José violou esse princípio ético basilar porque:", "options": ["Excluiu da arena de deliberação os setores sociais que sofreriam os impactos mais severos da decisão hídrica.", "Negou o acesso da empresa agroindustrial às vias legais e democráticas de registro de investimentos.", "Distribuiu a outorga em partes rigorosamente iguais entre todos os moradores do município de São Gabriel.", "Convocou exaustivamente todos os ribeirinhos para opinar antes da tomada de qualquer decisão executiva."], "correct": 0, "explanation": "Na Ética do Discurso (Karl-Otto Apel e Jürgen Habermas), a validade moral de uma norma depende da inclusão de todos os afetados na deliberação discursiva. Ao alijar os pequenos agricultores e ribeirinhos, o processo carece de validade ética."}, {"id": 29, "theme": "A Política no Cotidiano", "context": "Alguns representantes governamentais defenderam que a população deveria aceitar as decisões técnicas e permanecer em suas casas sem fazer alardes, cabendo exclusivamente aos órgãos oficiais a gestão dos conflitos.", "question": "Essa postura expressa uma concepção tutelar de cidadania passiva, que se contrapõe à cidadania ativa republicana por esta última defender que:", "options": ["O povo tem o direito e o dever de fiscalizar, interpelar os poderes públicos e disputar os rumos da comunidade.", "Os governados devem alienar integralmente seu juízo crítico em troca de promessas burocráticas de crescimento.", "O cidadão comum não possui maturidade intelectual suficiente para compreender questões de gestão hídrica.", "A ordem pública só pode ser alcançada se os movimentos sociais e comunitários forem proibidos por lei."], "correct": 0, "explanation": "A cidadania ativa concebe o indivíduo não como mero espectador tutelado pelo Estado, mas como sujeito de direitos copartícipe das decisões políticas, munido do poder de fiscalização e mobilização social contínua."}, {"id": 30, "theme": "Objetivo de Aprendizagem: Resolução de Conflitos Socioambientais", "context": "A superação sustentável do conflito na bacia do Rio São José exige articular a sustentabilidade ecológica, a segurança alimentar das famílias rurais, a garantia de abastecimento universal e o respeito aos direitos humanos.", "question": "A síntese filosófica que expressa o alcance pleno do objetivo de aprendizagem desse estudo de caso reside em compreender que:", "options": ["O progresso econômico prescinde de parâmetros éticos e da participação das comunidades locais.", "Os recursos naturais devem ser concedidos com exclusividade aos empreendimentos de maior porte financeiro.", "A resolução de conflitos socioambientais exige equilibrar justiça social, equidade e soberania popular sobre bens comuns.", "O poder institucional é imutável e as desigualdades de classe e raça são fenômenos insolúveis na democracia."], "correct": 2, "explanation": "O objetivo pedagógico central é demonstrar que a resolução ética de disputas socioambientais não reside na imposição da força econômica ou bélica, mas no cultivo da justiça socioambiental, na equidade e na salvaguarda dos bens comuns vitais."}];
+
+    // --- GAME STATE ---
+    let selectedMode = 'solo';
+    let soundEnabled = true;
+    let quizQuestions = [];
+    let currentIndex = 0;
+    let score = 0;
+    let streak = 0;
+    let maxStreak = 0;
+    let timer = null;
+    let timeLeft = 30;
+    let totalTimeConfig = 30;
+    let questionStartTime = 0;
+    let timesPerQuestion = [];
+    let userAnswers = []; // { qIndex, chosen, isCorrect, timeSpent }
+
+    // --- WEB AUDIO SYNTHESIZER (No external MP3s needed) ---
+    const AudioEngine = {
+      ctx: null,
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+      },
+      beep(freq, type, duration, delay = 0) {
+        if (!soundEnabled) return;
+        this.init();
+        setTimeout(() => {
+          try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+            gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + duration);
+          } catch(e) {}
+        }, delay * 1000);
+      },
+      playTick() {
+        this.beep(880, 'sine', 0.05);
+      },
+      playCorrect() {
+        this.beep(523.25, 'triangle', 0.12, 0);   // C5
+        this.beep(659.25, 'triangle', 0.12, 0.1); // E5
+        this.beep(783.99, 'triangle', 0.25, 0.2); // G5
+        this.beep(1046.50, 'triangle', 0.4, 0.3); // C6
+      },
+      playWrong() {
+        this.beep(300, 'sawtooth', 0.15, 0);
+        this.beep(220, 'sawtooth', 0.35, 0.15);
+      },
+      playFinish() {
+        this.beep(440, 'triangle', 0.15, 0);
+        this.beep(554.37, 'triangle', 0.15, 0.15);
+        this.beep(659.25, 'triangle', 0.2, 0.3);
+        this.beep(880, 'triangle', 0.5, 0.5);
+      }
+    };
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const icon = document.getElementById('soundIcon');
+      icon.textContent = soundEnabled ? '🔊' : '🔇';
+      if (soundEnabled) AudioEngine.beep(600, 'sine', 0.1);
+    }
+
+    function showAboutModal() {
+      document.getElementById('caseModal').style.display = 'flex';
+    }
+
+    function closeAboutModal() {
+      document.getElementById('caseModal').style.display = 'none';
+    }
+
+    function selectMode(mode) {
+      selectedMode = mode;
+      document.getElementById('mode-solo').classList.toggle('selected', mode === 'solo');
+      document.getElementById('mode-class').classList.toggle('selected', mode === 'class');
+    }
+
+    function goHome() {
+      clearInterval(timer);
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-home').classList.add('active');
+    }
+
+    // --- GAME ENGINE ---
+    function startGame() {
+      AudioEngine.init();
+      AudioEngine.beep(587.33, 'sine', 0.15);
+
+      const count = parseInt(document.getElementById('questionCount').value);
+      totalTimeConfig = parseInt(document.getElementById('timerSetting').value);
+      const shuffle = document.getElementById('shuffleToggle').value === 'true';
+
+      let pool = [...RAW_QUESTIONS];
+      if (shuffle) {
+        pool.sort(() => Math.random() - 0.5);
+      }
+      quizQuestions = pool.slice(0, count);
+
+      currentIndex = 0;
+      score = 0;
+      streak = 0;
+      maxStreak = 0;
+      timesPerQuestion = [];
+      userAnswers = [];
+
+      document.getElementById('playerScore').textContent = '0';
+      document.getElementById('streakBadge').style.display = 'none';
+      document.getElementById('totalQNum').textContent = quizQuestions.length;
+
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-game').classList.add('active');
+
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      clearInterval(timer);
+      const q = quizQuestions[currentIndex];
+
+      document.getElementById('currentQNum').textContent = currentIndex + 1;
+      document.getElementById('questionTheme').textContent = `📌 ${q.theme}`;
+      document.getElementById('questionContext').textContent = q.context;
+      document.getElementById('questionPrompt').textContent = q.question;
+
+      // Hide feedback
+      document.getElementById('feedbackCard').style.display = 'none';
+
+      // Reset options
+      for (let i = 0; i < 4; i++) {
+        const btn = document.getElementById(`opt-${i}`);
+        btn.disabled = false;
+        btn.className = `answer-btn ans-${['red', 'blue', 'yellow', 'green'][i]}`;
+        document.getElementById(`ansText-${i}`).textContent = q.options[i];
+      }
+
+      // Setup Timer
+      timeLeft = totalTimeConfig;
+      const timerDisplay = document.getElementById('timerDisplay');
+      const timerFill = document.getElementById('timerBarFill');
+
+      if (totalTimeConfig === 0) {
+        timerDisplay.textContent = '∞';
+        timerFill.style.width = '100%';
+        timerFill.style.backgroundColor = '#ffa602';
+      } else {
+        timerDisplay.textContent = timeLeft;
+        timerFill.style.width = '100%';
+        timerFill.style.backgroundColor = '#ffa602';
+
+        questionStartTime = Date.now();
+        timer = setInterval(() => {
+          timeLeft--;
+          timerDisplay.textContent = timeLeft;
+          const pct = (timeLeft / totalTimeConfig) * 100;
+          timerFill.style.width = `${pct}%`;
+
+          if (timeLeft <= 5 && timeLeft > 0) {
+            timerFill.style.backgroundColor = '#e21b3c';
+            AudioEngine.playTick();
+          }
+
+          if (timeLeft <= 0) {
+            clearInterval(timer);
+            handleTimeout();
+          }
+        }, 1000);
+      }
+    }
+
+    function handleSelectAnswer(choiceIdx) {
+      clearInterval(timer);
+      const q = quizQuestions[currentIndex];
+      const isCorrect = (choiceIdx === q.correct);
+      const timeSpent = totalTimeConfig > 0 ? (totalTimeConfig - timeLeft) : 0;
+      timesPerQuestion.push(timeSpent);
+
+      // Disable buttons and visually flag
+      for (let i = 0; i < 4; i++) {
+        const btn = document.getElementById(`opt-${i}`);
+        btn.disabled = true;
+        if (i === q.correct) {
+          btn.classList.add('correct-highlight');
+        } else if (i === choiceIdx && !isCorrect) {
+          btn.classList.add('dimmed');
+        } else {
+          btn.classList.add('dimmed');
+        }
+      }
+
+      // Calculate score Kahoot style: max 1000 pts down to 500 based on time
+      let pointsEarned = 0;
+      if (isCorrect) {
+        streak++;
+        if (streak > maxStreak) maxStreak = streak;
+        const speedFactor = totalTimeConfig > 0 ? (timeLeft / totalTimeConfig) : 1;
+        pointsEarned = Math.round(500 + (500 * speedFactor));
+        // bonus for streak
+        if (streak > 1) {
+          pointsEarned += Math.min(streak * 50, 300);
+        }
+        score += pointsEarned;
+        AudioEngine.playCorrect();
+      } else {
+        streak = 0;
+        AudioEngine.playWrong();
+      }
+
+      // Record answer
+      userAnswers.push({
+        qIndex: currentIndex,
+        question: q,
+        chosen: choiceIdx,
+        isCorrect: isCorrect,
+        points: pointsEarned,
+        time: timeSpent
+      });
+
+      // Update UI Header
+      document.getElementById('playerScore').textContent = score;
+      const streakBadge = document.getElementById('streakBadge');
+      if (streak >= 2) {
+        streakBadge.style.display = 'inline-flex';
+        document.getElementById('streakCount').textContent = streak;
+      } else {
+        streakBadge.style.display = 'none';
+      }
+
+      // Show Feedback Card
+      showFeedback(isCorrect, choiceIdx, q);
+    }
+
+    function handleTimeout() {
+      const q = quizQuestions[currentIndex];
+      timesPerQuestion.push(totalTimeConfig);
+      streak = 0;
+      document.getElementById('streakBadge').style.display = 'none';
+
+      for (let i = 0; i < 4; i++) {
+        const btn = document.getElementById(`opt-${i}`);
+        btn.disabled = true;
+        if (i === q.correct) {
+          btn.classList.add('correct-highlight');
+        } else {
+          btn.classList.add('dimmed');
+        }
+      }
+
+      userAnswers.push({
+        qIndex: currentIndex,
+        question: q,
+        chosen: -1,
+        isCorrect: false,
+        points: 0,
+        time: totalTimeConfig
+      });
+
+      AudioEngine.playWrong();
+      showFeedback(false, -1, q, true);
+    }
+
+    function showFeedback(isCorrect, chosenIdx, question, isTimeout = false) {
+      const card = document.getElementById('feedbackCard');
+      const banner = document.getElementById('feedbackBanner');
+      const icon = document.getElementById('feedbackIcon');
+      const title = document.getElementById('feedbackTitle');
+      const exp = document.getElementById('feedbackExplanation');
+
+      card.style.display = 'flex';
+
+      if (isTimeout) {
+        banner.className = 'feedback-banner timeout';
+        icon.textContent = '⏰';
+        title.textContent = 'TEMPO ESGOTADO!';
+      } else if (isCorrect) {
+        banner.className = 'feedback-banner correct';
+        icon.textContent = '🎉';
+        title.textContent = 'RESPOSTA CORRETA! Parabéns!';
+      } else {
+        banner.className = 'feedback-banner wrong';
+        icon.textContent = '❌';
+        title.textContent = 'RESPOSTA INCORRETA!';
+      }
+
+      exp.innerHTML = `<strong>Alternativa Correta:</strong> (${['A','B','C','D'][question.correct]}) ${question.options[question.correct]}<br><br>${question.explanation}`;
+    }
+
+    function nextQuestion() {
+      currentIndex++;
+      if (currentIndex < quizQuestions.length) {
+        loadQuestion();
+      } else {
+        finishQuiz();
+      }
+    }
+
+    function finishQuiz() {
+      clearInterval(timer);
+      AudioEngine.playFinish();
+
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-result').classList.add('active');
+
+      const total = quizQuestions.length;
+      const correct = userAnswers.filter(a => a.isCorrect).length;
+      const pct = Math.round((correct / total) * 100);
+
+      document.getElementById('finalScore').textContent = score.toLocaleString('pt-BR');
+      document.getElementById('correctCount').textContent = correct;
+      document.getElementById('answeredTotal').textContent = total;
+      document.getElementById('accuracyPct').textContent = `${pct}%`;
+      document.getElementById('maxStreakVal').textContent = maxStreak;
+
+      const avgTime = timesPerQuestion.length > 0 
+        ? (timesPerQuestion.reduce((a,b)=>a+b, 0) / timesPerQuestion.length).toFixed(1)
+        : '0';
+      document.getElementById('avgTimeVal').textContent = `${avgTime}s`;
+
+      const msg = document.getElementById('resultMessage');
+      if (pct >= 85) {
+        msg.textContent = '🌟 Brilhante! Você demonstrou domínio crítico avançado sobre os conceitos filosóficos e o estudo de caso!';
+        launchConfetti();
+      } else if (pct >= 60) {
+        msg.textContent = '👏 Muito bom! Você articulou bem as noções de ética, poder e cidadania na resolução do conflito.';
+      } else {
+        msg.textContent = '📚 Bom esforço! Vale a pena revisar as divergências entre legalidade e legitimidade e as teorias de justiça.';
+      }
+
+      renderReview();
+    }
+
+    function renderReview() {
+      const container = document.getElementById('reviewContainer');
+      container.innerHTML = '';
+
+      userAnswers.forEach((ans, idx) => {
+        const item = document.createElement('div');
+        item.className = `review-item ${ans.isCorrect ? 'correct' : 'wrong'}`;
+        const letters = ['A','B','C','D'];
+
+        item.innerHTML = `
+          <div class="review-q">${idx + 1}. [${ans.question.theme}] ${ans.question.question}</div>
+          <div class="review-ans">
+            <strong>Sua resposta:</strong> ${ans.chosen >= 0 ? '(' + letters[ans.chosen] + ') ' + ans.question.options[ans.chosen] : 'Tempo Esgotado / Não respondeu'} 
+            ${ans.isCorrect ? '✅' : '❌'}
+          </div>
+          ${!ans.isCorrect ? `<div class="review-ans"><strong>Gabarito:</strong> (${letters[ans.question.correct]}) ${ans.question.options[ans.question.correct]}</div>` : ''}
+          <div class="review-exp">💡 ${ans.question.explanation}</div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function toggleReview() {
+      const rev = document.getElementById('reviewSection');
+      rev.style.display = rev.style.display === 'none' ? 'block' : 'none';
+      if (rev.style.display === 'block') {
+        rev.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    function restartQuiz() {
+      startGame();
+    }
+
+    // --- SIMPLE CONFETTI SCRIPT ---
+    function launchConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#e21b3c', '#1368ce', '#ffa602', '#26890c', '#ffffff'];
+
+      for (let i = 0; i < 120; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          r: Math.random() * 8 + 4,
+          d: Math.random() * 40 + 10,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          tilt: Math.floor(Math.random() * 10) - 10,
+          tiltAngleIncremental: (Math.random() * 0.07) + 0.05,
+          tiltAngle: 0
+        });
+      }
+
+      let animationId;
+      let frames = 0;
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        frames++;
+
+        particles.forEach((p, i) => {
+          p.tiltAngle += p.tiltAngleIncremental;
+          p.y += (Math.cos(p.d) + 3 + p.r / 2) / 1.5;
+          p.x += Math.sin(frames * 0.01) * 2;
+          p.tilt = Math.sin(p.tiltAngle - (i / 3)) * 15;
+
+          ctx.beginPath();
+          ctx.lineWidth = p.r / 2;
+          ctx.strokeStyle = p.color;
+          ctx.moveTo(p.x + p.tilt + (p.r / 4), p.y);
+          ctx.lineTo(p.x + p.tilt, p.y + p.tilt + (p.r / 4));
+          ctx.stroke();
+        });
+
+        if (frames < 240) {
+          animationId = requestAnimationFrame(draw);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      draw();
+    }
+  </script>
+</body>
+</html>
