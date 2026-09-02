@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Filosófico - Estilo Kahoot | 2ª Série EM</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-purple: #46178f;
+            --bg-dark: #13002c;
+            --bg-light: #f2f2f2;
+            --kahoot-red: #e21b3c;
+            --kahoot-blue: #1368ce;
+            --kahoot-yellow: #d89e00;
+            --kahoot-green: #26890c;
+            --text-main: #2b2b2b;
+            --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            --card-radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', 'Nunito', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: radial-gradient(circle at top center, #5d25b0, #25074d, #120127);
+            min-height: 100vh;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Floating background shapes */
+        .bg-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            opacity: 0.12;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(105vh) rotate(0deg); }
+            100% { transform: translateY(-15vh) rotate(360deg); }
+        }
+
+        /* Container & Layout */
+        .app-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Common Cards */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.96);
+            color: #222;
+            border-radius: var(--card-radius);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+            padding: 35px 30px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Header / Nav */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            padding: 12px 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .badge-axis {
+            background: #ffcc00;
+            color: #111;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stats-pill {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* START SCREEN */
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 10px;
+            color: #ffffff;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            letter-spacing: -0.5px;
+        }
+
+        .hero-subtitle {
+            text-align: center;
+            color: #e0d0ff;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .info-card {
+            background: #ffffff;
+            color: #222;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .info-section-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--bg-purple);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #eaeaea;
+            padding-bottom: 6px;
+        }
+
+        .obj-list {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .obj-list li {
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            background: #f8f6ff;
+            border-left: 5px solid var(--bg-purple);
+            border-radius: 6px;
+            font-size: 0.98rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .goal-box {
+            background: linear-gradient(135deg, #eef2ff, #f3e8ff);
+            border: 2px dashed #7c3aed;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            line-height: 1.5;
+            color: #2e1065;
+            font-weight: 700;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .setting-item {
+            background: #f5f5f7;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .setting-item label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #555;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .setting-item select {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #333;
+            outline: none;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #00d26a, #009944);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 18px 24px;
+            border-radius: 14px;
+            font-size: 1.4rem;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0, 210, 106, 0.45);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 12px 30px rgba(0, 210, 106, 0.6);
+        }
+
+        .btn-start:active {
+            transform: translateY(1px);
+        }
+
+        /* QUESTION SCREEN */
+        .progress-bar-container {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: #00d26a;
+            transition: width 0.3s ease;
+        }
+
+        .question-card {
+            background: #ffffff;
+            color: #222;
+            border-radius: var(--card-radius);
+            padding: 26px 30px;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+            position: relative;
+        }
+
+        .timer-badge {
+            position: absolute;
+            top: -18px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            background: #111;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 900;
+            border: 4px solid #fff;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+        }
+
+        .timer-badge.warning {
+            background: var(--kahoot-yellow);
+            color: #111;
+        }
+
+        .timer-badge.danger {
+            background: var(--kahoot-red);
+            animation: pulseTimer 0.6s infinite alternate;
+        }
+
+        @keyframes pulseTimer {
+            from { transform: scale(1); }
+            to { transform: scale(1.15); }
+        }
+
+        .context-pill {
+            display: inline-block;
+            background: #ede9fe;
+            color: #6d28d9;
+            font-size: 0.78rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .context-box {
+            background: #f8f9fa;
+            border-left: 4px solid #6366f1;
+            padding: 14px 18px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 15px;
+            font-size: 1.02rem;
+            line-height: 1.55;
+            color: #374151;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1.45;
+        }
+
+        /* 4 KAHOOT BUTTONS GRID */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-title {
+                font-size: 1.9rem;
+            }
+            .question-card {
+                padding: 20px 18px;
+            }
+            .question-text {
+                font-size: 1.1rem;
+            }
+        }
+
+        .option-btn {
+            border: none;
+            border-radius: 14px;
+            padding: 20px 22px;
+            color: #ffffff;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+            transition: transform 0.15s, filter 0.15s, box-shadow 0.15s;
+            position: relative;
+            min-height: 95px;
+            line-height: 1.35;
+        }
+
+        .option-btn:hover {
+            transform: translateY(-3px) scale(1.015);
+            filter: brightness(1.08);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
+        }
+
+        .option-btn:active {
+            transform: translateY(1px);
+        }
+
+        .option-btn.disabled {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* Kahoot Button Colors & Shapes */
+        .opt-red { background: var(--kahoot-red); }
+        .opt-blue { background: var(--kahoot-blue); }
+        .opt-yellow { background: var(--kahoot-yellow); }
+        .opt-green { background: var(--kahoot-green); }
+
+        .shape-icon {
+            width: 38px;
+            height: 38px;
+            min-width: 38px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: #ffffff;
+        }
+
+        .opt-text {
+            flex: 1;
+            font-size: 1.02rem;
+            font-weight: 600;
+        }
+
+        /* FEEDBACK / REVEAL SCREEN */
+        .feedback-banner {
+            text-align: center;
+            padding: 20px;
+            border-radius: var(--card-radius);
+            margin-bottom: 20px;
+            color: #fff;
+            animation: bounceIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.85); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .feedback-banner.correct {
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+        }
+
+        .feedback-banner.incorrect {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
+        }
+
+        .feedback-title {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+
+        .points-earned {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fef08a;
+        }
+
+        .justification-card {
+            background: #ffffff;
+            color: #1f2937;
+            border-radius: var(--card-radius);
+            padding: 25px 30px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 20px;
+        }
+
+        .just-header {
+            font-size: 1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #4f46e5;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .just-text {
+            font-size: 1.08rem;
+            line-height: 1.6;
+            color: #374151;
+            background: #f9fafb;
+            padding: 16px;
+            border-radius: 10px;
+            border-left: 4px solid #4f46e5;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 18px;
+            border-radius: 14px;
+            font-size: 1.3rem;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.4);
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+
+        .btn-next:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        /* PODIUM / END SCREEN */
+        .podium-container {
+            text-align: center;
+        }
+
+        .podium-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #ffd700;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            margin-bottom: 15px;
+        }
+
+        .score-big-card {
+            background: #ffffff;
+            color: #222;
+            border-radius: var(--card-radius);
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .score-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--bg-purple);
+            margin: 10px 0;
+        }
+
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .score-box {
+            background: #f3f4f6;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .score-box-label {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #6b7280;
+            text-transform: uppercase;
+        }
+
+        .score-box-val {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: #111827;
+            margin-top: 4px;
+        }
+
+        .axis-summary {
+            margin-top: 25px;
+            text-align: left;
+        }
+
+        .axis-item {
+            margin-bottom: 12px;
+        }
+
+        .axis-bar-bg {
+            height: 12px;
+            background: #e5e7eb;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+
+        .axis-bar-val {
+            height: 100%;
+            background: #4f46e5;
+            border-radius: 6px;
+        }
+
+        .btn-group-end {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-review {
+            flex: 1;
+            background: #374151;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-replay {
+            flex: 1;
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-review:hover, .btn-replay:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+        }
+
+        /* REVIEW MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            color: #222;
+            width: 100%;
+            max-width: 900px;
+            max-height: 85vh;
+            border-radius: 16px;
+            overflow-y: auto;
+            padding: 30px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: sticky;
+            top: 0;
+            float: right;
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .review-item {
+            border-bottom: 2px solid #f3f4f6;
+            padding: 20px 0;
+        }
+
+        /* Confetti Canvas */
+        #confettiCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 99;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- Background Shapes -->
+    <div class="bg-shapes">
+        <div class="shape" style="top: 10%; left: 5%; font-size: 40px; color: var(--kahoot-red);">▲</div>
+        <div class="shape" style="top: 30%; left: 85%; font-size: 45px; color: var(--kahoot-blue);">◆</div>
+        <div class="shape" style="top: 70%; left: 15%; font-size: 50px; color: var(--kahoot-yellow);">●</div>
+        <div class="shape" style="top: 80%; left: 75%; font-size: 42px; color: var(--kahoot-green);">■</div>
+        <div class="shape" style="top: 50%; left: 45%; font-size: 35px; color: #fff;">▲</div>
+    </div>
+
+    <div class="app-container">
+
+        <!-- ==================== TELA INICIAL ==================== -->
+        <div id="screen-start" class="screen">
+            <h1 class="hero-title">⚡ QUIZ FILOSÓFICO K!</h1>
+            <p class="hero-subtitle">Ensino Médio • 2ª Série • 2º Trimestre • Desafio de 30 Questões</p>
+
+            <div class="info-card">
+                <div class="info-section-title">
+                    <span>📚</span> Objetos de Conhecimento
+                </div>
+                <ul class="obj-list">
+                    <li><strong>1. A Filosofia e a busca pelo sentido da vida:</strong> Existência, consciência da finitude, finalidade humana (télos) e a responsabilidade pelas próprias escolhas.</li>
+                    <li><strong>2. A Filosofia e a busca pela felicidade (Eudaimonia vs. Consumo):</strong> Realização e virtude em Aristóteles versus a satisfação efêmera e ilusória da sociedade de consumo.</li>
+                    <li><strong>3. Filosofia e os afetos:</strong> O desejo e as dimensões do amor (Eros, Philia, Ágape), a amizade autêntica e a solidariedade como ética social.</li>
+                </ul>
+
+                <div class="info-section-title">
+                    <span>🎯</span> Objetivo de Aprendizagem
+                </div>
+                <div class="goal-box">
+                    Investigar a condição humana ao diferenciar a realização duradoura (<em>Eudaimonia</em>) da satisfação efêmera do consumo, compreendendo os afetos e a amizade como pilares do sentido existencial e da convivência ética.
+                </div>
+
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <label for="timer-select">⏱️ Tempo por Questão</label>
+                        <select id="timer-select">
+                            <option value="30" selected>30 Segundos (Padrão)</option>
+                            <option value="20">20 Segundos (Rápido)</option>
+                            <option value="45">45 Segundos (Reflexivo)</option>
+                            <option value="0">Sem Tempo (Modo Estudo)</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label for="sound-toggle">🔊 Efeitos Sonoros</label>
+                        <select id="sound-toggle">
+                            <option value="on" selected>Ativados (Sons do Jogo)</option>
+                            <option value="off">Silencioso</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-start" onclick="startGame()">
+                <span>🚀</span> Iniciar Desafio Kahoot
+            </button>
+        </div>
+
+        <!-- ==================== TELA DO JOGO ==================== -->
+        <div id="screen-game" class="screen" style="display: none;">
+            
+            <div class="progress-bar-container">
+                <div id="progress-bar-fill" class="progress-bar-fill"></div>
+            </div>
+
+            <div class="game-header">
+                <div class="badge-axis" id="q-axis-badge">Sentido da Vida</div>
+                <div class="stats-pill">
+                    <span>❓</span> Questão <span id="q-number">1</span>/30
+                </div>
+                <div class="stats-pill">
+                    <span>🔥</span> Streak: <strong id="streak-counter">0</strong>
+                </div>
+                <div class="stats-pill">
+                    <span>🏆</span> <strong id="score-counter">0</strong> pts
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div id="timer-badge" class="timer-badge">30</div>
+                <span class="context-pill">📖 Situação-Problema / Contexto</span>
+                <div class="context-box" id="q-context">
+                    Carregando contexto...
+                </div>
+                <h2 class="question-text" id="q-text">
+                    Carregando pergunta...
+                </h2>
+            </div>
+
+            <div class="options-grid" id="options-container">
+                <!-- 4 Botões Kahoot gerados via JS -->
+            </div>
+        </div>
+
+        <!-- ==================== TELA DE FEEDBACK ==================== -->
+        <div id="screen-feedback" class="screen" style="display: none;">
+            <div id="feedback-banner" class="feedback-banner correct">
+                <div class="feedback-title" id="feedback-title">CORRETO! 🎉</div>
+                <div class="points-earned" id="feedback-points">+1000 pontos</div>
+            </div>
+
+            <div class="justification-card">
+                <div class="just-header">
+                    <span>💡</span> Justificativa Filosófica & Pedagógica
+                </div>
+                <div class="just-text" id="feedback-justification">
+                    Texto explicativo sobre a resposta correta...
+                </div>
+            </div>
+
+            <button class="btn-next" onclick="nextQuestion()">
+                Avançar para a Próxima Questão ➔
+            </button>
+        </div>
+
+        <!-- ==================== TELA FINAL / PÓDIO ==================== -->
+        <div id="screen-podium" class="screen" style="display: none;">
+            <div class="podium-container">
+                <h1 class="podium-title">🏆 PÓDIO FINAL! 🏆</h1>
+                <p style="font-size: 1.15rem; color: #e9d5ff; margin-bottom: 20px;">Você concluiu o Desafio de 30 Questões de Filosofia!</p>
+
+                <div class="score-big-card">
+                    <div style="font-weight: 800; color: #6b7280; text-transform: uppercase; font-size: 0.9rem;">Pontuação Final Acumulada</div>
+                    <div class="score-number" id="final-score">0</div>
+                    
+                    <div class="score-grid">
+                        <div class="score-box">
+                            <div class="score-box-label">Acertos</div>
+                            <div class="score-box-val" id="final-correct">0/30</div>
+                        </div>
+                        <div class="score-box">
+                            <div class="score-box-label">Precisão</div>
+                            <div class="score-box-val" id="final-accuracy">0%</div>
+                        </div>
+                        <div class="score-box">
+                            <div class="score-box-label">Maior Streak</div>
+                            <div class="score-box-val" id="final-streak">0 🔥</div>
+                        </div>
+                    </div>
+
+                    <div class="axis-summary">
+                        <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--bg-purple); margin-bottom: 12px; text-transform: uppercase;">
+                            📊 Desempenho por Eixo Temático:
+                        </h3>
+
+                        <div class="axis-item">
+                            <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem;">
+                                <span>1. Sentido da Vida</span>
+                                <span id="axis-1-stat">0/10</span>
+                            </div>
+                            <div class="axis-bar-bg"><div id="axis-1-bar" class="axis-bar-val" style="width: 0%;"></div></div>
+                        </div>
+
+                        <div class="axis-item">
+                            <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem;">
+                                <span>2. Felicidade (Eudaimonia vs. Consumo)</span>
+                                <span id="axis-2-stat">0/10</span>
+                            </div>
+                            <div class="axis-bar-bg"><div id="axis-2-bar" class="axis-bar-val" style="width: 0%; background: #d97706;"></div></div>
+                        </div>
+
+                        <div class="axis-item">
+                            <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem;">
+                                <span>3. Filosofia dos Afetos</span>
+                                <span id="axis-3-stat">0/10</span>
+                            </div>
+                            <div class="axis-bar-bg"><div id="axis-3-bar" class="axis-bar-val" style="width: 0%; background: #059669;"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group-end">
+                    <button class="btn-review" onclick="openReviewModal()">
+                        📖 Revisar Todas as 30 Questões
+                    </button>
+                    <button class="btn-replay" onclick="restartGame()">
+                        🔄 Jogar Novamente
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL DE REVISÃO GERAL -->
+    <div id="modal-review" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeReviewModal()">✖ Fechar</button>
+            <h2 style="font-weight: 900; color: var(--bg-purple); margin-bottom: 20px;">📖 Gabarito e Justificativas de Todas as 30 Questões</h2>
+            <div id="review-list">
+                <!-- Preenchido dinamicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE ÁUDIO E LÓGICA DO JOGO -->
+    <script>
+        const questionsData = [
+  {
+    "id": 1,
+    "axis": "Sentido da Vida",
+    "context": "Juliana percebe que sua rotina se resume a acordar, cumprir tarefas escolares, navegar nas redes e dormir, sem saber exatamente por que faz tudo isso. Ao compartilhar essa angústia com seu professor de Filosofia, ele explica que os seres humanos não agem apenas por instinto biológico, mas necessitam atribuir significado à sua existência.",
+    "question": "Do ponto de vista filosófico, o que diferencia a existência humana da vida puramente biológica dos outros animais?",
+    "options": [
+      "A capacidade exclusiva de acumular riquezas e garantir herança material para os descendentes.",
+      "A autoconsciência de sua finitude e a necessidade reflexiva de construir propósitos e finalidades para suas ações.",
+      "A submissão cega e involuntária às regras da natureza sem qualquer possibilidade de escolha.",
+      "A garantia inata de que o destino individual já nasce completamente pronto e imutável."
+    ],
+    "answer": 1,
+    "justification": "Diferente de outros seres vivos que agem predominantemente por instintos de sobrevivência, o ser humano é consciente de si e de sua finitude temporal (mortalidade), o que o impulsiona a questionar o porquê de suas ações e a construir sentidos para sua existência."
+  },
+  {
+    "id": 2,
+    "axis": "Sentido da Vida",
+    "context": "Ao analisar por que escolhemos determinadas ações — como estudar para passar de ano, passar de ano para ter uma profissão —, o filósofo Aristóteles argumentou que toda ação visa a uma finalidade (télos). No entanto, para não cairmos em uma cadeia infinita de meios, deve existir um fim supremo.",
+    "question": "Na perspectiva aristotélica, como é compreendida a finalidade última (télos) da vida humana?",
+    "options": [
+      "Como a busca incessante por cargos de poder que permitam dominar os outros indivíduos.",
+      "Como a renúncia total a qualquer forma de conhecimento racional em favor dos prazeres físicos.",
+      "Como a realização plena e florescimento do ser humano (Eudaimonia), desejada por si mesma.",
+      "Como a acumulação indefinida de bens materiais como único objetivo que justifica o esforço diário."
+    ],
+    "answer": 2,
+    "justification": "Para Aristóteles, toda ação humana possui uma finalidade (télos). O bem supremo, que é buscado por si mesmo e não como degrau para outra coisa, é a Eudaimonia (felicidade entendida como vida plena e realização da excelência humana)."
+  },
+  {
+    "id": 3,
+    "axis": "Sentido da Vida",
+    "context": "O existencialista Jean-Paul Sartre afirmava que 'a existência precede a essência'. Isso significa que, diferentemente de um objeto fabricado (como uma tesoura, cujo propósito foi definido antes de ser feita), o ser humano primeiro existe no mundo e só depois se define.",
+    "question": "Aplicada à busca pelo sentido da vida, a tese sartreana implica que:",
+    "options": [
+      "O sentido da vida humana não é pré-fabricado; cabe a cada indivíduo construí-lo por meio de suas escolhas e projetos.",
+      "A vida humana é determinada geneticamente e não há espaço para liberdade ou criação de novos propósitos.",
+      "Toda pessoa nasce com uma missão pré-determinada pelos deuses que deve ser descoberta passivamente.",
+      "A ausência de essência prévia impede qualquer possibilidade de responsabilidade ética nas ações."
+    ],
+    "answer": 0,
+    "justification": "Se a existência precede a essência, o ser humano não nasce com um propósito pré-determinado. O sentido da vida é um projeto aberto que cada pessoa tem a responsabilidade e a liberdade de construir por meio de suas ações no mundo."
+  },
+  {
+    "id": 4,
+    "axis": "Sentido da Vida",
+    "context": "Em um diário pessoal, um estudante relata sentir um profundo vazio e desânimo após perceber que todas as suas metas anteriores (notas altas, aprovação em testes) não respondiam à pergunta fundamental: 'Quem sou eu e o que realmente importa para mim?'.",
+    "question": "Essa sensação de desorientação diante do propósito da própria existência é conceituada na Filosofia como:",
+    "options": [
+      "Alienação produtiva.",
+      "Crise existencial.",
+      "Determinismo biológico.",
+      "Eudaimonia hedonista."
+    ],
+    "answer": 1,
+    "justification": "A crise existencial ocorre quando os referenciais automáticos ou externos do cotidiano entram em colapso, levando o indivíduo a confrontar a necessidade urgente e angustiante de repensar seus valores, sua identidade e o significado de sua vida."
+  },
+  {
+    "id": 5,
+    "axis": "Sentido da Vida",
+    "context": "O psiquiatra e filósofo Viktor Frankl, sobrevivente dos campos de concentração, desenvolveu a Logoterapia ao observar que as pessoas que mantinham uma forte razão de viver (um sentido, um amor, uma tarefa a realizar) apresentavam maior resistência psicológica mesmo nas situações mais desumanas.",
+    "question": "De acordo com as reflexões sobre a busca de sentido em circunstâncias adversas, conclui-se que:",
+    "options": [
+      "O sofrimento anula imediatamente qualquer possibilidade de a vida ter significado ou dignidade.",
+      "O sentido da vida só existe quando a pessoa desfruta de conforto material pleno e ausência de dor.",
+      "Mesmo diante da dor inevitável, o ser humano pode encontrar sentido na postura ética e na atitude que assume diante da adversidade.",
+      "Apenas pessoas com posições sociais privilegiadas conseguem refletir sobre propósitos existenciais."
+    ],
+    "answer": 2,
+    "justification": "A reflexão frankliana e existencial demonstra que o sentido não depende exclusivamente do sucesso externo ou do bem-estar material, mas da capacidade humana de assumir uma atitude digna, de compromisso e de responsabilidade diante dos desafios da realidade."
+  },
+  {
+    "id": 6,
+    "axis": "Sentido da Vida",
+    "context": "Muitas pessoas vivem em 'modo automático', seguindo rotinas sem jamais se perguntarem se suas escolhas refletem seus verdadeiros valores ou se apenas repetem padrões impostos pela sociedade e pela moda.",
+    "question": "Na Filosofia da existência, essa vida conduzida sem reflexão crítica sobre a própria finitude e escolhas é chamada de:",
+    "options": [
+      "Existência inautêntica ou alienada.",
+      "Vida plenamente eudaimônica.",
+      "Solidariedade comunitária genuína.",
+      "Ataraxia estóica."
+    ],
+    "answer": 0,
+    "justification": "A existência inautêntica (ou alienada) caracteriza-se pela conformidade passiva às expectativas alheias e à rotina vazia, na qual o indivíduo evita assumir a responsabilidade pelas próprias escolhas e pelo sentido de sua vida."
+  },
+  {
+    "id": 7,
+    "axis": "Sentido da Vida",
+    "context": "A consciência de que nosso tempo na Terra é finito (a mortalidade) provoca reações diversas: enquanto para alguns causa pavor paralisante, para a Filosofia funciona como um lembrete crucial sobre a urgência de viver bem.",
+    "question": "Como a consciência da finitude e da temporalidade se relaciona com a construção do sentido da vida?",
+    "options": [
+      "Torna qualquer esforço moral inútil, já que a morte iguala todas as ações humanas.",
+      "Confere valor e urgência ao tempo presente, exigindo escolhas conscientes e projetos significativos.",
+      "Obriga o ser humano a viver em isolamento para evitar o desgaste físico e emocional.",
+      "Demonstra que o passado é a única dimensão temporal que possui relevância para o indivíduo."
+    ],
+    "answer": 1,
+    "justification": "A finitude não retira o valor da vida; pelo contrário, é justamente porque nosso tempo é finito e irreversível que cada escolha ganha peso, relevância e necessidade de direcionamento ético e existencial."
+  },
+  {
+    "id": 8,
+    "axis": "Sentido da Vida",
+    "context": "Dois amigos debatem: um afirma que 'o destino de cada um já está traçado pelas circunstâncias sociais e genéticas', enquanto o outro sustenta que 'somos sempre livres para decidir como agir frente às circunstâncias'.",
+    "question": "Esse debate expressa a tensão filosófica fundamental entre:",
+    "options": [
+      "Hedonismo e Pragmatismo.",
+      "Eros e Philia.",
+      "Determinismo e Liberdade.",
+      "Eudaimonia e Consumismo."
+    ],
+    "answer": 2,
+    "justification": "O debate entre determinismo (ideia de que fatores externos, biológicos ou sociais definem completamente os atos) e liberdade (capacidade de deliberar e escolher conscientemente o próprio caminho) é central na reflexão sobre a responsabilidade humana."
+  },
+  {
+    "id": 9,
+    "axis": "Sentido da Vida",
+    "context": "Ao longo da história da Filosofia Antiga, Heráclito afirmava que 'tudo flui' (o devir constante), enquanto Parmênides defendia a imutabilidade do 'Ser'. Transpondo esse debate para a identidade e o sentido da vida humana:",
+    "question": "A visão da existência como 'devir' indica que o ser humano:",
+    "options": [
+      "Possui uma identidade fixa que nunca se altera desde o nascimento até a morte.",
+      "É um projeto em permanente transformação, que se autoconstrói ao longo do tempo.",
+      "Está condenado a regredir moralmente a cada fase de sua vida histórica.",
+      "Não possui capacidade de memória ou aprendizado com suas experiências passadas."
+    ],
+    "answer": 1,
+    "justification": "Compreender a existência no horizonte do devir significa reconhecer que o ser humano não é uma essência estática e acabada, mas um ser histórico em constante transformação e aprendizado."
+  },
+  {
+    "id": 10,
+    "axis": "Sentido da Vida",
+    "context": "Sócrates afirmava no tribunal de Atenas que 'uma vida sem reflexão não vale a pena ser vivida'. Ele convidava os cidadãos a examinarem seus próprios pensamentos e atitudes.",
+    "question": "O papel primordial da atitude filosófica na busca pelo sentido da vida consiste em:",
+    "options": [
+      "Oferecer manuais rígidos de autoajuda com respostas prontas e definitivas.",
+      "Despertar o pensamento crítico para questionar dogmas, ilusões e formular propósitos autênticos.",
+      "Substituir completamente a ciência e a arte na explicação de todos os fenômenos da natureza.",
+      "Promover o conformismo social e a obediência cega aos costumes tradicionais."
+    ],
+    "answer": 1,
+    "justification": "A Filosofia não entrega dogmas ou fórmulas mágicas prontas; ela fornece ferramentas de questionamento crítico para que o indivíduo examine sua própria vida, desfaça ilusões e assuma a autoria consciente de sua trajetória."
+  },
+  {
+    "id": 11,
+    "axis": "Felicidade & Consumo",
+    "context": "Uma influenciadora digital posta diariamente fotos de viagens de luxo e roupas de grife, associando suas compras à 'felicidade plena'. No entanto, em entrevistas reservadas, admite sentir constante ansiedade e medo de perder o interesse do público quando não tem novidades para exibir.",
+    "question": "Comparando essa situação com o conceito de Eudaimonia em Aristóteles, qual é a principal crítica filosófica a esse modelo de vida?",
+    "options": [
+      "A Eudaimonia rejeita qualquer contato com o mundo exterior e prega o isolamento em cavernas.",
+      "A verdadeira felicidade não reside em bens externos efêmeros ou validação superficial, mas na virtude e no florescimento do caráter.",
+      "A posse de mercadorias caras é a única prova legítima de virtude moral na tradição clássica.",
+      "A felicidade grega depende exclusivamente do número de admiradores públicos que um indivíduo acumula."
+    ],
+    "answer": 1,
+    "justification": "Na ética aristotélica, a Eudaimonia depende do cultivo interior de virtudes (como equilíbrio, coragem e justiça) e da realização da excelência humana, não de bens materiais voláteis ou da aprovação externa temporária."
+  },
+  {
+    "id": 12,
+    "axis": "Felicidade & Consumo",
+    "context": "Na obra 'Ética a Nicômaco', Aristóteles argumenta que a felicidade não é uma emoção passageira (como uma gargalhada momentânea) nem um estado passivo, mas uma 'atividade da alma de acordo com a virtude'.",
+    "question": "Disso decorre que, para o filósofo grego, a felicidade deve ser entendida como:",
+    "options": [
+      "Um golpe de sorte ou destino que atinge aleatoriamente apenas algumas pessoas.",
+      "Um conjunto de prazeres corporais intensos desfrutados sem qualquer moderação.",
+      "Uma prática contínua ao longo de toda a vida, pautada pela razão e pelo equilíbrio.",
+      "O resultado exclusivo da aquisição de títulos de nobreza e cargos políticos."
+    ],
+    "answer": 2,
+    "justification": "Para Aristóteles, a Eudaimonia é uma atividade prática e habitual (héxis) que dura a vida inteira. Exige o uso da razão para agir de forma equilibrada (justa medida), e não um momento fugaz de euforia."
+  },
+  {
+    "id": 13,
+    "axis": "Felicidade & Consumo",
+    "context": "O filósofo Epicuro propunha que a tranquilidade da alma (ataraxia) e a ausência de dor corporal (aponia) constituem o verdadeiro prazer. Ele classificava os desejos em: naturais e necessários; naturais e não necessários; e não naturais e vãos (como o desejo de fama e luxo ilimitado).",
+    "question": "Segundo a perspectiva epicurista, a busca frenética por produtos supérfluos na sociedade atual resulta em:",
+    "options": [
+      "Garantia de felicidade eterna e paz espiritual duradoura.",
+      "Frustração e perturbação constante da alma, pois desejos vãos são insaciáveis.",
+      "Equilíbrio psicológico perfeito baseado na satisfação de todas as vontades artificiais.",
+      "Eliminação completa de todas as dores físicas por meio da tecnologia."
+    ],
+    "answer": 1,
+    "justification": "Epicuro advertia que os desejos não naturais e vãos (riqueza excessiva, poder, luxo) não possuem limites naturais. Persegui-los gera ansiedade constante e perturba a tranquilidade da alma (ataraxia)."
+  },
+  {
+    "id": 14,
+    "axis": "Felicidade & Consumo",
+    "context": "Comerciais de televisão e redes sociais associam frequentemente a compra de um perfume ou carro a ideias como 'liberdade', 'sucesso' e 'ser amado'.",
+    "question": "A habilidade crítica de debater o papel da indústria cultural e do consumismo (EM13CHS303) permite identificar que essa estratégia publicitária:",
+    "options": [
+      "Cria necessidades artificiais, vendendo a ilusão de que valores humanos profundos podem ser comprados em forma de mercadoria.",
+      "Ajuda os cidadãos a atingirem a sabedoria filosófica por meio de escolhas comerciais conscientes.",
+      "Demonstra que o valor moral de um ser humano é exatamente proporcional ao limite de seu cartão de crédito.",
+      "Elimina as desigualdades sociais ao oferecer os mesmos comerciais para todas as classes econômicas."
+    ],
+    "answer": 0,
+    "justification": "A indústria do consumo opera transferindo atributos subjetivos e existenciais (amor, identidade, liberdade, felicidade) para objetos materiais, gerando a falsa crença de que comprar algo é equivalente a se realizar como pessoa."
+  },
+  {
+    "id": 15,
+    "axis": "Felicidade & Consumo",
+    "context": "Marcos comprou o videogame mais moderno do mercado. Nos primeiros dias, sentiu grande excitação. Poucas semanas depois, a novidade passou e ele começou a desejar os novos acessórios recém-lançados para sentir a mesma emoção.",
+    "question": "O ciclo descrito acima — desejo $\\rightarrow$ compra $\\rightarrow$ alívio/prazer passageiro $\\rightarrow$ tédio/vazio $\\rightarrow$ novo desejo — evidencia:",
+    "options": [
+      "A plenitude definitiva proporcionada pelos bens industriais.",
+      "A natureza efêmera da satisfação consumista, que não preenche necessidades existenciais reais.",
+      "O funcionamento perfeito da Eudaimonia aristotélica no mundo contemporâneo.",
+      "A superioridade dos prazeres materiais sobre quaisquer vínculos afetivos ou morais."
+    ],
+    "answer": 1,
+    "justification": "O consumo mercadológico promove um prazer de curto prazo (dopaminérgico/passageiro). Por não tocar nas dimensões éticas e existenciais da realização humana, gera rapidamente uma sensação de vazio, alimentando um ciclo ininterrupto de insatisfação."
+  },
+  {
+    "id": 16,
+    "axis": "Felicidade & Consumo",
+    "context": "O filósofo e sociólogo Erich Fromm escreveu sobre a distinção entre 'Ter' e 'Ser'. Na sociedade moderna, o valor do indivíduo é frequentemente medido pelo que ele 'tem' (posses, títulos, bens), em vez de quem ele 'é' (sua sensibilidade, caráter, capacidade de amar e pensar criticamente).",
+    "question": "Quando a lógica do 'Ter' se sobrepõe à do 'Ser', a principal consequência para as relações humanas é:",
+    "options": [
+      "O aumento da solidariedade e da generosidade mútua entre as pessoas.",
+      "A coisificação dos indivíduos, que passam a ser avaliados e descartados como mercadorias.",
+      "O fim de todas as formas de preconceito e discriminação socioeconômica.",
+      "A garantia de que todos desenvolverão a virtude ética de maneira espontânea."
+    ],
+    "answer": 1,
+    "justification": "A prevalência do 'Ter' transforma não apenas as coisas em fetiches, mas também os próprios seres humanos, que passam a ser julgados por sua utilidade econômica ou poder aquisitivo, gerando desumanização e relações instrumentais."
+  },
+  {
+    "id": 17,
+    "axis": "Felicidade & Consumo",
+    "context": "Empresas frequentemente projetam aparelhos eletrônicos para durarem menos tempo ou lançam pequenas atualizações cosméticas anuais para fazer com que os modelos anteriores pareçam 'ultrapassados' e causem desconforto social em quem os utiliza.",
+    "question": "Esses fenômenos são conhecidos, respectivamente, como obsolescência programada e obsolescência perceptiva. Em relação à busca da felicidade, eles geram:",
+    "options": [
+      "Autonomia plena do consumidor, que decide livremente sem qualquer indução de mercado.",
+      "Um estado crônico de insatisfação induzida e desperdício de recursos naturais e financeiros.",
+      "A superação definitiva de todos os dilemas éticos da sociedade contemporânea.",
+      "A harmonia perfeita entre desenvolvimento econômico e preservação ambiental."
+    ],
+    "answer": 1,
+    "justification": "A obsolescência programada e a perceptiva forçam a renovação contínua do consumo, gerando uma constante sensação de inadequação nos indivíduos e agravando a crise socioambiental pelo descarte acelerado."
+  },
+  {
+    "id": 18,
+    "axis": "Felicidade & Consumo",
+    "context": "Em sua doutrina ética, Aristóteles formula a teoria da 'justa medida' (ou meio-termo de ouro), segundo a qual a virtude é o equilíbrio entre dois extremos viciosos: a falta e o excesso.",
+    "question": "Como a regra do equilíbrio (meio-termo) aristotélico se aplica à nossa relação com bens materiais e prazeres?",
+    "options": [
+      "Exige que o ser humano busque o excesso máximo de riquezas para provar seu sucesso.",
+      "Defende que o ser humano deve viver na miséria extrema e recusar qualquer tipo de alimento saboroso.",
+      "Orienta a usufruir dos recursos materiais necessários sem cair nem na avareza mesquinha nem no consumismo desmedido.",
+      "Afirma que o equilíbrio só pode ser atingido quando o indivíduo gasta tudo o que possui em um único dia."
+    ],
+    "answer": 2,
+    "justification": "A justa medida não prega a miséria nem o descontrole; ela estabelece que o ser humano virtuoso sabe usar os bens materiais na quantidade adequada para sustentar uma vida nobre e racional, sem escravizar-se pelo apego excessivo ou pela avareza."
+  },
+  {
+    "id": 19,
+    "axis": "Felicidade & Consumo",
+    "context": "Uma pesquisa recente apontou que muitos jovens utilizam compras por impulso como forma de aplacar sentimentos de tristeza, solidão ou estresse após um dia exaustivo.",
+    "question": "A análise filosófica dessa conduta indica que o consumismo contemporâneo funciona frequentemente como:",
+    "options": [
+      "Uma anestesia ou fuga temporária para angústias existenciais que não são enfrentadas pela reflexão e pelo diálogo.",
+      "A melhor terapia comprovada para curar de forma definitiva crises de identidade e isolamento.",
+      "Um ato revolucionário de contestação das normas econômicas do sistema capitalista.",
+      "Uma manifestação direta do amor universal (Ágape) aplicado à produção industrial."
+    ],
+    "answer": 0,
+    "justification": "O consumo imediato muitas vezes opera como um mecanismo compensatório paliativo: a compra traz um alívio momentâneo para a ansiedade, mas não resolve a causa raiz dos conflitos existenciais e emocionais."
+  },
+  {
+    "id": 20,
+    "axis": "Felicidade & Consumo",
+    "context": "Diferenciando necessidades autênticas de hábitos insustentáveis, diversos pensadores ecológicos e filósofos propõem repensar o estilo de vida contemporâneo em prol de uma existência mais simples e rica em relações comunitárias.",
+    "question": "Essa perspectiva de felicidade associada à sobriedade voluntária e à sustentabilidade defende que:",
+    "options": [
+      "A qualidade de vida está ligada à profundidade dos laços sociais e ao respeito aos limites ecológicos, e não ao acúmulo infinito de objetos.",
+      "O progresso da humanidade exige a destruição completa das florestas para ampliar centros comerciais.",
+      "A felicidade é impossível enquanto existirem bibliotecas e espaços de convivência comunitária.",
+      "Apenas o consumo desenfreado tem capacidade de promover a justiça social em escala global."
+    ],
+    "answer": 0,
+    "justification": "O resgate da Eudaimonia em diálogo com a sustentabilidade mostra que viver bem (bem-viver) depende de relações humanas ricas, tempo livre, saúde e equilíbrio com a natureza, rompendo a ilusão de que ter mais coisas equivale a viver melhor."
+  },
+  {
+    "id": 21,
+    "axis": "Filosofia dos Afetos",
+    "context": "No diálogo platônico 'O Banquete', Sócrates relata os ensinamentos da sacerdotisa Diotima sobre Eros. Ela explica que Eros é filho de Poros (o recurso/a abundância) e Penía (a pobreza/a carência), encontrando-se sempre em um estado intermediário.",
+    "question": "Segundo a teoria platônica do amor e do desejo, qual é a raiz do sentimento de Eros?",
+    "options": [
+      "A autossuficiência absoluta de quem já possui tudo e nada mais necessita.",
+      "A consciência da falta e a busca constante por aquilo que é belo, bom e que nos aperfeiçoa.",
+      "O desprezo total por qualquer forma de beleza física ou sabedoria intelectual.",
+      "A certeza de que o amor é uma ilusão puramente química sem qualquer significado filosófico."
+    ],
+    "answer": 1,
+    "justification": "Para Platão, o desejo (Eros) nasce da falta: não se deseja o que já se tem plenamente. Por ser filho da Pobreza e do Recurso, Eros é a força inquieta que impulsiona o ser humano a buscar aquilo que lhe falta para alcançar o Belo e o Bem."
+  },
+  {
+    "id": 22,
+    "axis": "Filosofia dos Afetos",
+    "context": "Na língua grega antiga, não havia apenas uma palavra para designar o afeto, mas termos distintos para suas diferentes manifestações. Um jovem sente atração intensa, desejo de proximidade e paixão apaixonada por uma colega.",
+    "question": "Essa dimensão passional, marcada pelo desejo e pela atração corporal e estética, corresponde ao conceito de:",
+    "options": [
+      "Ágape.",
+      "Philia.",
+      "Eros.",
+      "Ataraxia."
+    ],
+    "answer": 2,
+    "justification": "Eros é a força do amor-paixão, caracterizada pelo desejo, pela atração estética e física, e pelo ímpeto afetivo de união entre duas pessoas."
+  },
+  {
+    "id": 23,
+    "axis": "Filosofia dos Afetos",
+    "context": "Dois amigos de infância compartilham projetos de vida, confiam segredos mútuos, conversam sobre suas angústias e torcem sinceramente pelas conquistas um do outro com respeito e reciprocidade.",
+    "question": "Esse tipo de afeto fraterno, fundado no companheirismo, na lealdade e na partilha igualitária, é conceituado na tradição grega como:",
+    "options": [
+      "Philia (Amizade/Companheirismo).",
+      "Consumismo relacional.",
+      "Eros desmedido.",
+      "Alienamento afetivo."
+    ],
+    "answer": 0,
+    "justification": "Philia é o amor de amizade e companheirismo, marcado pela reciprocidade, lealdade, estima mútua e compromisso com o crescimento do amigo."
+  },
+  {
+    "id": 24,
+    "axis": "Filosofia dos Afetos",
+    "context": "Diante de uma tragédia climática, voluntários de vários estados se mobilizam para enviar alimentos, água e acolhimento para pessoas que nunca viram antes, movidos unicamente pelo desejo de aliviar o sofrimento alheio sem esperar qualquer recompensa.",
+    "question": "Esse amor desinteressado, incondicional e universal pelo ser humano em sua vulnerabilidade é definido filosoficamente como:",
+    "options": [
+      "Amizade por utilidade.",
+      "Eros estético.",
+      "Ágape (Amor-Cuidado/Caridade/Solidariedade).",
+      "Individualismo possessivo."
+    ],
+    "answer": 2,
+    "justification": "Ágape é o amor desinteressado, compassivo e generoso. Trata-se do afeto altruísta que não exige troca ou benefício próprio, estendendo o cuidado e a dignidade a qualquer ser humano."
+  },
+  {
+    "id": 25,
+    "axis": "Filosofia dos Afetos",
+    "context": "Em uma sala de aula, dois estudantes só sentam juntos porque um é bom em Matemática e o outro em Redação, trocando ajuda nas provas. No período de férias, eles nem sequer trocam mensagens ou lembram da existência um do outro.",
+    "question": "De acordo com a classificação dos tipos de amizade proposta por Aristóteles, esse laço é um exemplo típico de:",
+    "options": [
+      "Amizade perfeita e virtuosa.",
+      "Amizade por utilidade.",
+      "Amizade por prazer puro.",
+      "Amor Ágape incondicional."
+    ],
+    "answer": 1,
+    "justification": "A amizade por utilidade em Aristóteles fundamenta-se na troca de vantagens ou favores práticos. Quando a utilidade ou o interesse mútuo cessa, a relação tende a se dissolver com naturalidade."
+  },
+  {
+    "id": 26,
+    "axis": "Filosofia dos Afetos",
+    "context": "Um grupo de colegas reúne-se aos finais de semana exclusivamente para jogar futebol e rir de piadas. Quando um dos integrantes adoece gravemente e precisa de apoio emocional e visitas, os colegas se afastam porque 'o clima ficou pesado'.",
+    "question": "Segundo a ética aristotélica, essa relação caracteriza-se fundamentalmente como uma:",
+    "options": [
+      "Amizade por virtude (autêntica).",
+      "Amizade por prazer.",
+      "Relação de Philia plena e duradoura.",
+      "Forma elevada de Eudaimonia comunitária."
+    ],
+    "answer": 1,
+    "justification": "A amizade por prazer baseia-se unicamente na diversão, entretenimento e agrado imediato. Por não estar ancorada no caráter ou no compromisso moral, desfaz-se facilmente quando o momento de lazer é interrompido por dificuldades."
+  },
+  {
+    "id": 27,
+    "axis": "Filosofia dos Afetos",
+    "context": "Aristóteles afirmava que 'o amigo é um outro eu'. Ele descreve a amizade verdadeira (por virtude) como a forma mais nobre de convivência humana, em que cada amigo deseja o bem do outro pelo que ele realmente é.",
+    "question": "Qual é a principal característica que torna a amizade verdadeira/virtuosa tão rara e duradoura?",
+    "options": [
+      "Ela baseia-se na admiração recíproca do caráter moral e na busca mútua pelo aperfeiçoamento e pelo bem.",
+      "Ela exige que os amigos tenham exatamente a mesma conta bancária e profissão.",
+      "Ela proíbe qualquer tipo de divergência de opinião ou diálogo sincero.",
+      "Ela depende da assinatura de contratos formais de convivência perante a lei."
+    ],
+    "answer": 0,
+    "justification": "A amizade virtuosa não se apoia em vantagens materiais ou entretenimento efêmero, mas na admiração mútua do caráter ético e no compromisso com o bem e o florescimento do amigo ao longo de toda a vida."
+  },
+  {
+    "id": 28,
+    "axis": "Filosofia dos Afetos",
+    "context": "O sociólogo Zygmunt Bauman utilizou a expressão 'amor líquido' para descrever a fragilidade dos laços humanos na era contemporânea, em que relacionamentos são iniciados e descartados com a mesma facilidade de produtos de consumo em aplicativos digitais.",
+    "question": "A mercantilização dos afetos e a superficialidade dos vínculos no mundo atual geram como impacto existencial:",
+    "options": [
+      "O fortalecimento da solidariedade e o fim da solidão nas grandes cidades.",
+      "Sentimentos de insegurança, medo do compromisso e isolamento emocional camuflado de hiperconexão.",
+      "A garantia de que todas as pessoas viverão relacionamentos perfeitamente virtuosos.",
+      "A superação dos conflitos sociais por meio da simples troca de curtidas online."
+    ],
+    "answer": 1,
+    "justification": "Tratar os vínculos afetivos como relações de consumo descartável (amor líquido) gera instabilidade crônica, ansiedade e solidão, impedindo o desenvolvimento de laços profundos de confiança, Philia e compromisso."
+  },
+  {
+    "id": 29,
+    "axis": "Filosofia dos Afetos",
+    "context": "Em uma sociedade marcada pela extrema desigualdade e pelo individualismo competitivo, o filósofo e educador Paulo Freire defendia que a verdadeira transformação social exige uma ética da solidariedade e do respeito à alteridade (ao outro).",
+    "question": "A passagem da esfera afetiva individual para a prática da Solidariedade política e social manifesta-se quando:",
+    "options": [
+      "O indivíduo se preocupa apenas com os membros da sua própria família e ignora a comunidade.",
+      "A sociedade reconhece a dignidade de todos os seres humanos e age coletivamente contra as injustiças e a exclusão.",
+      "Os cidadãos aceitam passivamente a opressão como uma lei natural que não pode ser modificada.",
+      "As pessoas substituem o diálogo e a cooperação por disputas de poder violentas."
+    ],
+    "answer": 1,
+    "justification": "A solidariedade ética e política é a extensão do cuidado (Ágape) para a vida pública. Ela rompe o egoísmo individualista ao reconhecer no outro um sujeito de direitos e dignidade, promovendo ações coletivas de justiça e inclusão."
+  },
+  {
+    "id": 30,
+    "axis": "Filosofia dos Afetos",
+    "context": "Ao final de uma reflexão sobre existência, felicidade e afetos, conclui-se que o ser humano é um ser essencialmente relacional: não alcançamos a realização de forma isolada nem por acúmulo de posses.",
+    "question": "Sintetizando os três eixos da aula, uma 'vida plenamente humana e realizada' exige articular:",
+    "options": [
+      "Isolamento absoluto, consumismo desmedido e desconfiança de todas as pessoas.",
+      "Busca de sentido consciente, cultivo da virtude e do florescimento pessoal (Eudaimonia) e laços genuínos de amor, amizade e solidariedade.",
+      "Submissão cega ao destino, busca apenas pelo prazer imediato e recusa à convivência cidadã.",
+      "Acúmulo de bens de consumo como único critério de sucesso moral e rejeição aos afetos sinceros."
+    ],
+    "answer": 1,
+    "justification": "A síntese filosófica articula a reflexão sobre o sentido da vida (autoconhecimento e finalidade), a conquista da Eudaimonia (vida virtuosa e equilibrada além do consumismo) e o cultivo dos afetos (Eros, Philia, Ágape e solidariedade), integrando o indivíduo consigo mesmo e com a coletividade."
+  }
+];
+
+        // Game State
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let streak = 0;
+        let maxStreak = 0;
+        let correctCount = 0;
+        let userAnswers = [];
+
+        let timePerQuestion = 30;
+        let timeLeft = 30;
+        let timerInterval = null;
+        let soundEnabled = true;
+
+        // Web Audio API Synthesizer
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            return audioCtx;
+        }
+
+        function playTone(freq, type, duration, delay=0) {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                setTimeout(() => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + duration);
+                }, delay * 1000);
+            } catch(e) {
+                console.log("Audio not supported or blocked", e);
+            }
+        }
+
+        function playCorrectSound() {
+            playTone(523.25, 'triangle', 0.15, 0); // C5
+            playTone(659.25, 'triangle', 0.15, 0.1); // E5
+            playTone(783.99, 'triangle', 0.25, 0.2); // G5
+            playTone(1046.50, 'triangle', 0.4, 0.3); // C6
+        }
+
+        function playIncorrectSound() {
+            playTone(280, 'sawtooth', 0.2, 0);
+            playTone(200, 'sawtooth', 0.35, 0.18);
+        }
+
+        function playTickSound() {
+            playTone(800, 'sine', 0.05, 0);
+        }
+
+        // Navigation
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+            document.getElementById(screenId).style.display = 'block';
+        }
+
+        // Start Game
+        function startGame() {
+            timePerQuestion = parseInt(document.getElementById('timer-select').value);
+            soundEnabled = document.getElementById('sound-toggle').value === 'on';
+
+            currentQuestionIndex = 0;
+            score = 0;
+            streak = 0;
+            maxStreak = 0;
+            correctCount = 0;
+            userAnswers = [];
+
+            showScreen('screen-game');
+            loadQuestion();
+        }
+
+        // Load Question
+        function loadQuestion() {
+            const q = questionsData[currentQuestionIndex];
+            
+            // Update UI Counters
+            document.getElementById('q-number').textContent = currentQuestionIndex + 1;
+            document.getElementById('q-axis-badge').textContent = q.axis;
+            document.getElementById('streak-counter').textContent = streak;
+            document.getElementById('score-counter').textContent = score;
+
+            const progressPct = ((currentQuestionIndex) / questionsData.length) * 100;
+            document.getElementById('progress-bar-fill').style.width = progressPct + '%';
+
+            document.getElementById('q-context').textContent = q.context;
+            document.getElementById('q-text').textContent = q.question;
+
+            // Render Options
+            const shapes = ['▲', '◆', '●', '■'];
+            const colors = ['opt-red', 'opt-blue', 'opt-yellow', 'opt-green'];
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            q.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `option-btn ${colors[idx]}`;
+                btn.onclick = () => selectOption(idx);
+                btn.innerHTML = `
+                    <div class="shape-icon">${shapes[idx]}</div>
+                    <div class="opt-text">${optText}</div>
+                `;
+                container.appendChild(btn);
+            });
+
+            // Setup Timer
+            clearInterval(timerInterval);
+            const timerBadge = document.getElementById('timer-badge');
+            if (timePerQuestion > 0) {
+                timeLeft = timePerQuestion;
+                timerBadge.style.display = 'flex';
+                timerBadge.textContent = timeLeft;
+                timerBadge.className = 'timer-badge';
+
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    timerBadge.textContent = timeLeft;
+
+                    if (timeLeft <= 10 && timeLeft > 5) {
+                        timerBadge.className = 'timer-badge warning';
+                        playTickSound();
+                    } else if (timeLeft <= 5 && timeLeft > 0) {
+                        timerBadge.className = 'timer-badge danger';
+                        playTickSound();
+                    } else if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        selectOption(-1); // Time out
+                    }
+                }, 1000);
+            } else {
+                timerBadge.style.display = 'none';
+            }
+        }
+
+        // Select Option
+        function selectOption(chosenIdx) {
+            clearInterval(timerInterval);
+            const q = questionsData[currentQuestionIndex];
+            const isCorrect = (chosenIdx === q.answer);
+
+            // Disable buttons
+            const btns = document.querySelectorAll('.option-btn');
+            btns.forEach(b => b.classList.add('disabled'));
+
+            let pointsAwarded = 0;
+
+            if (isCorrect) {
+                correctCount++;
+                streak++;
+                if (streak > maxStreak) maxStreak = streak;
+
+                const timeFactor = timePerQuestion > 0 ? (timeLeft / timePerQuestion) : 1;
+                const timeBonus = Math.round(500 * timeFactor);
+                const streakBonus = Math.min((streak - 1) * 100, 500);
+                pointsAwarded = 1000 + timeBonus + streakBonus;
+                score += pointsAwarded;
+
+                playCorrectSound();
+            } else {
+                streak = 0;
+                playIncorrectSound();
+            }
+
+            userAnswers.push({
+                qIndex: currentQuestionIndex,
+                chosen: chosenIdx,
+                isCorrect: isCorrect,
+                points: pointsAwarded
+            });
+
+            // Show Feedback Screen
+            setTimeout(() => {
+                showFeedback(isCorrect, chosenIdx, pointsAwarded, q);
+            }, 350);
+        }
+
+        // Show Feedback
+        function showFeedback(isCorrect, chosenIdx, points, q) {
+            showScreen('screen-feedback');
+
+            const banner = document.getElementById('feedback-banner');
+            const title = document.getElementById('feedback-title');
+            const pointsText = document.getElementById('feedback-points');
+            const justText = document.getElementById('feedback-justification');
+
+            if (isCorrect) {
+                banner.className = 'feedback-banner correct';
+                title.textContent = 'CORRETO! 🎉';
+                pointsText.textContent = `+${points} pontos • 🔥 Streak atual: ${streak}`;
+            } else {
+                banner.className = 'feedback-banner incorrect';
+                title.textContent = (chosenIdx === -1) ? 'TEMPO ESGOTADO! ⏱️' : 'OPS, NÃO FOI DESSA VEZ! 💡';
+                const shapes = ['▲ A', '◆ B', '● C', '■ D'];
+                pointsText.textContent = 'Resposta correta: ' + shapes[q.answer] + ' (' + q.options[q.answer] + ')';
+            }
+
+            justText.innerHTML = `<strong>Resposta Correta:</strong> ${q.options[q.answer]}<br><br><strong>Por que está correta?</strong><br>${q.justification}`;
+        }
+
+        // Next Question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questionsData.length) {
+                showScreen('screen-game');
+                loadQuestion();
+            } else {
+                showPodium();
+            }
+        }
+
+        // Show Podium / End Screen
+        function showPodium() {
+            showScreen('screen-podium');
+            document.getElementById('final-score').textContent = score.toLocaleString();
+            document.getElementById('final-correct').textContent = `${correctCount}/30`;
+            
+            const accuracy = Math.round((correctCount / 30) * 100);
+            document.getElementById('final-accuracy').textContent = `${accuracy}%`;
+            document.getElementById('final-streak').textContent = `${maxStreak} 🔥`;
+
+            // Axis calculation
+            let axisCorrect = [0, 0, 0];
+            userAnswers.forEach(ans => {
+                const qIdx = ans.qIndex;
+                const axisIdx = Math.floor(qIdx / 10);
+                if (ans.isCorrect) axisCorrect[axisIdx]++;
+            });
+
+            document.getElementById('axis-1-stat').textContent = `${axisCorrect[0]}/10`;
+            document.getElementById('axis-1-bar').style.width = `${axisCorrect[0] * 10}%`;
+
+            document.getElementById('axis-2-stat').textContent = `${axisCorrect[1]}/10`;
+            document.getElementById('axis-2-bar').style.width = `${axisCorrect[1] * 10}%`;
+
+            document.getElementById('axis-3-stat').textContent = `${axisCorrect[2]}/10`;
+            document.getElementById('axis-3-bar').style.width = `${axisCorrect[2] * 10}%`;
+
+            triggerConfetti();
+        }
+
+        // Confetti Celebration
+        function triggerConfetti() {
+            const canvas = document.getElementById('confettiCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const pieces = [];
+            const colors = ['#e21b3c', '#1368ce', '#d89e00', '#26890c', '#ffffff', '#ffd700'];
+
+            for (let i = 0; i < 150; i++) {
+                pieces.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    w: Math.random() * 12 + 6,
+                    h: Math.random() * 8 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    rot: Math.random() * 360,
+                    vy: Math.random() * 3 + 2,
+                    vr: Math.random() * 4 - 2
+                });
+            }
+
+            let animId;
+            function updateConfetti() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pieces.forEach(p => {
+                    p.y += p.vy;
+                    p.rot += p.vr;
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rot * Math.PI / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                    ctx.restore();
+                    if (p.y > canvas.height) p.y = -10;
+                });
+                animId = requestAnimationFrame(updateConfetti);
+            }
+            updateConfetti();
+            setTimeout(() => cancelAnimationFrame(animId), 7000);
+        }
+
+        // Review Modal
+        function openReviewModal() {
+            const list = document.getElementById('review-list');
+            list.innerHTML = '';
+
+            questionsData.forEach((q, idx) => {
+                const userAns = userAnswers.find(a => a.qIndex === idx);
+                const isCorrect = userAns ? userAns.isCorrect : false;
+
+                const item = document.createElement('div');
+                item.className = 'review-item';
+                item.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <span style="font-weight:800; color:#4f46e5;">Questão ${idx + 1} • ${q.axis}</span>
+                        <span style="font-weight:800; padding:3px 8px; border-radius:6px; background:${isCorrect ? '#dcfce7; color:#166534;' : '#fee2e2; color:#991b1b;'}">
+                            ${isCorrect ? '✅ Acertou' : '❌ Errou / Não respondeu'}
+                        </span>
+                    </div>
+                    <div style="font-size:0.92rem; color:#4b5563; font-style:italic; margin-bottom:8px;">${q.context}</div>
+                    <div style="font-weight:700; color:#111827; margin-bottom:10px;">${q.question}</div>
+                    <div style="background:#f9fafb; padding:10px; border-radius:8px; border-left:4px solid #10b981; margin-bottom:8px;">
+                        <strong>Gabarito Oficial:</strong> ${q.options[q.answer]}
+                    </div>
+                    <div style="font-size:0.92rem; color:#374151; line-height:1.45;">
+                        <strong>Justificativa:</strong> ${q.justification}
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+
+            document.getElementById('modal-review').style.display = 'flex';
+        }
+
+        function closeReviewModal() {
+            document.getElementById('modal-review').style.display = 'none';
+        }
+
+        function restartGame() {
+            showScreen('screen-start');
+        }
+
+        // Keyboard Shortcuts (1, 2, 3, 4)
+        window.addEventListener('keydown', (e) => {
+            const gameScreen = document.getElementById('screen-game');
+            if (gameScreen.style.display !== 'none') {
+                if (['1', '2', '3', '4'].includes(e.key)) {
+                    const idx = parseInt(e.key) - 1;
+                    const btns = document.querySelectorAll('.option-btn');
+                    if (btns[idx] && !btns[idx].classList.contains('disabled')) {
+                        selectOption(idx);
+                    }
+                }
+            } else if (document.getElementById('screen-feedback').style.display !== 'none') {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    nextQuestion();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
