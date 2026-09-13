@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Conflito de Gerações</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&display=swap');
+
+        :root {
+            --bg-color: #3b1070;
+            --red: #e21b3c;
+            --blue: #1368ce;
+            --yellow: #d89e00;
+            --green: #26890c;
+            --correct-green: #28c745;
+            --text-light: #ffffff;
+            --text-dark: #333333;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #2a0845 0%, #6441A5 100%);
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            height: 60px;
+        }
+
+        .question-counter {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .feedback-badge {
+            background-color: var(--correct-green);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: 800;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 199, 69, 0.5);
+        }
+
+        .feedback-badge.show {
+            opacity: 1;
+        }
+        
+        .feedback-badge.wrong {
+            background-color: var(--red);
+            box-shadow: 0 4px 15px rgba(226, 27, 60, 0.5);
+        }
+
+        /* QUESTION CONTAINER */
+        .question-container {
+            background-color: #ffffff;
+            color: var(--text-dark);
+            margin: 0 40px;
+            padding: 30px 40px;
+            border-radius: 12px;
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.4;
+        }
+
+        /* TIMER BAR (Relógio Visual Oculto) */
+        .timer-container {
+            margin: 15px 40px 0;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .timer-bar {
+            height: 100%;
+            background-color: var(--yellow);
+            width: 100%;
+            transition: width 1s linear;
+        }
+
+        /* OPTIONS GRID */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 40px 40px; /* Margem inferior expandida pela ausência do rodapé */
+            flex-grow: 1;
+        }
+
+        .option-btn {
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            padding: 20px 20px 20px 60px;
+            cursor: pointer;
+            position: relative;
+            text-align: left;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+            line-height: 1.3;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 0 0 rgba(0,0,0,0.2);
+        }
+
+        .opt-0 { background-color: var(--red); }
+        .opt-1 { background-color: var(--blue); }
+        .opt-2 { background-color: var(--yellow); }
+        .opt-3 { background-color: var(--green); }
+
+        .opt-0:hover { background-color: #f02a4b; }
+        .opt-1:hover { background-color: #1c7bed; }
+        .opt-2:hover { background-color: #f0b207; }
+        .opt-3:hover { background-color: #2ea610; }
+
+        /* SHAPES */
+        .shape {
+            position: absolute;
+            left: 20px;
+            width: 30px;
+            height: 30px;
+            background-color: white;
+        }
+        
+        .shape-0 { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
+        .shape-1 { clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+        .shape-2 { border-radius: 50%; }
+        .shape-3 { border-radius: 4px; }
+
+        /* ANSWER REVEAL STATES */
+        .options-grid.answered .option-btn {
+            cursor: default;
+            pointer-events: none;
+            opacity: 0.4;
+            transform: scale(0.98);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+        }
+
+        .options-grid.answered .option-btn.correct {
+            opacity: 1;
+            background-color: var(--correct-green);
+            transform: scale(1.02);
+            border: 4px solid white;
+            box-shadow: 0 0 20px rgba(40, 199, 69, 0.8);
+            z-index: 10;
+        }
+
+        .options-grid.answered .option-btn.wrong-selected {
+            opacity: 0.8;
+            border: 4px solid #ff4444;
+        }
+
+        .correct-tooltip {
+            position: absolute;
+            top: -15px;
+            right: 10px;
+            background: white;
+            color: var(--correct-green);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 800;
+            display: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .options-grid.answered .option-btn.correct .correct-tooltip {
+            display: block;
+        }
+
+        /* SCORE SCREEN */
+        #score-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+        }
+        
+        .trophy { font-size: 100px; margin-bottom: 20px; }
+        .score-text { font-size: 40px; font-weight: 800; margin-bottom: 10px; }
+        .score-sub { font-size: 24px; color: #ddd; margin-bottom: 40px; }
+        .nav-btn {
+            background-color: white;
+            color: var(--bg-color);
+            border: none;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .nav-btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- QUIZ SCREEN -->
+    <div id="quiz-screen" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="header">
+            <div class="question-counter" id="q-counter">QUESTÃO 1 DE 40</div>
+            <div class="feedback-badge" id="feedback-badge">✓ RESPOSTA CORRETA!</div>
+        </div>
+
+        <div class="question-container" id="question-text">
+            Carregando pergunta...
+        </div>
+
+        <!-- BARRA DO RELÓGIO (O cálculo é oculto, apenas a barra esvazia) -->
+        <div class="timer-container">
+            <div class="timer-bar" id="timer-bar"></div>
+        </div>
+
+        <div class="options-grid" id="options-grid">
+            <button class="option-btn opt-0" onclick="checkAnswer(0)">
+                <div class="shape shape-0"></div>
+                <span id="opt-text-0">Opção A</span>
+                <div class="correct-tooltip">✓ CORRETO</div>
+            </button>
+            <button class="option-btn opt-1" onclick="checkAnswer(1)">
+                <div class="shape shape-1"></div>
+                <span id="opt-text-1">Opção B</span>
+                <div class="correct-tooltip">✓ CORRETO</div>
+            </button>
+            <button class="option-btn opt-2" onclick="checkAnswer(2)">
+                <div class="shape shape-2"></div>
+                <span id="opt-text-2">Opção C</span>
+                <div class="correct-tooltip">✓ CORRETO</div>
+            </button>
+            <button class="option-btn opt-3" onclick="checkAnswer(3)">
+                <div class="shape shape-3"></div>
+                <span id="opt-text-3">Opção D</span>
+                <div class="correct-tooltip">✓ CORRETO</div>
+            </button>
+        </div>
+    </div>
+
+    <!-- SCORE SCREEN -->
+    <div id="score-screen">
+        <div class="trophy">🏆</div>
+        <div class="score-text">Aula Concluída!</div>
+        <div class="score-sub" id="final-score">Vocês finalizaram o quiz da aula.</div>
+        <button class="nav-btn" onclick="restartQuiz()">Reiniciar Quiz</button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "Durante um almoço, o avô de Sofia insiste que ela ligue para agradecer um presente, mas ela prefere mandar uma mensagem. Esse conflito ilustra:",
+                options: [
+                    "A ausência total de afeto familiar na modernidade.",
+                    "A divergência de hábitos comunicacionais entre épocas.",
+                    "A desobediência proposital típica de pessoas mais jovens.",
+                    "A recusa dos idosos em aceitar novas tecnologias úteis."
+                ],
+                answer: 1
+            },
+            {
+                q: "Roberto (70 anos) tenta aprender a usar um aplicativo de banco. Seu neto suspira irritado e diz: 'Deixa que eu faço, você não entende isso'. Essa atitude demonstra:",
+                options: [
+                    "Empatia e vontade de ajudar o idoso com rapidez.",
+                    "Falta de paciência e uma postura que gera etarismo.",
+                    "Proteção contra os perigos e fraudes da internet.",
+                    "Compreensão clara das dificuldades visuais do avô."
+                ],
+                answer: 1
+            },
+            {
+                q: "Em uma seleção de emprego, um candidato de 55 anos é descartado sob a justificativa de ter uma 'mente ultrapassada'. Essa atitude da empresa é:",
+                options: [
+                    "Uma estratégia válida para manter a equipe sempre unida.",
+                    "Uma forma de discriminação configurada como etarismo.",
+                    "Uma decisão correta para priorizar a inovação tecnológica.",
+                    "Uma medida legal para proteger a saúde física do idoso."
+                ],
+                answer: 1
+            },
+            {
+                q: "Laura percebe que sua avó está solitária e decide ensinar-lhe a fazer videochamadas com calma. Essa ação promove:",
+                options: [
+                    "O aumento do conflito intergeracional e distanciamento.",
+                    "A infantilização do idoso através do ensino tecnológico.",
+                    "A inclusão digital, empatia e melhora na autoestima.",
+                    "O cansaço mental extremo para pessoas da terceira idade."
+                ],
+                answer: 2
+            },
+            {
+                q: "João, nascido em 1955, valoriza a estabilidade no emprego e construiu carreira em uma única empresa. A qual geração ele pertence?",
+                options: [
+                    "Geração Silenciosa, marcada pela busca de sobrevivência.",
+                    "Baby Boomers, marcados pela busca de estabilidade.",
+                    "Geração X, marcada pela rebeldia e novas tecnologias.",
+                    "Geração Z, marcada pela necessidade de mudança rápida."
+                ],
+                answer: 1
+            },
+            {
+                q: "Segundo a legislação brasileira (Lei nº 10.741/2003), atitudes de discriminação e humilhação exclusivas pela idade de uma pessoa:",
+                options: [
+                    "São consideradas crime e passíveis de devida punição.",
+                    "São vistas apenas como brincadeiras de mau gosto.",
+                    "São toleradas dependendo do contexto da convivência.",
+                    "São permitidas se a pessoa idosa não demonstrar chateação."
+                ],
+                answer: 0
+            },
+            {
+                q: "Ao ouvir 'Você está velha demais para usar essa roupa', Dona Maria deixou de sair de casa. Esse caso exemplifica que o etarismo:",
+                options: [
+                    "Ajuda a manter as regras de vestimenta da sociedade.",
+                    "Não causa impactos reais na vida das pessoas idosas.",
+                    "Afeta a saúde mental, gerando isolamento e tristeza.",
+                    "É um conselho estético inofensivo e bem-intencionado."
+                ],
+                answer: 2
+            },
+            {
+                q: "Um professor pede aos alunos que entrevistem seus bisavós sobre como era o mundo sem internet. O principal objetivo pedagógico dessa atividade é:",
+                options: [
+                    "Provar que o passado era muito inferior aos dias de hoje.",
+                    "Valorizar a troca de experiências e o respeito histórico.",
+                    "Demonstrar a lentidão na comunicação das épocas antigas.",
+                    "Obrigar os jovens a abandonarem o uso de redes sociais."
+                ],
+                answer: 1
+            },
+            {
+                q: "Qual característica abaixo descreve perfeitamente as pessoas que nasceram entre 1995 e 2009 (Geração Z)?",
+                options: [
+                    "Valorizam o trabalho manual e rejeitam aparelhos móveis.",
+                    "São nativos digitais, acostumados com a hiperconexão.",
+                    "Viveram a reconstrução global após grandes guerras mundiais.",
+                    "Preferem buscar informações exclusivamente em enciclopédias."
+                ],
+                answer: 1
+            },
+            {
+                q: "Para resolver um conflito onde pais e filhos divergem sobre o tempo de uso do celular, a melhor estratégia pautada no Projeto de Vida é:",
+                options: [
+                    "Impor regras sem qualquer explicação ou justificativa prévia.",
+                    "Ignorar o problema até que os filhos decidam mudar de atitude.",
+                    "Promover o diálogo empático para criar acordos em conjunto.",
+                    "Proibir o uso da tecnologia indefinidamente dentro de casa."
+                ],
+                answer: 2
+            },
+            {
+                q: "A Geração Alpha (nascidos a partir de 2010) recebe esse nome porque:",
+                options: [
+                    "Representam os últimos seres humanos a usar computadores.",
+                    "O alfabeto latino terminou, iniciando-se o alfabeto grego.",
+                    "São considerados os indivíduos mais fortes fisicamente.",
+                    "Foram os criadores das primeiras redes sociais do mundo."
+                ],
+                answer: 1
+            },
+            {
+                q: "O que a convivência intergeracional (entre jovens e idosos) proporciona para a sociedade de forma geral?",
+                options: [
+                    "Atraso no desenvolvimento de novas ferramentas tecnológicas.",
+                    "Perda irreparável da identidade e dos valores mais modernos.",
+                    "Geração de estresse constante e impossibilidade de acordos.",
+                    "Enriquecimento cultural através da troca de experiências."
+                ],
+                answer: 3
+            },
+            {
+                q: "Pedro quer trocar de profissão pela terceira vez aos 25 anos buscando propósito, enquanto seu pai acha isso um absurdo. Esse conflito ocorre por:",
+                options: [
+                    "Falta de ambição financeira evidente na geração de Pedro.",
+                    "Divergência de valores e prioridades de vida entre épocas.",
+                    "Falta de inteligência emocional do pai para lidar com finanças.",
+                    "Proibição legal de mudar de área de trabalho na juventude."
+                ],
+                answer: 1
+            },
+            {
+                q: "Quando dizemos que um idoso 'voltou a ser criança' apenas por ter dificuldades motoras, estamos praticando:",
+                options: [
+                    "Cuidado afetuoso necessário para a proteção da saúde.",
+                    "Infantilização, que é uma das formas cruéis de etarismo.",
+                    "Empatia estruturada baseada no respeito às diferenças.",
+                    "Apoio psicológico recomendado por profissionais de saúde."
+                ],
+                answer: 1
+            },
+            {
+                q: "Qual destas ações demonstra o uso da 'escuta ativa' para evitar conflitos geracionais dentro do ambiente familiar?",
+                options: [
+                    "Ouvir o conselho do idoso já pensando na resposta contrária.",
+                    "Fingir concordar com os pais apenas para evitar castigos severos.",
+                    "Prestar atenção genuína para tentar entender o ponto de vista alheio.",
+                    "Sair da sala enquanto os familiares mais velhos estão discursando."
+                ],
+                answer: 2
+            },
+            {
+                q: "Por que a Geração X (1964 a 1983) recebeu esse nome envolvendo a letra X, segundo o contexto histórico?",
+                options: [
+                    "Por serem uma geração não definida, como uma incógnita.",
+                    "Porque inventaram a letra X no vocabulário cibernético.",
+                    "Por serem a décima geração catalogada pelos sociólogos.",
+                    "Porque rejeitaram completamente o alfabeto convencional."
+                ],
+                answer: 0
+            },
+            {
+                q: "A frase 'Isso é coisa do seu tempo, hoje em dia ninguém liga para isso', dita de forma pejorativa, é um exemplo de:",
+                options: [
+                    "Invalidação das experiências passadas, promovendo barreiras.",
+                    "Comunicação assertiva e clara sobre o mundo moderno atual.",
+                    "Conselho prático para ajudar na atualização social do idoso.",
+                    "Demonstração de afeto e intimidade entre pessoas próximas."
+                ],
+                answer: 0
+            },
+            {
+                q: "Uma das maiores contribuições que os jovens podem oferecer às gerações mais antigas no convívio diário é:",
+                options: [
+                    "Exigir que abandonem completamente seus antigos costumes.",
+                    "Auxiliar com paciência na inserção e adaptação no mundo digital.",
+                    "Criticar a forma como foram educados em décadas anteriores.",
+                    "Esconder os aparelhos tecnológicos para evitar confusões reais."
+                ],
+                answer: 1
+            },
+            {
+                q: "Os Millennials (1984 a 1995) vivenciaram uma grande transição. Que transição tecnológica marcante foi essa?",
+                options: [
+                    "A passagem da era industrial pesada para a agricultura familiar.",
+                    "A invenção da roda e dos primeiros meios de transporte a motor.",
+                    "A transição do mundo analógico para o surgimento da internet.",
+                    "A troca dos smartphones modernos por aparelhos de fax antigos."
+                ],
+                answer: 2
+            },
+            {
+                q: "Seu tio afirma que 'os jovens de hoje são preguiçosos porque não trabalham no campo'. A melhor forma de responder com empatia é:",
+                options: [
+                    "Gritar que o mundo mudou e ele não entende mais nada sobre ele.",
+                    "Ignorar completamente e sair de perto demonstrando total irritação.",
+                    "Explicar como o mercado de trabalho digital também exige esforço.",
+                    "Concordar que a juventude atual não faz absolutamente nada de útil."
+                ],
+                answer: 2
+            },
+            {
+                q: "A Geração Silenciosa (1923 a 1946) cresceu em meio a guerras mundiais. Isso justifica o fato de eles, no geral, priorizarem:",
+                options: [
+                    "As mudanças constantes de carreira e o empreendedorismo nato.",
+                    "A disciplina, o trabalho duro e a obediência rígida às regras.",
+                    "O uso de redes sociais para manifestar opiniões políticas fortes.",
+                    "A busca desenfreada por lazer e viagens internacionais luxuosas."
+                ],
+                answer: 1
+            },
+            {
+                q: "Por que as divergências de opinião entre um adolescente e seu avô devem ser consideradas situações naturais?",
+                options: [
+                    "Porque as pessoas mais velhas perdem a capacidade de raciocínio.",
+                    "Porque ambos nasceram em realidades e contextos muito distintos.",
+                    "Porque a juventude é naturalmente desrespeitosa por excelência.",
+                    "Porque a biologia humana impede que idosos e jovens conversem."
+                ],
+                answer: 1
+            },
+            {
+                q: "Durante a aula, o professor sugeriu que os alunos usassem uma abordagem 'ganha-ganha' em casa. O que isso significa?",
+                options: [
+                    "Um familiar sempre tem que ceder para o outro poder vencer a briga.",
+                    "Resolver problemas onde ambas as gerações aprendem e se beneficiam.",
+                    "Competir com os pais para ver quem tem os melhores argumentos lógicos.",
+                    "Ignorar o conflito para que ninguém saia magoado ao final da discussão."
+                ],
+                answer: 1
+            },
+            {
+                q: "Marcos tem 65 anos e decidiu entrar na faculdade. Seus vizinhos riram e disseram 'Vai estudar nessa idade?'. Marcos foi vítima de:",
+                options: [
+                    "Etarismo, que desencoraja o desenvolvimento pessoal de idosos.",
+                    "Bullying escolar, aplicável apenas dentro de instituições de ensino.",
+                    "Aconselhamento vocacional focado na realidade de mercado atual.",
+                    "Choque de gerações positivo focado na motivação profissional."
+                ],
+                answer: 0
+            },
+            {
+                q: "As diferentes gerações costumam ter atritos no ambiente escolar ou de trabalho, principalmente porque:",
+                options: [
+                    "Possuem diferentes expectativas sobre produtividade e liderança.",
+                    "As leis proíbem que jovens e idosos trabalhem no mesmo ambiente.",
+                    "Os jovens não têm permissão para ensinar nada aos mais experientes.",
+                    "Os idosos se recusam terminantemente a receber qualquer salário."
+                ],
+                answer: 0
+            },
+            {
+                q: "Qual atitude demonstra empatia quando um adulto não consegue compreender as gírias usadas por um adolescente?",
+                options: [
+                    "O adolescente rir do adulto e dizer que ele está desatualizado.",
+                    "O adulto proibir imediatamente o uso da palavra dentro de casa.",
+                    "O adolescente traduzir calmamente o significado para o adulto.",
+                    "Ambos encerrarem a conversa pela impossibilidade de comunicação."
+                ],
+                answer: 2
+            },
+            {
+                q: "A frase 'todos nós temos algo para ensinar e aprender' se aplica aos conflitos geracionais indicando que:",
+                options: [
+                    "O aprendizado só ocorre dentro da sala de aula com professores.",
+                    "A troca de experiências deve ser mútua, sem hierarquia de idades.",
+                    "Os mais jovens sempre sabem mais devido ao acesso à internet rápida.",
+                    "Os mais velhos detêm todo o conhecimento absoluto sobre o mundo."
+                ],
+                answer: 1
+            },
+            {
+                q: "Joana percebe que seus avós gostam de álbuns de fotos impressos, enquanto ela prefere álbuns no Instagram. A melhor atitude é:",
+                options: [
+                    "Jogar fora as fotos antigas para economizar espaço nos armários.",
+                    "Respeitar o costume deles e também mostrar como o digital funciona.",
+                    "Forçar os avós a apagarem suas contas nas poucas redes que possuem.",
+                    "Dizer que a fotografia impressa é um desperdício de dinheiro inútil."
+                ],
+                answer: 1
+            },
+            {
+                q: "De acordo com o Estatuto da Pessoa Idosa, a dignidade dos mais velhos deve ser protegida. Uma atitude que viola isso é:",
+                options: [
+                    "Convidá-los para festas onde haverá pessoas de todas as idades.",
+                    "Excluí-los das decisões familiares alegando que 'não entendem mais'.",
+                    "Ajudá-los a resolver burocracias em caixas eletrônicos bancários.",
+                    "Incentivá-los a realizar atividades físicas adequadas para a saúde."
+                ],
+                answer: 1
+            },
+            {
+                q: "O 'Baby Boom' foi uma explosão de nascimentos após a 2ª Guerra Mundial. Como essa estabilidade afetou a visão da Geração Baby Boomer?",
+                options: [
+                    "Eles passaram a desprezar a ideia de possuir bens materiais duráveis.",
+                    "Eles adotaram o nomadismo digital como o principal estilo de vida.",
+                    "Eles passaram a valorizar a casa própria, o casamento e empregos fixos.",
+                    "Eles se recusaram a ter filhos para não superlotar o planeta Terra."
+                ],
+                answer: 2
+            },
+            {
+                q: "Em relação ao etarismo, por que é perigoso tratar o idoso através de infantilização (falar com voz de bebê, tratar como incapaz)?",
+                options: [
+                    "Porque isso eleva excessivamente a autoconfiança deles nas ruas.",
+                    "Porque invalida a experiência de vida e a autonomia dessas pessoas.",
+                    "Porque os obriga a voltar para a escola para reaprender tarefas básicas.",
+                    "Porque gera um apego exagerado aos membros mais jovens da família."
+                ],
+                answer: 1
+            },
+            {
+                q: "Ana tem 14 anos e seu avô reclama que no tempo dele 'as crianças brincavam na rua'. Essa fala reflete:",
+                options: [
+                    "A saudade de um contexto social onde a segurança nas ruas era diferente.",
+                    "O ódio do avô por qualquer tipo de jogo eletrônico ou videogame moderno.",
+                    "A intenção maldosa de fazer Ana se sentir culpada por gostar de internet.",
+                    "A ignorância do idoso sobre os perigos reais das ruas antigamente."
+                ],
+                answer: 0
+            },
+            {
+                q: "O que significa 'desenvolver o projeto de vida' considerando a resolução de conflitos geracionais?",
+                options: [
+                    "Aprender a ignorar as pessoas mais velhas para focar nos próprios planos.",
+                    "Saber conviver com as diferenças para construir relações mais saudáveis.",
+                    "Planejar financeiramente a vida sem precisar da ajuda de parentes.",
+                    "Desistir dos próprios sonhos para atender às expectativas da família."
+                ],
+                answer: 1
+            },
+            {
+                q: "A empatia é a capacidade de se colocar no lugar do outro. No conflito de gerações, usar a empatia significa:",
+                options: [
+                    "Concordar com absolutamente tudo o que as pessoas mais velhas dizem.",
+                    "Fingir que não há diferenças de opinião para manter a paz no ambiente.",
+                    "Entender que as atitudes do outro são baseadas na época em que ele cresceu.",
+                    "Exigir que a outra pessoa mude imediatamente de comportamento e pensamento."
+                ],
+                answer: 2
+            },
+            {
+                q: "Uma professora pede que a Geração Z identifique uma contribuição positiva deixada pelos Baby Boomers. Uma resposta correta seria:",
+                options: [
+                    "A consolidação dos direitos trabalhistas e da estabilidade econômica.",
+                    "A criação da inteligência artificial e dos aplicativos de mensagens.",
+                    "A invenção das dancinhas curtas para o aplicativo do TikTok.",
+                    "A introdução do trabalho 100% remoto através do uso de computadores."
+                ],
+                answer: 0
+            },
+            {
+                q: "Por que as denominações das gerações (X, Y, Z) são importantes para o estudo sociológico?",
+                options: [
+                    "Servem apenas para criar rótulos divertidos e piadas na internet.",
+                    "Ajudam a entender o comportamento coletivo frente aos eventos históricos.",
+                    "São usadas pelos governos para decidir quem pode votar nas eleições.",
+                    "Definem com precisão matemática a personalidade de cada indivíduo."
+                ],
+                answer: 1
+            },
+            {
+                q: "Se um pai da Geração X exige que o filho estude através de livros físicos, e o filho prefere videoaulas, a solução ideal é:",
+                options: [
+                    "O filho rasgar os livros para mostrar que a tecnologia venceu.",
+                    "O pai confiscar o computador até o filho ler a biblioteca inteira.",
+                    "Ambos reconhecerem que os dois métodos podem ser complementares.",
+                    "O professor decidir qual dos dois está completamente errado na história."
+                ],
+                answer: 2
+            },
+            {
+                q: "Qual é a principal consequência social positiva da diminuição do etarismo?",
+                options: [
+                    "Maior integração e aproveitamento da sabedoria das pessoas mais velhas.",
+                    "Diminuição imediata da necessidade de hospitais para a terceira idade.",
+                    "Aumento do número de idosos abandonados em asilos e casas de repouso.",
+                    "Obrigatoriedade de os jovens trabalharem de graça para os mais velhos."
+                ],
+                answer: 0
+            },
+            {
+                q: "Marta acha que seu pai 'trabalha demais e vive de menos'. O pai acha que Marta 'quer tudo fácil e não se esforça'. Esse é um choque clássico de:",
+                options: [
+                    "Prioridades de vida, onde estabilidade confronta o bem-estar mental.",
+                    "Tecnologia, já que ambos não sabem utilizar planilhas financeiras.",
+                    "Linguagem, visto que eles usam dialetos completamente diferentes.",
+                    "Política, onde diferentes partidos governam as atitudes em casa."
+                ],
+                answer: 0
+            },
+            {
+                q: "Para finalizar a discussão sobre gerações, qual afirmação resume o aprendizado sobre o convívio intergeracional?",
+                options: [
+                    "A tecnologia destruiu todas as pontes possíveis entre jovens e adultos.",
+                    "O respeito mútuo surge quando reconhecemos que todos têm valor histórico.",
+                    "As gerações mais antigas devem ceder totalmente espaço aos nativos digitais.",
+                    "O conflito só terminará quando as pessoas passarem a pensar de forma igual."
+                ],
+                answer: 1
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let hasAnswered = false;
+        let questionTimer;
+        let timeRemaining;
+        
+        const qCounter = document.getElementById('q-counter');
+        const qText = document.getElementById('question-text');
+        const optionsGrid = document.getElementById('options-grid');
+        const feedbackBadge = document.getElementById('feedback-badge');
+        const timerBar = document.getElementById('timer-bar');
+        const quizScreen = document.getElementById('quiz-screen');
+        const scoreScreen = document.getElementById('score-screen');
+
+        /* FUNÇÃO DO RELÓGIO OCULTO (Ajusta o tempo com base no horário das aulas) */
+        function calculateTimeForQuestion() {
+            const now = new Date();
+            const currentMinutes = (now.getHours() * 60) + now.getMinutes();
+            const remainingQuestions = questions.length - currentQuestion;
+            
+            let targetMinutes = 0;
+            let subtractInterval = 0;
+
+            // Aula 1: 07:00 (420) até 08:40 (520) -> Encerramento alvo 10 min antes: 08:30 (510)
+            if (currentMinutes >= 420 && currentMinutes < 520) {
+                targetMinutes = 510;
+            }
+            // Aula 2: 08:40 (520) até 10:40 (640) -> Encerramento alvo 10 min antes: 10:30 (630)
+            // Intervalo das 09:30 (570) as 09:50 (590)
+            else if (currentMinutes >= 520 && currentMinutes < 640) {
+                targetMinutes = 630;
+                if (currentMinutes < 570) {
+                    subtractInterval = 20; // O intervalo de 20 minutos ainda vai acontecer durante o bloco
+                }
+            }
+            // Aula 3: 10:40 (640) até 12:20 (740) -> Encerramento alvo 10 min antes: 12:10 (730)
+            else if (currentMinutes >= 640 && currentMinutes <= 740) {
+                targetMinutes = 730;
+            } else {
+                // Caso o arquivo seja aberto fora do horário de aula (ex: testes em casa ou à noite)
+                return 15; // Retorna 15 segundos padrão
+            }
+
+            let totalRemainingMinutes = targetMinutes - currentMinutes - subtractInterval;
+
+            if (totalRemainingMinutes <= 0) {
+                return 8; // Se já passou do tempo alvo (ou está nos 10 min finais), acelera para 8s/questão
+            }
+
+            let totalRemainingSeconds = (totalRemainingMinutes * 60) - now.getSeconds();
+            let secondsPerQuestion = Math.floor(totalRemainingSeconds / remainingQuestions);
+
+            // Limites de sanidade para garantir que a questão seja legível
+            if (secondsPerQuestion < 8) secondsPerQuestion = 8;
+            if (secondsPerQuestion > 45) secondsPerQuestion = 45; // Evita tempo ocioso demais
+
+            return secondsPerQuestion;
+        }
+
+        function startTimer() {
+            clearInterval(questionTimer);
+            let totalTime = calculateTimeForQuestion();
+            timeRemaining = totalTime;
+            
+            timerBar.style.transition = 'none';
+            timerBar.style.width = '100%';
+            
+            // Força reflow
+            void timerBar.offsetWidth;
+            
+            timerBar.style.transition = 'width 1s linear';
+
+            questionTimer = setInterval(() => {
+                timeRemaining--;
+                let percentage = (timeRemaining / totalTime) * 100;
+                timerBar.style.width = percentage + '%';
+
+                if (timeRemaining <= 0) {
+                    clearInterval(questionTimer);
+                    autoRevealAnswer();
+                }
+            }, 1000);
+        }
+
+        function loadQuestion(index) {
+            hasAnswered = false;
+            optionsGrid.classList.remove('answered');
+            feedbackBadge.classList.remove('show', 'wrong');
+            
+            const q = questions[index];
+            qCounter.innerText = `QUESTÃO ${index + 1} DE ${questions.length}`;
+            qText.innerText = q.q;
+
+            for (let i = 0; i < 4; i++) {
+                const btn = document.querySelector(`.opt-${i}`);
+                btn.classList.remove('correct', 'wrong-selected');
+                document.getElementById(`opt-text-${i}`).innerText = q.options[i];
+            }
+
+            startTimer();
+        }
+
+        function checkAnswer(selectedIndex) {
+            if (hasAnswered) return;
+            hasAnswered = true;
+            clearInterval(questionTimer);
+            optionsGrid.classList.add('answered');
+
+            const correctIndex = questions[currentQuestion].answer;
+            const correctBtn = document.querySelector(`.opt-${correctIndex}`);
+            correctBtn.classList.add('correct');
+
+            if (selectedIndex === correctIndex) {
+                feedbackBadge.innerText = '✓ RESPOSTA CORRETA!';
+                feedbackBadge.classList.remove('wrong');
+                feedbackBadge.classList.add('show');
+                score++;
+            } else {
+                const wrongBtn = document.querySelector(`.opt-${selectedIndex}`);
+                wrongBtn.classList.add('wrong-selected');
+                feedbackBadge.innerText = '✗ RESPOSTA INCORRETA';
+                feedbackBadge.classList.add('wrong', 'show');
+            }
+
+            // Avanço automático após 4 segundos de revelação
+            setTimeout(nextQuestion, 4000);
+        }
+
+        function autoRevealAnswer() {
+            if (hasAnswered) return;
+            hasAnswered = true;
+            optionsGrid.classList.add('answered');
+
+            const correctIndex = questions[currentQuestion].answer;
+            document.querySelector(`.opt-${correctIndex}`).classList.add('correct');
+            
+            feedbackBadge.innerText = 'TEMPO ESGOTADO!';
+            feedbackBadge.classList.add('wrong', 'show');
+
+            // Avanço automático
+            setTimeout(nextQuestion, 4000);
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                loadQuestion(currentQuestion);
+            } else {
+                showScore();
+            }
+        }
+
+        function showScore() {
+            quizScreen.style.display = 'none';
+            scoreScreen.style.display = 'flex';
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            scoreScreen.style.display = 'none';
+            quizScreen.style.display = 'flex';
+            loadQuestion(0);
+        }
+
+        // Init
+        loadQuestion(0);
+    </script>
+</body>
+</html>
