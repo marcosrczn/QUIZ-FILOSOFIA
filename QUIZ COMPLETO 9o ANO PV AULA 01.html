@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interativo - Projeto de Vida</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #3b1c6b; }
+        .kahoot-bg { background-color: #3b1c6b; }
+        .btn-red { background-color: #e21b3c; border-bottom: 4px solid #b01029; }
+        .btn-blue { background-color: #1368ce; border-bottom: 4px solid #0a4a96; }
+        .btn-yellow { background-color: #d89e00; border-bottom: 4px solid #a37700; color: #fff;}
+        .btn-green { background-color: #26890c; border-bottom: 4px solid #1a6108; }
+        .btn-option:active:not(:disabled) { transform: translateY(4px); border-bottom-width: 0px; margin-top: 4px; }
+        .disabled-btn { opacity: 0.4; cursor: not-allowed; border-bottom-width: 0px; transform: translateY(4px); }
+        
+        .correct-answer-glow {
+            box-shadow: 0 0 15px 5px rgba(38, 137, 12, 0.6);
+            border: 3px solid #fff;
+            transform: scale(1.02);
+            opacity: 1 !important;
+            z-index: 10;
+        }
+
+        .badge-correto {
+            position: absolute;
+            top: -12px;
+            right: 16px;
+            background-color: white;
+            color: #1a6108;
+            font-weight: 900;
+            padding: 2px 12px;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .question-box {
+            box-shadow: 0 8px 0px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col items-center justify-center kahoot-bg text-white overflow-hidden relative">
+
+    <!-- MENU ENGRENAGEM (RETRÁTIL) -->
+    <div class="absolute top-4 right-4 z-50">
+        <button onclick="toggleSettings()" class="p-3 bg-purple-800 rounded-full text-white hover:bg-purple-600 shadow-lg border-2 border-purple-500 transition-all focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+        </button>
+        
+        <div id="settings-panel" class="hidden absolute top-14 right-0 bg-white text-black p-4 rounded-xl shadow-2xl z-50 w-72 border-2 border-purple-800">
+            <h3 class="font-bold text-lg mb-1 text-purple-900">Configuração do Professor</h3>
+            <p class="text-xs text-gray-600 mb-4">Digite a senha para remover o tempo de reflexão de todas as questões do quiz:</p>
+            <div class="flex space-x-2 justify-center mb-2">
+                <button onclick="handleSeqClick(1)" class="w-10 h-10 bg-purple-200 rounded font-bold text-xl text-purple-900 hover:bg-purple-400 transition shadow">1</button>
+                <button onclick="handleSeqClick(2)" class="w-10 h-10 bg-purple-200 rounded font-bold text-xl text-purple-900 hover:bg-purple-400 transition shadow">2</button>
+                <button onclick="handleSeqClick(3)" class="w-10 h-10 bg-purple-200 rounded font-bold text-xl text-purple-900 hover:bg-purple-400 transition shadow">3</button>
+                <button onclick="handleSeqClick(4)" class="w-10 h-10 bg-purple-200 rounded font-bold text-xl text-purple-900 hover:bg-purple-400 transition shadow">4</button>
+                <button onclick="handleSeqClick(5)" class="w-10 h-10 bg-purple-200 rounded font-bold text-xl text-purple-900 hover:bg-purple-400 transition shadow">5</button>
+            </div>
+            <div id="settings-feedback" class="text-sm font-bold text-center h-5 mt-2"></div>
+        </div>
+    </div>
+
+    <!-- START SCREEN -->
+    <div id="start-screen" class="text-center w-full max-w-2xl p-6 z-10">
+        <h1 class="text-5xl font-bold mb-4 drop-shadow-md">Quiz: Impacto Coletivo</h1>
+        <p class="text-xl mb-8">Identifique seus interesses e transforme a sociedade.</p>
+        <button onclick="startQuiz()" class="bg-white text-purple-900 font-bold py-4 px-12 rounded-lg text-2xl shadow-lg hover:bg-gray-200 transition">INICIAR QUIZ</button>
+        <p class="mt-8 text-sm text-purple-300">CEEFMTI Governador Gerson Camata</p>
+    </div>
+
+    <!-- QUIZ SCREEN -->
+    <div id="quiz-screen" class="hidden w-full h-full flex-col">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center p-4 bg-transparent w-full max-w-6xl mx-auto mt-2">
+            <span id="question-counter" class="bg-purple-800 text-white font-bold px-4 py-2 rounded-full border-2 border-purple-600 shadow-md">QUESTÃO 1 DE 40</span>
+            
+            <span id="timer-display" class="font-bold text-4xl text-white drop-shadow-md bg-purple-900/50 w-20 h-20 flex items-center justify-center rounded-full border-4 border-white">30</span>
+            
+            <div id="header-status" class="hidden font-bold px-4 py-2 rounded-full text-white shadow-md uppercase tracking-wider text-sm flex items-center gap-2">
+                <!-- Status injected here (✓ RESPOSTA CORRETA) -->
+            </div>
+            
+            <div class="flex flex-col text-right">
+                <span id="score-display" class="font-bold text-lg text-green-400 drop-shadow-md">Pontos: 0</span>
+                <span id="error-display" class="font-bold text-lg text-red-400 drop-shadow-md">Erros: 0</span>
+            </div>
+        </div>
+        
+        <!-- Question Box -->
+        <div class="flex-grow flex flex-col items-center justify-start p-4 w-full max-w-6xl mx-auto mt-4">
+            <div id="question-container" class="bg-white text-black p-6 md:p-10 rounded-xl question-box w-full mb-6 text-center min-h-[150px] flex items-center justify-center transition-all duration-300">
+                <h2 id="question-text" class="text-2xl md:text-3xl font-bold leading-tight">Carregando...</h2>
+            </div>
+
+            <!-- Options Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full flex-grow max-h-[50vh]" id="options-container">
+                <!-- Options injected by JS -->
+            </div>
+        </div>
+
+        <!-- Reflection Bar (Hidden by default, pointer e evento de clique removidos) -->
+        <div id="reflection-bar" class="hidden absolute bottom-0 left-0 w-full bg-purple-950 border-t-4 border-purple-700 text-white p-4 flex flex-col items-center justify-center z-20 shadow-2xl transition">
+            <p class="font-bold text-2xl mb-1 text-yellow-400">Tempo de Reflexão: <span id="reflection-time">10</span>s</p>
+            <p class="text-sm text-purple-300">Aguarde o tempo para a próxima questão...</p>
+        </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" class="hidden text-center w-full max-w-2xl p-8 bg-white text-black rounded-xl shadow-2xl z-10 flex flex-col items-center">
+        <h1 class="text-5xl font-bold mb-4 text-purple-900">Fim de Jogo!</h1>
+        <p class="text-2xl mb-2">Sua pontuação final:</p>
+        <p id="final-score" class="text-7xl font-black mb-2 text-green-600">0</p>
+        <p id="final-errors" class="text-2xl font-bold mb-6 text-red-500">Erros: 0</p>
+        <p id="feedback-message" class="text-xl mb-6 text-gray-700 font-semibold">Muito bem!</p>
+        
+        <!-- Alerta para o Aluno -->
+        <div class="bg-yellow-300 text-yellow-900 px-6 py-4 rounded-xl font-black text-2xl md:text-3xl mb-8 animate-bounce shadow-lg border-4 border-yellow-500 uppercase text-center w-full max-w-md">
+            Mostre seu resultado ao professor!
+        </div>
+
+        <button onclick="location.reload()" class="bg-purple-700 text-white font-bold py-4 px-10 rounded-lg hover:bg-purple-800 transition shadow-lg text-xl">JOGAR NOVAMENTE</button>
+    </div>
+
+    <script>
+        // Configurações globais
+        let skipReflectionGlobally = false;
+        let seq = [];
+        const targetSeq = [1, 2, 4, 5, 3];
+
+        // Lógica do menu retrátil (Engrenagem)
+        function toggleSettings() {
+            const panel = document.getElementById('settings-panel');
+            panel.classList.toggle('hidden');
+            seq = []; 
+            document.getElementById('settings-feedback').innerText = '';
+        }
+
+        function handleSeqClick(num) {
+            if (skipReflectionGlobally) {
+                document.getElementById('settings-feedback').innerText = 'Já ativado!';
+                document.getElementById('settings-feedback').className = 'text-sm font-bold text-center h-5 mt-2 text-green-600';
+                return;
+            }
+
+            seq.push(num);
+            for(let i = 0; i < seq.length; i++) {
+                if(seq[i] !== targetSeq[i]) {
+                    seq = []; 
+                    document.getElementById('settings-feedback').innerText = 'Senha Incorreta!';
+                    document.getElementById('settings-feedback').className = 'text-sm font-bold text-center h-5 mt-2 text-red-600';
+                    setTimeout(() => { if(document.getElementById('settings-feedback').innerText === 'Senha Incorreta!') document.getElementById('settings-feedback').innerText = ''; }, 1500);
+                    return;
+                }
+            }
+            
+            // Sequência correta
+            if(seq.length === targetSeq.length) {
+                skipReflectionGlobally = true;
+                document.getElementById('settings-feedback').innerText = 'Tempo de Reflexão Removido!';
+                document.getElementById('settings-feedback').className = 'text-sm font-bold text-center h-5 mt-2 text-green-600';
+                setTimeout(() => {
+                    document.getElementById('settings-panel').classList.add('hidden');
+                }, 1500);
+            }
+        }
+
+        // Ícones geométricos estilo Kahoot
+        const shapes = [
+            `<svg viewBox="0 0 24 24" class="w-10 h-10 fill-white"><path d="M12 2L22 20H2Z"/></svg>`, // Triângulo (A)
+            `<svg viewBox="0 0 24 24" class="w-10 h-10 fill-white"><path d="M12 2L22 12L12 22L2 12Z"/></svg>`, // Losango (B)
+            `<svg viewBox="0 0 24 24" class="w-10 h-10 fill-white"><circle cx="12" cy="12" r="10"/></svg>`, // Círculo (C)
+            `<svg viewBox="0 0 24 24" class="w-10 h-10 fill-white"><rect x="3" y="3" width="18" height="18"/></svg>`  // Quadrado (D)
+        ];
+
+        // 40 Questões
+        const questions = [
+            { question: "Quando direcionamos nossas energias para atividades pelas quais sentimos interesse verdadeiro, encontramos satisfação pessoal. Essa força motivadora é definida como:", options: ["Pragmatismo utilitário focado apenas no lucro rápido.", "Conformismo passivo diante das decisões comunitárias.", "Entusiasmo gerado por um interesse genuíno e ativo.", "Individualismo que ignora as demandas da sociedade."], answer: 2 },
+            { question: "As pessoas têm focos diferentes no dia a dia. Alguns estudantes se inclinam à arte; outros, às ciências. Sobre essa diversidade, é correto afirmar que:", options: ["Pode inspirar e impactar de forma positiva as gerações.", "Impede que projetos em conjunto sejam estruturados.", "Reduz a eficácia das lideranças nas áreas periféricas.", "Limita o progresso das relações no ambiente escolar."], answer: 0 },
+            { question: "A Cufa (Central Única das Favelas) foi fundada a partir do grande interesse de algumas pessoas pela justiça e igualdade. O ano da fundação deste movimento foi:", options: ["Mil novecentos e oitenta e oito (1988).", "Dois mil e oito durante projetos culturais (2008).", "Dois mil e dezoito após campanhas online (2018).", "Mil novecentos e noventa e oito (1998)."], answer: 3 },
+            { question: "A Cufa promove atividades culturais, de cidadania e educação por meio da cultura Hip-hop. O seu principal objetivo perante a sociedade civil é:", options: ["Focar exclusivamente na melhoria do ensino privado.", "Promover integração e inclusão social na favela.", "Distanciar moradores locais dos jovens voluntários.", "Substituir integralmente a escola pública tradicional."], answer: 1 },
+            { question: "Líderes comunitários frequentemente organizam campanhas para proteger o meio ambiente e combater a pobreza. O impacto de suas ações aumenta consideravelmente porque:", options: ["Eles possuem vastos e ilimitados recursos financeiros.", "A grande mídia sempre faz a divulgação de suas metas.", "O entusiasmo deles motiva outras pessoas a aderirem.", "Há uma forte obrigatoriedade legal de segui-los."], answer: 2 },
+            { question: "Na educação, um professor entusiasmado é apontado como fundamental para a sala de aula. A principal consequência desse entusiasmo no convívio é:", options: ["Inspirar os alunos a se dedicarem aos próprios interesses.", "Reduzir drasticamente a carga horária das disciplinas.", "Substituir os materiais didáticos impressos da escola.", "Limitar fortemente a autonomia de estudo do estudante."], answer: 0 },
+            { question: "O Médicos Sem Fronteiras (MSF) foi criado na França por jovens profissionais unidos por um forte ideal humanitário. O ano exato de sua criação foi:", options: ["Mil novecentos e sessenta e um (1961).", "Mil novecentos e oitenta e um (1981).", "Mil novecentos e noventa e um (1991).", "Mil novecentos e setenta e um (1971)."], answer: 3 },
+            { question: "O MSF tem a missão de levar cuidados de saúde a pessoas afetadas por conflitos, epidemias e desastres. Esses profissionais são formados, em sua origem, por:", options: ["Advogados defensores e engenheiros de infraestrutura.", "Médicos preocupados e jornalistas engajados na causa.", "Políticos eleitos e economistas focados em finanças.", "Professores acadêmicos e arquitetos de hospitais."], answer: 1 },
+            { question: "Um aluno descobre que seu verdadeiro interesse é cuidar de animais abandonados. Para usar isso ativamente em prol do bem comum da sociedade, ele pode:", options: ["Ignorar completamente os animais de bairros distantes.", "Cobrar taxas mensais para cuidar dos animais da região.", "Contribuir com a divulgação de animais que estão perdidos.", "Exigir apenas que a prefeitura resolva a situação sozinha."], answer: 2 },
+            { question: "Ao reconhecermos e valorizarmos a real importância dos nossos interesses e também dos interesses do outro, nós nos tornamos mais capacitados para:", options: ["Contribuir ativamente para uma transformação social efetiva.", "Vencer as principais competições individuais feitas na escola.", "Impor as nossas vontades próprias dentro da comunidade.", "Isolar as metas de nossos projetos do convívio com o externo."], answer: 0 },
+            { question: "O fundador da Central Única das Favelas (Cufa) foi movido por um profundo interesse em promover melhorias para o coletivo. Qual é o nome deste fundador?", options: ["Paulo Freire, conhecido educador.", "Darcy Ribeiro, antropólogo brasileiro.", "Betinho de Souza, sociólogo atuante.", "Celso Athayde, ativista e líder social."], answer: 3 },
+            { question: "Uma educação de qualidade tem o forte poder de transformar vidas e desenvolver as comunidades. Isso ocorre principalmente pois a educação de base prepara o indivíduo para:", options: ["Competir duramente de forma implacável com os seus colegas.", "Conviver pacificamente e contribuir de forma significativa.", "Acumular alto capital financeiro rapidamente no mercado.", "Trabalhar de maneira totalmente isolada de outras pessoas."], answer: 1 },
+            { question: "Pesquisadores dedicados a encontrar novas curas e tratamentos são constantemente movidos por um grande interesse pelo seu campo. No contexto coletivo, a atuação deles:", options: ["Beneficia de forma exclusiva e direta a indústria farmacêutica.", "Reduz a necessidade de construção de novos hospitais gerais.", "Promove efetivamente o avanço e a melhoria da saúde pública.", "Afasta os jovens voluntários do trabalho nas clínicas médicas."], answer: 2 },
+            { question: "Se um jovem se inclina fortemente à área de tecnologia e computação, ele pode usar isso para promover o bem-estar coletivo de forma direta se decidir:", options: ["Criar aplicativos gratuitos que facilitem o acesso à educação.", "Restringir todo o seu conhecimento técnico apenas ao uso próprio.", "Hackear os sistemas da comunidade para ganho estritamente pessoal.", "Evitar o contato prolongado com as pessoas formadas em outras áreas."], answer: 0 },
+            { question: "Ao presenciarmos o interesse genuíno e nos sentirmos motivados a agir influenciados pela energia focada de outra pessoa, estamos presenciando ativamente o fenômeno da:", options: ["Imitação passiva das decisões sociais.", "Competição direta por cargos locais.", "Repetição mecânica de procedimentos.", "Inspiração voltada ao impacto social."], answer: 3 },
+            { question: "Qualquer que seja a área de interesse de um estudante no ambiente escolar, ele precisa compreender e perceber desde já que as suas inclinações e gostos podem:", options: ["Ser irrelevantes para as futuras carreiras técnicas e profissionais.", "Inspirar de fato outras pessoas e acabar impactando gerações.", "Dificultar o aprendizado das disciplinas de ciências exatas.", "Atrasar o desenvolvimento dos projetos propostos pela comunidade."], answer: 1 },
+            { question: "Voluntários que atuam em hospitais e clínicas oferecem algo fundamental que vai além do tratamento médico formal e dos procedimentos padrão. O que eles oferecem de principal?", options: ["Remédios patenteados de alto custo financeiro.", "Diagnósticos clínicos em equipamentos especializados.", "Apoio emocional constante e suporte prático.", "Financiamento direto para a realização das cirurgias."], answer: 2 },
+            { question: "Em projetos dedicados ao voluntariado e assistência social, a ausência total de um retorno financeiro imediato para os trabalhadores da causa costuma ser amplamente compensada por:", options: ["Satisfação pessoal e pela geração de um impacto coletivo.", "Certificados de aprovação nas disciplinas escolares formais.", "Isenção total do pagamento de impostos governamentais.", "Garantia contratual de emprego vitalício em empresas locais."], answer: 0 },
+            { question: "A atuação da ONG MSF é considerada fundamental justamente porque ela atua onde quase não há mais acesso à assistência padrão de saúde. Isso evidencia o princípio humanitário da:", options: ["Lucratividade contínua do mercado.", "Seletividade no atendimento ao doente.", "Competitividade na área da pesquisa.", "Solidariedade e ajuda desinteressada."], answer: 3 },
+            { question: "Uma ampla campanha de arrecadação de alimentos muitas vezes nasce apenas do interesse de um morador em tentar diminuir a fome da sua vizinhança. Esse simples interesse inicial promove:", options: ["O forte crescimento da desigualdade de renda nas cidades.", "A construção gradual de uma sociedade muito mais solidária.", "A disputa agressiva entre moradores de um mesmo bairro.", "O lucro contínuo e garantido das grandes empresas atacadistas."], answer: 1 },
+            { question: "A cultura Hip-hop na estruturação inicial dos projetos da Cufa não é utilizada apenas como uma expressão da arte, mas serve ativamente como um poderoso instrumento metodológico de:", options: ["Segregação de grupos culturais.", "Punição aos infratores da lei.", "Integração e inclusão social.", "Entretenimento sem finalidade."], answer: 2 },
+            { question: "Quando diversos indivíduos se unem por vontade própria num fim de semana para limpar e revitalizar uma praça pública do bairro, eles estão basicamente transformando um interesse comum em uma:", options: ["Ação efetiva em prol do bem-estar.", "Ação restrita de marketing político.", "Ação que gera desperdício de tempo.", "Ação criadora de conflito de gerações."], answer: 0 },
+            { question: "Um estudante que simplesmente adora literatura decide criar, na hora do intervalo, um pequeno clube de leitura para a escola. O impacto coletivo dessa pequena iniciativa é:", options: ["Dificultar o acesso das outras pessoas aos livros novos.", "Substituir na íntegra as aulas normais da língua portuguesa.", "Isolar os alunos focados e que preferem as áreas de exatas.", "Estimular o debate e o senso crítico literário dos colegas."], answer: 3 },
+            { question: "Foi afirmado em sala que o entusiasmo verdadeiro por uma causa é algo contagioso para o meio. Isso significa que agir com real motivação liderando um pequeno projeto escolar pode:", options: ["Diminuir a nota final dos alunos que não quiseram ajudar.", "Fazer com que vários outros colegas também queiram participar.", "Gerar muita inveja e acabar destruindo o ambiente de ensino.", "Impedir o professor de avaliar o aprendizado do grupo todo."], answer: 1 },
+            { question: "Para o Médicos Sem Fronteiras, regiões com duros conflitos armados e graves epidemias são justamente os seus cenários de atuação prioritária. Isso demonstra de forma clara que o interesse deles supera:", options: ["A necessidade dos profissionais de estudar medicina em nível geral.", "As leis imutáveis da física e dos modernos fundamentos da biologia.", "As barreiras da política internacional e os riscos ou perigos reais.", "O forte desejo corporativo de possuir uma rede de hospitais privados."], answer: 2 },
+            { question: "O grande objetivo prático de escrever e preencher aquele quadro de interesses proposto na aula é justamente tentar ajudar e guiar o próprio estudante para que ele consiga:", options: ["Reconhecer imediatamente como ele pode ajudar a sociedade local.", "Copiar exatamente os mesmos objetivos de vida de todos seus colegas.", "Memorizar os vários conceitos teóricos cobrados na prova escrita.", "Escolher o mais rápido possível a profissão que pague maiores salários."], answer: 0 },
+            { question: "O trabalho feito em forma de um forte mutirão coletivo reunindo os moradores da favela e os jovens voluntários através dos núcleos da ONG Cufa visa estruturalmente:", options: ["Aumentar o índice do custo de vida imobiliário nas comunidades.", "Separar de forma mais nítida as classes sociais lá nas periferias.", "Proibir a utilização de expressões e antigas manifestações artísticas.", "Construir e moldar ativamente uma nova sociedade livre da pobreza."], answer: 3 },
+            { question: "O início do verdadeiro engajamento do indivíduo em grandes e duradouras causas sociais na comunidade costuma requerer, antes de qualquer tipo de infraestrutura material, primeiramente:", options: ["Amplo financiamento oriundo do lucro de grandes corporações.", "Um interesse humano verdadeiro atrelado a um grande entusiasmo.", "A autorização oficial, assinada e carimbada, dos políticos do município.", "Uma extensa e vasta experiência profissional com muitas décadas."], answer: 1 },
+            { question: "De acordo com os ensinamentos, o alcance do real bem-estar social e o efetivo progresso urbano e moral do lugar em que nós todos vivemos dependem, em muito grande parte:", options: ["Do rápido isolamento prático das principais lideranças comunitárias.", "Da drástica restrição ao consumo e acesso da cultura musical popular.", "Das frequentes ações práticas motivadas pelos interesses dos cidadãos.", "Do completo desinteresse da maioria pelas questões crônicas do ambiente."], answer: 2 },
+            { question: "Muitos dos mais efetivos e reconhecidos líderes comunitários dos bairros frequentemente atuam o dia todo sem nenhuma remuneração financeira imediata. A sua verdadeira e principal recompensa é:", options: ["A percepção da transformação positiva e visível do ambiente local.", "A busca pela fama instantânea e o rápido reconhecimento da televisão.", "A busca pela garantia total e vitalícia de isenção de taxas na prefeitura.", "A total garantia burocrática de eleição nos futuros cargos públicos majoritários."], answer: 0 },
+            { question: "A importante organização não governamental Médicos Sem Fronteiras atua hoje em diversos dos piores cenários globais imagináveis de crise. A origem histórica desta ONG ocorreu na:", options: ["Capital e interior da conservadora e monárquica Inglaterra.", "Capital e interior da rica, dividida e industrializada Alemanha.", "Capital e interior do ensolarado e fragmentado país chamado Espanha.", "Capital e interior da progressista e cultural república moderna da França."], answer: 3 },
+            { question: "Na rotina diária e nas pequenas escolhas de vida, o sentimento de verdadeiro e mais profundo entusiasmo da pessoa pode ser facilmente identificado pela comunidade quando ela:", options: ["Realiza todas as suas tarefas e projetos cotidianos apenas por extrema obrigação.", "Encontra uma genuína e profunda sensação de satisfação interna no que faz.", "Evita deliberadamente o debate e o contato direto com as pessoas da comunidade.", "Abandona de forma rápida o seu projeto inicial assim que surge a primeira dificuldade."], answer: 1 },
+            { question: "O simples, porém profundo, ato de olhar para si mesmo e conseguir identificar com clareza os próprios interesses é considerado como sendo o exato primeiro e mais essencial passo para:", options: ["Conseguir excluir e isolar logo de cara qualquer ideia oposta e diferente.", "Fugir estrategicamente do cumprimento das leis e normas rígidas locais.", "Entender como organizar a ação para contribuir ativamente com o coletivo.", "Ter a capacidade intelectual de apenas criticar as ações dos outros grupos."], answer: 2 },
+            { question: "Tópicos variados como a música clássica, as ciências biológicas e a literatura russa são considerados campos totalmente válidos de interesse de vida. Isso comprova de vez que o impacto social e coletivo:", options: ["Pode surgir da paixão depositada em toda e qualquer área do conhecimento.", "Vem exclusivamente e sem margens da aplicação rigorosa de disciplinas exatas.", "Depende única e exclusivamente do acesso ao mais caro e rápido aprendizado tecnológico.", "Não pode, sob qualquer justificativa razoável, ser alcançado através do fomento às artes."], answer: 0 },
+            { question: "Uma escola de ensino médio decide montar um projeto prático que mapeia de forma detalhada a vegetação de toda a região, o que obriga a mistura da biologia com cálculos de matemática pura. Esse tipo de iniciativa audaciosa promove principalmente:", options: ["A total e irreversível confusão conceitual teórica entre os diferentes grupos de estudantes.", "O acentuado e visível desinteresse coletivo e imediato pelas duas matérias fundamentais.", "A drástica exclusão e o consequente abandono intelectual dos alunos focados nas áreas humanas.", "O exercício prático da interdisciplinaridade acadêmica aliado com a busca pelo bem-estar coletivo."], answer: 3 },
+            { question: "Pesquisadores biomédicos e renomados cientistas internacionais que dedicam todas as suas curtas vidas aos laboratórios a fim de tentar descobrir possíveis novas e promissoras curas atuam movidos essencialmente por um incansável e muito grande interesse íntimo. Toda essa abnegação histórica frequentemente resulta na prática em:", options: ["Vantagens corporativas e lucros ilimitados voltados com exclusividade total para uma só grande clínica médica.", "Descobertas transformadoras e fundamentais que trazem benefícios globais cruciais para o restabelecimento da saúde de todos.", "Criação de um ambiente nocivo focado numa enorme e desleal competição entre todos os pequenos voluntários da saúde.", "Uma brusca e significativa redução contínua de todos os investimentos estatais e privados em relação a qualquer nova pesquisa."], answer: 1 },
+            { question: "No fim das contas, a proposta da nossa aula relacionada ao exercício dinâmico de preencher as duas colunas principais daquele quadro analítico chamado 'Como usar meu interesse' incentiva de forma totalmente direta e prática o desenvolvimento e a imediata aplicação prática da:", options: ["Apatia em relação à política.", "Teimosia em debates públicos.", "Cidadania no convívio diário.", "Omissão diante da injustiça."], answer: 2 },
+            { question: "Quando pensamos num aspecto puramente motivacional, percebemos que o simples ato de inspirar as atitudes do próximo e dos mais jovens apenas através do bom e digno exemplo, é considerado como uma ferramenta extremamente e vitalmente poderosa na educação simplesmente porque:", options: ["Multiplica de forma muito natural e exponencial as intenções e ações sempre voltadas para a conquista do bem comum comunitário.", "Substitui sumária e completamente qualquer atual necessidade da formulação e imposição legal das rígidas leis governamentais e federais.", "Permite e até mesmo incentiva que os pequenos grandes líderes sociais sempre trabalhem, tomem decisões e atuem de forma totalmente solitária.", "Obriga e coage intimamente e de forma inquestionável todas as outras pessoas do bairro a mudarem radicalmente todo o seu comportamento."], answer: 0 },
+            { question: "Dentro da teoria educacional abordada, afirma-se categoricamente que no exato momento em que o verdadeiro, sincero e constante entusiasmo demonstrado pelo professor em seu ofício atinge positivamente e emociona o coração e a mente de todos os seus estudantes presentes, o ambiente escolar inteiro inevitavelmente se transforma e passa a se tornar de vez num sagrado e produtivo espaço e ambiente fértil de:", options: ["Aplicação de severa punição física, controle extremo, autoritarismo e regras sociais e corporais totalmente extremas e irredutíveis.", "Disseminação rápida e silenciosa da apatia política, tédio filosófico, imobilidade e perigoso isolamento existencial de toda a turma ali geral.", "Geração focada em garantir e prezar o alcance de muita exclusividade meritocrática de mercado, fomentando competição cega e segregação.", "Intensa e ininterrupta troca de constante inspiração humana afetiva, favorecendo sobremaneira o mais alto desenvolvimento técnico e moral."], answer: 3 },
+            { question: "Chegando-se quase ao fim desta nossa jornada reflexiva de 100 minutos cravados focada em cidadania ativa e ação comunitária, e sintetizando todo o material aqui proposto até agora, pode-se enfim deduzir com segurança plena que a grande e verdadeira reflexão principal desta aula estruturada indica claramente que os nossos variados, genuínos e profundos interesses pessoais íntimos:", options: ["Devem continuar a permanecer intocados e em profundo, resguardado e quase absoluto e eterno segredo do conhecimento geral de todo mundo.", "São, na imensa maioria absoluta de todos os casos factíveis já observados na realidade atual, os exatos caminhos práticos e possíveis para melhorar e mudar o mundo.", "Servem única e restritamente nos dias e horas mais atuais apenas para se tentar gerar e acumular de modo voraz mais prestígio individual e lucro corporativo.", "Acabam sempre fatalmente por afastar e distanciar para valer e de forma dramática o sujeito e o jovem talentoso de toda a sua pobre e vulnerável comunidade de origem."], answer: 1 }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let errors = 0;
+        let questionTimeLeft = 30;
+        let reflectionTimeLeft = 10;
+        let questionInterval;
+        let reflectionInterval;
+
+        const colors = ['btn-red', 'btn-blue', 'btn-yellow', 'btn-green'];
+
+        function startQuiz() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            document.getElementById('quiz-screen').classList.add('flex');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = questions[currentQuestionIndex];
+            document.getElementById('question-counter').innerText = `QUESTÃO ${currentQuestionIndex + 1} DE ${questions.length}`;
+            document.getElementById('question-text').innerText = q.question;
+            
+            // Esconde badges de status
+            const headerStatus = document.getElementById('header-status');
+            headerStatus.classList.add('hidden');
+            document.getElementById('question-container').classList.remove('correct-answer-glow');
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((opt, index) => {
+                const btnContainer = document.createElement('div');
+                btnContainer.className = "relative w-full h-full"; 
+                
+                const btn = document.createElement('button');
+                btn.className = `btn-option ${colors[index]} w-full h-full rounded-lg text-white font-bold text-lg md:text-xl p-4 shadow-lg transition-all duration-200 flex items-center justify-start text-left gap-4`;
+                btn.id = `option-btn-${index}`;
+                btn.onclick = () => checkAnswer(index);
+                
+                // Icon + Text layout
+                btn.innerHTML = `
+                    <div class="flex-shrink-0">${shapes[index]}</div>
+                    <span class="flex-grow">${opt}</span>
+                `;
+                
+                btnContainer.appendChild(btn);
+                optionsContainer.appendChild(btnContainer);
+            });
+
+            startQuestionTimer();
+        }
+
+        function startQuestionTimer() {
+            questionTimeLeft = 30;
+            document.getElementById('timer-display').innerText = questionTimeLeft;
+            
+            clearInterval(questionInterval);
+            questionInterval = setInterval(() => {
+                questionTimeLeft--;
+                document.getElementById('timer-display').innerText = questionTimeLeft;
+                if(questionTimeLeft <= 0) {
+                    clearInterval(questionInterval);
+                    checkAnswer(-1); 
+                }
+            }, 1000);
+        }
+
+        function checkAnswer(selectedIndex) {
+            clearInterval(questionInterval);
+            const correctIndex = questions[currentQuestionIndex].answer;
+            const buttons = document.querySelectorAll('.btn-option');
+            const headerStatus = document.getElementById('header-status');
+            
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                if(idx !== correctIndex) {
+                    btn.classList.add('disabled-btn');
+                }
+            });
+            
+            // Header Status Update
+            headerStatus.classList.remove('hidden');
+            if(selectedIndex === correctIndex) {
+                score += 100;
+                document.getElementById('score-display').innerText = `Pontos: ${score}`;
+                headerStatus.className = 'font-bold px-4 py-2 rounded-full text-white shadow-md uppercase tracking-wider text-sm flex items-center gap-2 bg-green-500';
+                headerStatus.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg> Resposta Correta!';
+                document.getElementById('question-container').classList.add('correct-answer-glow');
+            } else {
+                errors++;
+                document.getElementById('error-display').innerText = `Erros: ${errors}`;
+                headerStatus.className = 'font-bold px-4 py-2 rounded-full text-white shadow-md uppercase tracking-wider text-sm flex items-center gap-2 bg-red-600';
+                headerStatus.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg> Incorreto';
+            }
+
+            // Highlight Correct Answer Button
+            const correctBtn = document.getElementById(`option-btn-${correctIndex}`);
+            correctBtn.classList.remove('opacity-40', 'disabled-btn');
+            correctBtn.classList.add('correct-answer-glow');
+            
+            // Inject "✓ CORRETO" badge onto the correct button container
+            const badge = document.createElement('div');
+            badge.className = 'badge-correto';
+            badge.innerHTML = '<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg> CORRETO';
+            correctBtn.parentElement.appendChild(badge);
+
+            if (skipReflectionGlobally) {
+                setTimeout(skipReflection, 3500);
+            } else {
+                startReflectionTimer();
+            }
+        }
+
+        function startReflectionTimer() {
+            document.getElementById('reflection-bar').classList.remove('hidden');
+            reflectionTimeLeft = 10;
+            document.getElementById('reflection-time').innerText = reflectionTimeLeft;
+            
+            clearInterval(reflectionInterval);
+            reflectionInterval = setInterval(() => {
+                reflectionTimeLeft--;
+                document.getElementById('reflection-time').innerText = reflectionTimeLeft;
+                if(reflectionTimeLeft <= 0) {
+                    skipReflection();
+                }
+            }, 1000);
+        }
+
+        function skipReflection() {
+            clearInterval(reflectionInterval);
+            document.getElementById('reflection-bar').classList.add('hidden');
+            
+            currentQuestionIndex++;
+            if(currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('flex');
+            document.getElementById('result-screen').classList.remove('hidden');
+            
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('final-errors').innerText = `Erros: ${errors}`;
+            
+            let feedback = "Você participou bem!";
+            if(score > 3500) feedback = "Excelente! Você é um verdadeiro líder transformador!";
+            else if(score > 2000) feedback = "Muito bom! Você entende a força do coletivo!";
+            
+            document.getElementById('feedback-message').innerText = feedback;
+        }
+    </script>
+</body>
+</html>
