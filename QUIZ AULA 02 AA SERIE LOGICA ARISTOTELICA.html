@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz de Filosofia: Lógica no Dia a Dia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #E21B3C;
+      --red-dark: #b8142e;
+      --blue: #1368CE;
+      --blue-dark: #0f52a5;
+      --yellow: #D89E00;
+      --yellow-dark: #b28200;
+      --green: #26890C;
+      --green-dark: #1d6e09;
+      --bg-dark: #381273;
+      --bg-gradient: linear-gradient(135deg, #46178F 0%, #18033d 100%);
+      --card-bg: #ffffff;
+      --text-main: #222222;
+      --text-light: #ffffff;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow-x: hidden;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1050px;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      position: relative;
+    }
+
+    .top-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .brand-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 1.35rem;
+      color: #ffd200;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ctrl-btns {
+      display: flex;
+      gap: 10px;
+    }
+
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 8px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 700;
+      transition: all 0.2s;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    /* TELA INICIAL */
+    #start-screen {
+      text-align: center;
+      padding: 30px 16px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: #ffd200;
+      color: #381273;
+      padding: 6px 18px;
+      border-radius: 30px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+    }
+
+    .anti-rush-badge {
+      display: inline-block;
+      background: rgba(0, 230, 118, 0.2);
+      color: #00e676;
+      border: 1px solid #00e676;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    h1.hero-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 2.3rem;
+      line-height: 1.25;
+      margin-bottom: 16px;
+      color: #ffffff;
+      text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    p.hero-desc {
+      font-size: 1.05rem;
+      max-width: 760px;
+      margin: 0 auto 24px auto;
+      line-height: 1.6;
+      color: #e0d5f8;
+    }
+
+    .rules-card {
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 14px;
+      padding: 16px 20px;
+      max-width: 650px;
+      margin: 0 auto 24px auto;
+      text-align: left;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      border-left: 4px solid #ffd200;
+    }
+
+    .rules-card h4 {
+      color: #ffd200;
+      margin-bottom: 6px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .input-box {
+      margin: 0 auto 20px auto;
+      max-width: 420px;
+    }
+
+    .input-box label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .input-box input {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 12px;
+      border: 2px solid #ffd200;
+      font-size: 1.1rem;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      background: #ffffff;
+      color: #222;
+    }
+
+    .start-btn {
+      background: #ffd200;
+      color: #2b0c5e;
+      border: none;
+      padding: 18px 48px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 900;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #b39200, 0 10px 20px rgba(0, 0, 0, 0.3);
+      transition: all 0.15s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .start-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 9px 0 #b39200, 0 14px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    /* TELA DO QUIZ */
+    #quiz-screen {
+      display: none;
+    }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .q-badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .q-topic {
+      background: rgba(255, 210, 0, 0.25);
+      color: #ffd200;
+      border: 1px solid #ffd200;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .stats-box {
+      display: flex;
+      gap: 16px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+    }
+
+    .score-display {
+      color: #ffd200;
+      font-size: 1.1rem;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #ffd200;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .reading-lock-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 8px 16px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #ffd200;
+    }
+
+    .reading-lock-bar.unlocked {
+      background: rgba(0, 230, 118, 0.2);
+      color: #00e676;
+    }
+
+    .question-card {
+      background: #ffffff;
+      color: #222222;
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      line-height: 1.65;
+      font-size: 1.1rem;
+      border-left: 8px solid #ffd200;
+    }
+
+    .question-text {
+      white-space: pre-line;
+      font-weight: 600;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+      h1.hero-title {
+        font-size: 1.7rem;
+      }
+      .question-card {
+        padding: 16px 18px;
+        font-size: 1rem;
+      }
+    }
+
+    .option-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 18px 20px;
+      color: white;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 700;
+      line-height: 1.45;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+      transition: all 0.2s ease;
+      box-shadow: 0 5px 0 rgba(0, 0, 0, 0.3);
+      user-select: none;
+      position: relative;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+      box-shadow: 0 8px 0 rgba(0, 0, 0, 0.35);
+    }
+
+    .option-btn:active:not(:disabled) {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .option-btn:disabled {
+      cursor: not-allowed;
+      filter: grayscale(0.5) opacity(0.65);
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .option-btn.opt-A { background: var(--red); box-shadow: 0 5px 0 var(--red-dark); }
+    .option-btn.opt-B { background: var(--blue); box-shadow: 0 5px 0 var(--blue-dark); }
+    .option-btn.opt-C { background: var(--yellow); box-shadow: 0 5px 0 var(--yellow-dark); }
+    .option-btn.opt-D { background: var(--green); box-shadow: 0 5px 0 var(--green-dark); }
+
+    .opt-icon {
+      font-size: 1.5rem;
+      font-weight: 900;
+      min-width: 40px;
+      height: 40px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .opt-text {
+      flex-grow: 1;
+    }
+
+    /* PAUSA DE FOCO (RADICAL ANTI-RUSH) */
+    #rush-alert-screen {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+      background: rgba(226, 27, 60, 0.95);
+      border-radius: 20px;
+      color: white;
+      margin: 20px 0;
+      animation: popIn 0.3s ease;
+    }
+
+    .rush-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .rush-desc {
+      font-size: 1.15rem;
+      max-width: 650px;
+      margin: 0 auto 20px auto;
+      line-height: 1.6;
+    }
+
+    .rush-countdown {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: #ffd200;
+      margin-bottom: 12px;
+    }
+
+    /* FEEDBACK IMEDIATO COM TRAVA NO ERRO */
+    #feedback-screen {
+      display: none;
+      text-align: center;
+      padding: 24px 16px;
+    }
+
+    .feedback-banner {
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      animation: popIn 0.25s ease;
+    }
+
+    .feedback-banner.correct { background: #26890c; color: #ffffff; }
+    .feedback-banner.incorrect { background: #e21b3c; color: #ffffff; }
+
+    .feedback-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .feedback-explanation {
+      background: #ffffff;
+      color: #222222;
+      border-radius: 14px;
+      padding: 22px;
+      font-size: 1.1rem;
+      line-height: 1.65;
+      text-align: left;
+      margin-bottom: 24px;
+      border-left: 6px solid #381273;
+    }
+
+    .feedback-explanation strong {
+      color: #381273;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .lock-timer-msg {
+      margin-bottom: 16px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: #ffd200;
+    }
+
+    .next-btn {
+      background: #ffd200;
+      color: #2b0c5e;
+      border: none;
+      padding: 16px 44px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 900;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #b39200;
+      transition: all 0.15s;
+    }
+
+    .next-btn:disabled {
+      background: #888888;
+      color: #dddddd;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    /* RESULTADO FINAL & COMPROVANTE PEDAGÓGICO */
+    #final-screen {
+      display: none;
+      text-align: center;
+      padding: 24px 16px;
+    }
+
+    .podium-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 2.4rem;
+      color: #ffd200;
+      margin-bottom: 10px;
+    }
+
+    .user-greeting {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    .visto-card {
+      background: #ffffff;
+      color: #222222;
+      border-radius: 18px;
+      padding: 24px;
+      max-width: 580px;
+      margin: 0 auto 24px auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      text-align: left;
+    }
+
+    .visto-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px dashed #ccc;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .visto-header h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 1.15rem;
+      color: #381273;
+    }
+
+    .visto-badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 900;
+      font-size: 0.85rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .visto-badge.aprovado { background: #e8f5e9; color: #2e7d32; border: 1px solid #2e7d32; }
+    .visto-badge.recusado { background: #ffebee; color: #c62828; border: 1px solid #c62828; }
+
+    .visto-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 0.98rem;
+    }
+
+    .visto-row span.label { color: #666; font-weight: 600; }
+    .visto-row span.val { font-weight: 800; color: #222; font-family: 'Montserrat', sans-serif; }
+
+    .visto-code {
+      margin-top: 14px;
+      background: #f4f0fa;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      font-family: monospace;
+      font-weight: 900;
+      font-size: 1.1rem;
+      color: #46178f;
+      letter-spacing: 2px;
+      border: 1px solid #d4c5eb;
+    }
+
+    .final-actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .action-btn {
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-restart { background: #ffd200; color: #2b0c5e; box-shadow: 0 4px 0 #b39200; }
+    .btn-review { background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255, 255, 255, 0.4); }
+
+    #review-container {
+      display: none;
+      text-align: left;
+      margin-top: 24px;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 16px;
+      padding: 20px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .review-item {
+      background: #ffffff;
+      color: #222;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      border-left: 6px solid #26890c;
+    }
+
+    .review-item.was-wrong { border-left-color: #e21b3c; }
+    .review-header {
+      font-weight: 800;
+      font-family: 'Montserrat', sans-serif;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .review-text { font-size: 0.95rem; margin-bottom: 10px; white-space: pre-line; }
+    .review-answer { font-size: 0.9rem; background: #f1f3f5; padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; }
+    .review-exp { font-size: 0.85rem; color: #555; font-style: italic; }
+
+    @keyframes popIn {
+      0% { transform: scale(0.9); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <div class="top-controls">
+      <div class="brand-title">
+        <span>⚡ ÁGORA DIGITAL • FILOSOFIA</span>
+      </div>
+      <div class="ctrl-btns">
+        <button id="sound-btn" class="icon-btn" onclick="toggleSound()">🔊 Som: ON</button>
+        <button class="icon-btn" onclick="toggleFullscreen()">⛶ Tela Cheia</button>
+      </div>
+    </div>
+
+    <!-- TELA 1: INÍCIO -->
+    <div id="start-screen">
+      <div class="hero-badge">1ª Série EM • Filosofia</div><br>
+      <div class="anti-rush-badge">🛡️ SISTEMA DE LEITURA CONSCIENTE ATIVADO</div>
+      <h1 class="hero-title">A Lógica no Dia a Dia:<br>Pensamento Claro & Autodefesa Crítica</h1>
+      
+      <p class="hero-desc">
+        Desafio de 40 questões práticas baseadas na nossa aula. Leia com calma as pistas, descubra os truques das propagandas e teste seu raciocínio!
+      </p>
+
+      <div class="rules-card">
+        <h4>📋 Como Funciona a Atividade:</h4>
+        • <strong>Tempo de Leitura:</strong> Cada questão precisa de 4 segundos de leitura antes de liberar os botões.<br>
+        • <strong>Se Errar, Leia a Dica:</strong> Se errar, a explicação didática ficará na tela por 8 segundos antes de você poder avançar.<br>
+        • <strong>Anti-Chute:</strong> Respostas seguidas em menos de 5 segundos travam a tela por 15 segundos para você respirar e ler com foco.<br>
+        • <strong>Visto do Professor:</strong> Para receber o visto de aprovado, você precisa de pelo menos 60% de acertos e ter feito uma leitura consciente.
+      </div>
+
+      <div class="input-box">
+        <label for="player-name">Seu Nome Completo ou Dupla:</label>
+        <input type="text" id="player-name" placeholder="Digite seu nome completo aqui..." value="">
+      </div>
+
+      <button class="start-btn" onclick="startQuiz()">Iniciar Desafio</button>
+    </div>
+
+    <!-- PAUSA PARA O FOCO -->
+    <div id="rush-alert-screen">
+      <div class="rush-title">⚠️ PAUSA PARA O FOCO!</div>
+      <div class="rush-desc">
+        Você está clicando rápido demais e sem ler as perguntas. O objetivo deste desafio é exercitar a sua cabeça e aprender a pensar com clareza. Respire fundo e aguarde a liberação:
+      </div>
+      <div class="rush-countdown" id="rush-countdown-val">15</div>
+      <p style="font-size: 0.9rem; color: #ffd200;">A questão voltará automaticamente assim que o tempo zerar.</p>
+    </div>
+
+    <!-- TELA 2: QUIZ EM ANDAMENTO -->
+    <div id="quiz-screen">
+      <div class="quiz-header">
+        <div class="q-badge" id="q-counter">Questão 1 de 40</div>
+        <div class="q-topic" id="q-topic">Tópico</div>
+        <div class="stats-box">
+          <div class="score-display">Pontos: <span id="score-val">0</span></div>
+        </div>
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+
+      <div class="reading-lock-bar" id="reading-lock-bar">
+        <span>📖 Leia a pergunta com atenção: botões liberados em <strong id="reading-countdown">4</strong>s...</span>
+      </div>
+
+      <div class="question-card">
+        <div class="question-text" id="question-text">Texto da questão</div>
+      </div>
+
+      <div class="options-grid" id="options-grid">
+        <button class="option-btn opt-A" id="btn-opt-A" onclick="handleAnswer('A')" disabled>
+          <div class="opt-icon">▲</div>
+          <div class="opt-text" id="opt-A-text">Alternativa A</div>
+        </button>
+        <button class="option-btn opt-B" id="btn-opt-B" onclick="handleAnswer('B')" disabled>
+          <div class="opt-icon">◆</div>
+          <div class="opt-text" id="opt-B-text">Alternativa B</div>
+        </button>
+        <button class="option-btn opt-C" id="btn-opt-C" onclick="handleAnswer('C')" disabled>
+          <div class="opt-icon">●</div>
+          <div class="opt-text" id="opt-C-text">Alternativa C</div>
+        </button>
+        <button class="option-btn opt-D" id="btn-opt-D" onclick="handleAnswer('D')" disabled>
+          <div class="opt-icon">■</div>
+          <div class="opt-text" id="opt-D-text">Alternativa D</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- TELA 3: FEEDBACK IMEDIATO -->
+    <div id="feedback-screen">
+      <div class="feedback-banner" id="feedback-banner">
+        <div class="feedback-title" id="feedback-title">Resposta Correta!</div>
+        <div id="feedback-subtitle">+1000 pontos</div>
+      </div>
+
+      <div class="feedback-explanation">
+        <strong>Explicação para Aprender:</strong><br>
+        <span id="feedback-exp-text">Texto explicativo</span>
+      </div>
+
+      <div class="lock-timer-msg" id="lock-timer-msg"></div>
+      <button class="next-btn" id="next-btn" onclick="nextQuestion()">Avançar ➔</button>
+    </div>
+
+    <!-- TELA 4: RESULTADO FINAL & COMPROVANTE PEDAGÓGICO -->
+    <div id="final-screen">
+      <div class="podium-title">🎓 Desafio Concluído!</div>
+      <div class="user-greeting" id="final-user-greeting">Estudante</div>
+
+      <div class="visto-card">
+        <div class="visto-header">
+          <h3>COMPROVANTE DO VISTO PEDAGÓGICO</h3>
+          <div class="visto-badge" id="visto-status-badge">EM ANÁLISE</div>
+        </div>
+
+        <div class="visto-row">
+          <span class="label">Estudante:</span>
+          <span class="val" id="visto-nome">Nome</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Acertos:</span>
+          <span class="val" id="visto-acertos">0 / 40 (0%)</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Pontuação:</span>
+          <span class="val" id="visto-pontos">0 pts</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Tempo Total:</span>
+          <span class="val" id="visto-tempo-total">0 min</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Tempo Médio por Pergunta:</span>
+          <span class="val" id="visto-tempo-medio">0s</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Situação da Leitura:</span>
+          <span class="val" id="visto-diagnostico">Adequada</span>
+        </div>
+
+        <div class="visto-code" id="visto-hash">#LOG-CEE-0000</div>
+      </div>
+
+      <div class="final-actions">
+        <button class="action-btn btn-restart" onclick="restartQuiz()">🔄 Tentar Novamente</button>
+        <button class="action-btn btn-review" onclick="toggleReview()">📋 Ver Gabarito Completo</button>
+      </div>
+
+      <div id="review-container"></div>
+    </div>
+
+  </div>
+
+  <script>
+    const quizData = [{"id": 1, "topic": "Para que serve a lógica", "text": "Imagine conversar com uma pessoa que muda de ideia a cada dois minutos, se contradiz o tempo todo e tenta convencer os outros de coisas sem pé nem cabeça. Essa situação mostra como é difícil dialogar quando o pensamento está desorganizado.\n\nDe acordo com o que foi estudado em sala, a lógica serve para:", "options": [{"letter": "A", "text": "obrigar as pessoas a terem sempre as mesmas preferências.", "correct": false}, {"letter": "B", "text": "provar que qualquer opinião dita com firmeza está correta.", "correct": false}, {"letter": "C", "text": "organizar a nossa cabeça para que as ideias façam sentido.", "correct": true}, {"letter": "D", "text": "decorar nomes difíceis sem precisar pensar sobre a vida.", "correct": false}], "explanation": "A lógica funciona como uma regra para o pensamento, organizando as ideias para que elas não se choquem e façam sentido."}, {"id": 2, "topic": "Regras do pensamento", "text": "Em sala de aula, o professor usou o trânsito como exemplo: assim como existem semáforos e faixas para os carros não baterem nas ruas, existem regras para os nossos pensamentos.\n\nSeguindo essa comparação, a lógica no nosso cérebro serve para:", "options": [{"letter": "A", "text": "fazer todo mundo pensar rápido, sem ligar para os erros.", "correct": false}, {"letter": "B", "text": "impedir que os jovens conversem sobre assuntos do dia a dia.", "correct": false}, {"letter": "C", "text": "garantir que as ideias não batam de frente e tenham sentido.", "correct": true}, {"letter": "D", "text": "fazer com que o computador funcione mesmo sem eletricidade.", "correct": false}], "explanation": "Assim como o trânsito tem regras para evitar batidas, a lógica impede que as ideias entrem em contradição e percam o sentido."}, {"id": 3, "topic": "A lógica como proteção", "text": "Todos os dias recebemos centenas de mensagens no celular tentando nos convencer a comprar um produto ou concordar com uma ideia duvidosa na internet.\n\nNesse cenário, aprender lógica funciona como um 'escudo de proteção' porque nos ajuda a:", "options": [{"letter": "A", "text": "saber quando alguém usa truques para nos fazer comprar algo.", "correct": true}, {"letter": "B", "text": "comprar qualquer produto em promoção de forma imediata.", "correct": false}, {"letter": "C", "text": "bloquear a internet para nunca mais ver anúncios comerciais.", "correct": false}, {"letter": "D", "text": "acreditar em todas as notícias que os influenciadores postam.", "correct": false}], "explanation": "A lógica é um escudo crítico para identificar truques de propaganda e perceber se um argumento é bom ou furado."}, {"id": 4, "topic": "Pensamento crítico", "text": "Quando alguém tenta provar algo importante, não basta apenas gritar mais alto ou falar bonito. É preciso mostrar que o raciocínio está bem construído do início ao fim.\n\nA importância da lógica para a nossa vida diária está no fato de que ela:", "options": [{"letter": "A", "text": "faz com que a gente nunca mais mude de ideia sobre nada.", "correct": false}, {"letter": "B", "text": "elimina as dúvidas sem precisar pesquisar as informações.", "correct": false}, {"letter": "C", "text": "serve apenas para quem quer trabalhar consertando máquinas.", "correct": false}, {"letter": "D", "text": "nos ensina a avaliar se o que estão nos dizendo faz sentido.", "correct": true}], "explanation": "A lógica dá ferramentas para checar se as afirmações e argumentos que ouvimos têm coerência ou são enganosos."}, {"id": 5, "topic": "O que é proposição", "text": "Na aula de Filosofia, o professor explicou que nem tudo o que a gente fala interessa para o estudo da lógica. Algumas frases apenas expressam sentimentos ou dão ordens.\n\nPara a lógica, uma frase só é considerada uma **proposição** quando:", "options": [{"letter": "A", "text": "afirma ou nega algo, podendo ser apenas verdadeira ou falsa.", "correct": true}, {"letter": "B", "text": "faz uma pergunta difícil que ninguém consegue responder.", "correct": false}, {"letter": "C", "text": "dá uma ordem curta de forma autoritária e enérgica.", "correct": false}, {"letter": "D", "text": "demonstra admiração poética diante de uma bela paisagem.", "correct": false}], "explanation": "Proposições são frases declarativas que afirmam ou negam fatos e que só podem ser verdadeiras ou falsas."}, {"id": 6, "topic": "Exemplo de proposição", "text": "Durante o recreio na escola, quatro estudantes disseram as seguintes frases:\n1. 'Abram o livro na página dez!'\n2. 'Que horas vai bater o sinal?'\n3. 'Hoje é terça-feira.'\n4. 'Nossa, que calor!'\n\nEntre essas frases, a única que é uma **proposição** para a lógica é a:", "options": [{"letter": "A", "text": "frase 1, porque expressa uma ordem direta do professor.", "correct": false}, {"letter": "B", "text": "frase 3, porque faz uma afirmação que é verdadeira ou falsa.", "correct": true}, {"letter": "C", "text": "frase 2, porque faz uma pergunta sobre o horário da aula.", "correct": false}, {"letter": "D", "text": "frase 4, porque expressa uma sensação de cansaço e calor.", "correct": false}], "explanation": "'Hoje é terça-feira' é uma afirmação factual que pode ser conferida no calendário como verdadeira ou falsa."}, {"id": 7, "topic": "Por que ordens não contam", "text": "A frase 'Apague a luz da sala ao sair!' é uma orientação importante para economizar energia. Porém, na aula de lógica, o professor explicou que ela não entra nas regras de raciocínio.\n\nEssa frase não é uma proposição lógica porque:", "options": [{"letter": "A", "text": "é uma ordem, e ordens não podem ser verdadeiras nem falsas.", "correct": true}, {"letter": "B", "text": "trata de economia de energia, que é um assunto de ciências.", "correct": false}, {"letter": "C", "text": "tem poucas palavras para conseguir formar um pensamento.", "correct": false}, {"letter": "D", "text": "apenas os cientistas podem analisar frases desse tipo.", "correct": false}], "explanation": "Ordens (frases imperativas) mandam fazer algo, não afirmam nada sobre a realidade; por isso não são V nem F."}, {"id": 8, "topic": "Proposição falsa", "text": "Considere a seguinte frase dita por um aluno: 'O meu celular comum funciona perfeitamente sem bateria'. Ao testar o aparelho, todos veem que ele não liga sem carga elétrica.\n\nDo ponto de vista da lógica, essa frase deve ser classificada como uma:", "options": [{"letter": "A", "text": "frase sem sentido nenhum que não pode ser dita na aula.", "correct": false}, {"letter": "B", "text": "pergunta disfarçada para descobrir o preço do aparelho.", "correct": false}, {"letter": "C", "text": "regra de trânsito que proíbe o uso de telas na escola.", "correct": false}, {"letter": "D", "text": "proposição válida cujo valor no mundo real é falso.", "correct": true}], "explanation": "É uma proposição porque fez uma afirmação sobre o mundo, mas seu valor de verdade é falso."}, {"id": 9, "topic": "Perguntas e desabafos", "text": "Se um jovem gritar 'Que raiva desse jogo!' ou perguntar 'Cadê minha mochila?', nenhuma dessas frases interessa diretamente para a montagem de um raciocínio lógico.\n\nIsso acontece porque frases exclamativas e perguntas:", "options": [{"letter": "A", "text": "não são escritas no caderno da disciplina de Filosofia.", "correct": false}, {"letter": "B", "text": "são sempre consideradas mentiras contadas pelas pessoas.", "correct": false}, {"letter": "C", "text": "só podem ser analisadas se forem ditas por um adulto.", "correct": false}, {"letter": "D", "text": "não afirmam nem negam nada que possa ser verdadeiro ou falso.", "correct": true}], "explanation": "Perguntas pedem informação e desabafos mostram sentimentos; nenhum dos dois afirma um fato que possa ser checado como V ou F."}, {"id": 10, "topic": "Reconhecimento no dia a dia", "text": "Qual das frases a seguir pode ser classificada como uma **proposição** para testarmos se é verdadeira ou falsa?", "options": [{"letter": "A", "text": "Não jogue lixo plástico no pátio da escola!", "correct": false}, {"letter": "B", "text": "Onde fica a quadra esportiva do nosso bairro?", "correct": false}, {"letter": "C", "text": "A garrafa PET descartada no chão polui a cidade.", "correct": true}, {"letter": "D", "text": "Que dia maravilhoso para passear com os amigos!", "correct": false}], "explanation": "'A garrafa PET descartada no chão polui a cidade' é uma declaração sobre a realidade, portanto é uma proposição."}, {"id": 11, "topic": "Opinião vs. Argumento", "text": "Dois amigos estão conversando e um deles diz: 'Esse tênis é o melhor calçado do mundo'. O outro pergunta: 'Por que você acha isso?'. O primeiro responde: 'Porque sim, é a minha opinião e pronto'.\n\nEssa resposta não é um argumento de verdade porque:", "options": [{"letter": "A", "text": "para ser argumento é preciso dar motivos que justifiquem a tese.", "correct": true}, {"letter": "B", "text": "ninguém pode falar de calçados na aula de Filosofia.", "correct": false}, {"letter": "C", "text": "uma opinião pessoal só vale se for confirmada na internet.", "correct": false}, {"letter": "D", "text": "para argumentar é obrigatório falar uma palavra em grego.", "correct": false}], "explanation": "Dar uma opinião é dizer o que gosta; argumentar é apresentar premissas (motivos) que provem aquilo que se defende."}, {"id": 12, "topic": "Receita do argumento", "text": "O professor explicou que um argumento é como uma receita dividida em duas partes essenciais: o ponto de partida com as pistas e o ponto de chegada com a ideia final.\n\nNa lógica, essas duas partes fundamentais são chamadas de:", "options": [{"letter": "A", "text": "regras de trânsito e frases de efeito da propaganda.", "correct": false}, {"letter": "B", "text": "palpites individuais e dúvidas que ninguém resolve.", "correct": false}, {"letter": "C", "text": "perguntas sem resposta e exclamações de espanto.", "correct": false}, {"letter": "D", "text": "premissas (as pistas/motivos) e conclusão (a ideia final).", "correct": true}], "explanation": "As premissas são as razões/pistas que sustentam a conclusão, que é a tese final onde queremos chegar."}, {"id": 13, "topic": "Exemplo do uniforme escolar", "text": "Considere o exemplo dado em aula:\nPista 1: Todos os alunos da nossa escola usam uniforme.\nPista 2: O Pedro é aluno da nossa escola.\nConclusão: Portanto, o Pedro usa uniforme.\n\nA conclusão 'Pedro usa uniforme' é confiável porque ela:", "options": [{"letter": "A", "text": "foi inventada por acaso sem nenhuma ligação com o texto.", "correct": false}, {"letter": "B", "text": "depende de uma votação de toda a sala para ser aceita.", "correct": false}, {"letter": "C", "text": "é apenas uma propaganda para vender uniformes novos.", "correct": false}, {"letter": "D", "text": "nasceu de forma natural a partir das duas pistas anteriores.", "correct": true}], "explanation": "A conclusão decorre com necessidade das pistas (premissas) apresentadas no raciocínio."}, {"id": 14, "topic": "Função das premissas", "text": "Imagine que você quer convencer a direção da escola a colocar lixeiras de reciclagem no pátio. Para isso, você apresenta dados sobre a quantidade de garrafas jogadas fora e mostra como o plástico demora para se decompor.\n\nNo seu raciocínio, essas informações que você apresentou funcionam como:", "options": [{"letter": "A", "text": "premissas que servem de apoio e justificativa para o seu pedido.", "correct": true}, {"letter": "B", "text": "conclusões prontas que dispensam qualquer tipo de explicação.", "correct": false}, {"letter": "C", "text": "truques publicitários usados apenas para enganar os colegas.", "correct": false}, {"letter": "D", "text": "ordens que a direção é obrigada a cumprir imediatamente.", "correct": false}], "explanation": "Os fatos e dados usados para justificar um pedido ou ideia desempenham o papel de premissas no argumento."}, {"id": 15, "topic": "A ligação do raciocínio", "text": "Veja este raciocínio: 'Se chover muito, a quadra aberta vai ficar molhada. Está chovendo muito agora. Logo, a quadra aberta está molhada'.\n\nEsse exemplo mostra que um bom raciocínio acontece quando:", "options": [{"letter": "A", "text": "as pessoas brigam para ver quem consegue falar mais alto.", "correct": false}, {"letter": "B", "text": "ninguém na conversa consegue entender o que foi afirmado.", "correct": false}, {"letter": "C", "text": "as pistas e a conclusão tratam de assuntos totalmente opostos.", "correct": false}, {"letter": "D", "text": "a conclusão é o resultado direto do que as pistas informaram.", "correct": true}], "explanation": "Um raciocínio funciona quando há uma amarração lógica entre o que as premissas dizem e o que a conclusão afirma."}, {"id": 16, "topic": "Regra da Identidade", "text": "Em uma conversa sobre economia familiar, a família combina que a palavra 'necessidade' significa apenas comida, água e remédio. Minutos depois, um jovem diz que comprar um tênis de mil reais é 'uma necessidade urgente'.\n\nMudar o sentido da palavra no meio da conversa quebra a:", "options": [{"letter": "A", "text": "Regra da Identidade, pois o sentido da palavra foi trocado.", "correct": true}, {"letter": "B", "text": "Regra do Trânsito, pois tênis servem apenas para caminhar.", "correct": false}, {"letter": "C", "text": "Fórmula dos computadores usada para conectar a internet.", "correct": false}, {"letter": "D", "text": "Ordem dos livros da biblioteca escolar no recreio.", "correct": false}], "explanation": "A Regra da Identidade exige que uma coisa seja ela mesma e que os termos não mudem de sentido no meio da conversa."}, {"id": 17, "topic": "Regra da Não-Contradição", "text": "Um estudante olha para a tela do celular e afirma: 'A bateria do meu aparelho está 100% cheia e está totalmente zerada neste mesmo instante'.\n\nEssa afirmação não faz nenhum sentido lógico porque desrespeita a:", "options": [{"letter": "A", "text": "Regra da Não-Contradição: algo não pode ser e não ser ao mesmo tempo.", "correct": true}, {"letter": "B", "text": "Regra da Bateria de Lítio, que exige cabos originais.", "correct": false}, {"letter": "C", "text": "Regra da Opinião Própria, que proíbe falar de tecnologia.", "correct": false}, {"letter": "D", "text": "Lista de aplicativos mais baixados pelos adolescentes.", "correct": false}], "explanation": "Pela Regra da Não-Contradição, uma coisa não pode ser e não ser ao mesmo tempo (ou a bateria está cheia ou está descarregada)."}, {"id": 18, "topic": "Regra do Terceiro Excluído", "text": "A professora pergunta ao aluno: 'Você entregou o trabalho de Filosofia hoje?'. O aluno responde: 'Professora, eu não entreguei nem deixei de entregar, estou no meio-termo'.\n\nConsiderando os fatos da realidade, a resposta do aluno não faz sentido porque:", "options": [{"letter": "A", "text": "ele usou palavras demais para responder a uma pergunta simples.", "correct": false}, {"letter": "B", "text": "ou ele entregou ou não entregou; não existe uma terceira opção.", "correct": true}, {"letter": "C", "text": "a professora já tinha anotado as notas de todos no diário.", "correct": false}, {"letter": "D", "text": "os trabalhos de escola só valem se forem feitos no computador.", "correct": false}], "explanation": "A Regra do Terceiro Excluído mostra que uma afirmação sobre um fato ou é verdadeira ou é falsa, sem meio-termo."}, {"id": 19, "topic": "Contradição na prática", "text": "Uma propaganda de refrigerante afirma: 'Nossa bebida não tem nenhuma gota de açúcar, mas é feita com o mais puro açúcar da cana'.\n\nEssa propaganda é confusa para o consumidor porque ela:", "options": [{"letter": "A", "text": "utiliza uma linguagem muito jovem que ninguém consegue entender.", "correct": false}, {"letter": "B", "text": "diz duas coisas opostas ao mesmo tempo, caindo em contradição.", "correct": true}, {"letter": "C", "text": "ensina os estudantes a calcularem a quantidade de calorias.", "correct": false}, {"letter": "D", "text": "comprova cientificamente que refrigerante faz bem à saúde.", "correct": false}], "explanation": "Dizer que não tem açúcar e que é feito com açúcar é uma contradição direta que anula o sentido da frase."}, {"id": 20, "topic": "Importância das regras de ouro", "text": "Se a gente esquecer as três regras de ouro (identidade, não-contradição e terceiro excluído) durante uma conversa, o que acontece com as nossas ideias?", "options": [{"letter": "A", "text": "Vira uma bagunça completa, onde nada mais faz sentido.", "correct": true}, {"letter": "B", "text": "Elas ficam mais inteligentes e fáceis de memorizar na prova.", "correct": false}, {"letter": "C", "text": "O raciocínio passa a funcionar igual ao de um computador novo.", "correct": false}, {"letter": "D", "text": "Todo mundo concorda imediatamente com a mesma opinião.", "correct": false}], "explanation": "Sem essas regras básicas, as frases perdem a coerência, caem em contradição e ninguém mais consegue se entender."}, {"id": 21, "topic": "Não-Contradição no cotidiano", "text": "Um colega diz: 'Eu fui para a praia em Guarapari no domingo às 10 horas da manhã e, nesse mesmo minuto, eu estava dormindo na minha casa em Colatina'.\n\nPor que essa história é impossível de acreditar?", "options": [{"letter": "A", "text": "Porque ninguém viaja para a praia aos domingos pela manhã.", "correct": false}, {"letter": "B", "text": "Porque uma pessoa não pode estar em dois lugares ao mesmo tempo.", "correct": true}, {"letter": "C", "text": "Porque o relógio dele certamente estava marcando a hora errada.", "correct": false}, {"letter": "D", "text": "Porque em Colatina nunca faz sol suficiente para ir à praia.", "correct": false}], "explanation": "Estar em um lugar e não estar nele ao mesmo tempo é uma contradição física e lógica impossível."}, {"id": 22, "topic": "O que é silogismo", "text": "Aristóteles inventou um modelo de raciocínio muito famoso organizado em três passos simples: duas pistas iniciais que se juntam para gerar uma conclusão final.\n\nEsse tipo de raciocínio em três passos é chamado de:", "options": [{"letter": "A", "text": "adivinhação rápida.", "correct": false}, {"letter": "B", "text": "opinião solta.", "correct": false}, {"letter": "C", "text": "falso dilema.", "correct": false}, {"letter": "D", "text": "silogismo.", "correct": true}], "explanation": "O silogismo é a estrutura clássica de dedução formada por duas premissas e uma conclusão."}, {"id": 23, "topic": "O que é o termo médio", "text": "Para que duas pistas consigam se unir e formar uma conclusão em um silogismo, nós precisamos de uma ligação entre elas, que o professor chamou de 'ponte'.\n\nNa lógica, essa 'ponte' que une as ideias é chamada de:", "options": [{"letter": "A", "text": "palpite final.", "correct": false}, {"letter": "B", "text": "ponto de interrogação.", "correct": false}, {"letter": "C", "text": "termo médio.", "correct": true}, {"letter": "D", "text": "desabafo pessoal.", "correct": false}], "explanation": "O termo médio é a ideia comum que conecta as duas premissas e serve como ponte para a dedução."}, {"id": 24, "topic": "Exemplo do plástico na cidade", "text": "Examine o exemplo trabalhado na aula:\nPista 1: Todo resíduo plástico jogado no chão suja a cidade.\nPista 2: A garrafa PET descartável é um resíduo plástico.\nConclusão: Logo, a garrafa PET descartável jogada no chão suja a cidade.\n\nQual foi a palavra/ideia que funcionou como a 'ponte' (termo médio) ligando as duas pistas?", "options": [{"letter": "A", "text": "Cidade limpa.", "correct": false}, {"letter": "B", "text": "Resíduo plástico.", "correct": true}, {"letter": "C", "text": "Garrafa PET descartável.", "correct": false}, {"letter": "D", "text": "Chão de terra.", "correct": false}], "explanation": "'Resíduo plástico' é o termo médio: ele aparece nas duas pistas para uni-las e não entra na conclusão."}, {"id": 25, "topic": "Regra da ponte", "text": "Depois que o termo médio cumpriu o seu papel de ligar as duas pistas iniciais, o que deve acontecer com ele na conclusão final?", "options": [{"letter": "A", "text": "Ele deve ser repetido duas vezes com letras maiúsculas.", "correct": false}, {"letter": "B", "text": "Ele se transforma obrigatoriamente em uma pergunta curiosa.", "correct": false}, {"letter": "C", "text": "Ele precisa ser substituído por um anúncio comercial.", "correct": false}, {"letter": "D", "text": "Ele deve sumir de cena e não pode entrar na frase final.", "correct": true}], "explanation": "O termo médio serve apenas de elo de ligação entre as premissas; por isso ele nunca deve aparecer na conclusão."}, {"id": 26, "topic": "Quando a ponte quebra", "text": "Observe o raciocínio a seguir:\n'Todos os peixes nadam na água. O cachorro sabe nadar na água. Logo, todos os cachorros são peixes'.\n\nPor que a conclusão desse raciocínio é um absurdo?", "options": [{"letter": "A", "text": "Porque os cachorros não gostam de tomar banho em casa.", "correct": false}, {"letter": "B", "text": "Porque a primeira frase é uma mentira biológica comprovada.", "correct": false}, {"letter": "C", "text": "Porque a ligação entre as pistas foi feita de maneira errada.", "correct": true}, {"letter": "D", "text": "Porque não se pode falar de animais na sala de aula.", "correct": false}], "explanation": "O fato de ambos nadarem não prova que um é o outro; a ponte não amarrou as ideias corretamente, gerando erro."}, {"id": 27, "topic": "Silogismo e meio ambiente", "text": "Veja este exemplo:\nPista 1: Toda pilha jogada no lixo comum contamina o solo com veneno.\nPista 2: A pilha do meu controle remoto é uma pilha.\nConclusão: Logo, a pilha do meu controle jogada no lixo comum contamina o solo.\n\nEsse raciocínio está correto porque:", "options": [{"letter": "A", "text": "ele usou pistas verdadeiras e a ponte ligou perfeitamente os fatos.", "correct": true}, {"letter": "B", "text": "a conclusão é apenas uma torcida para ninguém poluir o bairro.", "correct": false}, {"letter": "C", "text": "as pilhas elétricas nunca estragam nem perdem a carga.", "correct": false}, {"letter": "D", "text": "foi baseado na votação da maioria dos moradores da cidade.", "correct": false}], "explanation": "As premissas são verdadeiras e a estrutura dedutiva é perfeita, gerando uma conclusão sólida e verdadeira."}, {"id": 28, "topic": "Forma vs. Fato", "text": "Na aula, o professor destacou que existe uma diferença enorme entre **validade** e **verdade**.\n\nPara a lógica, a **validade** e a **verdade** dizem respeito, respectivamente, ao:", "options": [{"letter": "A", "text": "número de curtidas e ao preço do produto na loja de roupas.", "correct": false}, {"letter": "B", "text": "esqueleto da frase e àquilo que realmente acontece no mundo real.", "correct": true}, {"letter": "C", "text": "tamanho do texto e à beleza da caligrafia do aluno no caderno.", "correct": false}, {"letter": "D", "text": "humor da pessoa e à marca do celular que ela comprou no shopping.", "correct": false}], "explanation": "Validade é a coerência da forma (o esqueleto bem montado); Verdade é se aquilo acontece de fato na realidade."}, {"id": 29, "topic": "O caso dos cachorros com asas", "text": "O professor mostrou este exemplo curioso em sala:\nPista 1: Todos os cachorros têm asas.\nPista 2: O Rex é um cachorro.\nConclusão: Logo, o Rex tem asas.\n\nSobre esse raciocínio, é correto afirmar que ele é:", "options": [{"letter": "A", "text": "inválido, porque na vida real os cachorros não sabem voar.", "correct": false}, {"letter": "B", "text": "válido no esqueleto, mas mentiroso em relação à realidade.", "correct": true}, {"letter": "C", "text": "totalmente verdadeiro, pois o Rex é um animal fantástico.", "correct": false}, {"letter": "D", "text": "uma pergunta que ninguém consegue responder com certeza.", "correct": false}], "explanation": "O esqueleto do argumento está correto (se cães tivessem asas, Rex teria); mas é falso no mundo real porque cães não têm asas."}, {"id": 30, "topic": "Verdades soltas sem lógica", "text": "Considere estas duas frases verdadeiras:\nPista 1: Toda banana madura é uma fruta.\nPista 2: Toda maçã madura é uma fruta.\nConclusão: Logo, toda banana madura é uma maçã.\n\nO que aconteceu de errado com esse argumento?", "options": [{"letter": "A", "text": "As duas frases iniciais são mentiras inventadas pelo professor.", "correct": false}, {"letter": "B", "text": "O argumento fala de alimentos, e alimentos não têm lógica.", "correct": false}, {"letter": "C", "text": "O raciocínio é perfeito e comprova que frutas são idênticas.", "correct": false}, {"letter": "D", "text": "O esqueleto quebrou: as pistas não provam que banana é maçã.", "correct": true}], "explanation": "Mesmo partindo de fatos verdadeiros, as ideias não foram encaixadas de forma válida, gerando uma conclusão errada."}, {"id": 31, "topic": "Pegadinhas na internet", "text": "Muitos vídeos na internet mostram pessoas falando com voz séria, usando termos difíceis e parecendo muito inteligentes, mas que usam mentiras para enganar o público.\n\nCom base na aula de lógica, podemos dizer que esses vídeos:", "options": [{"letter": "A", "text": "são sempre verdadeiros porque foram gravados em vídeo de alta qualidade.", "correct": false}, {"letter": "B", "text": "ajudam os jovens a economizarem dinheiro nas compras de fim de ano.", "correct": false}, {"letter": "C", "text": "montam um esqueleto bonito, mas partem de mentiras para enganar.", "correct": true}, {"letter": "D", "text": "respeitam todas as regras clássicas do pensamento criadas na Grécia.", "correct": false}], "explanation": "Na internet há muitos argumentos com aparência sedutora e bem 'amarrada', mas construídos sobre premissas falsas."}, {"id": 32, "topic": "O argumento perfeito", "text": "Para um argumento ser considerado verdadeiramente forte e seguro, o que ele precisa ter ao mesmo tempo?", "options": [{"letter": "A", "text": "Muitas curtidas nas redes e apoio de pessoas famosas da internet.", "correct": false}, {"letter": "B", "text": "Um esqueleto bem montado (válido) e pistas que sejam fatos reais.", "correct": true}, {"letter": "C", "text": "Várias palavras difíceis em inglês para impressionar quem ouve.", "correct": false}, {"letter": "D", "text": "Apenas ordens diretas para que as pessoas não possam duvidar.", "correct": false}], "explanation": "Um argumento confiável precisa de validade lógica (forma correta) e de premissas verdadeiras (fatos reais)."}, {"id": 33, "topic": "O que é falácia", "text": "Quando uma pessoa ou um anúncio de televisão usa um argumento 'furado', que parece muito convincente mas tem um erro escondido para nos tapear, chamamos isso de:", "options": [{"letter": "A", "text": "falácia.", "correct": true}, {"letter": "B", "text": "silogismo seguro.", "correct": false}, {"letter": "C", "text": "verdade real.", "correct": false}, {"letter": "D", "text": "regra de ouro.", "correct": false}], "explanation": "Falácia é um argumento furado com aparência de perfeito, feito para enganar ou convencer as pessoas sem razão."}, {"id": 34, "topic": "Efeito Manada (Apelo à Maioria)", "text": "Um comercial de celular na internet diz: 'Milhões de jovens já compraram esse aparelho novo. Só você vai ficar de fora dessa moda?'.\n\nO erro desse argumento (chamado de Efeito Manada) está no fato de que:", "options": [{"letter": "A", "text": "todos os celulares que custam caro duram a vida toda sem quebrar.", "correct": false}, {"letter": "B", "text": "a empresa não colocou música animada no fundo do vídeo comercial.", "correct": false}, {"letter": "C", "text": "só porque muita gente comprou não significa que você precisa daquilo.", "correct": true}, {"letter": "D", "text": "comprar aparelhos novos é sempre a melhor decisão para economizar.", "correct": false}], "explanation": "A quantidade de pessoas que compra algo não prova que o produto é necessário ou bom; é só pressão social."}, {"id": 35, "topic": "Falsa Causa", "text": "Um comercial de perfume mostra um garoto passando o produto e, logo em seguida, todo mundo na escola começa a aplaudir e admirar o jovem.\n\nEsse comercial usa a falácia da **Falsa Causa** porque:", "options": [{"letter": "A", "text": "o vidro do perfume foi fabricado com material reciclável da fábrica.", "correct": false}, {"letter": "B", "text": "os atores do comercial estavam usando roupas fora da moda atual.", "correct": false}, {"letter": "C", "text": "o perfume não tem o poder mágico de fazer alguém ser admirado por todos.", "correct": true}, {"letter": "D", "text": "toda pessoa que usa perfume tem a obrigação de estudar Filosofia.", "correct": false}], "explanation": "É falsa causa porque liga o uso do perfume ao sucesso pessoal como se uma coisa causasse a outra."}, {"id": 36, "topic": "Falso Dilema", "text": "Um anúncio de roupas diz: 'Ou você compra as peças da nossa nova coleção este mês, ou você é uma pessoa desleixada e sem estilo'.\n\nO truque do **Falso Dilema** acontece aqui porque o anúncio:", "options": [{"letter": "A", "text": "mostra dezenas de maneiras criativas de reaproveitar roupas antigas.", "correct": false}, {"letter": "B", "text": "explica como a indústria têxtil polui a água com tintas químicas.", "correct": false}, {"letter": "C", "text": "finge que só existem duas opções extremas, escondendo outras saídas.", "correct": true}, {"letter": "D", "text": "ensina os adolescentes a guardarem dinheiro na caderneta de poupança.", "correct": false}], "explanation": "O falso dilema força a escolher entre 'ou compra tudo' ou 'é desleixado', escondendo que dá para se vestir bem sem consumir à toa."}, {"id": 37, "topic": "Consumo e Meio Ambiente", "text": "Muitas vezes as pessoas jogam fora um celular que ainda funciona muito bem só para comprar o modelo do ano e se sentirem aceitas no grupo.\n\nSaber identificar esses truques da publicidade ajuda a:", "options": [{"letter": "A", "text": "comprar tudo o que os comerciais recomendam nas datas de promoção.", "correct": false}, {"letter": "B", "text": "trocar de aparelho eletrônico a cada seis meses por diversão.", "correct": false}, {"letter": "C", "text": "evitar gastos desnecessários e diminuir a quantidade de lixo no planeta.", "correct": true}, {"letter": "D", "text": "acreditar em todas as promessas milagrosas das redes sociais.", "correct": false}], "explanation": "O pensamento crítico impede que caiamos em armadilhas de consumo, reduzindo o desperdício de dinheiro e o lixo no planeta."}, {"id": 38, "topic": "Lógica dos computadores", "text": "Os computadores e smartphones não têm sentimentos, cansaço ou palpites. O processador de um aparelho eletrônico toma decisões baseando-se estritamente em dois valores:\n\nQuais são esses dois valores que fazem os sistemas digitais funcionarem?", "options": [{"letter": "A", "text": "Talvez e Dúvida.", "correct": false}, {"letter": "B", "text": "Verdadeiro (1) e Falso (0).", "correct": true}, {"letter": "C", "text": "Muito e Pouco.", "correct": false}, {"letter": "D", "text": "Quente e Frio.", "correct": false}], "explanation": "A informática funciona com a lógica binária booleana: cada circuito só entende Verdadeiro (1) ou Falso (0)."}, {"id": 39, "topic": "Como os algoritmos decidem", "text": "Os aplicativos do TikTok, Instagram e YouTube mostram vídeos e anúncios novos no seu feed usando regras de lógica do tipo:\n\nQual é a estrutura de tomada de decisão usada nos códigos dos aplicativos?", "options": [{"letter": "A", "text": "NUNCA [preste atenção nos vídeos], SEMPRE [desligue a tela].", "correct": false}, {"letter": "B", "text": "SE [a condição for verdadeira], ENTÃO [mostre esse tipo de vídeo].", "correct": true}, {"letter": "C", "text": "APESAR DE [estar certo], SEMPRE [apague as mensagens do usuário].", "correct": false}, {"letter": "D", "text": "QUEM SABE [um dia funcione], ENTÃO [esperamos o celular esquentar].", "correct": false}], "explanation": "A estrutura fundamental de decisão dos algoritmos de programação é o comando SE... ENTÃO (IF... THEN)."}, {"id": 40, "topic": "Cidadania digital", "text": "Quando você entende que as redes sociais usam a lógica: 'SE você assistiu a vídeos de jogos, ENTÃO mostre anúncios de jogos para fazer você gastar', você deixa de ser ingênuo.\n\nEntender como esses algoritmos funcionam é importante para:", "options": [{"letter": "A", "text": "acreditar que o celular adivinha o pensamento das pessoas por mágica.", "correct": false}, {"letter": "B", "text": "parar de estudar e passar o dia inteiro navegando sem nenhum critério.", "correct": false}, {"letter": "C", "text": "passar as suas senhas de acesso para pessoas estranhas na internet.", "correct": false}, {"letter": "D", "text": "não ser apenas um consumidor passivo e entender como te influenciam.", "correct": true}], "explanation": "Conhecer a lógica liberta o estudante: ele percebe como os algoritmos são programados e passa a navegar de forma consciente."}];
+
+    let currentIndex = 0;
+    let score = 0;
+    let correctCount = 0;
+    let userAnswers = [];
+    let soundEnabled = true;
+
+    let questionStartTime = 0;
+    let quizStartTime = 0;
+    let fastAnswersStreak = 0;
+    let readingLockInterval = null;
+    let feedbackLockInterval = null;
+    let isQuestionLocked = true;
+
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new AudioCtx();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function playTone(freq, type, duration, delay = 0) {
+      if (!soundEnabled) return;
+      try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + delay + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + delay);
+        osc.stop(audioCtx.currentTime + delay + duration);
+      } catch (e) {}
+    }
+
+    function soundCorrect() {
+      playTone(523.25, 'sine', 0.12, 0);
+      playTone(659.25, 'sine', 0.12, 0.08);
+      playTone(783.99, 'sine', 0.2, 0.16);
+      playTone(1046.50, 'sine', 0.35, 0.24);
+    }
+
+    function soundWrong() {
+      playTone(300, 'sawtooth', 0.2, 0);
+      playTone(220, 'sawtooth', 0.35, 0.15);
+    }
+
+    function soundClick() {
+      playTone(850, 'triangle', 0.04, 0);
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('sound-btn').innerText = soundEnabled ? "🔊 Som: ON" : "🔇 Som: OFF";
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    function startQuiz() {
+      const nameInput = document.getElementById('player-name').value.trim();
+      if (!nameInput) {
+        alert("Digite seu nome completo para que seu visto possa ser registrado pelo professor.");
+        return;
+      }
+
+      initAudio();
+      soundClick();
+
+      currentIndex = 0;
+      score = 0;
+      correctCount = 0;
+      userAnswers = [];
+      fastAnswersStreak = 0;
+      quizStartTime = Date.now();
+
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('final-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'none';
+      document.getElementById('quiz-screen').style.display = 'block';
+
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      clearInterval(readingLockInterval);
+      const q = quizData[currentIndex];
+
+      document.getElementById('q-counter').innerText = `Questão ${currentIndex + 1} de ${quizData.length}`;
+      document.getElementById('q-topic').innerText = q.topic;
+      document.getElementById('score-val').innerText = score;
+      document.getElementById('question-text').innerText = q.text;
+
+      const progressPercent = ((currentIndex) / quizData.length) * 100;
+      document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+
+      const letters = ['A', 'B', 'C', 'D'];
+      letters.forEach(letter => {
+        const opt = q.options.find(o => o.letter === letter);
+        document.getElementById(`opt-${letter}-text`).innerText = opt.text;
+      });
+
+      // TRAVA DE 4 SEGUNDOS
+      isQuestionLocked = true;
+      let lockSeconds = 4;
+      setOptionsDisabled(true);
+
+      const lockBar = document.getElementById('reading-lock-bar');
+      lockBar.className = 'reading-lock-bar';
+      lockBar.innerHTML = `<span>📖 Leia com calma: liberando botões em <strong id="reading-countdown">${lockSeconds}</strong>s...</span>`;
+
+      questionStartTime = Date.now();
+
+      readingLockInterval = setInterval(() => {
+        lockSeconds--;
+        const cd = document.getElementById('reading-countdown');
+        if (cd) cd.innerText = lockSeconds;
+
+        if (lockSeconds <= 0) {
+          clearInterval(readingLockInterval);
+          isQuestionLocked = false;
+          setOptionsDisabled(false);
+          lockBar.className = 'reading-lock-bar unlocked';
+          lockBar.innerHTML = `<span>✅ Pergunta lida. Escolha a alternativa correta!</span>`;
+        }
+      }, 1000);
+    }
+
+    function setOptionsDisabled(disabled) {
+      ['A', 'B', 'C', 'D'].forEach(letter => {
+        const btn = document.getElementById(`btn-opt-${letter}`);
+        if (btn) btn.disabled = disabled;
+      });
+    }
+
+    function handleAnswer(chosenLetter) {
+      if (isQuestionLocked) return;
+
+      const answerDuration = (Date.now() - questionStartTime) / 1000;
+      const q = quizData[currentIndex];
+      const correctOpt = q.options.find(o => o.correct);
+      const isCorrect = chosenLetter === correctOpt.letter;
+
+      // DETECTOR DE CHUTE RÁPIDO
+      if (answerDuration < 5) {
+        fastAnswersStreak++;
+      } else {
+        fastAnswersStreak = Math.max(0, fastAnswersStreak - 1);
+      }
+
+      if (fastAnswersStreak >= 3) {
+        triggerRushBlock();
+        return;
+      }
+
+      let pointsEarned = 0;
+      if (isCorrect) {
+        correctCount++;
+        pointsEarned = 1000;
+        score += pointsEarned;
+        soundCorrect();
+      } else {
+        soundWrong();
+      }
+
+      userAnswers.push({
+        question: q,
+        chosen: chosenLetter,
+        correct: correctOpt.letter,
+        isCorrect: isCorrect,
+        timeTaken: answerDuration
+      });
+
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'block';
+
+      const banner = document.getElementById('feedback-banner');
+      const title = document.getElementById('feedback-title');
+      const sub = document.getElementById('feedback-subtitle');
+      const expText = document.getElementById('feedback-exp-text');
+      const nextBtn = document.getElementById('next-btn');
+      const lockMsg = document.getElementById('lock-timer-msg');
+
+      banner.className = 'feedback-banner ' + (isCorrect ? 'correct' : 'incorrect');
+
+      if (isCorrect) {
+        title.innerText = "Mandou Bem! Acertou! 🎉";
+        sub.innerText = `+${pointsEarned} pontos conquistados`;
+        expText.innerText = q.explanation;
+        lockMsg.innerText = "";
+        nextBtn.disabled = false;
+        nextBtn.innerText = "Próxima Questão ➔";
+      } else {
+        title.innerText = "Resposta Errada! ❌";
+        sub.innerText = `Você marcou a letra (${chosenLetter}). A correta era a (${correctOpt.letter}).`;
+        expText.innerText = q.explanation;
+
+        // TRAVA DE 8 SEGUNDOS NO ERRO
+        let cooldown = 8;
+        nextBtn.disabled = true;
+        lockMsg.innerText = `⏳ Leia a explicação para aprender o conceito. Liberando em ${cooldown}s...`;
+        nextBtn.innerText = `Aguarde (${cooldown}s)`;
+
+        clearInterval(feedbackLockInterval);
+        feedbackLockInterval = setInterval(() => {
+          cooldown--;
+          if (cooldown > 0) {
+            lockMsg.innerText = `⏳ Leia a explicação para aprender o conceito. Liberando em ${cooldown}s...`;
+            nextBtn.innerText = `Aguarde (${cooldown}s)`;
+          } else {
+            clearInterval(feedbackLockInterval);
+            lockMsg.innerText = "✅ Explicação lida. Agora você pode seguir em frente!";
+            nextBtn.disabled = false;
+            nextBtn.innerText = "Próxima Questão ➔";
+          }
+        }, 1000);
+      }
+    }
+
+    function triggerRushBlock() {
+      fastAnswersStreak = 0;
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'block';
+
+      let rushSeconds = 15;
+      const countDisplay = document.getElementById('rush-countdown-val');
+      countDisplay.innerText = rushSeconds;
+
+      const rushTimer = setInterval(() => {
+        rushSeconds--;
+        countDisplay.innerText = rushSeconds;
+        if (rushSeconds <= 0) {
+          clearInterval(rushTimer);
+          document.getElementById('rush-alert-screen').style.display = 'none';
+          document.getElementById('quiz-screen').style.display = 'block';
+          loadQuestion();
+        }
+      }, 1000);
+    }
+
+    function nextQuestion() {
+      soundClick();
+      currentIndex++;
+      document.getElementById('feedback-screen').style.display = 'none';
+
+      if (currentIndex < quizData.length) {
+        document.getElementById('quiz-screen').style.display = 'block';
+        loadQuestion();
+      } else {
+        showFinalResults();
+      }
+    }
+
+    function showFinalResults() {
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'none';
+      document.getElementById('final-screen').style.display = 'block';
+
+      const playerName = document.getElementById('player-name').value.trim() || "Estudante";
+      document.getElementById('final-user-greeting').innerText = `Relatório individual de: ${playerName}`;
+
+      const totalTimeSec = Math.round((Date.now() - quizStartTime) / 1000);
+      const totalTimeMin = (totalTimeSec / 60).toFixed(1);
+      const avgTimePerQuestion = Math.round(totalTimeSec / quizData.length);
+      const accuracy = Math.round((correctCount / quizData.length) * 100);
+
+      document.getElementById('visto-nome').innerText = playerName;
+      document.getElementById('visto-acertos').innerText = `${correctCount} de ${quizData.length} (${accuracy}%)`;
+      document.getElementById('visto-pontos').innerText = `${score} pts`;
+      document.getElementById('visto-tempo-total').innerText = `${totalTimeMin} minutos (${totalTimeSec}s)`;
+      document.getElementById('visto-tempo-medio').innerText = `${avgTimePerQuestion} segundos por pergunta`;
+
+      const badge = document.getElementById('visto-status-badge');
+      const diag = document.getElementById('visto-diagnostico');
+
+      const isApproved = (accuracy >= 60) && (avgTimePerQuestion >= 8);
+
+      if (isApproved) {
+        badge.className = 'visto-badge aprovado';
+        badge.innerText = '✅ VISTO CONCEDIDO';
+        diag.innerText = 'Leitura atenta e bom aproveitamento';
+        diag.style.color = '#2e7d32';
+      } else {
+        badge.className = 'visto-badge recusado';
+        badge.innerText = '❌ NÃO VALIDADO';
+        if (accuracy < 60 && avgTimePerQuestion < 8) {
+          diag.innerText = 'Acertos abaixo de 60% e respostas muito rápidas (chute detectado)';
+        } else if (accuracy < 60) {
+          diag.innerText = 'Acertos abaixo do mínimo necessário (mínimo de 60%)';
+        } else {
+          diag.innerText = 'Respostas muito rápidas: mostre ao professor antes de refazer';
+        }
+        diag.style.color = '#c62828';
+      }
+
+      const initials = playerName.substring(0, 3).toUpperCase().replace(/[^A-Z]/g, 'EST');
+      const hashStr = `#LOG-${initials}-${accuracy}P-${totalTimeSec}S`;
+      document.getElementById('visto-hash').innerText = hashStr;
+
+      const reviewBox = document.getElementById('review-container');
+      reviewBox.innerHTML = '<h3 style="margin-bottom:16px; color:#ffd200;">Gabarito Explicado das 40 Questões:</h3>';
+      
+      userAnswers.forEach((item, idx) => {
+        const correctOptObj = item.question.options.find(o => o.correct);
+        const div = document.createElement('div');
+        div.className = `review-item ${item.isCorrect ? '' : 'was-wrong'}`;
+        div.innerHTML = `
+          <div class="review-header">
+            <span>Questão ${idx + 1}: ${item.question.topic} (${Math.round(item.timeTaken)}s)</span>
+            <span>${item.isCorrect ? '✅ Acertou' : '❌ Errou'}</span>
+          </div>
+          <div class="review-text">${item.question.text}</div>
+          <div class="review-answer"><strong>Resposta Certa (${item.correct}):</strong> ${correctOptObj.text}</div>
+          ${!item.isCorrect && item.chosen ? `<div class="review-answer" style="color:#e21b3c;"><strong>Você marcou:</strong> (${item.chosen})</div>` : ''}
+          <div class="review-exp"><strong>Explicação:</strong> ${item.question.explanation}</div>
+        `;
+        reviewBox.appendChild(div);
+      });
+    }
+
+    function toggleReview() {
+      soundClick();
+      const box = document.getElementById('review-container');
+      box.style.display = box.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function restartQuiz() {
+      soundClick();
+      document.getElementById('final-screen').style.display = 'none';
+      document.getElementById('start-screen').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
+
