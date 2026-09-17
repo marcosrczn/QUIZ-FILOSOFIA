@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Filosófico: O Mundo do Trabalho</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --disabled: #475569;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none; /* Anti-cópia */
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-color), #1e1b4b);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .glass-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: var(--accent);
+        }
+
+        .info-panel {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            padding: 16px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 1rem;
+            line-height: 1.4;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-btn:not(:disabled):hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: var(--accent);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .option-btn.selected {
+            background: var(--accent);
+            border-color: var(--accent-hover);
+        }
+
+        .timer-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .timer-bar {
+            height: 100%;
+            width: 100%;
+            background: var(--accent);
+            transition: width 1s linear;
+        }
+
+        .timer-text {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 15px;
+        }
+
+        .action-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-top: 25px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .action-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .hidden { display: none !important; }
+        
+        /* Estilos do Pop-up (Modal Final) */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--bg-color);
+            border: 2px solid var(--accent);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.4);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .seal-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--success);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 2px dashed #fff;
+            margin-bottom: 25px;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+        }
+
+        .score-stats {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .stat-row:last-child {
+            margin-bottom: 0; border-bottom: none; padding-bottom: 0;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .mandatory-alert {
+            background: rgba(239, 68, 68, 0.15);
+            border: 2px solid var(--danger);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .mandatory-alert h3 {
+            color: #fca5a5;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .mandatory-alert p {
+            color: white;
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+
+        .btn-restart {
+            background: transparent;
+            border: 1px solid var(--disabled);
+            color: #94a3b8;
+            margin-top: 10px;
+        }
+        .btn-restart:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="glass-container" id="start-screen">
+        <h1>O Mundo do Trabalho: Humanização ou Desumanização?</h1>
+        <p style="text-align: center; margin-bottom: 30px; line-height: 1.6;">
+            Bem-vindo, estudante. Este questionário avalia os conceitos filosóficos discutidos na aula (Alienação, Sociedade do Cansaço e Ócio Criativo).<br><br>
+            <strong>Atenção:</strong> Como mecanismo de foco, você terá 15 segundos de leitura obrigatória em cada questão antes que as alternativas sejam liberadas.
+        </p>
+        <button class="action-btn" onclick="startQuiz()">Iniciar Questionário</button>
+    </div>
+
+    <div class="glass-container hidden" id="quiz-screen">
+        <div class="info-panel">
+            <span id="question-counter">Questão 1 de 24</span>
+            <span id="score-display">Acertos: 0</span>
+        </div>
+        
+        <div class="timer-text" id="timer-text">Tempo obrigatório de leitura...</div>
+        <div class="timer-container">
+            <div class="timer-bar" id="timer-bar"></div>
+        </div>
+
+        <div class="question-text" id="question-text"></div>
+        
+        <div class="options-grid" id="options-grid"></div>
+
+        <button class="action-btn hidden" id="next-btn" onclick="nextQuestion()">Próxima Questão</button>
+    </div>
+
+    <!-- POP-UP FINAL OBRIGATÓRIO -->
+    <div class="modal-overlay hidden" id="result-modal">
+        <div class="modal-content">
+            <div class="seal-badge">
+                ✔️ Selo de Validade Autêntico
+            </div>
+            
+            <h2 style="margin-bottom: 20px;">Avaliação Concluída</h2>
+            
+            <div class="score-stats">
+                <div class="stat-row">
+                    <span>Acertos Totais:</span>
+                    <span class="stat-value" id="modal-score-count">0/24</span>
+                </div>
+                <div class="stat-row">
+                    <span>Aproveitamento:</span>
+                    <span class="stat-value" id="modal-percentage">0%</span>
+                </div>
+                <div class="stat-row">
+                    <span>Tempo de Prova:</span>
+                    <span class="stat-value" id="modal-time" style="color: #cbd5e1;">00:00</span>
+                </div>
+            </div>
+
+            <div class="mandatory-alert">
+                <h3>⚠️ ATENÇÃO ESTUDANTE ⚠️</h3>
+                <p>NÃO feche nem atualize esta página. Levante a mão agora e aguarde. <strong>Apresente esta tela obrigatoriamente ao professor</strong> para registrar sua nota.</p>
+            </div>
+
+            <button class="action-btn btn-restart" onclick="location.reload()">Reiniciar Questionário</button>
+        </div>
+    </div>
+
+    <script>
+        const questoes = [
+            // BLOCO 1: O CASO E A DESUMANIZAÇÃO
+            {
+                texto: "O aplicativo da Shopee vende a ideia de que Carlos é seu 'próprio patrão' porque ele não tem um gerente buzinando no ouvido. No entanto, quando ele recusa uma rota perigosa na chuva, ele cai no 'castigo' e para de receber chamadas. Isso demonstra que:",
+                opcoes: [
+                    "A ausência de um chefe humano disfarça um sistema rígido de controle onde o trabalhador é punido sem direito de defesa.",
+                    "O aplicativo age de forma educativa, garantindo que o Carlos aprenda a gerenciar os riscos de sua própria empresa.",
+                    "O título de patrão é verdadeiro, pois é o próprio jovem quem escolhe não receber chamadas ao longo da semana.",
+                    "A tecnologia melhorou as condições de trabalho, protegendo os motoristas de clientes agressivos e bairros perigosos."
+                ],
+                correta: 0
+            },
+            {
+                texto: "Foi discutido em aula que a precarização prende o jovem na 'angústia do presente'. Carlos trabalha 14 horas por dia apenas para garantir a fatura de amanhã. O principal impacto filosófico e social dessa rotina é que:",
+                opcoes: [
+                    "O excesso de trabalho para sobreviver rouba o futuro do jovem, eliminando o espaço mental para sonhar ou estudar.",
+                    "O esforço diário garante uma aposentadoria precoce, permitindo que ele aproveite o tempo livre na vida adulta.",
+                    "A pressão constante desenvolve uma inteligência financeira que impede o jovem de gastar dinheiro com coisas inúteis.",
+                    "A dedicação integral às entregas valoriza o currículo do Carlos, abrindo portas rápidas em grandes empresas privadas."
+                ],
+                correta: 0
+            },
+            {
+                texto: "Se o pneu da moto do Carlos furar ou se ele pegar uma virose, o dia está perdido: não há atestado, nem garantia de salário. Esse cenário de trabalho vulnerável ilustra que:",
+                opcoes: [
+                    "Toda a responsabilidade e o risco do negócio são transferidos para o indivíduo, que fica sem nenhuma rede de proteção.",
+                    "O trabalhador autônomo prefere não ter benefícios médicos, pois isso aumenta consideravelmente o valor recebido por pacote.",
+                    "O Estado brasileiro já garante uma renda mínima universal, tornando desnecessária a existência de vínculos empregatícios.",
+                    "O jovem empreendedor aprende desde cedo a não ficar doente, fortalecendo seu sistema imunológico contra imprevistos."
+                ],
+                correta: 0
+            },
+            {
+                texto: "Na reflexão sobre o trabalho, foi dito que o trabalho 'deveria ser algo que nos constrói'. No entanto, para o Carlos, que chega meia-noite em casa com o corpo moído e apenas come e dorme, o trabalho se tornou:",
+                opcoes: [
+                    "Uma ferramenta de desumanização, onde a vida vira puramente sobrevivência e manutenção física para o próximo turno.",
+                    "Um instrumento de valorização pessoal, pois o cansaço físico é a prova de que ele alcançou o sucesso profissional.",
+                    "Uma oportunidade de integração familiar, visto que ele ajuda diretamente na economia dos moradores de São Gabriel da Palha.",
+                    "A comprovação de que o esforço contínuo elimina qualquer necessidade humana de manter laços sociais ou afetivos na cidade."
+                ],
+                correta: 0
+            },
+            {
+                texto: "Carlos não tem energia para jogar bola, conversar com a família ou entender de política. Quando a vida de um estudante ou trabalhador se resume a não afundar financeiramente, a consequência para a sociedade é:",
+                opcoes: [
+                    "O enfraquecimento da participação democrática e comunitária, pois pessoas esgotadas não têm forças para questionar a realidade.",
+                    "O aumento da segurança pública, pois os jovens passam a maior parte do dia ocupados e não se envolvem em atividades ilícitas.",
+                    "A melhoria da educação nas escolas, visto que os professores não precisam mais lidar com alunos questionadores em sala de aula.",
+                    "A garantia de que o país crescerá economicamente sem a necessidade de intervenções políticas ou cobranças da população."
+                ],
+                correta: 0
+            },
+            {
+                texto: "O aplicativo oferece uma falsa liberdade ao Carlos. Apesar de poder decidir a hora de ligar a moto, ele se sente obrigado a rodar de domingo a domingo. O motivo real dessa 'obrigação invisível' é:",
+                opcoes: [
+                    "A urgência das necessidades básicas, pois se ele não bater a meta diária estipulada pelo sistema, ele simplesmente não come.",
+                    "A grande vontade do jovem de se tornar o funcionário do mês e ganhar prêmios em dinheiro fornecidos pelas plataformas digitais.",
+                    "O desejo de conhecer todas as estradas de chão da cidade para, no futuro, conseguir montar um negócio de turismo regional.",
+                    "A exigência dos pais para que ele não fique em casa durante o dia, forçando-o a buscar qualquer tipo de ocupação nas ruas."
+                ],
+                correta: 0
+            },
+
+            // BLOCO 2: KARL MARX (ALIENAÇÃO)
+            {
+                texto: "Karl Marx, no século XIX, criou o conceito de Alienação ao observar as fábricas. Trazendo para o caso da Shopee, Carlos é alienado porque, apesar de ser dono da moto, ele:",
+                opcoes: [
+                    "Perdeu totalmente o controle sobre o próprio tempo e sobre as ferramentas invisíveis do trabalho, não apitando nada nas regras.",
+                    "Optou por não estudar mecânica, o que o torna dependente de outras pessoas para consertar o veículo quando o pneu fura.",
+                    "Recusa-se a vender os pacotes diretamente para os clientes, perdendo a chance de multiplicar o seu lucro nas entregas.",
+                    "Decidiu que não quer ser o próprio patrão, transferindo voluntariamente o comando da sua vida para as leis do município."
+                ],
+                correta: 0
+            },
+            {
+                texto: "Segundo a aula, o trabalhador alienado não tem poder de decisão. No cenário do entregador em São Gabriel da Palha, o verdadeiro 'patrão' que dita as ordens sem margem para negociação é:",
+                opcoes: [
+                    "O algoritmo do aplicativo, que monta as rotas, dita quanto vale a entrega de cada pacote e bloqueia a conta quando quer.",
+                    "O coordenador do galpão de coleta, que escolhe fisicamente quais caixas o Carlos é obrigado a colocar no baú da moto.",
+                    "O prefeito da cidade, que estabelece os horários em que as motos podem circular pelo centro comercial sem levar multas.",
+                    "O cliente que recebe o pacote em casa, já que é ele quem paga o salário base garantido pelo aplicativo no final do mês."
+                ],
+                correta: 0
+            },
+            {
+                texto: "A teoria da Alienação de Marx mostra que o trabalhador vira uma peça do sistema. Quando o aplicativo não sabe o nome do Carlos, apenas o GPS do celular dele, concluímos que:",
+                opcoes: [
+                    "O ser humano, nesse cenário de trabalho plataformizado, virou apenas um acessório substituível do aplicativo de entregas.",
+                    "A tecnologia avançou a ponto de proteger completamente a privacidade do trabalhador, mantendo-o anônimo e totalmente seguro.",
+                    "O jovem entregador se tornou uma entidade virtual superior, que não sofre mais com os limites do corpo físico humano.",
+                    "O sistema trata todos os motoristas de forma carinhosa, evitando expor os nomes para não gerar concorrência entre eles."
+                ],
+                correta: 0
+            },
+            {
+                texto: "Carlos acha que é livre porque não bate ponto numa firma. Porém, a filosofia marxista diria que essa liberdade é uma ilusão. Por que Carlos, mesmo sem assinar ponto, não tem o controle do seu próprio trabalho?",
+                opcoes: [
+                    "Porque ele não decide quanto vale o pacote, não pode recusar trabalho sem sofrer castigo e não participa dos lucros da empresa.",
+                    "Porque ele ainda precisa abastecer a moto em postos de gasolina, o que o torna dependente do mercado internacional de petróleo.",
+                    "Porque os clientes frequentemente o obrigam a entrar nas residências para montar os produtos que foram comprados no site.",
+                    "Porque a legislação de trânsito o obriga a usar capacete, tirando dele a verdadeira liberdade de escolha no dia a dia."
+                ],
+                correta: 0
+            },
+            {
+                texto: "Marx afirmava que na alienação você perde o controle sobre o que produz. Quando o Carlos trabalha exausto na chuva apenas para não cair no 'castigo' do algoritmo, a sua relação com o trabalho se torna:",
+                opcoes: [
+                    "Uma relação de pura submissão tecnológica, onde ele obedece às máquinas para não perder a única fonte de renda que possui.",
+                    "Uma relação de amizade com a empresa, pois o castigo é apenas uma pausa temporária para que o motoqueiro possa descansar.",
+                    "Um modelo revolucionário de economia, no qual o sofrimento diário é recompensado com ações da bolsa de valores da empresa.",
+                    "Um exemplo de independência juvenil, já que enfrentar a chuva prova que ele não precisa de patrões humanos para vencer."
+                ],
+                correta: 0
+            },
+            {
+                texto: "Resumindo o pensamento de Karl Marx aplicado aos aplicativos modernos, o perigo da narrativa de 'seja o seu próprio patrão' está no fato de que ela:",
+                opcoes: [
+                    "Mascara a exploração, fazendo o entregador achar que domina a situação quando, na verdade, ele é totalmente dominado pelo sistema.",
+                    "Estimula o jovem a abandonar a família para se dedicar exclusivamente à criação de novas empresas de tecnologia na região.",
+                    "Obriga o motorista a comprar veículos cada vez mais caros, enriquecendo as montadoras de motos sem necessidade real.",
+                    "Garante que o trabalhador pague todos os impostos de forma antecipada, prejudicando o crescimento do município em que vive."
+                ],
+                correta: 0
+            },
+
+            // BLOCO 3: BYUNG-CHUL HAN (AUTOEXPLORAÇÃO E CANSAÇO)
+            {
+                texto: "O filósofo sul-coreano Byung-Chul Han criou o conceito de 'Sociedade do Cansaço'. Ele explica que, no passado, a exploração vinha de fora (de um chefe autoritário). Hoje, a exploração mudou porque:",
+                opcoes: [
+                    "Nós somos estimulados pela ideia de que o sucesso 'só depende do nosso esforço', assumindo toda a pressão para nós mesmos.",
+                    "O Estado passou a obrigar todos os cidadãos a cumprirem uma jornada dupla de trabalho para aumentar a arrecadação de impostos.",
+                    "Os aplicativos instalaram câmeras nos capacetes para monitorar e gritar com os entregadores durante todo o trajeto da entrega.",
+                    "Os clientes se tornaram os novos chefes agressivos, obrigando os entregadores a realizarem tarefas domésticas nas residências."
+                ],
+                correta: 0
+            },
+            {
+                texto: "De acordo com Han, quando o Carlos não atinge a meta de entregas da semana porque pegou muita estrada de chão com barro, qual é a reação psicológica que o sistema provoca nele?",
+                opcoes: [
+                    "Ele não culpa o aplicativo ou o clima, ele culpa a si mesmo por não ter sido rápido o suficiente para superar os obstáculos.",
+                    "Ele processa judicialmente o aplicativo, exigindo que a plataforma pague pelos danos morais sofridos durante a semana ruim.",
+                    "Ele decide convocar uma greve com os outros entregadores, paralisando todas as atividades comerciais da sua cidade.",
+                    "Ele se sente aliviado e satisfeito, pois entende que a falha faz parte do processo de aprendizado de um grande empresário."
+                ],
+                correta: 0
+            },
+            {
+                texto: "Na explicação da aula, foi dito que na atualidade 'o indivíduo virou o seu próprio carrasco'. Essa frase define o conceito de Autoexploração, que significa que:",
+                opcoes: [
+                    "O trabalhador cobra de si mesmo um desempenho absurdo e infinito, chicoteando a própria mente até atingir o esgotamento total.",
+                    "O entregador precisa comprar as próprias ferramentas de punição física caso não consiga entregar os pacotes no prazo estipulado.",
+                    "O jovem se liberta de todas as regras da sociedade, escolhendo viver nas ruas sem precisar prestar contas a nenhuma autoridade.",
+                    "A empresa contrata psicólogos para convencer os funcionários de que eles são as piores pessoas do mundo quando erram."
+                ],
+                correta: 0
+            },
+            {
+                texto: "Byung-Chul Han avisa que essa dinâmica do 'só depende do seu esforço' tem um preço alto. Se o Carlos rodar 14 horas por dia achando que só precisa tentar mais duro, o resultado final será:",
+                opcoes: [
+                    "O desenvolvimento de um cansaço crônico que adoece a mente, como a depressão e a síndrome de burnout, por falhar nas metas.",
+                    "A conquista do cargo de diretor regional da empresa de entregas antes de completar os vinte anos de idade cronológica.",
+                    "O aumento imediato da imunidade do corpo, já que o ar livre e o trânsito da cidade funcionam como um poderoso remédio natural.",
+                    "A compreensão de que a filosofia não serve para nada na vida prática, focando apenas no acúmulo infinito de dinheiro no banco."
+                ],
+                correta: 0
+            },
+            {
+                texto: "A diferença entre a exploração na fábrica (época de Marx) e a autoexploração nos aplicativos (época de Han) é que, no caso de Carlos:",
+                opcoes: [
+                    "A vigilância é invisível e a culpa pelo fracasso é internalizada, tornando a prisão mental muito mais difícil de ser quebrada.",
+                    "As máquinas pesadas foram substituídas por motocicletas lentas, reduzindo consideravelmente os riscos de acidentes de trabalho.",
+                    "Os salários se tornaram fixos e garantidos por lei, eliminando a angústia de não saber se haverá comida na mesa no dia seguinte.",
+                    "A figura do capataz foi substituída por robôs que oferecem conselhos emocionais toda vez que o entregador fica cansado."
+                ],
+                correta: 0
+            },
+            {
+                texto: "Quando o Carlos acredita 100% que é dono do próprio tempo, mas na verdade tem medo de ser punido pelo algoritmo, a teoria de Han nos diz que ele vive em uma:",
+                opcoes: [
+                    "Ilusão de liberdade, pois o sistema de metas invisíveis e recompensas instáveis atua de forma muito mais coercitiva que um chefe real.",
+                    "Fase passageira de adaptação, que terminará assim que o jovem conseguir memorizar o mapa completo de todas as ruas da cidade.",
+                    "Situação de extrema vantagem competitiva frente aos comerciantes locais que ainda dependem do fluxo de pedestres nas ruas.",
+                    "Sociedade puramente baseada na meritocracia justa, onde os entregadores mais rápidos se tornam milionários rapidamente."
+                ],
+                correta: 0
+            },
+
+            // BLOCO 4: DOMENICO DE MASI (ÓCIO CRIATIVO)
+            {
+                texto: "O sociólogo Domenico De Masi explica a origem da palavra 'negócio'. Na etimologia explicada em sala de aula, a palavra negócio significa literalmente:",
+                opcoes: [
+                    "A negação do ócio, ou seja, o momento em que o indivíduo é privado de seu tempo de não-trabalhar.",
+                    "A oportunidade de enriquecer rapidamente através de parcerias e vendas de pacotes em plataformas digitais modernas.",
+                    "O espaço sagrado reservado para as meditações religiosas e os rituais de descanso praticados ao final do dia.",
+                    "A negociação justa entre um trabalhador e o seu patrão humano para garantir os direitos previstos na lei."
+                ],
+                correta: 0
+            },
+            {
+                texto: "Segundo a aula, na filosofia, o ócio não é sinônimo de preguiça. Pelo contrário, historicamente, o ócio é considerado o tempo mais nobre da nossa vida porque é o momento de:",
+                opcoes: [
+                    "Contemplar, conviver com a família, pensar criticamente e se desenvolver como ser humano pleno e inovador.",
+                    "Assistir a propagandas na televisão para aprender a comprar produtos mais baratos nas plataformas virtuais de comércio.",
+                    "Fazer manutenções nas ferramentas de trabalho, como consertar o pneu da moto, para rodar melhor no dia seguinte.",
+                    "Dormir profundamente após 14 horas de esforço físico contínuo para evitar qualquer tipo de pensamento político."
+                ],
+                correta: 0
+            },
+            {
+                texto: "Domenico De Masi defende o 'Ócio Criativo'. Ele alerta que, se um jovem como o Carlos não tiver tempo livre na sua semana, ele:",
+                opcoes: [
+                    "Não terá o espaço necessário na mente para criar, inovar ou sequer planejar um futuro diferente para a própria vida.",
+                    "Passará a faturar milhões de reais em poucos meses, provando que o descanso é apenas um obstáculo para os vencedores.",
+                    "Será automaticamente convidado pelo algoritmo para trabalhar em cargos de chefia no escritório central do aplicativo.",
+                    "Desenvolverá uma grande aversão às redes sociais, abandonando completamente o uso de tecnologias em sua rotina."
+                ],
+                correta: 0
+            },
+            {
+                texto: "Carlos chega meia-noite, come algo rápido e desaba no sofá. O professor destacou que esse 'desmaio de exaustão' não pode ser considerado ócio criativo. Por que o sono do Carlos não é ócio?",
+                opcoes: [
+                    "Porque não é um tempo livre e consciente para pensar; é apenas uma manutenção biológica de sobrevivência para manter o corpo em pé.",
+                    "Porque o ócio só pode ser praticado durante o dia, sob a luz do sol, em parques ou praças públicas da cidade em que reside.",
+                    "Porque o jovem esqueceu de desligar o celular antes de dormir, o que impede que o cérebro entre em estado de relaxamento profundo.",
+                    "Porque o verdadeiro ócio exige que o indivíduo pague aulas caras de yoga e meditação em estúdios especializados no centro da cidade."
+                ],
+                correta: 0
+            },
+            {
+                texto: "Ao defender o ócio criativo na aula de filosofia, o objetivo é proteger a nossa saúde mental contra uma ideia muito perigosa espalhada pela sociedade atual. Que ideia é essa?",
+                opcoes: [
+                    "A ideia de que a gente só tem valor enquanto está trabalhando, carregando pacotes e sendo produtivo para dar lucro a alguém.",
+                    "A ideia de que todos os jovens precisam obrigatoriamente cursar uma faculdade de engenharia mecânica para consertar motocicletas.",
+                    "A ideia de que o governo deve proibir completamente os aplicativos de entrega para obrigar os jovens a trabalharem em escritórios.",
+                    "A ideia de que o descanso prolongado causa mutações no corpo humano, transformando os trabalhadores em seres preguiçosos."
+                ],
+                correta: 0
+            },
+            {
+                texto: "Reunindo Marx, Han e De Masi: Se Carlos entender que o algoritmo o aliena, que ele próprio atua como seu carrasco (autoexploração) e que ele tem direito ao ócio para pensar, o que ele ganha?",
+                opcoes: [
+                    "Ele ganha consciência crítica sobre a sua realidade, percebendo que o esgotamento não é culpa dele, mas de um sistema precarizado.",
+                    "Ele ganha imediatamente um aumento salarial pago pela Shopee, pois a empresa valoriza entregadores que estudam filosofia.",
+                    "Ele perde o medo de pilotar na chuva, pois a leitura das teorias filosóficas cria um escudo mental que previne acidentes de trânsito.",
+                    "Ele se convence de que o trabalho não serve para nada e decide se isolar na floresta, abrindo mão de todo e qualquer bem material."
+                ],
+                correta: 0
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedOption = -1;
+        let readingTimerActive = true;
+        let currentOptionsOrder = [];
+        let timeInicio; 
+        
+        const READING_TIME_MS = 15000;
+
+        function shuffleOptions() {
+            let indices = [0, 1, 2, 3];
+            for (let i = indices.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [indices[i], indices[j]] = [indices[j], indices[i]];
+            }
+            return indices;
+        }
+
+        function startQuiz() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            timeInicio = new Date(); // Registra o início do Quiz
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            selectedOption = -1;
+            readingTimerActive = true;
+            document.getElementById('next-btn').classList.add('hidden');
+            
+            const q = questoes[currentQuestion];
+            document.getElementById('question-counter').innerText = `Questão ${currentQuestion + 1} de ${questoes.length}`;
+            document.getElementById('question-text').innerText = q.texto;
+
+            currentOptionsOrder = shuffleOptions();
+            
+            const optionsGrid = document.getElementById('options-grid');
+            optionsGrid.innerHTML = '';
+            
+            const letras = ['A', 'B', 'C', 'D'];
+            
+            currentOptionsOrder.forEach((originalIndex, displayIndex) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.disabled = true; 
+                btn.innerHTML = `<strong>${letras[displayIndex]})</strong> ${q.opcoes[originalIndex]}`;
+                btn.onclick = () => selectOption(originalIndex, btn);
+                optionsGrid.appendChild(btn);
+            });
+
+            startAntiCheatTimer();
+        }
+
+        function startAntiCheatTimer() {
+            const timerBar = document.getElementById('timer-bar');
+            const timerText = document.getElementById('timer-text');
+            const options = document.querySelectorAll('.option-btn');
+            
+            timerText.innerText = "Tempo obrigatório de leitura (15s)... O Selo de Validade exige esta etapa.";
+            timerBar.style.transition = 'none';
+            timerBar.style.width = '100%';
+            
+            void timerBar.offsetWidth; 
+            
+            timerBar.style.transition = `width ${READING_TIME_MS / 1000}s linear`;
+            timerBar.style.width = '0%';
+
+            setTimeout(() => {
+                readingTimerActive = false;
+                timerText.innerText = "Alternativas liberadas. Selecione sua resposta.";
+                options.forEach(opt => opt.disabled = false);
+            }, READING_TIME_MS);
+        }
+
+        function selectOption(originalIndex, btnElement) {
+            if (readingTimerActive) return;
+
+            selectedOption = originalIndex;
+            
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            btnElement.classList.add('selected');
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            if (selectedOption === -1) return;
+
+            if (selectedOption === questoes[currentQuestion].correta) {
+                score++;
+                document.getElementById('score-display').innerText = `Acertos: ${score}`;
+            }
+
+            currentQuestion++;
+
+            if (currentQuestion < questoes.length) {
+                loadQuestion();
+            } else {
+                showModalFinal();
+            }
+        }
+
+        function formatTime(ms) {
+            const totalSegundos = Math.floor(ms / 1000);
+            const minutos = Math.floor(totalSegundos / 60);
+            const segundos = totalSegundos % 60;
+            return `${minutos}m ${segundos.toString().padStart(2, '0')}s`;
+        }
+
+        function showModalFinal() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            
+            // Calcula métricas
+            const timeFim = new Date();
+            const duracaoMs = timeFim - timeInicio;
+            const tempoFormatado = formatTime(duracaoMs);
+            const porcentagem = Math.round((score / questoes.length) * 100);
+
+            // Preenche os dados no modal
+            document.getElementById('modal-score-count').innerText = `${score}/${questoes.length}`;
+            document.getElementById('modal-percentage').innerText = `${porcentagem}%`;
+            document.getElementById('modal-time').innerText = tempoFormatado;
+
+            // Exibe o Pop-up de sobreposição
+            document.getElementById('result-modal').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
