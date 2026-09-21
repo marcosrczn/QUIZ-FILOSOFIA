@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz de Projeto de Vida: Empatia e Convivência</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #E21B3C;
+      --red-dark: #b8142e;
+      --blue: #1368CE;
+      --blue-dark: #0f52a5;
+      --yellow: #D89E00;
+      --yellow-dark: #b28200;
+      --green: #26890C;
+      --green-dark: #1d6e09;
+      --bg-dark: #381273;
+      --bg-gradient: linear-gradient(135deg, #46178F 0%, #18033d 100%);
+      --card-bg: #ffffff;
+      --text-main: #222222;
+      --text-light: #ffffff;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow-x: hidden;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1050px;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      position: relative;
+    }
+
+    .top-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .brand-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 1.35rem;
+      color: #ffd200;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ctrl-btns {
+      display: flex;
+      gap: 10px;
+    }
+
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 8px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 700;
+      transition: all 0.2s;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    /* TELA INICIAL */
+    #start-screen {
+      text-align: center;
+      padding: 30px 16px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: #ffd200;
+      color: #381273;
+      padding: 6px 18px;
+      border-radius: 30px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+    }
+
+    .anti-rush-badge {
+      display: inline-block;
+      background: rgba(0, 230, 118, 0.2);
+      color: #00e676;
+      border: 1px solid #00e676;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    h1.hero-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 2.3rem;
+      line-height: 1.25;
+      margin-bottom: 16px;
+      color: #ffffff;
+      text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    p.hero-desc {
+      font-size: 1.05rem;
+      max-width: 760px;
+      margin: 0 auto 24px auto;
+      line-height: 1.6;
+      color: #e0d5f8;
+    }
+
+    .rules-card {
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 14px;
+      padding: 16px 20px;
+      max-width: 650px;
+      margin: 0 auto 24px auto;
+      text-align: left;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      border-left: 4px solid #ffd200;
+    }
+
+    .rules-card h4 {
+      color: #ffd200;
+      margin-bottom: 6px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .input-box {
+      margin: 0 auto 20px auto;
+      max-width: 420px;
+    }
+
+    .input-box label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .input-box input {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 12px;
+      border: 2px solid #ffd200;
+      font-size: 1.1rem;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      background: #ffffff;
+      color: #222;
+    }
+
+    .start-btn {
+      background: #ffd200;
+      color: #2b0c5e;
+      border: none;
+      padding: 18px 48px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 900;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #b39200, 0 10px 20px rgba(0, 0, 0, 0.3);
+      transition: all 0.15s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .start-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 9px 0 #b39200, 0 14px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    /* TELA DO QUIZ */
+    #quiz-screen {
+      display: none;
+    }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .q-badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .q-topic {
+      background: rgba(255, 210, 0, 0.25);
+      color: #ffd200;
+      border: 1px solid #ffd200;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .stats-box {
+      display: flex;
+      gap: 16px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+    }
+
+    .score-display {
+      color: #ffd200;
+      font-size: 1.1rem;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #ffd200;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .reading-lock-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 8px 16px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #ffd200;
+    }
+
+    .reading-lock-bar.unlocked {
+      background: rgba(0, 230, 118, 0.2);
+      color: #00e676;
+    }
+
+    .question-card {
+      background: #ffffff;
+      color: #222222;
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      line-height: 1.65;
+      font-size: 1.1rem;
+      border-left: 8px solid #ffd200;
+    }
+
+    .question-text {
+      white-space: pre-line;
+      font-weight: 600;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+      h1.hero-title {
+        font-size: 1.7rem;
+      }
+      .question-card {
+        padding: 16px 18px;
+        font-size: 1rem;
+      }
+    }
+
+    .option-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 18px 20px;
+      color: white;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 700;
+      line-height: 1.45;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+      transition: all 0.2s ease;
+      box-shadow: 0 5px 0 rgba(0, 0, 0, 0.3);
+      user-select: none;
+      position: relative;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+      box-shadow: 0 8px 0 rgba(0, 0, 0, 0.35);
+    }
+
+    .option-btn:active:not(:disabled) {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .option-btn:disabled {
+      cursor: not-allowed;
+      filter: grayscale(0.5) opacity(0.65);
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .option-btn.opt-A { background: var(--red); box-shadow: 0 5px 0 var(--red-dark); }
+    .option-btn.opt-B { background: var(--blue); box-shadow: 0 5px 0 var(--blue-dark); }
+    .option-btn.opt-C { background: var(--yellow); box-shadow: 0 5px 0 var(--yellow-dark); }
+    .option-btn.opt-D { background: var(--green); box-shadow: 0 5px 0 var(--green-dark); }
+
+    .opt-icon {
+      font-size: 1.5rem;
+      font-weight: 900;
+      min-width: 40px;
+      height: 40px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .opt-text {
+      flex-grow: 1;
+    }
+
+    /* PAUSA DE FOCO (RADICAL ANTI-RUSH) */
+    #rush-alert-screen {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+      background: rgba(226, 27, 60, 0.95);
+      border-radius: 20px;
+      color: white;
+      margin: 20px 0;
+      animation: popIn 0.3s ease;
+    }
+
+    .rush-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .rush-desc {
+      font-size: 1.15rem;
+      max-width: 650px;
+      margin: 0 auto 20px auto;
+      line-height: 1.6;
+    }
+
+    .rush-countdown {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: #ffd200;
+      margin-bottom: 12px;
+    }
+
+    /* FEEDBACK IMEDIATO COM TRAVA NO ERRO */
+    #feedback-screen {
+      display: none;
+      text-align: center;
+      padding: 24px 16px;
+    }
+
+    .feedback-banner {
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      animation: popIn 0.25s ease;
+    }
+
+    .feedback-banner.correct { background: #26890c; color: #ffffff; }
+    .feedback-banner.incorrect { background: #e21b3c; color: #ffffff; }
+
+    .feedback-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .feedback-explanation {
+      background: #ffffff;
+      color: #222222;
+      border-radius: 14px;
+      padding: 22px;
+      font-size: 1.1rem;
+      line-height: 1.65;
+      text-align: left;
+      margin-bottom: 24px;
+      border-left: 6px solid #381273;
+    }
+
+    .feedback-explanation strong {
+      color: #381273;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .lock-timer-msg {
+      margin-bottom: 16px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: #ffd200;
+    }
+
+    .next-btn {
+      background: #ffd200;
+      color: #2b0c5e;
+      border: none;
+      padding: 16px 44px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 900;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #b39200;
+      transition: all 0.15s;
+    }
+
+    .next-btn:disabled {
+      background: #888888;
+      color: #dddddd;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    /* RESULTADO FINAL & COMPROVANTE PEDAGÓGICO */
+    #final-screen {
+      display: none;
+      text-align: center;
+      padding: 24px 16px;
+    }
+
+    .podium-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 2.4rem;
+      color: #ffd200;
+      margin-bottom: 10px;
+    }
+
+    .user-greeting {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    .visto-card {
+      background: #ffffff;
+      color: #222222;
+      border-radius: 18px;
+      padding: 24px;
+      max-width: 580px;
+      margin: 0 auto 24px auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      text-align: left;
+    }
+
+    .visto-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px dashed #ccc;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .visto-header h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 1.15rem;
+      color: #381273;
+    }
+
+    .visto-badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 900;
+      font-size: 0.85rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .visto-badge.aprovado { background: #e8f5e9; color: #2e7d32; border: 1px solid #2e7d32; }
+    .visto-badge.recusado { background: #ffebee; color: #c62828; border: 1px solid #c62828; }
+
+    .visto-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 0.98rem;
+    }
+
+    .visto-row span.label { color: #666; font-weight: 600; }
+    .visto-row span.val { font-weight: 800; color: #222; font-family: 'Montserrat', sans-serif; }
+
+    .visto-code {
+      margin-top: 14px;
+      background: #f4f0fa;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      font-family: monospace;
+      font-weight: 900;
+      font-size: 1.1rem;
+      color: #46178f;
+      letter-spacing: 2px;
+      border: 1px solid #d4c5eb;
+    }
+
+    .final-actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .action-btn {
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-restart { background: #ffd200; color: #2b0c5e; box-shadow: 0 4px 0 #b39200; }
+    .btn-review { background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255, 255, 255, 0.4); }
+
+    #review-container {
+      display: none;
+      text-align: left;
+      margin-top: 24px;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 16px;
+      padding: 20px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .review-item {
+      background: #ffffff;
+      color: #222;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      border-left: 6px solid #26890c;
+    }
+
+    .review-item.was-wrong { border-left-color: #e21b3c; }
+    .review-header {
+      font-weight: 800;
+      font-family: 'Montserrat', sans-serif;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .review-text { font-size: 0.95rem; margin-bottom: 10px; white-space: pre-line; }
+    .review-answer { font-size: 0.9rem; background: #f1f3f5; padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; }
+    .review-exp { font-size: 0.85rem; color: #555; font-style: italic; }
+
+    @keyframes popIn {
+      0% { transform: scale(0.9); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <div class="top-controls">
+      <div class="brand-title">
+        <span>⚡ ÁGORA DIGITAL • PROJETO DE VIDA</span>
+      </div>
+      <div class="ctrl-btns">
+        <button id="sound-btn" class="icon-btn" onclick="toggleSound()">🔊 Som: ON</button>
+        <button class="icon-btn" onclick="toggleFullscreen()">⛶ Tela Cheia</button>
+      </div>
+    </div>
+
+    <!-- TELA 1: INÍCIO -->
+    <div id="start-screen">
+      <div class="hero-badge">8º Ano EF • Projeto de Vida</div><br>
+      <div class="anti-rush-badge">🛡️ SISTEMA DE LEITURA CONSCIENTE ATIVADO</div>
+      <h1 class="hero-title">Quiz de Projeto de Vida:<br>Empatia e Convivência</h1>
+      
+      <p class="hero-desc">
+        Desafio de 40 questões práticas baseadas no filme "Extraordinário" e na nossa aula sobre convivência escolar. Leia com calma e teste seu conhecimento!
+      </p>
+
+      <div class="rules-card">
+        <h4>📋 Como Funciona a Atividade:</h4>
+        • <strong>Tempo de Leitura:</strong> Cada questão precisa de 4 segundos de leitura antes de liberar os botões.<br>
+        • <strong>Se Errar, Leia a Dica:</strong> Se errar, a explicação didática ficará na tela por 8 segundos antes de você poder avançar.<br>
+        • <strong>Anti-Chute:</strong> Respostas seguidas em menos de 5 segundos travam a tela por 15 segundos para você respirar e ler com foco.<br>
+        • <strong>Visto do Professor:</strong> Para receber o visto de aprovado, você precisa de pelo menos 60% de acertos e ter feito uma leitura consciente.
+      </div>
+
+      <div class="input-box">
+        <label for="player-name">Seu Nome Completo ou Dupla:</label>
+        <input type="text" id="player-name" placeholder="Digite seu nome completo aqui..." value="">
+      </div>
+
+      <button class="start-btn" onclick="startQuiz()">Iniciar Desafio</button>
+    </div>
+
+    <!-- PAUSA PARA O FOCO -->
+    <div id="rush-alert-screen">
+      <div class="rush-title">⚠️ PAUSA PARA O FOCO!</div>
+      <div class="rush-desc">
+        Você está clicando rápido demais e sem ler as perguntas. O objetivo deste desafio é exercitar a empatia e refletir. Respire fundo e aguarde a liberação:
+      </div>
+      <div class="rush-countdown" id="rush-countdown-val">15</div>
+      <p style="font-size: 0.9rem; color: #ffd200;">A questão voltará automaticamente assim que o tempo zerar.</p>
+    </div>
+
+    <!-- TELA 2: QUIZ EM ANDAMENTO -->
+    <div id="quiz-screen">
+      <div class="quiz-header">
+        <div class="q-badge" id="q-counter">Questão 1 de 40</div>
+        <div class="q-topic" id="q-topic">Tópico</div>
+        <div class="stats-box">
+          <div class="score-display">Pontos: <span id="score-val">0</span></div>
+        </div>
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+
+      <div class="reading-lock-bar" id="reading-lock-bar">
+        <span>📖 Leia a pergunta com atenção: botões liberados em <strong id="reading-countdown">4</strong>s...</span>
+      </div>
+
+      <div class="question-card">
+        <div class="question-text" id="question-text">Texto da questão</div>
+      </div>
+
+      <div class="options-grid" id="options-grid">
+        <button class="option-btn opt-A" id="btn-opt-A" onclick="handleAnswer('A')" disabled>
+          <div class="opt-icon">▲</div>
+          <div class="opt-text" id="opt-A-text">Alternativa A</div>
+        </button>
+        <button class="option-btn opt-B" id="btn-opt-B" onclick="handleAnswer('B')" disabled>
+          <div class="opt-icon">◆</div>
+          <div class="opt-text" id="opt-B-text">Alternativa B</div>
+        </button>
+        <button class="option-btn opt-C" id="btn-opt-C" onclick="handleAnswer('C')" disabled>
+          <div class="opt-icon">●</div>
+          <div class="opt-text" id="opt-C-text">Alternativa C</div>
+        </button>
+        <button class="option-btn opt-D" id="btn-opt-D" onclick="handleAnswer('D')" disabled>
+          <div class="opt-icon">■</div>
+          <div class="opt-text" id="opt-D-text">Alternativa D</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- TELA 3: FEEDBACK IMEDIATO -->
+    <div id="feedback-screen">
+      <div class="feedback-banner" id="feedback-banner">
+        <div class="feedback-title" id="feedback-title">Resposta Correta!</div>
+        <div id="feedback-subtitle">+1000 pontos</div>
+      </div>
+
+      <div class="feedback-explanation">
+        <strong>Explicação para Aprender:</strong><br>
+        <span id="feedback-exp-text">Texto explicativo</span>
+      </div>
+
+      <div class="lock-timer-msg" id="lock-timer-msg"></div>
+      <button class="next-btn" id="next-btn" onclick="nextQuestion()">Avançar ➔</button>
+    </div>
+
+    <!-- TELA 4: RESULTADO FINAL & COMPROVANTE PEDAGÓGICO -->
+    <div id="final-screen">
+      <div class="podium-title">🎓 Desafio Concluído!</div>
+      <div class="user-greeting" id="final-user-greeting">Estudante</div>
+
+      <div class="visto-card">
+        <div class="visto-header">
+          <h3>COMPROVANTE DO VISTO PEDAGÓGICO</h3>
+          <div class="visto-badge" id="visto-status-badge">EM ANÁLISE</div>
+        </div>
+
+        <div class="visto-row">
+          <span class="label">Estudante:</span>
+          <span class="val" id="visto-nome">Nome</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Acertos:</span>
+          <span class="val" id="visto-acertos">0 / 40 (0%)</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Pontuação:</span>
+          <span class="val" id="visto-pontos">0 pts</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Tempo Total:</span>
+          <span class="val" id="visto-tempo-total">0 min</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Tempo Médio por Pergunta:</span>
+          <span class="val" id="visto-tempo-medio">0s</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Situação da Leitura:</span>
+          <span class="val" id="visto-diagnostico">Adequada</span>
+        </div>
+
+        <div class="visto-code" id="visto-hash">#PV-0000</div>
+      </div>
+
+      <div class="final-actions">
+        <button class="action-btn btn-restart" onclick="restartQuiz()">🔄 Tentar Novamente</button>
+        <button class="action-btn btn-review" onclick="toggleReview()">📋 Ver Gabarito Completo</button>
+      </div>
+
+      <div id="review-container"></div>
+    </div>
+
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        "id": 1,
+        "topic": "Isolamento Emocional",
+        "text": "No início da história, Auggie usa um capacete de astronauta na maior parte do tempo. Do ponto de vista emocional, qual era a principal função desse objeto na vida dele?",
+        "options": [
+          {"letter": "A", "text": "Servia como um acessório de moda para se destacar na turma.", "correct": false},
+          {"letter": "B", "text": "Era uma forma de se esconder e evitar o olhar das pessoas.", "correct": true},
+          {"letter": "C", "text": "Funcionava como uma proteção contra o sol exigida pelos médicos.", "correct": false},
+          {"letter": "D", "text": "Representava uma regra da família para manter a saúde do garoto.", "correct": false}
+        ],
+        "explanation": "O capacete era uma barreira que Auggie usava para se sentir seguro, evitando os olhares curiosos e julgadores das outras pessoas nas ruas."
+      },
+      {
+        "id": 2,
+        "topic": "Marcas e Cicatrizes",
+        "text": "A mãe de Auggie afirma que nosso rosto é um 'mapa' que conta a nossa história. O que essa metáfora nos ensina sobre a forma como devemos encarar nossas marcas?",
+        "options": [
+          {"letter": "A", "text": "Devemos esconder nossas cicatrizes para evitar comentários ruins.", "correct": false},
+          {"letter": "B", "text": "Precisamos mudar nossa aparência para agradar as outras pessoas.", "correct": false},
+          {"letter": "C", "text": "Nossas marcas mostram nossa força e não devem gerar vergonha.", "correct": true},
+          {"letter": "D", "text": "As características físicas são as únicas coisas que importam hoje.", "correct": false}
+        ],
+        "explanation": "Cada cicatriz do Auggie representava uma cirurgia que ele sobreviveu. A mãe dele quis mostrar que nossas marcas são um mapa das nossas batalhas e vitórias."
+      },
+      {
+        "id": 3,
+        "topic": "Preceitos do Sr. Browne",
+        "text": "O professor Sr. Browne apresenta o seguinte preceito: 'Quando tiver que escolher entre estar certo e ser gentil, escolha ser gentil'. Como podemos aplicar isso na escola?",
+        "options": [
+          {"letter": "A", "text": "Evitando expor um colega ao erro apenas para provar nossa razão.", "correct": true},
+          {"letter": "B", "text": "Concordando com todas as opiniões, mesmo as que forem erradas.", "correct": false},
+          {"letter": "C", "text": "Deixando de fazer as atividades para ajudar quem não quer estudar.", "correct": false},
+          {"letter": "D", "text": "Mostrando que sabemos mais que os outros de forma bem educada.", "correct": false}
+        ],
+        "explanation": "Ser gentil significa ter empatia. Às vezes, corrigir alguém de forma bruta na frente de todos apenas para 'provar que você sabe mais' machuca sem necessidade."
+      },
+      {
+        "id": 4,
+        "topic": "Acolhimento Escolar",
+        "text": "A chegada de um novo estudante à escola costuma gerar curiosidade. Qual atitude demonstra um verdadeiro espírito de acolhimento nos primeiros dias de aula?",
+        "options": [
+          {"letter": "A", "text": "Observar de longe para ver como a pessoa se comporta no recreio.", "correct": false},
+          {"letter": "B", "text": "Convidar a pessoa para sentar junto e apresentar os novos colegas.", "correct": true},
+          {"letter": "C", "text": "Esperar que o novato tome a iniciativa de iniciar as conversas.", "correct": false},
+          {"letter": "D", "text": "Fazer perguntas difíceis para testar o conhecimento do estudante.", "correct": false}
+        ],
+        "explanation": "Acolher exige ação! Dar o primeiro passo convidando o novato para a sua roda quebra o gelo e tira a sensação de isolamento que ele deve estar sentindo."
+      },
+      {
+        "id": 5,
+        "topic": "Coragem na Amizade",
+        "text": "No refeitório, Summer decide deixar a mesa de suas amigas para sentar-se com Auggie, que estava sozinho. O que essa atitude demonstra sobre o caráter dela?",
+        "options": [
+          {"letter": "A", "text": "Ela queria chamar a atenção dos professores e ganhar notas altas.", "correct": false},
+          {"letter": "B", "text": "Ela agiu com coragem e empatia ao ignorar a pressão do seu grupo.", "correct": true},
+          {"letter": "C", "text": "Ela estava cansada das amigas e buscava um motivo para brigar.", "correct": false},
+          {"letter": "D", "text": "Ela cumpriu uma ordem direta que foi dada pelo diretor da escola.", "correct": false}
+        ],
+        "explanation": "Summer ignorou a pressão social de 'andar só com os populares' para fazer o que achava ser o certo, demonstrando enorme força de caráter."
+      },
+      {
+        "id": 6,
+        "topic": "O Espectador do Bullying",
+        "text": "Quando Julian e seus amigos provocam Auggie, muitos colegas observam calados. Qual é o papel do 'espectador silencioso' em uma situação de bullying?",
+        "options": [
+          {"letter": "A", "text": "Ele ajuda a resolver o problema ao não se envolver na confusão.", "correct": false},
+          {"letter": "B", "text": "Ele demonstra maturidade ao evitar tomar o lado de uma pessoa.", "correct": false},
+          {"letter": "C", "text": "Ele acaba encorajando o agressor ao não demonstrar reprovação.", "correct": true},
+          {"letter": "D", "text": "Ele protege a vítima ao fingir que a situação não está acontecendo.", "correct": false}
+        ],
+        "explanation": "Quem se cala diante do bullying dá palco para o agressor, que entende o silêncio como aceitação. O espectador também tem o dever de quebrar esse ciclo."
+      },
+      {
+        "id": 7,
+        "topic": "Projeto de Vida",
+        "text": "O Projeto de Vida nos convida a pensar sobre quem queremos ser no futuro. Como o respeito às diferenças na escola ajuda nessa construção pessoal?",
+        "options": [
+          {"letter": "A", "text": "Garante que teremos as mesmas opiniões que todos os nossos amigos.", "correct": false},
+          {"letter": "B", "text": "Desenvolve a habilidade de trabalhar bem com qualquer tipo de pessoa.", "correct": true},
+          {"letter": "C", "text": "Faz com que o estudante seja escolhido como o mais popular da sala.", "correct": false},
+          {"letter": "D", "text": "Permite que a pessoa nunca mais precise enfrentar grandes desafios.", "correct": false}
+        ],
+        "explanation": "Saber conviver e respeitar o 'diferente' é uma das habilidades (competências socioemocionais) mais valiosas não só para a vida pessoal, mas para o mercado de trabalho."
+      },
+      {
+        "id": 8,
+        "topic": "Raízes do Bullying",
+        "text": "O filme mostra que machucar os outros muitas vezes é um reflexo das nossas próprias inseguranças. O que geralmente motiva um agressor a praticar o bullying?",
+        "options": [
+          {"letter": "A", "text": "O desejo de ser reconhecido e a necessidade de se sentir superior.", "correct": true},
+          {"letter": "B", "text": "A vontade genuína de ajudar o colega a corrigir os seus defeitos.", "correct": false},
+          {"letter": "C", "text": "A certeza de que suas atitudes não causarão nenhum dano emocional.", "correct": false},
+          {"letter": "D", "text": "O excesso de empatia e a preocupação constante com a turma toda.", "correct": false}
+        ],
+        "explanation": "Muitas vezes o agressor, como Julian, usa o bullying para esconder seus próprios medos ou para se afirmar como 'líder' ou superior perante o resto do grupo."
+      },
+      {
+        "id": 9,
+        "topic": "Acolher vs. Tolerar",
+        "text": "Tolerar e acolher são verbos com sentidos diferentes. No contexto da convivência escolar, qual alternativa descreve melhor o ato de 'acolher' um colega?",
+        "options": [
+          {"letter": "A", "text": "Suportar a presença da pessoa na mesma sala sem conversar com ela.", "correct": false},
+          {"letter": "B", "text": "Aceitar fazer o trabalho em grupo, mas dividir as partes separadamente.", "correct": false},
+          {"letter": "C", "text": "Tratar com respeito e fazer com que a pessoa se sinta parte do grupo.", "correct": true},
+          {"letter": "D", "text": "Evitar conflitos mantendo uma distância segura durante as atividades.", "correct": false}
+        ],
+        "explanation": "Tolerar é apenas aguentar. Acolher é um movimento ativo de aproximação, respeito e inclusão da pessoa na dinâmica do grupo."
+      },
+      {
+        "id": 10,
+        "topic": "Pressão de Grupo",
+        "text": "Jack Will acaba falando mal de Auggie para ser aceito pelos outros meninos, sem saber que o amigo estava ouvindo. Essa situação ilustra qual problema comum na adolescência?",
+        "options": [
+          {"letter": "A", "text": "A necessidade de falar a verdade, mesmo que machuque as pessoas.", "correct": false},
+          {"letter": "B", "text": "A pressão do grupo fazendo alguém agir contra seus próprios valores.", "correct": true},
+          {"letter": "C", "text": "A facilidade que os jovens têm em expressar seus sentimentos reais.", "correct": false},
+          {"letter": "D", "text": "A obrigação de manter segredos dentro do ambiente da sala de aula.", "correct": false}
+        ],
+        "explanation": "Jack não odiava o Auggie, mas cedeu à 'pressão de grupo' de Julian para parecer legal, traindo seus próprios sentimentos por medo de não se encaixar."
+      },
+      {
+        "id": 11,
+        "topic": "Assumindo Erros",
+        "text": "Depois que Auggie descobre o que Jack falou, ele se isola. Qual é a forma mais madura que Jack poderia usar para tentar consertar o seu erro?",
+        "options": [
+          {"letter": "A", "text": "Fingir que nada aconteceu e esperar que o tempo apague a memória.", "correct": false},
+          {"letter": "B", "text": "Comprar um presente caro para provar que a amizade é verdadeira.", "correct": false},
+          {"letter": "C", "text": "Pedir desculpas sinceras e mudar o comportamento dali em diante.", "correct": true},
+          {"letter": "D", "text": "Colocar a culpa nos outros garotos que estavam conversando com ele.", "correct": false}
+        ],
+        "explanation": "O perdão verdadeiro e a maturidade exigem reconhecer o erro sem tentar transferir a culpa, seguido de uma mudança real na forma de agir."
+      },
+      {
+        "id": 12,
+        "topic": "Cyberbullying",
+        "text": "Em um determinado momento, uma foto da turma é alterada para apagar o rosto de Auggie. Esse tipo de atitude é classificado hoje em dia como:",
+        "options": [
+          {"letter": "A", "text": "Uma brincadeira virtual sem nenhuma intenção de magoar o colega.", "correct": false},
+          {"letter": "B", "text": "Um caso claro de cyberbullying e exclusão dentro do ambiente escolar.", "correct": true},
+          {"letter": "C", "text": "Um erro técnico comum que ocorre na edição de fotografias de turma.", "correct": false},
+          {"letter": "D", "text": "Uma demonstração de criatividade que deve ser ignorada pela escola.", "correct": false}
+        ],
+        "explanation": "Excluir propositalmente a imagem de alguém usando tecnologia ou compartilhar fotos alteradas para ofender é cyberbullying (bullying virtual)."
+      },
+      {
+        "id": 13,
+        "topic": "Prática da Empatia",
+        "text": "A empatia é a capacidade de tentar compreender o sentimento da outra pessoa. Na prática, como podemos exercitar a empatia durante um trabalho em grupo?",
+        "options": [
+          {"letter": "A", "text": "Impondo as nossas próprias ideias para garantir a maior pontuação.", "correct": false},
+          {"letter": "B", "text": "Dividindo as tarefas e ignorando se alguém estiver com dificuldades.", "correct": false},
+          {"letter": "C", "text": "Ouvindo todas as opiniões e respeitando o ritmo de cada estudante.", "correct": true},
+          {"letter": "D", "text": "Realizando todo o trabalho sozinho para que ninguém cometa erros.", "correct": false}
+        ],
+        "explanation": "Empatia em equipe é reconhecer que nem todos aprendem da mesma forma e abrir espaço para ouvir o que os outros têm a contribuir, mesmo que o ritmo seja diferente."
+      },
+      {
+        "id": 14,
+        "topic": "Saúde Emocional",
+        "text": "A irmã de Auggie, Via, muitas vezes esconde seus próprios problemas porque acha que a família já tem preocupações demais. O que o Projeto de Vida diz sobre isso?",
+        "options": [
+          {"letter": "A", "text": "Que é saudável guardar as angústias para evitar preocupar os pais.", "correct": false},
+          {"letter": "B", "text": "Que todos os sentimentos importam e precisam ser comunicados.", "correct": true},
+          {"letter": "C", "text": "Que os adolescentes não enfrentam problemas reais em suas vidas.", "correct": false},
+          {"letter": "D", "text": "Que apenas os problemas físicos devem ser levados a sério hoje.", "correct": false}
+        ],
+        "explanation": "Não existe 'problema menor'. Odiar seus próprios sentimentos porque outra pessoa tem um problema 'mais visível' não é saudável. Todos merecem espaço para desabafar."
+      },
+      {
+        "id": 15,
+        "topic": "Mudança de Visão",
+        "text": "O diretor da escola, Sr. Buzanfa, diz que não podemos mudar o rosto do Auggie, então precisamos mudar a nossa forma de ver. Isso significa que:",
+        "options": [
+          {"letter": "A", "text": "Devemos forçar a pessoa a realizar cirurgias até ficar dentro do padrão.", "correct": false},
+          {"letter": "B", "text": "O problema está na falta de respeito e não na aparência do garoto.", "correct": true},
+          {"letter": "C", "text": "É necessário ignorar as pessoas diferentes para não causar confusão.", "correct": false},
+          {"letter": "D", "text": "A escola deve criar turmas separadas para quem possui diferenças.", "correct": false}
+        ],
+        "explanation": "A sociedade é quem precisa adaptar seu olhar preconceituoso, e não a vítima que deve tentar se encaixar à força em um padrão irreal."
+      },
+      {
+        "id": 16,
+        "topic": "Responsabilidade Digital",
+        "text": "Se um estudante percebe que um colega está sofrendo bullying no grupo de WhatsApp da sala, qual é a atitude mais responsável a ser tomada?",
+        "options": [
+          {"letter": "A", "text": "Rir das piadas para não virar o próximo alvo das ofensas do grupo.", "correct": false},
+          {"letter": "B", "text": "Sair do grupo silenciosamente sem comunicar o fato aos professores.", "correct": false},
+          {"letter": "C", "text": "Tirar prints das mensagens e buscar a ajuda da coordenação escolar.", "correct": true},
+          {"letter": "D", "text": "Responder com agressões para defender a honra do colega ofendido.", "correct": false}
+        ],
+        "explanation": "Agir com agressividade não resolve e gera mais violência. A responsabilidade real exige coletar as provas e entregar para a autoridade escolar resolver."
+      },
+      {
+        "id": 17,
+        "topic": "A Riqueza da Diversidade",
+        "text": "O que torna o ambiente escolar um espaço 'plural' e democrático?",
+        "options": [
+          {"letter": "A", "text": "A presença de regras rígidas que proíbem qualquer tipo de conversa.", "correct": false},
+          {"letter": "B", "text": "A convivência diária entre pessoas com histórias e opiniões diversas.", "correct": true},
+          {"letter": "C", "text": "A exigência de que todos os estudantes utilizem o mesmo uniforme.", "correct": false},
+          {"letter": "D", "text": "A garantia de que todos tenham exatamente os mesmos pensamentos.", "correct": false}
+        ],
+        "explanation": "Uma escola forte e democrática é feita pela mistura de diversas culturas, origens, crenças e personalidades interagindo no mesmo espaço de forma respeitosa."
+      },
+      {
+        "id": 18,
+        "topic": "Microagressões",
+        "text": "Qual das alternativas abaixo apresenta um exemplo de 'microagressão' (uma forma sutil de preconceito) no dia a dia?",
+        "options": [
+          {"letter": "A", "text": "Cumprimentar um colega novo de forma muito entusiasmada e rápida.", "correct": false},
+          {"letter": "B", "text": "Fazer comentários sarcásticos disfarçados de brincadeiras na aula.", "correct": true},
+          {"letter": "C", "text": "Discordar de uma opinião durante um debate da disciplina de história.", "correct": false},
+          {"letter": "D", "text": "Pedir para mudar de lugar porque o ar-condicionado está muito frio.", "correct": false}
+        ],
+        "explanation": "Microagressões são aquelas 'brincadeirinhas' diárias, sarcásticas e preconceituosas que machucam o alvo repetidas vezes sob o disfarce de 'era só piada'."
+      },
+      {
+        "id": 19,
+        "topic": "Paciência e Acolhimento",
+        "text": "Durante uma aula, um estudante tem dificuldade de ler em voz alta e gagueja. A atitude que melhor demonstra respeito e acolhimento da turma é:",
+        "options": [
+          {"letter": "A", "text": "Completar as frases por ele para que a leitura acabe mais depressa.", "correct": false},
+          {"letter": "B", "text": "Aguardar em silêncio e manter a atenção, respeitando o tempo dele.", "correct": true},
+          {"letter": "C", "text": "Rir de forma disfarçada e olhar para os amigos que estão sentados.", "correct": false},
+          {"letter": "D", "text": "Pedir ao professor que passe a leitura para outro colega da mesma fila.", "correct": false}
+        ],
+        "explanation": "Paciência é a principal ferramenta da inclusão. Cortar a pessoa ou completar a frase por ela só aumenta a ansiedade; o correto é aguardar com respeito."
+      },
+      {
+        "id": 20,
+        "topic": "Gestão de Conflitos",
+        "text": "Jack Will briga fisicamente com Julian para defender Auggie. Apesar da boa intenção, por que o uso da violência não é a melhor solução para resolver conflitos?",
+        "options": [
+          {"letter": "A", "text": "Porque a violência gera punições e não ensina o agressor a respeitar.", "correct": true},
+          {"letter": "B", "text": "Porque ele poderia ter se machucado e ficado de fora das atividades.", "correct": false},
+          {"letter": "C", "text": "Porque a escola exige que os problemas sejam resolvidos pelos pais.", "correct": false},
+          {"letter": "D", "text": "Porque ele não tinha força suficiente para vencer o combate no pátio.", "correct": false}
+        ],
+        "explanation": "Embora a raiva seja compreensível, bater no agressor não elimina o preconceito dele. A violência apenas rebaixa o nível da resposta e tira a razão de quem defende."
+      },
+      {
+        "id": 21,
+        "topic": "Competências do Futuro",
+        "text": "Ao planejar nosso Projeto de Vida, por que é fundamental desenvolver as chamadas 'competências socioemocionais', como a empatia e a paciência?",
+        "options": [
+          {"letter": "A", "text": "Porque elas garantem aprovação automática em todas as disciplinas.", "correct": false},
+          {"letter": "B", "text": "Porque elas são essenciais para manter relações saudáveis no futuro.", "correct": true},
+          {"letter": "C", "text": "Porque elas substituem a necessidade de estudar os conteúdos exatos.", "correct": false},
+          {"letter": "D", "text": "Porque os profissionais modernos não precisam lidar com outras pessoas.", "correct": false}
+        ],
+        "explanation": "O mercado e a vida adulta exigem que você saiba trabalhar em equipe e lidar com frustrações. Sem empatia, até o profissional mais inteligente falha."
+      },
+      {
+        "id": 22,
+        "topic": "Julgamentos Precipitados",
+        "text": "'Não julgue um livro pela capa' é uma frase famosa. Como ela se aplica à história de Auggie Pullman no ambiente escolar?",
+        "options": [
+          {"letter": "A", "text": "Mostra que Auggie era um excelente leitor durante as aulas de inglês.", "correct": false},
+          {"letter": "B", "text": "Mostra que a inteligência e o humor dele iam muito além de seu rosto.", "correct": true},
+          {"letter": "C", "text": "Indica que os estudantes deveriam focar apenas nas notas das provas.", "correct": false},
+          {"letter": "D", "text": "Indica que a aparência externa sempre revela o verdadeiro caráter.", "correct": false}
+        ],
+        "explanation": "Muitos que julgaram Auggie só por sua aparência facial descobriram depois que ele era extremamente inteligente, engraçado e corajoso."
+      },
+      {
+        "id": 23,
+        "topic": "Barreiras da Inclusão",
+        "text": "Quando falamos em 'inclusão', não estamos falando apenas de barreiras físicas (como rampas ou elevadores), mas também de barreiras:",
+        "options": [
+          {"letter": "A", "text": "Econômicas, que impedem o consumo de produtos caros na cantina.", "correct": false},
+          {"letter": "B", "text": "Geográficas, que se referem à distância entre a casa e a escola.", "correct": false},
+          {"letter": "C", "text": "Atitudinais, que envolvem o fim do preconceito e da discriminação.", "correct": true},
+          {"letter": "D", "text": "Tecnológicas, que proíbem o uso de aparelhos de telefone na sala.", "correct": false}
+        ],
+        "explanation": "A pior barreira para a inclusão não é a escada sem rampa, mas a 'barreira atitudinal', ou seja, o preconceito invisível e as atitudes rudes das outras pessoas."
+      },
+      {
+        "id": 24,
+        "topic": "Pressão Estética",
+        "text": "Um colega de turma sempre usa roupas que estão fora da moda atual e por isso sofre piadas. A atitude alinhada com os valores do Projeto de Vida é:",
+        "options": [
+          {"letter": "A", "text": "Avisar ao colega que ele precisa mudar o guarda-roupa urgente.", "correct": false},
+          {"letter": "B", "text": "Rir das piadas para não causar mal-estar com os líderes da turma.", "correct": false},
+          {"letter": "C", "text": "Entender que o valor de uma pessoa não é definido por suas roupas.", "correct": true},
+          {"letter": "D", "text": "Sugerir que a escola obrigue todo mundo a comprar roupas novas.", "correct": false}
+        ],
+        "explanation": "Marcas e estética não definem caráter. Uma turma madura reconhece o valor da amizade ao invés de se focar no poder de consumo dos colegas."
+      },
+      {
+        "id": 25,
+        "topic": "Protagonismo Jovem",
+        "text": "O que significa, na prática, assumir uma postura de 'protagonismo' diante de uma injustiça na escola?",
+        "options": [
+          {"letter": "A", "text": "Ficar aguardando que um professor perceba e resolva a situação.", "correct": false},
+          {"letter": "B", "text": "Gravar a situação com o celular para postar nas redes sociais.", "correct": false},
+          {"letter": "C", "text": "Agir de forma positiva e segura para frear a atitude desrespeitosa.", "correct": true},
+          {"letter": "D", "text": "Ignorar completamente o problema para não se atrasar para o recreio.", "correct": false}
+        ],
+        "explanation": "Ser protagonista é não ficar passivo aguardando que outro adulto resolva; é ter atitude para questionar a injustiça, apoiar o colega e procurar os meios corretos de solucionar."
+      },
+      {
+        "id": 26,
+        "topic": "O Verdadeiro Heroísmo",
+        "text": "No final do filme, Auggie recebe uma medalha por sua grandeza. Essa cena nos mostra que o verdadeiro heroísmo no dia a dia consiste em:",
+        "options": [
+          {"letter": "A", "text": "Vencer todas as competições esportivas organizadas durante o ano.", "correct": false},
+          {"letter": "B", "text": "Enfrentar os próprios medos e impactar positivamente as pessoas.", "correct": true},
+          {"letter": "C", "text": "Tirar as maiores notas da turma em absolutamente todas as matérias.", "correct": false},
+          {"letter": "D", "text": "Nunca precisar da ajuda de nenhum amigo para resolver as tarefas.", "correct": false}
+        ],
+        "explanation": "Ele não ganhou a medalha por ser o melhor em esportes ou provas, mas pela imensa bravura de enfrentar seus medos de frente e transformar o coração da escola."
+      },
+      {
+        "id": 27,
+        "topic": "Brincadeira vs. Ofensa",
+        "text": "Muitas vezes, dizemos 'foi só uma brincadeira' após ofender alguém. Como saber o limite entre uma brincadeira saudável e o bullying?",
+        "options": [
+          {"letter": "A", "text": "O bullying ocorre apenas quando há agressões físicas ou empurrões.", "correct": false},
+          {"letter": "B", "text": "A brincadeira deixa de ser saudável quando machuca e o outro não ri.", "correct": true},
+          {"letter": "C", "text": "A brincadeira é aceitável se a maioria da turma estiver dando risada.", "correct": false},
+          {"letter": "D", "text": "O limite é definido apenas se o professor estiver presente no momento.", "correct": false}
+        ],
+        "explanation": "A regra de ouro: se a 'brincadeira' não tem graça para o alvo ou causa constrangimento, ela deixou de ser piada e passou a ser ofensa (bullying)."
+      },
+      {
+        "id": 28,
+        "topic": "Apoio Familiar",
+        "text": "O que a atitude da mãe de Auggie (focada em incentivar o filho a frequentar a escola regular) nos ensina sobre a superação de desafios?",
+        "options": [
+          {"letter": "A", "text": "Que é mais fácil esconder-se do mundo para não sofrer frustrações.", "correct": false},
+          {"letter": "B", "text": "Que enfrentar os medos é necessário para o crescimento pessoal.", "correct": true},
+          {"letter": "C", "text": "Que os pais sempre tomam decisões baseadas no medo do futuro.", "correct": false},
+          {"letter": "D", "text": "Que a educação em casa é a única alternativa para evitar problemas.", "correct": false}
+        ],
+        "explanation": "A mãe dele sabia que ele sofreria no começo, mas também sabia que tentar escondê-lo para sempre impediria que ele desenvolvesse força, autonomia e amizades reais."
+      },
+      {
+        "id": 29,
+        "topic": "Violência Psicológica",
+        "text": "Julian não convida Auggie para sua festa e edita uma foto da turma. Essas atitudes configuram uma forma de violência classificada como:",
+        "options": [
+          {"letter": "A", "text": "Violência física, que deixa marcas visíveis no corpo do estudante.", "correct": false},
+          {"letter": "B", "text": "Violência psicológica, focada na exclusão e na humilhação pública.", "correct": true},
+          {"letter": "C", "text": "Violência financeira, relacionada ao controle de bens materiais.", "correct": false},
+          {"letter": "D", "text": "Violência institucional, praticada pelos diretores contra a turma.", "correct": false}
+        ],
+        "explanation": "Deixar o colega invisível, excluí-lo de eventos sociais para humilhar e apagar a foto dele são formas claras de infligir dor psicológica e isolamento."
+      },
+      {
+        "id": 30,
+        "topic": "Legado Escolar",
+        "text": "Ao final do 8º ano, que tipo de legado um estudante pode deixar para a sua escola praticando o que aprendemos com 'Extraordinário'?",
+        "options": [
+          {"letter": "A", "text": "Um histórico escolar marcado por faltas, brincadeiras e punições.", "correct": false},
+          {"letter": "B", "text": "Um ambiente mais tolerante, onde a diferença é tratada com respeito.", "correct": true},
+          {"letter": "C", "text": "A criação de grupos fechados que não aceitam novos integrantes.", "correct": false},
+          {"letter": "D", "text": "A certeza de que apenas os alunos perfeitos merecem ser notados.", "correct": false}
+        ],
+        "explanation": "O legado de um estudante não é apenas o boletim, mas a qualidade do clima escolar que ele ajudou a construir."
+      },
+      {
+        "id": 31,
+        "topic": "O Valor da Diversidade",
+        "text": "Como a diversidade (ter pessoas muito diferentes na mesma sala) pode enriquecer o nosso aprendizado?",
+        "options": [
+          {"letter": "A", "text": "Trazendo diferentes visões de mundo e soluções criativas para a turma.", "correct": true},
+          {"letter": "B", "text": "Criando uma competição constante para ver quem é o mais inteligente.", "correct": false},
+          {"letter": "C", "text": "Fazendo com que o professor não precise ensinar as matérias difíceis.", "correct": false},
+          {"letter": "D", "text": "Impedindo que os trabalhos em grupo sejam entregues dentro do prazo.", "correct": false}
+        ],
+        "explanation": "Turmas onde todos pensam igual tendem a ter as mesmas ideias óbvias. Pessoas diferentes trazem bagagens de vida diferentes, estimulando a criatividade."
+      },
+      {
+        "id": 32,
+        "topic": "Um Mundo sem Diferenças",
+        "text": "Se o mundo inteiro fosse exatamente igual (aparência, gostos, opiniões), como seria a nossa sociedade?",
+        "options": [
+          {"letter": "A", "text": "Muito mais desenvolvida, pois todos trabalhariam nas mesmas coisas.", "correct": false},
+          {"letter": "B", "text": "Completamente monótona, sem criatividade ou inovações tecnológicas.", "correct": true},
+          {"letter": "C", "text": "Perfeita, pois não haveria necessidade de conversar ou debater ideias.", "correct": false},
+          {"letter": "D", "text": "Acelerada, garantindo o fim de qualquer forma de tristeza no planeta.", "correct": false}
+        ],
+        "explanation": "Um mundo sem diferenças seria chato, sem novas músicas, novas ideias ou inovações, pois a evolução acontece exatamente onde há o choque do 'diferente'."
+      },
+      {
+        "id": 33,
+        "topic": "O Processo do Perdão",
+        "text": "O perdão é um tema forte quando Auggie desculpa Jack Will. O que o perdão verdadeiro exige de ambas as partes?",
+        "options": [
+          {"letter": "A", "text": "Que a pessoa ofendida esqueça imediatamente a dor que foi causada.", "correct": false},
+          {"letter": "B", "text": "Que o agressor prometa nunca mais conversar com as outras pessoas.", "correct": false},
+          {"letter": "C", "text": "Arrependimento sincero de um lado e disposição para curar do outro.", "correct": true},
+          {"letter": "D", "text": "A obrigatoriedade de comprar presentes para provar a boa vontade.", "correct": false}
+        ],
+        "explanation": "O perdão não apaga o que ocorreu, mas só funciona quando há o reconhecimento genuíno do erro e a tentativa de reconstruir a ponte entre os dois."
+      },
+      {
+        "id": 34,
+        "topic": "Autoconhecimento",
+        "text": "Por que o autoconhecimento é a base para conseguir respeitar as diferenças dos colegas?",
+        "options": [
+          {"letter": "A", "text": "Porque quem conhece seus próprios defeitos julga menos os dos outros.", "correct": true},
+          {"letter": "B", "text": "Porque nos permite encontrar os erros dos outros de forma mais rápida.", "correct": false},
+          {"letter": "C", "text": "Porque garante que nunca seremos alvo de comentários ou de piadas.", "correct": false},
+          {"letter": "D", "text": "Porque nos torna superiores e mais importantes que o resto da sala.", "correct": false}
+        ],
+        "explanation": "Quando olhamos para as nossas próprias imperfeições com honestidade, perdemos a arrogância de achar que podemos julgar os problemas dos nossos colegas."
+      },
+      {
+        "id": 35,
+        "topic": "Amizades Reais",
+        "text": "A amizade verdadeira na adolescência se constrói por meio de atitudes simples. Assinale a alternativa que representa essa ideia.",
+        "options": [
+          {"letter": "A", "text": "Emprestar dinheiro sempre que o amigo pedir durante o recreio escolar.", "correct": false},
+          {"letter": "B", "text": "Estar presente nos momentos difíceis, oferecendo apoio e companhia.", "correct": true},
+          {"letter": "C", "text": "Passar respostas das provas para ajudar o amigo a não ser reprovado.", "correct": false},
+          {"letter": "D", "text": "Concordar com tudo o que a pessoa diz, para nunca iniciar uma briga.", "correct": false}
+        ],
+        "explanation": "Como a Summer mostrou no refeitório, a amizade verdadeira não precisa de atos caros; às vezes, apenas 'estar presente' quando ninguém mais está é o maior ato de amizade."
+      },
+      {
+        "id": 36,
+        "topic": "Protagonismo Pessoal",
+        "text": "A frase 'Seja a mudança que você deseja ver no mundo' se aplica ao ambiente da escola quando nós:",
+        "options": [
+          {"letter": "A", "text": "Cobramos que a diretoria resolva todos os conflitos que acontecem.", "correct": false},
+          {"letter": "B", "text": "Tomamos a iniciativa de ser gentis sem esperar que o outro comece.", "correct": true},
+          {"letter": "C", "text": "Apontamos os defeitos dos colegas para que eles possam melhorar.", "correct": false},
+          {"letter": "D", "text": "Estudamos sozinhos para garantir que ninguém atrapalhe o nosso foco.", "correct": false}
+        ],
+        "explanation": "Não adianta reclamar que a escola é tóxica se você não faz a sua parte. Ser a mudança é praticar o acolhimento mesmo quando a maioria não o faz."
+      },
+      {
+        "id": 37,
+        "topic": "Empatia Profissional",
+        "text": "Em relação ao futuro no mercado de trabalho, profissionais que desenvolvem a empatia desde a época da escola costumam ser:",
+        "options": [
+          {"letter": "A", "text": "Mais propensos a trabalhar sozinhos, evitando o contato no escritório.", "correct": false},
+          {"letter": "B", "text": "Menos produtivos, pois gastam muito tempo ouvindo os sentimentos.", "correct": false},
+          {"letter": "C", "text": "Melhores líderes, pois sabem valorizar as qualidades de cada pessoa.", "correct": true},
+          {"letter": "D", "text": "Facilmente manipulados, aceitando qualquer ordem sem questionamentos.", "correct": false}
+        ],
+        "explanation": "Bons líderes sabem ouvir suas equipes. A empatia que se aprende na escola molda gestores, médicos e professores muito mais capacitados e humanos no futuro."
+      },
+      {
+        "id": 38,
+        "topic": "Rede de Apoio",
+        "text": "Qual a importância de criar uma 'rede de apoio' na escola (ter amigos de confiança com quem contar)?",
+        "options": [
+          {"letter": "A", "text": "Serve para ter alguém que carregue a mochila e os livros pesados.", "correct": false},
+          {"letter": "B", "text": "Ajuda a formar uma aliança para combater e excluir outras pessoas.", "correct": false},
+          {"letter": "C", "text": "Garante um ambiente seguro para compartilhar medos e superar desafios.", "correct": true},
+          {"letter": "D", "text": "É útil apenas na hora de realizar os trabalhos avaliativos mais difíceis.", "correct": false}
+        ],
+        "explanation": "Auggie suportou a pressão porque tinha Summer, Jack e o Sr. Buzanfa. Uma rede de apoio é a segurança de que não precisamos lutar nossas batalhas sozinhos."
+      },
+      {
+        "id": 39,
+        "topic": "A Verdadeira Beleza",
+        "text": "A história do filme nos mostra que a beleza real de uma pessoa está localizada:",
+        "options": [
+          {"letter": "A", "text": "Nas roupas de marca e nos acessórios modernos que ela costuma usar.", "correct": false},
+          {"letter": "B", "text": "Na forma como ela escolhe tratar as pessoas ao seu redor todos os dias.", "correct": true},
+          {"letter": "C", "text": "No número de seguidores e curtidas que ela possui nas redes sociais.", "correct": false},
+          {"letter": "D", "text": "Na ausência de qualquer marca física ou cicatriz durante o crescimento.", "correct": false}
+        ],
+        "explanation": "Apesar do rosto de Auggie ser diferente dos padrões, sua coragem e generosidade irradiavam uma beleza muito superior ao visual de pessoas cruéis como Julian."
+      },
+      {
+        "id": 40,
+        "topic": "Lição Final",
+        "text": "Se você tivesse que resumir a lição principal de 'Extraordinário' para o seu próprio Projeto de Vida, a melhor frase seria:",
+        "options": [
+          {"letter": "A", "text": "'Evite os problemas mantendo-se sempre afastado das pessoas diferentes.'", "correct": false},
+          {"letter": "B", "text": "'A vida é uma competição onde apenas os mais fortes devem sobreviver.'", "correct": false},
+          {"letter": "C", "text": "'O que nos faz diferentes é exatamente o que nos torna extraordinários.'", "correct": true},
+          {"letter": "D", "text": "'O sucesso depende unicamente de estar no padrão esperado por todos.'", "correct": false}
+        ],
+        "explanation": "O filme nos ensina a abraçar o fato de que somos únicos e que nossa diferença é o nosso maior poder, não algo que devamos esconder num 'capacete'."
+      }
+    ];
+
+    let currentIndex = 0;
+    let score = 0;
+    let correctCount = 0;
+    let userAnswers = [];
+    let soundEnabled = true;
+
+    let questionStartTime = 0;
+    let quizStartTime = 0;
+    let fastAnswersStreak = 0;
+    let readingLockInterval = null;
+    let feedbackLockInterval = null;
+    let isQuestionLocked = true;
+
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new AudioCtx();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function playTone(freq, type, duration, delay = 0) {
+      if (!soundEnabled) return;
+      try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + delay + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + delay);
+        osc.stop(audioCtx.currentTime + delay + duration);
+      } catch (e) {}
+    }
+
+    function soundCorrect() {
+      playTone(523.25, 'sine', 0.12, 0);
+      playTone(659.25, 'sine', 0.12, 0.08);
+      playTone(783.99, 'sine', 0.2, 0.16);
+      playTone(1046.50, 'sine', 0.35, 0.24);
+    }
+
+    function soundWrong() {
+      playTone(300, 'sawtooth', 0.2, 0);
+      playTone(220, 'sawtooth', 0.35, 0.15);
+    }
+
+    function soundClick() {
+      playTone(850, 'triangle', 0.04, 0);
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('sound-btn').innerText = soundEnabled ? "🔊 Som: ON" : "🔇 Som: OFF";
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    function startQuiz() {
+      const nameInput = document.getElementById('player-name').value.trim();
+      if (!nameInput) {
+        alert("Digite seu nome completo para que seu visto possa ser registrado pelo professor.");
+        return;
+      }
+
+      initAudio();
+      soundClick();
+
+      currentIndex = 0;
+      score = 0;
+      correctCount = 0;
+      userAnswers = [];
+      fastAnswersStreak = 0;
+      quizStartTime = Date.now();
+
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('final-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'none';
+      document.getElementById('quiz-screen').style.display = 'block';
+
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      clearInterval(readingLockInterval);
+      const q = quizData[currentIndex];
+
+      document.getElementById('q-counter').innerText = `Questão ${currentIndex + 1} de ${quizData.length}`;
+      document.getElementById('q-topic').innerText = q.topic;
+      document.getElementById('score-val').innerText = score;
+      document.getElementById('question-text').innerText = q.text;
+
+      const progressPercent = ((currentIndex) / quizData.length) * 100;
+      document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+
+      const letters = ['A', 'B', 'C', 'D'];
+      letters.forEach(letter => {
+        const opt = q.options.find(o => o.letter === letter);
+        document.getElementById(`opt-${letter}-text`).innerText = opt.text;
+      });
+
+      // TRAVA DE 4 SEGUNDOS
+      isQuestionLocked = true;
+      let lockSeconds = 4;
+      setOptionsDisabled(true);
+
+      const lockBar = document.getElementById('reading-lock-bar');
+      lockBar.className = 'reading-lock-bar';
+      lockBar.innerHTML = `<span>📖 Leia com calma: liberando botões em <strong id="reading-countdown">${lockSeconds}</strong>s...</span>`;
+
+      questionStartTime = Date.now();
+
+      readingLockInterval = setInterval(() => {
+        lockSeconds--;
+        const cd = document.getElementById('reading-countdown');
+        if (cd) cd.innerText = lockSeconds;
+
+        if (lockSeconds <= 0) {
+          clearInterval(readingLockInterval);
+          isQuestionLocked = false;
+          setOptionsDisabled(false);
+          lockBar.className = 'reading-lock-bar unlocked';
+          lockBar.innerHTML = `<span>✅ Pergunta lida. Escolha a alternativa correta!</span>`;
+        }
+      }, 1000);
+    }
+
+    function setOptionsDisabled(disabled) {
+      ['A', 'B', 'C', 'D'].forEach(letter => {
+        const btn = document.getElementById(`btn-opt-${letter}`);
+        if (btn) btn.disabled = disabled;
+      });
+    }
+
+    function handleAnswer(chosenLetter) {
+      if (isQuestionLocked) return;
+
+      const answerDuration = (Date.now() - questionStartTime) / 1000;
+      const q = quizData[currentIndex];
+      const correctOpt = q.options.find(o => o.correct);
+      const isCorrect = chosenLetter === correctOpt.letter;
+
+      // DETECTOR DE CHUTE RÁPIDO
+      if (answerDuration < 5) {
+        fastAnswersStreak++;
+      } else {
+        fastAnswersStreak = Math.max(0, fastAnswersStreak - 1);
+      }
+
+      if (fastAnswersStreak >= 3) {
+        triggerRushBlock();
+        return;
+      }
+
+      let pointsEarned = 0;
+      if (isCorrect) {
+        correctCount++;
+        pointsEarned = 1000;
+        score += pointsEarned;
+        soundCorrect();
+      } else {
+        soundWrong();
+      }
+
+      userAnswers.push({
+        question: q,
+        chosen: chosenLetter,
+        correct: correctOpt.letter,
+        isCorrect: isCorrect,
+        timeTaken: answerDuration
+      });
+
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'block';
+
+      const banner = document.getElementById('feedback-banner');
+      const title = document.getElementById('feedback-title');
+      const sub = document.getElementById('feedback-subtitle');
+      const expText = document.getElementById('feedback-exp-text');
+      const nextBtn = document.getElementById('next-btn');
+      const lockMsg = document.getElementById('lock-timer-msg');
+
+      banner.className = 'feedback-banner ' + (isCorrect ? 'correct' : 'incorrect');
+
+      if (isCorrect) {
+        title.innerText = "Mandou Bem! Acertou! 🎉";
+        sub.innerText = `+${pointsEarned} pontos conquistados`;
+        expText.innerText = q.explanation;
+        lockMsg.innerText = "";
+        nextBtn.disabled = false;
+        nextBtn.innerText = "Próxima Questão ➔";
+      } else {
+        title.innerText = "Resposta Errada! ❌";
+        sub.innerText = `Você marcou a letra (${chosenLetter}). A correta era a (${correctOpt.letter}).`;
+        expText.innerText = q.explanation;
+
+        // TRAVA DE 8 SEGUNDOS NO ERRO
+        let cooldown = 8;
+        nextBtn.disabled = true;
+        lockMsg.innerText = `⏳ Leia a explicação para aprender o conceito. Liberando em ${cooldown}s...`;
+        nextBtn.innerText = `Aguarde (${cooldown}s)`;
+
+        clearInterval(feedbackLockInterval);
+        feedbackLockInterval = setInterval(() => {
+          cooldown--;
+          if (cooldown > 0) {
+            lockMsg.innerText = `⏳ Leia a explicação para aprender o conceito. Liberando em ${cooldown}s...`;
+            nextBtn.innerText = `Aguarde (${cooldown}s)`;
+          } else {
+            clearInterval(feedbackLockInterval);
+            lockMsg.innerText = "✅ Explicação lida. Agora você pode seguir em frente!";
+            nextBtn.disabled = false;
+            nextBtn.innerText = "Próxima Questão ➔";
+          }
+        }, 1000);
+      }
+    }
+
+    function triggerRushBlock() {
+      fastAnswersStreak = 0;
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'block';
+
+      let rushSeconds = 15;
+      const countDisplay = document.getElementById('rush-countdown-val');
+      countDisplay.innerText = rushSeconds;
+
+      const rushTimer = setInterval(() => {
+        rushSeconds--;
+        countDisplay.innerText = rushSeconds;
+        if (rushSeconds <= 0) {
+          clearInterval(rushTimer);
+          document.getElementById('rush-alert-screen').style.display = 'none';
+          document.getElementById('quiz-screen').style.display = 'block';
+          loadQuestion();
+        }
+      }, 1000);
+    }
+
+    function nextQuestion() {
+      soundClick();
+      currentIndex++;
+      document.getElementById('feedback-screen').style.display = 'none';
+
+      if (currentIndex < quizData.length) {
+        document.getElementById('quiz-screen').style.display = 'block';
+        loadQuestion();
+      } else {
+        showFinalResults();
+      }
+    }
+
+    function showFinalResults() {
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'none';
+      document.getElementById('final-screen').style.display = 'block';
+
+      const playerName = document.getElementById('player-name').value.trim() || "Estudante";
+      document.getElementById('final-user-greeting').innerText = `Relatório individual de: ${playerName}`;
+
+      const totalTimeSec = Math.round((Date.now() - quizStartTime) / 1000);
+      const totalTimeMin = (totalTimeSec / 60).toFixed(1);
+      const avgTimePerQuestion = Math.round(totalTimeSec / quizData.length);
+      const accuracy = Math.round((correctCount / quizData.length) * 100);
+
+      document.getElementById('visto-nome').innerText = playerName;
+      document.getElementById('visto-acertos').innerText = `${correctCount} de ${quizData.length} (${accuracy}%)`;
+      document.getElementById('visto-pontos').innerText = `${score} pts`;
+      document.getElementById('visto-tempo-total').innerText = `${totalTimeMin} minutos (${totalTimeSec}s)`;
+      document.getElementById('visto-tempo-medio').innerText = `${avgTimePerQuestion} segundos por pergunta`;
+
+      const badge = document.getElementById('visto-status-badge');
+      const diag = document.getElementById('visto-diagnostico');
+
+      const isApproved = (accuracy >= 60) && (avgTimePerQuestion >= 8);
+
+      if (isApproved) {
+        badge.className = 'visto-badge aprovado';
+        badge.innerText = '✅ VISTO CONCEDIDO';
+        diag.innerText = 'Leitura atenta e bom aproveitamento';
+        diag.style.color = '#2e7d32';
+      } else {
+        badge.className = 'visto-badge recusado';
+        badge.innerText = '❌ NÃO VALIDADO';
+        if (accuracy < 60 && avgTimePerQuestion < 8) {
+          diag.innerText = 'Acertos abaixo de 60% e respostas muito rápidas (chute detectado)';
+        } else if (accuracy < 60) {
+          diag.innerText = 'Acertos abaixo do mínimo necessário (mínimo de 60%)';
+        } else {
+          diag.innerText = 'Respostas muito rápidas: mostre ao professor antes de refazer';
+        }
+        diag.style.color = '#c62828';
+      }
+
+      const initials = playerName.substring(0, 3).toUpperCase().replace(/[^A-Z]/g, 'EST');
+      const hashStr = `#PV-${initials}-${accuracy}P-${totalTimeSec}S`;
+      document.getElementById('visto-hash').innerText = hashStr;
+
+      const reviewBox = document.getElementById('review-container');
+      reviewBox.innerHTML = '<h3 style="margin-bottom:16px; color:#ffd200;">Gabarito Explicado das 40 Questões:</h3>';
+      
+      userAnswers.forEach((item, idx) => {
+        const correctOptObj = item.question.options.find(o => o.correct);
+        const div = document.createElement('div');
+        div.className = `review-item ${item.isCorrect ? '' : 'was-wrong'}`;
+        div.innerHTML = `
+          <div class="review-header">
+            <span>Questão ${idx + 1}: ${item.question.topic} (${Math.round(item.timeTaken)}s)</span>
+            <span>${item.isCorrect ? '✅ Acertou' : '❌ Errou'}</span>
+          </div>
+          <div class="review-text">${item.question.text}</div>
+          <div class="review-answer"><strong>Resposta Certa (${item.correct}):</strong> ${correctOptObj.text}</div>
+          ${!item.isCorrect && item.chosen ? `<div class="review-answer" style="color:#e21b3c;"><strong>Você marcou:</strong> (${item.chosen})</div>` : ''}
+          <div class="review-exp"><strong>Explicação:</strong> ${item.question.explanation}</div>
+        `;
+        reviewBox.appendChild(div);
+      });
+    }
+
+    function toggleReview() {
+      soundClick();
+      const box = document.getElementById('review-container');
+      box.style.display = box.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function restartQuiz() {
+      soundClick();
+      document.getElementById('final-screen').style.display = 'none';
+      document.getElementById('start-screen').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
