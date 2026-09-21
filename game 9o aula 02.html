@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Safe Zone: Projeto de Vida</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;600;700&family=Teko:wght@600&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    /* =========================================
+       VARIÁVEIS E GERAIS
+    ========================================= */
+    :root {
+      --red: #E21B3C; --red-dark: #b8142e;
+      --blue: #1368CE; --blue-dark: #0f52a5;
+      --yellow: #D89E00; --yellow-dark: #b28200;
+      --green: #26890C; --green-dark: #1d6e09;
+      --bg-dark: #0d0d1a;
+      --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #0d0d1a 100%);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body, html {
+      font-family: 'Open Sans', sans-serif; background: var(--bg-dark);
+      color: #fff; min-height: 100vh; overflow: hidden; touch-action: none; user-select: none;
+    }
+    .hidden { display: none !important; }
+
+    /* =========================================
+       ALERTA ANTIFRAUDE GLOBAL
+    ========================================= */
+    #global-fraud-alert {
+      position: absolute; top: 10%; left: 50%; transform: translateX(-50%);
+      background: #ff0000; color: #fff; padding: 15px 30px; font-size: 1.5rem;
+      font-family: 'Teko', sans-serif; border-radius: 10px; box-shadow: 0 0 20px #ff0000;
+      z-index: 9999; display: none; text-align: center;
+    }
+
+    /* =========================================
+       TELA HUB (MENU PRINCIPAL)
+    ========================================= */
+    #hub-screen {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      background: var(--bg-gradient); z-index: 1000;
+    }
+    .hub-title { font-family: 'Teko', sans-serif; font-size: 5rem; color: #00f3ff; text-shadow: 0 0 20px #00f3ff; text-align: center; margin-bottom: 40px; line-height: 1; }
+    .hub-btn {
+      background: #ff9900; border: none; padding: 20px 40px; font-size: 2rem;
+      font-family: 'Teko', sans-serif; border-radius: 10px; cursor: pointer;
+      margin: 10px; width: 80%; max-width: 400px; transition: all 0.2s; box-shadow: 0 5px 15px rgba(255, 153, 0, 0.4);
+    }
+    .hub-btn:hover { transform: scale(1.05); }
+    .btn-kahoot { background: #864cbf; box-shadow: 0 5px 15px rgba(134, 76, 191, 0.4); color: white; }
+    .btn-kahoot:hover { background: #9b59b6; }
+
+    /* =========================================
+       MODO CLÁSSICO (KAHOOT + ANTIFRAUDE)
+    ========================================= */
+    #kahoot-container {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(135deg, #46178F 0%, #18033d 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 16px; overflow-y: auto; z-index: 500;
+    }
+    .app-container {
+      width: 100%; max-width: 1050px; background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px); border-radius: 24px; padding: 24px;
+      box-shadow: var(--shadow); border: 1px solid rgba(255, 255, 255, 0.15); margin: auto;
+    }
+    .top-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .brand-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.35rem; color: #ffd200; }
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); color: white;
+      padding: 8px 14px; border-radius: 99px; cursor: pointer; font-size: 0.85rem; font-weight: 700; font-family: 'Montserrat', sans-serif;
+    }
+    /* TELA INICIAL KAHOOT */
+    #start-screen { text-align: center; padding: 20px 10px; }
+    .anti-rush-badge { background: rgba(0, 230, 118, 0.2); color: #00e676; border: 1px solid #00e676; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-bottom: 12px; font-family: 'Montserrat', sans-serif; display: inline-block;}
+    h1.hero-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2.2rem; margin-bottom: 16px; text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); }
+    .rules-card { background: rgba(0, 0, 0, 0.25); border-radius: 14px; padding: 16px 20px; max-width: 650px; margin: 0 auto 24px auto; text-align: left; font-size: 0.92rem; line-height: 1.55; border-left: 4px solid #ffd200; }
+    .rules-card h4 { color: #ffd200; margin-bottom: 6px; font-family: 'Montserrat', sans-serif; }
+    .input-box input { width: 100%; max-width: 400px; padding: 14px; border-radius: 12px; border: 2px solid #ffd200; font-size: 1.1rem; font-family: 'Montserrat', sans-serif; font-weight: 700; text-align: center; outline: none; margin-bottom: 20px; }
+    .start-btn { background: #ffd200; color: #2b0c5e; border: none; padding: 16px 40px; font-family: 'Montserrat', sans-serif; font-size: 1.2rem; font-weight: 900; border-radius: 16px; cursor: pointer; text-transform: uppercase; }
+    /* QUIZ KAHOOT */
+    .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 12px; font-family: 'Montserrat', sans-serif; }
+    .q-badge { background: rgba(255, 255, 255, 0.2); padding: 6px 14px; border-radius: 20px; font-weight: 700; }
+    .q-topic { background: rgba(255, 210, 0, 0.25); color: #ffd200; border: 1px solid #ffd200; padding: 6px 14px; border-radius: 20px; font-weight: 700; }
+    .progress-track { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.15); border-radius: 10px; margin-bottom: 14px; overflow: hidden; }
+    .progress-fill { height: 100%; background: #ffd200; width: 0%; transition: width 0.3s; }
+    .reading-lock-bar { display: flex; justify-content: center; background: rgba(0, 0, 0, 0.3); padding: 8px; border-radius: 12px; margin-bottom: 14px; font-family: 'Montserrat', sans-serif; font-weight: 700; color: #ffd200; }
+    .reading-lock-bar.unlocked { background: rgba(0, 230, 118, 0.2); color: #00e676; }
+    .question-card { background: #ffffff; color: #222; border-radius: 16px; padding: 24px; margin-bottom: 18px; font-size: 1.1rem; font-weight: 600; border-left: 8px solid #ffd200; }
+    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .option-btn { border: none; border-radius: 14px; padding: 18px; color: white; font-size: 1rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; text-align: left; box-shadow: 0 5px 0 rgba(0,0,0,0.3); }
+    .option-btn:disabled { cursor: not-allowed; filter: grayscale(0.5) opacity(0.65); transform: none !important; box-shadow: none !important; }
+    .opt-A { background: var(--red); box-shadow: 0 5px 0 var(--red-dark); } .opt-B { background: var(--blue); box-shadow: 0 5px 0 var(--blue-dark); } .opt-C { background: var(--yellow); box-shadow: 0 5px 0 var(--yellow-dark); } .opt-D { background: var(--green); box-shadow: 0 5px 0 var(--green-dark); }
+    .opt-icon { font-size: 1.5rem; font-weight: 900; min-width: 40px; height: 40px; background: rgba(0,0,0,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    /* PAUSA RUSH & FEEDBACK */
+    #rush-alert-screen { display: none; text-align: center; padding: 40px 20px; background: rgba(226, 27, 60, 0.95); border-radius: 20px; color: white; margin: 20px 0; }
+    .rush-countdown { font-family: 'Montserrat', sans-serif; font-size: 3.5rem; font-weight: 900; color: #ffd200; }
+    .feedback-banner { border-radius: 16px; padding: 20px; margin-bottom: 20px; text-align: center; font-family: 'Montserrat', sans-serif; }
+    .feedback-banner.correct { background: #26890c; } .feedback-banner.incorrect { background: #e21b3c; }
+    .feedback-explanation { background: #ffffff; color: #222; border-radius: 14px; padding: 22px; font-size: 1.1rem; text-align: left; margin-bottom: 24px; border-left: 6px solid #381273; }
+    .lock-timer-msg { margin-bottom: 16px; font-family: 'Montserrat', sans-serif; font-weight: 800; color: #ffd200; text-align: center;}
+    /* RESULTADO FINAL */
+    .visto-card { background: #ffffff; color: #222; border-radius: 18px; padding: 24px; max-width: 580px; margin: 0 auto 24px auto; text-align: left; }
+    .visto-header { display: flex; justify-content: space-between; border-bottom: 2px dashed #ccc; padding-bottom: 12px; margin-bottom: 16px; font-family: 'Montserrat', sans-serif; }
+    .visto-badge { padding: 6px 14px; border-radius: 20px; font-weight: 900; font-size: 0.85rem; }
+    .visto-badge.aprovado { background: #e8f5e9; color: #2e7d32; border: 1px solid #2e7d32; } .visto-badge.recusado { background: #ffebee; color: #c62828; border: 1px solid #c62828; }
+    .visto-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.98rem; }
+    .visto-code { margin-top: 14px; background: #f4f0fa; padding: 10px; border-radius: 8px; text-align: center; font-family: monospace; font-weight: 900; font-size: 1.1rem; color: #46178f; }
+
+    @media (max-width: 768px) { .options-grid { grid-template-columns: 1fr; } }
+
+    /* =========================================
+       MODO GAME (PLATAFORMA)
+    ========================================= */
+    #game-ui { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 500; font-family: 'Rajdhani', sans-serif; }
+    #gameCanvas { display: block; width: 100%; height: 100%; }
+    #hud-game { position: absolute; top: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; pointer-events: none; z-index: 10; }
+    .hp-box-game { background: rgba(0, 0, 0, 0.8); border: 2px solid #ff9900; padding: 5px 15px; border-radius: 8px; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
+    .hp-bar-bg-game { width: 120px; height: 15px; background: #333; border-radius: 10px; overflow: hidden; }
+    .hp-bar-fill-game { height: 100%; width: 100%; background: #00ff00; transition: width 0.3s; }
+    #mobile-controls { position: absolute; bottom: 20px; left: 0; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box; user-select: none; z-index: 10; }
+    .dir-btns { display: flex; gap: 15px; }
+    .btn-game { width: 65px; height: 65px; background: rgba(255, 153, 0, 0.3); border: 2px solid rgba(255, 153, 0, 0.8); border-radius: 50%; font-size: 24px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+    .btn-game:active { background: rgba(255, 153, 0, 0.7); transform: scale(0.95); }
+    #quiz-modal-game { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); display: flex; justify-content: center; align-items: center; visibility: hidden; opacity: 0; transition: opacity 0.3s; z-index: 20; }
+    .quiz-content-game { background: #1a1a2e; border: 3px solid #00f3ff; width: 90%; max-width: 500px; padding: 20px; border-radius: 15px; text-align: center; }
+    .quiz-content-game h2 { font-family: 'Teko', sans-serif; font-size: 2.5rem; color: #00f3ff; margin-bottom: 15px; }
+    .opt-btn-game { background: #0f3460; border: 1px solid #00f3ff; color: #fff; padding: 12px; border-radius: 8px; font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; cursor: pointer; text-align: left; width: 100%; margin-bottom: 8px; transition: 0.2s; }
+    .opt-btn-game:hover { background: #00f3ff; color: #000; font-weight: bold; }
+    #game-over-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1500; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <!-- ALERTA ANTIFRAUDE GLOBAL -->
+  <div id="global-fraud-alert">⚠️ ATENÇÃO: Troca de aba ou janela detectada! Você sofreu penalidade.</div>
+
+  <!-- MENU HUB -->
+  <div id="hub-screen">
+    <h1 class="hub-title">SAFE ZONE:<br>PROJETO DE VIDA</h1>
+    <button class="hub-btn" onclick="openApp('game')">MODO AVENTURA<br><span style="font-size:1.2rem">(Correr, Pular e Loot)</span></button>
+    <button class="hub-btn btn-kahoot" onclick="openApp('kahoot')">MODO CLÁSSICO<br><span style="font-size:1.2rem">(Quiz com Visto Pedagógico)</span></button>
+  </div>
+
+  <!-- MODO CLÁSSICO KAHOOT (Com Antifraude e Visto) -->
+  <div id="kahoot-container" class="hidden">
+    <div class="app-container">
+      <div class="top-controls">
+        <div class="brand-title">⚡ SAFE ZONE • PV</div>
+      </div>
+
+      <!-- TELA 1: INÍCIO KAHOOT -->
+      <div id="start-screen">
+        <div class="anti-rush-badge">🛡️ SISTEMA DE LEITURA CONSCIENTE ATIVADO</div>
+        <h1 class="hero-title">Missão: Entusiasmo na Prática</h1>
+        <div class="rules-card">
+          <h4>📋 Regras do Desafio:</h4>
+          • <strong>Tempo de Leitura:</strong> Trava de 4s para ler antes de liberar opções.<br>
+          • <strong>Se Errar:</strong> Trava de 8s para ler a explicação da resposta.<br>
+          • <strong>Anti-Chute:</strong> Respostas menores que 5s geram bloqueio de 15s.<br>
+          • <strong>Visto Pedagógico:</strong> Exige 60% de acerto e tempo médio de 8s por questão.
+        </div>
+        <div class="input-box">
+          <input type="text" id="player-name" placeholder="Digite seu nome completo..." autocomplete="off">
+        </div>
+        <button class="start-btn" onclick="startKahoot()">Iniciar Desafio</button>
+      </div>
+
+      <!-- PAUSA PARA O FOCO -->
+      <div id="rush-alert-screen">
+        <h2 style="font-family:'Montserrat', sans-serif; font-size:2rem; margin-bottom:10px;">⚠️ PAUSA PARA O FOCO!</h2>
+        <p>Você está clicando rápido demais e sem ler as perguntas. Respire fundo e aguarde:</p>
+        <div class="rush-countdown" id="rush-countdown-val">15</div>
+      </div>
+
+      <!-- TELA 2: QUIZ KAHOOT -->
+      <div id="quiz-screen" class="hidden">
+        <div class="quiz-header">
+          <div class="q-badge" id="q-counter">Questão 1 de 40</div>
+          <div class="q-topic" id="q-topic">Tópico</div>
+          <div style="color: #ffd200; font-weight:700;">Pontos: <span id="score-val">0</span></div>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="reading-lock-bar" id="reading-lock-bar">
+          <span>📖 Leia com atenção: liberando em <strong id="reading-countdown">4</strong>s...</span>
+        </div>
+        <div class="question-card" id="question-text">Texto</div>
+        <div class="options-grid" id="options-grid">
+          <button class="option-btn opt-A" id="btn-opt-A" onclick="handleAnswer('A')" disabled><div class="opt-icon">▲</div><div id="opt-A-text">A</div></button>
+          <button class="option-btn opt-B" id="btn-opt-B" onclick="handleAnswer('B')" disabled><div class="opt-icon">◆</div><div id="opt-B-text">B</div></button>
+          <button class="option-btn opt-C" id="btn-opt-C" onclick="handleAnswer('C')" disabled><div class="opt-icon">●</div><div id="opt-C-text">C</div></button>
+          <button class="option-btn opt-D" id="btn-opt-D" onclick="handleAnswer('D')" disabled><div class="opt-icon">■</div><div id="opt-D-text">D</div></button>
+        </div>
+      </div>
+
+      <!-- TELA 3: FEEDBACK -->
+      <div id="feedback-screen" class="hidden">
+        <div class="feedback-banner" id="feedback-banner">
+          <h2 id="feedback-title">Resposta!</h2>
+          <div id="feedback-subtitle">...</div>
+        </div>
+        <div class="feedback-explanation">
+          <strong>Entenda a situação:</strong><br><span id="feedback-exp-text">Explicação</span>
+        </div>
+        <div class="lock-timer-msg" id="lock-timer-msg"></div>
+        <button class="start-btn" id="next-btn" onclick="nextQuestion()" style="padding:12px 30px; font-size:1rem;">Avançar ➔</button>
+      </div>
+
+      <!-- TELA 4: VISTO PEDAGÓGICO FINAL -->
+      <div id="final-screen" class="hidden">
+        <h2 style="font-family:'Montserrat', sans-serif; font-size:2rem; color:#ffd200; margin-bottom:20px;">🎓 Relatório Final</h2>
+        <div class="visto-card">
+          <div class="visto-header">
+            <h3>COMPROVANTE DO VISTO PEDAGÓGICO</h3>
+            <div class="visto-badge" id="visto-status-badge">EM ANÁLISE</div>
+          </div>
+          <div class="visto-row"><span class="label">Estudante:</span><span class="val" id="visto-nome">Nome</span></div>
+          <div class="visto-row"><span class="label">Acertos:</span><span class="val" id="visto-acertos">0 / 40</span></div>
+          <div class="visto-row"><span class="label">Pontuação:</span><span class="val" id="visto-pontos">0 pts</span></div>
+          <div class="visto-row"><span class="label">Tempo Total:</span><span class="val" id="visto-tempo-total">0 min</span></div>
+          <div class="visto-row"><span class="label">Tempo Médio/Questão:</span><span class="val" id="visto-tempo-medio">0s</span></div>
+          <div class="visto-row"><span class="label">Situação da Leitura:</span><span class="val" id="visto-diagnostico">Adequada</span></div>
+          <div class="visto-code" id="visto-hash">#LOG-CEE-0000</div>
+        </div>
+        <button class="start-btn" onclick="location.reload()" style="font-size:1rem;">Voltar ao Menu Principal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODO GAME PLATAFORMA -->
+  <div id="game-ui" class="hidden">
+    <canvas id="gameCanvas"></canvas>
+    <div id="hud-game">
+      <div class="hp-box-game">HP <div class="hp-bar-bg-game"><div id="g-hp-fill" class="hp-bar-fill-game"></div></div></div>
+      <div class="hp-box-game" style="border-color: #00f3ff;">LOOT: <span id="loot-count">0</span>/40</div>
+    </div>
+    <div id="mobile-controls">
+      <div class="dir-btns"><div class="btn-game" id="btn-left">◀</div><div class="btn-game" id="btn-right">▶</div></div>
+      <div class="btn-game" id="btn-jump" style="width: 75px; height: 75px;">▲</div>
+    </div>
+    <div id="quiz-modal-game">
+      <div class="quiz-content-game">
+        <h2>CAIXA DE LOOT</h2>
+        <p id="question-text-game" style="font-size:1.2rem; margin-bottom:15px;"></p>
+        <div id="options-container-game"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA DE GAME OVER (Aventura) -->
+  <div id="game-over-screen" class="hidden">
+    <h1 style="font-family:'Teko', sans-serif; font-size:6rem; margin:0;" id="game-over-title">ELIMINADO</h1>
+    <p id="game-over-msg" style="font-size:2rem; margin-bottom:30px;">O tédio consumiu sua energia.</p>
+    <button class="hub-btn" onclick="location.reload()" style="font-size:1.5rem;">VOLTAR AO MENU</button>
+  </div>
+
+  <script>
+    /* ==================================================
+       GLOBAL & ANTIFRAUDE DE NAVEGADOR
+    ================================================== */
+    document.addEventListener('contextmenu', e => e.preventDefault()); // Bloqueia botão direito
+    document.addEventListener('copy', e => e.preventDefault()); // Bloqueia cópia
+    document.addEventListener('keydown', e => {
+      if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) {
+        e.preventDefault(); // Bloqueia ferramentas de desenvolvedor F12
+      }
+    });
+
+    let activeApp = '';
+    window.addEventListener('blur', () => {
+      if (activeApp !== '') {
+        const alertBox = document.getElementById('global-fraud-alert');
+        alertBox.style.display = 'block';
+        if (activeApp === 'kahoot' && k_hp > 0) {
+            k_score = Math.max(0, k_score - 500);
+            if(document.getElementById('score-val')) document.getElementById('score-val').innerText = k_score;
+        } else if (activeApp === 'game') {
+            atualizarHpGame(-15);
+        }
+        setTimeout(() => { alertBox.style.display = 'none'; }, 3000);
+      }
+    });
+
+    function openApp(app) {
+      document.getElementById('hub-screen').classList.add('hidden');
+      activeApp = app;
+      if (app === 'kahoot') {
+        document.getElementById('kahoot-container').classList.remove('hidden');
+      } else {
+        document.getElementById('game-ui').classList.remove('hidden');
+        iniciarGame();
+      }
+    }
+
+    /* ==================================================
+       BANCO DE 40 QUESTÕES CONTEXTUALIZADAS (PV)
+    ================================================== */
+    const quizzes = [
+        { topic: "Rotina", text: "O despertador toca às 6h da manhã sob chuva e sua primeira aula é difícil. Qual atitude demonstra entusiasmo?", o: [{t: "Aperta a soneca e falta à aula.", c: false}, {t: "Levanta e põe uma música para encarar a matéria.", c: true}, {t: "Vai e dorme na carteira.", c: false}, {t: "Reclama com todo mundo.", c: false}], exp: "O entusiasmo é a força interna que nos impulsiona a encarar até mesmo as tarefas difíceis e a sair da zona de conforto." },
+        { topic: "Trabalho em Equipe", text: "Seu esquadrão não quer pesquisar para o trabalho e sugere copiar da internet.", o: [{t: "Faz a sua parte, tenta engajar os colegas e garante a nota honesta.", c: true}, {t: "Deixa copiarem e divide a culpa.", c: false}, {t: "Faz sozinho e briga com eles.", c: false}, {t: "Entrega o trabalho em branco.", c: false}], exp: "Estudantes entusiasmados buscam soluções colaborativas e assumem a responsabilidade sem recorrer à fraude." },
+        { topic: "Desafio na Aula", text: "O professor passa um problema complexo na lousa e todos desistem.", o: [{t: "Desiste também.", c: false}, {t: "Copia de quem sabe.", c: false}, {t: "Finge que fez.", c: false}, {t: "Usa o entusiasmo para tentar por partes e tira dúvidas.", c: true}], exp: "Encarar um obstáculo intelectual pedindo ajuda demonstra mentalidade de crescimento." },
+        { topic: "Pesquisa de Campo", text: "Na excursão para o INMA, alguns colegas reclamam que queriam ir ao shopping.", o: [{t: "Concorda e fica no celular.", c: false}, {t: "Aproveita a oportunidade para aprender em campo.", c: true}, {t: "Foge do grupo.", c: false}, {t: "Reclama no ouvido do professor.", c: false}], exp: "O entusiasmo permite encontrar propósito e aprendizado em situações fora da rotina." },
+        { topic: "Avaliações", text: "Muitos dizem que não farão o exame do SAEB a sério porque 'não vale nota'.", o: [{t: "Faz o seu melhor, pois avalia seu conhecimento real.", c: true}, {t: "Chuta tudo na mesma letra.", c: false}, {t: "Falta no dia.", c: false}, {t: "Dorme na prova.", c: false}], exp: "O compromisso com o próprio desenvolvimento não depende apenas de notas imediatas." },
+        { topic: "Tecnologia", text: "Na eletiva EcoLógica, a planilha de dados parece confusa no primeiro acesso.", o: [{t: "Desiste e troca de turma.", c: false}, {t: "Deixa o colega fazer tudo.", c: false}, {t: "Pede ajuda e pesquisa tutoriais básicos.", c: true}, {t: "Apaga o arquivo.", c: false}], exp: "Buscar ativamente superar a dificuldade técnica fortalece suas habilidades de resolução de problemas." },
+        { topic: "Empatia", text: "Um estudante novo está isolado e sendo alvo de piadas.", o: [{t: "Ria para se enturmar.", c: false}, {t: "Chame-o para sentar com você e o apresente à escola.", c: true}, {t: "Fique com pena mas ignore.", c: false}, {t: "Faça piadas também.", c: false}], exp: "O entusiasmo se manifesta também na empatia e na coragem de acolher quem precisa." },
+        { topic: "Imprevistos", text: "A internet cai no momento em que você precisa entregar um trabalho amanhã.", o: [{t: "Desliga tudo e aceita o zero.", c: false}, {t: "Abre o livro didático e faz manualmente.", c: true}, {t: "Culpa o professor.", c: false}, {t: "Quebra o roteador.", c: false}], exp: "A resiliência motivada foca em encontrar caminhos alternativos quando o plano A falha." },
+        { topic: "Futuro Profissional", text: "Na visita à UFES, você tem a chance de conversar com universitários, mas tem vergonha.", o: [{t: "Fica no ônibus.", c: false}, {t: "Zomba deles para disfarçar.", c: false}, {t: "Vence a timidez e faz pelo menos uma pergunta.", c: true}, {t: "Pede para voltarem logo.", c: false}], exp: "O entusiasmo direcionado aos seus objetivos exige que você dê um passo além da insegurança." },
+        { topic: "Criatividade", text: "Na eletiva Bora Capixabear, o grupo está sem ideias para o vídeo.", o: [{t: "Sugere um brainstorm rápido com músicas do ES.", c: true}, {t: "Copia um vídeo do YouTube.", c: false}, {t: "Faz de qualquer jeito.", c: false}, {t: "Desiste do projeto.", c: false}], exp: "O entusiasmo contagia a equipe e desbloqueia a criatividade coletiva." },
+        { topic: "Feedback Escolar", text: "Você tirou nota baixa em uma prova após estudar um pouco.", o: [{t: "Rasga a prova.", c: false}, {t: "Esconde a nota e desiste.", c: false}, {t: "Analisa os erros para ajustar o método de estudo.", c: true}, {t: "Culpa o professor.", c: false}], exp: "Ver o erro como dado para melhorar é a essência de quem quer evoluir no Projeto de Vida." },
+        { topic: "Autodomínio", text: "Seu celular estragou e você ficará uma semana sem ele.", o: [{t: "Briga com a família o dia todo.", c: false}, {t: "Aproveita o tempo livre para ler ou organizar os estudos.", c: true}, {t: "Dorme a semana inteira.", c: false}, {t: "Foge de casa.", c: false}], exp: "A pessoa entusiasmada não é refém do tédio; ela redireciona sua energia." },
+        { topic: "Ética Digital", text: "Um amigo espalha um boato grave no grupo de WhatsApp da sala.", o: [{t: "Silencia e finge que não viu.", c: false}, {t: "Adiciona piadas à fofoca.", c: false}, {t: "Intervém pedindo para pararem e não compartilha.", c: true}, {t: "Repassa para a escola toda.", c: false}], exp: "Assumir a responsabilidade e frear a desinformação mostra caráter." },
+        { topic: "Educação Financeira", text: "Você tem o sonho de comprar um equipamento, mas não trabalha.", o: [{t: "Reclama que não tem sorte.", c: false}, {t: "Gasta tudo no lanche diário.", c: false}, {t: "Guarda parte do lanche e estuda formas de fazer pequenos bicos.", c: true}, {t: "Rouba da família.", c: false}], exp: "A motivação verdadeira se transforma em planejamento e paciência." },
+        { topic: "Educação Física", text: "Seu time joga contra um adversário nitidamente mais forte.", o: [{t: "Joga com estratégia para aprender, mesmo perdendo.", c: true}, {t: "Senta na arquibancada.", c: false}, {t: "Faz faltas violentas.", c: false}, {t: "Reclama do professor.", c: false}], exp: "A superação e o aprendizado valem mais do que o placar final." },
+        { topic: "Estudos", text: "O texto da aula tem 4 páginas e você está cansado.", o: [{t: "Lê só o título e chuta.", c: false}, {t: "Pede resumo pro colega na hora.", c: false}, {t: "Divide a leitura (2 hoje, 2 amanhã).", c: true}, {t: "Diz que perdeu o papel.", c: false}], exp: "Estratégia e divisão de tarefas evitam a sobrecarga e o desânimo." },
+        { topic: "Convivência", text: "Fila da merenda gigante e o tempo está acabando.", o: [{t: "Fura a fila.", c: false}, {t: "Empurra os mais novos.", c: false}, {t: "Grita com os cozinheiros.", c: false}, {t: "Espera sua vez conversando com amigos.", c: true}], exp: "O respeito ao espaço do outro é fundamental no convívio escolar." },
+        { topic: "Organização", text: "Sua caneta estourou e precisa copiar matéria valendo nota.", o: [{t: "Pega escondido da mesa ao lado.", c: false}, {t: "Pede educadamente emprestado.", c: true}, {t: "Fica desenhando.", c: false}, {t: "Manda o amigo copiar por você.", c: false}], exp: "Solucionar imprevistos com comunicação e educação fortalece suas relações." },
+        { topic: "Foco em Casa", text: "Seu irmão não para de fazer barulho enquanto você estuda.", o: [{t: "Grita e briga com ele.", c: false}, {t: "Desiste de estudar.", c: false}, {t: "Faz um acordo: se ele ficar quieto 30min, você brinca com ele.", c: true}, {t: "Quebra os brinquedos dele.", c: false}], exp: "Negociar conflitos é uma habilidade socioemocional essencial." },
+        { topic: "Apresentações", text: "Seminário valendo nota e você tem pavor de falar em público.", o: [{t: "Falta no dia.", c: false}, {t: "Ensaia, respira fundo, faz contato visual com um amigo e vai.", c: true}, {t: "Lê olhando pro chão.", c: false}, {t: "Fica mudo lá na frente.", c: false}], exp: "Enfrentar o medo com técnica (como contato visual amigável) constrói confiança." },
+        { topic: "Responsabilidade", text: "Você quebrou o trinco do laboratório sem querer e ninguém viu.", o: [{t: "Avisa o coordenador e assume a falha.", c: true}, {t: "Foge e culpa a turma da tarde.", c: false}, {t: "Cola com chiclete.", c: false}, {t: "Finge que já estava assim.", c: false}], exp: "A integridade do Projeto de Vida é fazer o certo mesmo quando ninguém está olhando." },
+        { topic: "Recompensas", text: "Como organizar os estudos e o videogame?", o: [{t: "Joga até de madrugada.", c: false}, {t: "Estuda e joga ao mesmo tempo.", c: false}, {t: "Usa o jogo como recompensa só após terminar as tarefas.", c: true}, {t: "Esconde o caderno.", c: false}], exp: "A disciplina se constrói sabendo adiar gratificações." },
+        { topic: "Prova Surpresa", text: "O professor anuncia prova e a sala entra em pânico.", o: [{t: "Reclama e se recusa a fazer.", c: false}, {t: "Monta esquema de cola.", c: false}, {t: "Respira, confia que prestou atenção e faz o melhor.", c: true}, {t: "Entrega em branco chorando.", c: false}], exp: "O controle emocional permite acessar a memória de forma muito mais eficaz." },
+        { topic: "Gestão das Emoções", text: "Você acordou com péssimo humor sem motivo.", o: [{t: "Desconta nos amigos.", c: false}, {t: "Arruma briga no pátio.", c: false}, {t: "Fica xingando na internet.", c: false}, {t: "Reconhece que está mal, avisa os amigos e mantém a calma.", c: true}], exp: "Reconhecer as próprias emoções evita machucar pessoas inocentes." },
+        { topic: "Competitividade", text: "Um colega tirou nota maior que a sua na prova.", o: [{t: "Diz que ele puxa o saco do professor.", c: false}, {t: "Para de falar com ele.", c: false}, {t: "Parabeniza e pede dicas de estudo.", c: true}, {t: "Esconde o caderno dele.", c: false}], exp: "Transformar a inveja em inspiração impulsiona o seu próprio crescimento." },
+        { topic: "Escolha Eletiva", text: "Você precisa escolher uma matéria eletiva.", o: [{t: "Escolhe a que tem professor que falta.", c: false}, {t: "Escolhe o tema que te desafia a aprender.", c: true}, {t: "Vai na dos amigos mesmo odiando o tema.", c: false}, {t: "Sorteia no palito.", c: false}], exp: "Protagonismo exige fazer escolhas alinhadas ao que você quer aprender." },
+        { topic: "Improviso", text: "Seu cartaz de trabalho molhou na chuva minutos antes da apresentação.", o: [{t: "Chora e não apresenta.", c: false}, {t: "Foge pro banheiro.", c: false}, {t: "Culpa o professor.", c: false}, {t: "Explica com calma e usa o quadro negro para improvisar.", c: true}], exp: "Problemas acontecem; o que te diferencia é como você adapta o que tem nas mãos." },
+        { topic: "Engajamento", text: "A escola fará gincana para arrecadar alimentos, sem valer nota.", o: [{t: "Critica o evento.", c: false}, {t: "Participa ativamente para mobilizar a comunidade.", c: true}, {t: "Leva sal vencido só pra constar.", c: false}, {t: "Boicota a gincana.", c: false}], exp: "O entusiasmo se expande quando aplicado em ações solidárias coletivas." },
+        { topic: "Dúvidas", text: "O professor usou a palavra 'Maiêutica' e ninguém sabe o que é.", o: [{t: "Fica com vergonha de perguntar.", c: false}, {t: "Faz piada com a palavra.", c: false}, {t: "Anota errado no caderno.", c: false}, {t: "Levanta a mão e pede para ele explicar.", c: true}], exp: "Não ter medo de assumir que não sabe é a maior prova de inteligência." },
+        { topic: "Honestidade", text: "Encontrou um fone caro caído no pátio.", o: [{t: "Guarda pra você.", c: false}, {t: "Esconde num vaso.", c: false}, {t: "Entrega na coordenação para acharem o dono.", c: true}, {t: "Vende na rua.", c: false}], exp: "A empatia prática é tratar o bem do outro como se fosse o seu." },
+        { topic: "Elogios", text: "Você recebe um elogio público por um bom trabalho.", o: [{t: "Fica arrogante com o grupo.", c: false}, {t: "Diz que foi pura sorte e se diminui.", c: false}, {t: "Agradece e usa como motivação para manter o padrão.", c: true}, {t: "Zomba de quem tirou nota baixa.", c: false}], exp: "Receber elogios com maturidade demonstra equilíbrio e autoestima saudável." },
+        { topic: "Idiomas", text: "Você tem medo de errar a pronúncia na aula de inglês.", o: [{t: "Fica mudo o ano todo.", c: false}, {t: "Falta nessas aulas.", c: false}, {t: "Entende que o erro faz parte e tenta falar.", c: true}, {t: "Manda o colega falar por você.", c: false}], exp: "Expor-se ao erro no ambiente seguro da escola é o treino para a vida real." },
+        { topic: "Consumo", text: "A cantina vende seu lanche favorito, mas acabou o dinheiro.", o: [{t: "Pede pedaço pra todo mundo até irritar.", c: false}, {t: "Tenta pegar escondido.", c: false}, {t: "Fica de mal.", c: false}, {t: "Aceita, bebe água e planeja melhor semana que vem.", c: true}], exp: "Contenção de impulsos é base da educação financeira e maturidade." },
+        { topic: "Procrastinação", text: "Sexta-feira, o professor passa lição para a próxima semana.", o: [{t: "Copia de um amigo na segunda cedo.", c: false}, {t: "Faz no domingo às 23h chorando.", c: false}, {t: "Ignora a tarefa.", c: false}, {t: "Faz na própria sexta para ter o fim de semana livre.", c: true}], exp: "Organizar o tempo com entusiasmo liberta sua mente das obrigações pendentes." },
+        { topic: "Atrasos", text: "Você perdeu o ônibus escolar logo cedo.", o: [{t: "Volta a dormir aliviado.", c: false}, {t: "Vai pra praça matar aula.", c: false}, {t: "Avisa os pais e busca uma carona solidária.", c: true}, {t: "Fica jogando no celular na rua.", c: false}], exp: "A pessoa proativa não desiste no primeiro contratempo." },
+        { topic: "Recuperação", text: "Faltam muitos pontos em Física no fim do trimestre.", o: [{t: "Joga a toalha e reprova.", c: false}, {t: "Chora pedindo ponto sem fazer prova.", c: false}, {t: "Monta um cronograma de estudo intensivo e tira dúvidas.", c: true}, {t: "Falsifica o boletim.", c: false}], exp: "Lutar até o fim da recuperação ensina resiliência e foco sob pressão." },
+        { topic: "Liderança", text: "A sala precisa de um capitão pro time esportivo e todos fogem.", o: [{t: "Dá um passo à frente para aprender gestão.", c: true}, {t: "Foge pra zona de conforto.", c: false}, {t: "Pega a vaga só pra humilhar os outros.", c: false}, {t: "Critica o evento.", c: false}], exp: "Liderar não é nascer pronto, é aceitar a responsabilidade e o aprendizado." },
+        { topic: "Tédio", text: "A aula é sobre um assunto que você acha monótono.", o: [{t: "Põe os fones escondido.", c: false}, {t: "Atrapalha a aula.", c: false}, {t: "Tenta achar pelo menos uma utilidade prática no assunto.", c: true}, {t: "Dorme babando na mesa.", c: false}], exp: "Você é o responsável por extrair valor do tempo em que é obrigado a estar na escola." },
+        { topic: "Crítica", text: "O professor diz que seu trabalho não atingiu os requisitos básicos.", o: [{t: "Leva pro pessoal e odeia a matéria.", c: false}, {t: "Xinga a escola na internet.", c: false}, {t: "Rasga o papel.", c: false}, {t: "Absorve a crítica, entende os erros e refaz com excelência.", c: true}], exp: "Críticas sobre um trabalho avaliam o resultado do processo, não o seu valor como pessoa." },
+        { topic: "Projeto de Vida", text: "Última Questão: O que difere sobreviver à escola de vivê-la com entusiasmo?", o: [{t: "Achar que sucesso depende de sorte.", c: false}, {t: "Fazer o mínimo possível e esperar milagres.", c: false}, {t: "Entender que o entusiasmo molda o caráter para construir seu próprio futuro.", c: true}, {t: "Ter dinheiro para comprar aprovação.", c: false}], exp: "O entusiasmo é o motor do seu Projeto de Vida. A atitude que você treina na escola é a mesma que levará para o mundo." }
+    ];
+
+    /* ==================================================
+       LÓGICA KAHOOT (Com Antifraude)
+    ================================================== */
+    let k_idx = 0; let k_score = 0; let k_corrects = 0; let k_hp = 100;
+    let k_fastCount = 0; let k_startTime = 0; let k_qStartTime = 0;
+    let readLockInt, fbLockInt, k_locked = true;
+
+    function startKahoot() {
+      const name = document.getElementById('player-name').value.trim();
+      if (!name) return alert("Digite seu nome completo!");
+      document.getElementById('start-screen').classList.add('hidden');
+      document.getElementById('quiz-screen').classList.remove('hidden');
+      k_idx = 0; k_score = 0; k_corrects = 0; k_hp = 100; k_fastCount = 0;
+      k_startTime = Date.now();
+      loadKahootQuestion();
+    }
+
+    function loadKahootQuestion() {
+      clearInterval(readLockInt);
+      if (k_idx >= quizzes.length) return showKahootFinal();
+
+      const q = quizzes[k_idx];
+      document.getElementById('q-counter').innerText = `Questão ${k_idx+1} de 40`;
+      document.getElementById('q-topic').innerText = q.topic;
+      document.getElementById('score-val').innerText = k_score;
+      document.getElementById('question-text').innerText = q.text;
+      document.getElementById('progress-fill').style.width = `${(k_idx/40)*100}%`;
+
+      const letters = ['A', 'B', 'C', 'D'];
+      const mixed = [...q.o].sort(() => Math.random() - 0.5);
+      
+      letters.forEach((l, i) => {
+        document.getElementById(`opt-${l}-text`).innerText = mixed[i].t;
+        document.getElementById(`btn-opt-${l}`).dataset.correct = mixed[i].c;
+      });
+
+      // TRAVA DE 4 SEGUNDOS
+      k_locked = true; let secs = 4;
+      ['A','B','C','D'].forEach(l => { 
+        document.getElementById(`btn-opt-${l}`).disabled = true; 
+        document.getElementById(`btn-opt-${l}`).style.border = 'none';
+      });
+      const lockBar = document.getElementById('reading-lock-bar');
+      lockBar.className = 'reading-lock-bar';
+      lockBar.innerHTML = `<span>📖 Leia com atenção: liberando em <strong id="reading-countdown">${secs}</strong>s...</span>`;
+
+      k_qStartTime = Date.now();
+      readLockInt = setInterval(() => {
+        secs--;
+        document.getElementById('reading-countdown').innerText = secs;
+        if(secs <= 0) {
+          clearInterval(readLockInt); k_locked = false;
+          ['A','B','C','D'].forEach(l => document.getElementById(`btn-opt-${l}`).disabled = false);
+          lockBar.className = 'reading-lock-bar unlocked';
+          lockBar.innerHTML = `<span>✅ Botões liberados!</span>`;
+        }
+      }, 1000);
+    }
+
+    function handleAnswer(letter) {
+      if(k_locked) return;
+      const duration = (Date.now() - k_qStartTime)/1000;
+      const btn = document.getElementById(`btn-opt-${letter}`);
+      const isCorrect = btn.dataset.correct === "true";
+
+      // ANTI-RUSH: 15s DE PUNIÇÃO
+      if(duration < 5) k_fastCount++; else k_fastCount = Math.max(0, k_fastCount-1);
+      if(k_fastCount >= 3) return triggerRush();
+
+      if(isCorrect) { k_corrects++; k_score += 1000; btn.style.border = '5px solid #00ff00'; }
+      else { btn.style.border = '5px solid #ff0000'; }
+
+      document.getElementById('quiz-screen').classList.add('hidden');
+      document.getElementById('feedback-screen').classList.remove('hidden');
+
+      const banner = document.getElementById('feedback-banner');
+      const nx = document.getElementById('next-btn');
+      const lockMsg = document.getElementById('lock-timer-msg');
+      document.getElementById('feedback-exp-text').innerText = quizzes[k_idx].exp;
+
+      if(isCorrect) {
+        banner.className = 'feedback-banner correct';
+        document.getElementById('feedback-title').innerText = "Correto! 🎉";
+        document.getElementById('feedback-subtitle').innerText = "+1000 pontos";
+        lockMsg.innerText = ""; nx.disabled = false; nx.innerText = "Avançar ➔";
+      } else {
+        banner.className = 'feedback-banner incorrect';
+        document.getElementById('feedback-title').innerText = "Erro Crítico! ❌";
+        document.getElementById('feedback-subtitle').innerText = "Leia a explicação para não errar novamente.";
+        
+        // TEMPO DE FOCO NO ERRO
+        let cd = 8; nx.disabled = true;
+        lockMsg.innerText = `⏳ Retendo foco. Liberando em ${cd}s...`;
+        nx.innerText = `Aguarde (${cd}s)`;
+        clearInterval(fbLockInt);
+        fbLockInt = setInterval(() => {
+          cd--;
+          if(cd > 0) { lockMsg.innerText = `⏳ Retendo foco. Liberando em ${cd}s...`; nx.innerText = `Aguarde (${cd}s)`; }
+          else { clearInterval(fbLockInt); lockMsg.innerText = "✅ Pode prosseguir!"; nx.disabled = false; nx.innerText = "Avançar ➔"; }
+        }, 1000);
+      }
+    }
+
+    function triggerRush() {
+      k_fastCount = 0;
+      document.getElementById('quiz-screen').classList.add('hidden');
+      document.getElementById('rush-alert-screen').style.display = 'block';
+      let rSec = 15;
+      document.getElementById('rush-countdown-val').innerText = rSec;
+      const t = setInterval(() => {
+        rSec--; document.getElementById('rush-countdown-val').innerText = rSec;
+        if(rSec <= 0) {
+          clearInterval(t); document.getElementById('rush-alert-screen').style.display = 'none';
+          document.getElementById('quiz-screen').classList.remove('hidden'); loadKahootQuestion();
+        }
+      }, 1000);
+    }
+
+    function nextQuestion() {
+      k_idx++;
+      document.getElementById('feedback-screen').classList.add('hidden');
+      if(k_idx < quizzes.length) { document.getElementById('quiz-screen').classList.remove('hidden'); loadKahootQuestion(); }
+      else { showKahootFinal(); }
+    }
+
+    function showKahootFinal() {
+      document.getElementById('quiz-screen').classList.add('hidden');
+      document.getElementById('final-screen').classList.remove('hidden');
+      
+      const totalS = Math.round((Date.now() - k_startTime)/1000);
+      const avg = Math.round(totalS/40);
+      const acc = Math.round((k_corrects/40)*100);
+      const name = document.getElementById('player-name').value;
+
+      document.getElementById('visto-nome').innerText = name;
+      document.getElementById('visto-acertos').innerText = `${k_corrects} / 40 (${acc}%)`;
+      document.getElementById('visto-pontos').innerText = `${k_score} pts`;
+      document.getElementById('visto-tempo-total').innerText = `${(totalS/60).toFixed(1)} min`;
+      document.getElementById('visto-tempo-medio').innerText = `${avg}s`;
+
+      const b = document.getElementById('visto-status-badge');
+      const d = document.getElementById('visto-diagnostico');
+      
+      // CRITÉRIO DO VISTO PEDAGÓGICO
+      if(acc >= 60 && avg >= 8) {
+        b.className = 'visto-badge aprovado'; b.innerText = '✅ VISTO CONCEDIDO';
+        d.innerText = 'Leitura atenta e bom aproveitamento'; d.style.color = '#2e7d32';
+      } else {
+        b.className = 'visto-badge recusado'; b.innerText = '❌ NÃO VALIDADO';
+        d.innerText = (acc < 60) ? 'Acertos abaixo do mínimo (60%)' : 'Chute detectado (Média < 8s)';
+        d.style.color = '#c62828';
+      }
+      document.getElementById('visto-hash').innerText = `#LOG-${name.substring(0,3).toUpperCase()}-${acc}P-${totalS}S`;
+    }
+
+    /* ==================================================
+       LÓGICA MODO GAME (PLATAFORMA)
+    ================================================== */
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    let g_state = 'PLAYING'; let g_camX = 0; let g_hp = 100; let g_loot = 0;
+    let g_frame; const g_keys = { r: false, l: false, u: false };
+    
+    const p = { x:50, y:100, w:45, h:45, vx:0, vy:0, speed:6, jump:-13.5, gnd:false, lastX:50, lastY:0, exp:'N', expT:0 };
+    let g_plats = [], g_loots = [], g_trees = [], g_portal = {}, g_width = 0;
+
+    function iniciarGame() {
+      canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+      g_plats=[]; g_loots=[]; g_trees=[]; g_camX = 0; g_hp = 100; g_loot = 0;
+      atualizarHpGame(0); let cx = 0; const gY = canvas.height - 80;
+      g_plats.push({x:0, y:gY, w:400, h:80});
+      const treeColors = ['#2d6a4f', '#40916c', '#52b788', '#d00000', '#f48c06', '#9b59b6', '#e67e22'];
+
+      for(let i=0; i<40; i++) {
+        cx += 300 + Math.random()*150; let w = 200 + Math.random()*100; let y = gY - Math.random()*120;
+        g_plats.push({x:cx, y:y, w:w, h:50});
+        g_loots.push({x:cx+(w/2)-15, y:y-45, w:35, h:35, active:true, idx:i});
+
+        if (Math.random() > 0.4) {
+          let numTrees = Math.floor(Math.random() * 2) + 1;
+          for(let t=0; t<numTrees; t++) {
+              let treeHeight = 70 + Math.random() * 80;
+              let treeX = cx + Math.random() * (w - 40) + 10;
+              let fruits = [];
+              let numFruits = Math.floor(Math.random() * 4) + 2;
+              for(let f=0; f<numFruits; f++) {
+                  fruits.push({ offX: (Math.random() - 0.5) * 70, offY: -treeHeight - 10 - (Math.random() * 40) });
+              }
+              g_trees.push({ x: treeX, y: y, h: treeHeight, color: treeColors[Math.floor(Math.random() * treeColors.length)], fruits: fruits });
+          }
+        }
+      }
+      cx += 400; g_plats.push({x:cx, y:gY, w:600, h:80});
+      g_portal = {x:cx+300, y:gY-100, w:70, h:100}; g_width = cx+1000;
+      g_state = 'PLAYING'; g_loop();
+    }
+
+    // Controles de Teclado
+    window.addEventListener('keydown', e => { if(activeApp!=='game') return; if(e.key==='ArrowRight') g_keys.r=true; if(e.key==='ArrowLeft') g_keys.l=true; if(e.key==='ArrowUp'||e.key===' ') g_keys.u=true; });
+    window.addEventListener('keyup', e => { if(activeApp!=='game') return; if(e.key==='ArrowRight') g_keys.r=false; if(e.key==='ArrowLeft') g_keys.l=false; if(e.key==='ArrowUp'||e.key===' ') g_keys.u=false; });
+    
+    // Controles Touch e Mouse unificados
+    const setupT = (id, k) => {
+      const b = document.getElementById(id);
+      if(b) {
+        b.addEventListener('touchstart', e => { e.preventDefault(); g_keys[k] = true; });
+        b.addEventListener('touchend', e => { e.preventDefault(); g_keys[k] = false; });
+        b.addEventListener('mousedown', e => { e.preventDefault(); g_keys[k] = true; });
+        b.addEventListener('mouseup', e => { e.preventDefault(); g_keys[k] = false; });
+        b.addEventListener('mouseleave', e => { e.preventDefault(); g_keys[k] = false; });
+      }
+    };
+    setupT('btn-left','l'); setupT('btn-right','r'); setupT('btn-jump','u');
+
+    function atualizarHpGame(val) {
+      g_hp += val; if(g_hp>100) g_hp=100;
+      if(val<0) { p.exp = 'H'; p.expT = 60; } else if(val>0){ p.exp = 'Y'; p.expT = 60; }
+      const b = document.getElementById('g-hp-fill');
+      b.style.width = g_hp+'%'; b.style.background = g_hp>50?'#00ff00':g_hp>20?'#ffcc00':'#ff0000';
+      if(g_hp<=0) {
+        g_state = 'OVER'; cancelAnimationFrame(g_frame);
+        document.getElementById('game-ui').classList.add('hidden');
+        document.getElementById('game-over-screen').classList.remove('hidden');
+      }
+    }
+
+    function abrirCaixaGame(i) {
+      g_state = 'QUIZ'; g_keys.l=g_keys.r=g_keys.u=false;
+      const m = document.getElementById('quiz-modal-game'); const c = document.getElementById('options-container-game');
+      const q = quizzes[i]; document.getElementById('question-text-game').innerText = (i+1)+". "+q.text;
+      c.innerHTML = '';
+      const mixed = [...q.o].sort(()=>Math.random()-0.5);
+      mixed.forEach(opt => {
+        const b = document.createElement('button'); b.className = 'opt-btn-game'; b.innerText = opt.t;
+        b.onclick = () => {
+          atualizarHpGame(opt.c ? 25 : -25);
+          m.style.opacity = '0';
+          setTimeout(() => { m.style.visibility = 'hidden'; if(g_hp>0) g_state = 'PLAYING'; }, 300);
+        };
+        c.appendChild(b);
+      });
+      m.style.visibility = 'visible'; m.style.opacity = '1';
+    }
+
+    function g_loop() {
+      if(activeApp !== 'game') return;
+      if(g_state === 'PLAYING') {
+        p.vy += 0.7; p.x += p.vx; p.y += p.vy;
+        p.vx = g_keys.r ? p.speed : g_keys.l ? -p.speed : 0;
+        if(p.x < 0) p.x = 0;
+        if(g_keys.u && p.gnd) { p.vy = p.jump; p.gnd = false; }
+        
+        p.gnd = false;
+        for(let pt of g_plats) {
+          if(p.vy>0 && p.x+p.w>pt.x && p.x<pt.x+pt.w && p.y+p.h>=pt.y && p.y+p.h<=pt.y+p.vy+3) {
+            p.gnd = true; p.vy = 0; p.y = pt.y-p.h; p.lastX = p.x; p.lastY = p.y-20;
+          }
+        }
+        if(p.y > canvas.height) { atualizarHpGame(-25); p.x = p.lastX; p.y = p.lastY-50; p.vy = 0; }
+        for(let l of g_loots) {
+          if(l.active && p.x<l.x+l.w && p.x+p.w>l.x && p.y<l.y+l.h && p.y+p.h>l.y) {
+            l.active = false; g_loot++; document.getElementById('loot-count').innerText = g_loot; abrirCaixaGame(l.idx);
+          }
+        }
+        if(p.x<g_portal.x+g_portal.w && p.x+p.w>g_portal.x && p.y<g_portal.y+g_portal.h && p.y+p.h>g_portal.y) {
+          document.getElementById('game-ui').classList.add('hidden');
+          document.getElementById('game-over-screen').classList.remove('hidden');
+          document.getElementById('game-over-title').innerText = "BOOYAH!";
+          document.getElementById('game-over-title').style.color = "#00ff00";
+          document.getElementById('game-over-msg').innerText = "Você venceu o tédio com entusiasmo!";
+        }
+        g_camX = Math.max(0, Math.min(p.x - canvas.width/3, g_width - canvas.width));
+      }
+
+      ctx.fillStyle = '#0d0d1a'; ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.save(); ctx.translate(-g_camX, 0);
+      ctx.fillStyle = '#ff0000'; ctx.globalAlpha=0.5; ctx.fillRect(g_camX, canvas.height-25, canvas.width, 25); ctx.globalAlpha=1;
+
+      // Desenha Árvores
+      for (let t of g_trees) {
+        if (t.x < g_camX - 150 || t.x > g_camX + canvas.width + 150) continue;
+        ctx.fillStyle = '#5c4033'; ctx.fillRect(t.x - 8, t.y - t.h, 16, t.h);
+        ctx.fillStyle = t.color; ctx.beginPath();
+        ctx.arc(t.x, t.y - t.h, 45, 0, Math.PI*2); ctx.arc(t.x - 25, t.y - t.h + 10, 35, 0, Math.PI*2);
+        ctx.arc(t.x + 25, t.y - t.h + 5, 35, 0, Math.PI*2); ctx.arc(t.x, t.y - t.h - 35, 40, 0, Math.PI*2); ctx.fill();
+        for (let f of t.fruits) {
+            let fx = t.x + f.offX; let fy = t.y + f.offY;
+            ctx.shadowBlur = 10; ctx.shadowColor = '#ffcc00'; ctx.fillStyle = '#ff3300';
+            ctx.beginPath(); ctx.arc(fx, fy, 6, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
+            ctx.fillStyle = '#00ff00'; ctx.beginPath(); ctx.arc(fx + 3, fy - 5, 3, 0, Math.PI*2); ctx.fill();
+        }
+      }
+
+      ctx.fillStyle = '#22223b';
+      for(let pt of g_plats) { ctx.fillRect(pt.x,pt.y,pt.w,pt.h); ctx.fillStyle='#00f3ff'; ctx.fillRect(pt.x,pt.y,pt.w,4); ctx.fillStyle='#22223b'; }
+      for(let l of g_loots) { if(l.active){ ctx.fillStyle='#ffcc00'; ctx.fillRect(l.x,l.y,l.w,l.h); ctx.fillStyle='#000'; ctx.font='24px Arial'; ctx.fillText('?',l.x+10,l.y+26); } }
+      ctx.fillStyle='#00ff00'; ctx.fillRect(g_portal.x, g_portal.y, g_portal.w, g_portal.h);
+      
+      // Avatar
+      ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, p.w, p.h);
+      ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(p.x+12, p.y+15, 10, 0, 7); ctx.fill(); ctx.beginPath(); ctx.arc(p.x+32, p.y+17, 7, 0, 7); ctx.fill();
+      ctx.fillStyle='#000';
+      if(p.exp === 'H') { ctx.font='14px Arial'; ctx.fillText("X",p.x+7,p.y+20); ctx.fillText("X",p.x+27,p.y+22); }
+      else { let px = g_keys.l?-3:g_keys.r?3:0; ctx.beginPath(); ctx.arc(p.x+12+px, p.y+15, 3, 0, 7); ctx.arc(p.x+32+px, p.y+17, 2, 0, 7); ctx.fill(); }
+      ctx.strokeStyle='#000'; ctx.lineWidth=2; ctx.beginPath();
+      if(p.exp === 'Y') ctx.arc(p.x+22, p.y+28, 8, 0, 3.14, false);
+      else if(p.exp === 'H') ctx.arc(p.x+22, p.y+35, 6, 3.14, 0, false);
+      else { ctx.moveTo(p.x+15, p.y+32); ctx.bezierCurveTo(p.x+20, p.y+36, p.x+25, p.y+28, p.x+30, p.y+32); }
+      ctx.stroke(); if(p.expT>0){ p.expT--; if(p.expT===0) p.exp='N'; }
+      ctx.restore();
+      g_frame = requestAnimationFrame(g_loop);
+    }
+  </script>
+</body>
+</html>
