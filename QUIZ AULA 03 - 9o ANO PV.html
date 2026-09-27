@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Safe Zone: As Cores do Nosso Propósito</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;600;700&family=Teko:wght@600&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    /* =========================================
+       VARIÁVEIS E GERAIS
+    ========================================= */
+    :root {
+      --red: #E21B3C; --red-dark: #b8142e;
+      --blue: #1368CE; --blue-dark: #0f52a5;
+      --yellow: #D89E00; --yellow-dark: #b28200;
+      --green: #26890C; --green-dark: #1d6e09;
+      --bg-dark: #0d0d1a;
+      --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #0d0d1a 100%);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body, html {
+      font-family: 'Open Sans', sans-serif; background: var(--bg-dark);
+      color: #fff; min-height: 100vh; overflow: hidden; touch-action: none; user-select: none;
+    }
+    .hidden { display: none !important; }
+
+    /* =========================================
+       ALERTA ANTIFRAUDE GLOBAL
+    ========================================= */
+    #global-fraud-alert {
+      position: absolute; top: 10%; left: 50%; transform: translateX(-50%);
+      background: #ff0000; color: #fff; padding: 15px 30px; font-size: 1.5rem;
+      font-family: 'Teko', sans-serif; border-radius: 10px; box-shadow: 0 0 20px #ff0000;
+      z-index: 9999; display: none; text-align: center;
+    }
+
+    /* =========================================
+       TELA HUB (MENU PRINCIPAL)
+    ========================================= */
+    #hub-screen {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      background: var(--bg-gradient); z-index: 1000;
+    }
+    .hub-title { font-family: 'Teko', sans-serif; font-size: 5rem; color: #00f3ff; text-shadow: 0 0 20px #00f3ff; text-align: center; margin-bottom: 40px; line-height: 1; }
+    .hub-btn {
+      background: #ff9900; border: none; padding: 20px 40px; font-size: 2rem;
+      font-family: 'Teko', sans-serif; border-radius: 10px; cursor: pointer;
+      margin: 10px; width: 80%; max-width: 400px; transition: all 0.2s; box-shadow: 0 5px 15px rgba(255, 153, 0, 0.4);
+    }
+    .hub-btn:hover { transform: scale(1.05); }
+    .btn-kahoot { background: #864cbf; box-shadow: 0 5px 15px rgba(134, 76, 191, 0.4); color: white; }
+    .btn-kahoot:hover { background: #9b59b6; }
+
+    /* =========================================
+       MODO CLÁSSICO (KAHOOT + ANTIFRAUDE)
+    ========================================= */
+    #kahoot-container {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(135deg, #46178F 0%, #18033d 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 16px; overflow-y: auto; z-index: 500;
+    }
+    .app-container {
+      width: 100%; max-width: 1050px; background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px); border-radius: 24px; padding: 24px;
+      box-shadow: var(--shadow); border: 1px solid rgba(255, 255, 255, 0.15); margin: auto;
+    }
+    .top-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .brand-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.35rem; color: #ffd200; }
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); color: white;
+      padding: 8px 14px; border-radius: 99px; cursor: pointer; font-size: 0.85rem; font-weight: 700; font-family: 'Montserrat', sans-serif;
+    }
+    /* TELA INICIAL KAHOOT */
+    #start-screen { text-align: center; padding: 20px 10px; }
+    .anti-rush-badge { background: rgba(0, 230, 118, 0.2); color: #00e676; border: 1px solid #00e676; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-bottom: 12px; font-family: 'Montserrat', sans-serif; display: inline-block;}
+    h1.hero-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2.2rem; margin-bottom: 16px; text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); }
+    .rules-card { background: rgba(0, 0, 0, 0.25); border-radius: 14px; padding: 16px 20px; max-width: 650px; margin: 0 auto 24px auto; text-align: left; font-size: 0.92rem; line-height: 1.55; border-left: 4px solid #ffd200; }
+    .rules-card h4 { color: #ffd200; margin-bottom: 6px; font-family: 'Montserrat', sans-serif; }
+    .input-box input { width: 100%; max-width: 400px; padding: 14px; border-radius: 12px; border: 2px solid #ffd200; font-size: 1.1rem; font-family: 'Montserrat', sans-serif; font-weight: 700; text-align: center; outline: none; margin-bottom: 20px; }
+    .start-btn { background: #ffd200; color: #2b0c5e; border: none; padding: 16px 40px; font-family: 'Montserrat', sans-serif; font-size: 1.2rem; font-weight: 900; border-radius: 16px; cursor: pointer; text-transform: uppercase; }
+    /* QUIZ KAHOOT */
+    .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 12px; font-family: 'Montserrat', sans-serif; }
+    .q-badge { background: rgba(255, 255, 255, 0.2); padding: 6px 14px; border-radius: 20px; font-weight: 700; }
+    .q-topic { background: rgba(255, 210, 0, 0.25); color: #ffd200; border: 1px solid #ffd200; padding: 6px 14px; border-radius: 20px; font-weight: 700; }
+    .progress-track { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.15); border-radius: 10px; margin-bottom: 14px; overflow: hidden; }
+    .progress-fill { height: 100%; background: #ffd200; width: 0%; transition: width 0.3s; }
+    .reading-lock-bar { display: flex; justify-content: center; background: rgba(0, 0, 0, 0.3); padding: 8px; border-radius: 12px; margin-bottom: 14px; font-family: 'Montserrat', sans-serif; font-weight: 700; color: #ffd200; }
+    .reading-lock-bar.unlocked { background: rgba(0, 230, 118, 0.2); color: #00e676; }
+    .question-card { background: #ffffff; color: #222; border-radius: 16px; padding: 24px; margin-bottom: 18px; font-size: 1.1rem; font-weight: 600; border-left: 8px solid #ffd200; }
+    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .option-btn { border: none; border-radius: 14px; padding: 18px; color: white; font-size: 1rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; text-align: left; box-shadow: 0 5px 0 rgba(0,0,0,0.3); }
+    .option-btn:disabled { cursor: not-allowed; filter: grayscale(0.5) opacity(0.65); transform: none !important; box-shadow: none !important; }
+    .opt-A { background: var(--red); box-shadow: 0 5px 0 var(--red-dark); } .opt-B { background: var(--blue); box-shadow: 0 5px 0 var(--blue-dark); } .opt-C { background: var(--yellow); box-shadow: 0 5px 0 var(--yellow-dark); } .opt-D { background: var(--green); box-shadow: 0 5px 0 var(--green-dark); }
+    .opt-icon { font-size: 1.5rem; font-weight: 900; min-width: 40px; height: 40px; background: rgba(0,0,0,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    /* PAUSA RUSH & FEEDBACK */
+    #rush-alert-screen { display: none; text-align: center; padding: 40px 20px; background: rgba(226, 27, 60, 0.95); border-radius: 20px; color: white; margin: 20px 0; }
+    .rush-countdown { font-family: 'Montserrat', sans-serif; font-size: 3.5rem; font-weight: 900; color: #ffd200; }
+    .feedback-banner { border-radius: 16px; padding: 20px; margin-bottom: 20px; text-align: center; font-family: 'Montserrat', sans-serif; }
+    .feedback-banner.correct { background: #26890c; } .feedback-banner.incorrect { background: #e21b3c; }
+    .feedback-explanation { background: #ffffff; color: #222; border-radius: 14px; padding: 22px; font-size: 1.1rem; text-align: left; margin-bottom: 24px; border-left: 6px solid #381273; }
+    .lock-timer-msg { margin-bottom: 16px; font-family: 'Montserrat', sans-serif; font-weight: 800; color: #ffd200; text-align: center;}
+    /* RESULTADO FINAL */
+    .visto-card { background: #ffffff; color: #222; border-radius: 18px; padding: 24px; max-width: 580px; margin: 0 auto 24px auto; text-align: left; }
+    .visto-header { display: flex; justify-content: space-between; border-bottom: 2px dashed #ccc; padding-bottom: 12px; margin-bottom: 16px; font-family: 'Montserrat', sans-serif; }
+    .visto-badge { padding: 6px 14px; border-radius: 20px; font-weight: 900; font-size: 0.85rem; }
+    .visto-badge.aprovado { background: #e8f5e9; color: #2e7d32; border: 1px solid #2e7d32; } .visto-badge.recusado { background: #ffebee; color: #c62828; border: 1px solid #c62828; }
+    .visto-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.98rem; }
+    .visto-code { margin-top: 14px; background: #f4f0fa; padding: 10px; border-radius: 8px; text-align: center; font-family: monospace; font-weight: 900; font-size: 1.1rem; color: #46178f; }
+
+    @media (max-width: 768px) { .options-grid { grid-template-columns: 1fr; } }
+
+    /* =========================================
+       MODO GAME (PLATAFORMA)
+    ========================================= */
+    #game-ui { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 500; font-family: 'Rajdhani', sans-serif; }
+    #gameCanvas { display: block; width: 100%; height: 100%; }
+    #hud-game { position: absolute; top: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; pointer-events: none; z-index: 10; }
+    .hp-box-game { background: rgba(0, 0, 0, 0.8); border: 2px solid #ff9900; padding: 5px 15px; border-radius: 8px; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
+    .hp-bar-bg-game { width: 120px; height: 15px; background: #333; border-radius: 10px; overflow: hidden; }
+    .hp-bar-fill-game { height: 100%; width: 100%; background: #00ff00; transition: width 0.3s; }
+    #mobile-controls { position: absolute; bottom: 20px; left: 0; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box; user-select: none; z-index: 10; }
+    .dir-btns { display: flex; gap: 15px; }
+    .btn-game { width: 65px; height: 65px; background: rgba(255, 153, 0, 0.3); border: 2px solid rgba(255, 153, 0, 0.8); border-radius: 50%; font-size: 24px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+    .btn-game:active { background: rgba(255, 153, 0, 0.7); transform: scale(0.95); }
+    #quiz-modal-game { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); display: flex; justify-content: center; align-items: center; visibility: hidden; opacity: 0; transition: opacity 0.3s; z-index: 20; }
+    .quiz-content-game { background: #1a1a2e; border: 3px solid #00f3ff; width: 90%; max-width: 500px; padding: 20px; border-radius: 15px; text-align: center; }
+    .quiz-content-game h2 { font-family: 'Teko', sans-serif; font-size: 2.5rem; color: #00f3ff; margin-bottom: 15px; }
+    .opt-btn-game { background: #0f3460; border: 1px solid #00f3ff; color: #fff; padding: 12px; border-radius: 8px; font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; cursor: pointer; text-align: left; width: 100%; margin-bottom: 8px; transition: 0.2s; }
+    .opt-btn-game:hover { background: #00f3ff; color: #000; font-weight: bold; }
+    #game-over-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1500; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <!-- ALERTA ANTIFRAUDE GLOBAL -->
+  <div id="global-fraud-alert">⚠️ ATENÇÃO: Troca de aba ou janela detectada! Você sofreu penalidade.</div>
+
+  <!-- MENU HUB -->
+  <div id="hub-screen">
+    <h1 class="hub-title">SAFE ZONE:<br>AS CORES DO NOSSO PROPÓSITO</h1>
+    <button class="hub-btn" onclick="openApp('game')">MODO AVENTURA<br><span style="font-size:1.2rem">(Correr, Pular e Loot)</span></button>
+    <button class="hub-btn btn-kahoot" onclick="openApp('kahoot')">MODO CLÁSSICO<br><span style="font-size:1.2rem">(Quiz com Visto Pedagógico)</span></button>
+  </div>
+
+  <!-- MODO CLÁSSICO KAHOOT (Com Antifraude e Visto) -->
+  <div id="kahoot-container" class="hidden">
+    <div class="app-container">
+      <div class="top-controls">
+        <div class="brand-title">⚡ SAFE ZONE • PROJETO DE VIDA</div>
+      </div>
+
+      <!-- TELA 1: INÍCIO KAHOOT -->
+      <div id="start-screen">
+        <div class="anti-rush-badge">🛡️ SISTEMA DE LEITURA CONSCIENTE ATIVADO</div>
+        <h1 class="hero-title">Missão: As Cores do Nosso Propósito</h1>
+        <div class="rules-card">
+          <h4>📋 Regras do Desafio:</h4>
+          • <strong>Tempo de Leitura:</strong> Trava de 4s para ler antes de liberar opções.<br>
+          • <strong>Se Errar:</strong> Trava de 8s para ler a explicação da resposta.<br>
+          • <strong>Anti-Chute:</strong> Respostas menores que 5s geram bloqueio de 15s.<br>
+          • <strong>Visto Pedagógico:</strong> Exige 60% de acerto e tempo médio de 8s por questão.
+        </div>
+        <div class="input-box">
+          <input type="text" id="player-name" placeholder="Digite seu nome completo..." autocomplete="off">
+        </div>
+        <button class="start-btn" onclick="startKahoot()">Iniciar Desafio</button>
+      </div>
+
+      <!-- PAUSA PARA O FOCO -->
+      <div id="rush-alert-screen">
+        <h2 style="font-family:'Montserrat', sans-serif; font-size:2rem; margin-bottom:10px;">⚠️ PAUSA PARA O FOCO!</h2>
+        <p>Você está clicando rápido demais e sem ler as perguntas. Respire fundo e aguarde:</p>
+        <div class="rush-countdown" id="rush-countdown-val">15</div>
+      </div>
+
+      <!-- TELA 2: QUIZ KAHOOT -->
+      <div id="quiz-screen" class="hidden">
+        <div class="quiz-header">
+          <div class="q-badge" id="q-counter">Questão 1 de 40</div>
+          <div class="q-topic" id="q-topic">Tópico</div>
+          <div style="color: #ffd200; font-weight:700;">Pontos: <span id="score-val">0</span></div>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="reading-lock-bar" id="reading-lock-bar">
+          <span>📖 Leia com atenção: liberando em <strong id="reading-countdown">4</strong>s...</span>
+        </div>
+        <div class="question-card" id="question-text">Texto</div>
+        <div class="options-grid" id="options-grid">
+          <button class="option-btn opt-A" id="btn-opt-A" onclick="handleAnswer('A')" disabled><div class="opt-icon">▲</div><div id="opt-A-text">A</div></button>
+          <button class="option-btn opt-B" id="btn-opt-B" onclick="handleAnswer('B')" disabled><div class="opt-icon">◆</div><div id="opt-B-text">B</div></button>
+          <button class="option-btn opt-C" id="btn-opt-C" onclick="handleAnswer('C')" disabled><div class="opt-icon">●</div><div id="opt-C-text">C</div></button>
+          <button class="option-btn opt-D" id="btn-opt-D" onclick="handleAnswer('D')" disabled><div class="opt-icon">■</div><div id="opt-D-text">D</div></button>
+        </div>
+      </div>
+
+      <!-- TELA 3: FEEDBACK -->
+      <div id="feedback-screen" class="hidden">
+        <div class="feedback-banner" id="feedback-banner">
+          <h2 id="feedback-title">Resposta!</h2>
+          <div id="feedback-subtitle">...</div>
+        </div>
+        <div class="feedback-explanation">
+          <strong>Entenda a situação:</strong><br><span id="feedback-exp-text">Explicação</span>
+        </div>
+        <div class="lock-timer-msg" id="lock-timer-msg"></div>
+        <button class="start-btn" id="next-btn" onclick="nextQuestion()" style="padding:12px 30px; font-size:1rem;">Avançar ➔</button>
+      </div>
+
+      <!-- TELA 4: VISTO PEDAGÓGICO FINAL -->
+      <div id="final-screen" class="hidden">
+        <h2 style="font-family:'Montserrat', sans-serif; font-size:2rem; color:#ffd200; margin-bottom:20px;">🎓 Relatório Final</h2>
+        <div class="visto-card">
+          <div class="visto-header">
+            <h3>COMPROVANTE DO VISTO PEDAGÓGICO</h3>
+            <div class="visto-badge" id="visto-status-badge">EM ANÁLISE</div>
+          </div>
+          <div class="visto-row"><span class="label">Estudante:</span><span class="val" id="visto-nome">Nome</span></div>
+          <div class="visto-row"><span class="label">Acertos:</span><span class="val" id="visto-acertos">0 / 40</span></div>
+          <div class="visto-row"><span class="label">Pontuação:</span><span class="val" id="visto-pontos">0 pts</span></div>
+          <div class="visto-row"><span class="label">Tempo Total:</span><span class="val" id="visto-tempo-total">0 min</span></div>
+          <div class="visto-row"><span class="label">Tempo Médio/Questão:</span><span class="val" id="visto-tempo-medio">0s</span></div>
+          <div class="visto-row"><span class="label">Situação da Leitura:</span><span class="val" id="visto-diagnostico">Adequada</span></div>
+          <div class="visto-code" id="visto-hash">#LOG-CEE-0000</div>
+        </div>
+        <button class="start-btn" onclick="location.reload()" style="font-size:1rem;">Voltar ao Menu Principal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODO GAME PLATAFORMA -->
+  <div id="game-ui" class="hidden">
+    <canvas id="gameCanvas"></canvas>
+    <div id="hud-game">
+      <div class="hp-box-game">HP <div class="hp-bar-bg-game"><div id="g-hp-fill" class="hp-bar-fill-game"></div></div></div>
+      <div class="hp-box-game" style="border-color: #00f3ff;">LOOT: <span id="loot-count">0</span>/40</div>
+    </div>
+    <div id="mobile-controls">
+      <div class="dir-btns"><div class="btn-game" id="btn-left">◀</div><div class="btn-game" id="btn-right">▶</div></div>
+      <div class="btn-game" id="btn-jump" style="width: 75px; height: 75px;">▲</div>
+    </div>
+    <div id="quiz-modal-game">
+      <div class="quiz-content-game">
+        <h2>CAIXA DE LOOT</h2>
+        <p id="question-text-game" style="font-size:1.2rem; margin-bottom:15px;"></p>
+        <div id="options-container-game"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA DE GAME OVER (Aventura) -->
+  <div id="game-over-screen" class="hidden">
+    <h1 style="font-family:'Teko', sans-serif; font-size:6rem; margin:0;" id="game-over-title">ELIMINADO</h1>
+    <p id="game-over-msg" style="font-size:2rem; margin-bottom:30px;">A falta de propósito consumiu sua energia.</p>
+    <button class="hub-btn" onclick="location.reload()" style="font-size:1.5rem;">VOLTAR AO MENU</button>
+  </div>
+
+  <script>
+    /* ==================================================
+       GLOBAL & ANTIFRAUDE DE NAVEGADOR
+    ================================================== */
+    document.addEventListener('contextmenu', e => e.preventDefault()); 
+    document.addEventListener('copy', e => e.preventDefault()); 
+    document.addEventListener('keydown', e => {
+      if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) {
+        e.preventDefault(); 
+      }
+    });
+
+    let activeApp = '';
+    window.addEventListener('blur', () => {
+      if (activeApp !== '') {
+        const alertBox = document.getElementById('global-fraud-alert');
+        alertBox.style.display = 'block';
+        if (activeApp === 'kahoot' && k_hp > 0) {
+            k_score = Math.max(0, k_score - 500);
+            if(document.getElementById('score-val')) document.getElementById('score-val').innerText = k_score;
+        } else if (activeApp === 'game') {
+            atualizarHpGame(-15);
+        }
+        setTimeout(() => { alertBox.style.display = 'none'; }, 3000);
+      }
+    });
+
+    function openApp(app) {
+      document.getElementById('hub-screen').classList.add('hidden');
+      activeApp = app;
+      if (app === 'kahoot') {
+        document.getElementById('kahoot-container').classList.remove('hidden');
+      } else {
+        document.getElementById('game-ui').classList.remove('hidden');
+        iniciarGame();
+      }
+    }
+
+    /* ==================================================
+       BANCO DE 40 QUESTÕES: MOTIVAÇÃO E SIGNIFICADO
+    ================================================== */
+    const quizzes = [
+      {
+        topic: "Saúde e Propósito",
+        text: "A pesquisa realizada em 2019 pela Universidade da Califórnia revelou dados importantes sobre a forma como encaramos nossos dias. Segundo o estudo, buscar um propósito claro está diretamente ligado a um aspecto fundamental da nossa existência. Esse aspecto é a melhoria da nossa:",
+        o: [
+          {t: "capacidade de memorizar conteúdos didáticos.", c: false},
+          {t: "saúde física e também psicológica geral.", c: true},
+          {t: "aceitação em grupos sociais de destaque.", c: false},
+          {t: "facilidade de ignorar problemas cotidianos.", c: false}
+        ],
+        exp: "O estudo comprovou que ter propósito afeta positivamente a saúde física e psicológica."
+      },
+      {
+        topic: "Rotina",
+        text: "Muitas vezes, ao acordar, um estudante cumpre sua rotina de ir à escola de forma mecânica, sem refletir sobre o motivo de suas ações. Esse comportamento de realizar tarefas vazias e repetitivas é frequentemente chamado de:",
+        o: [
+          {t: "agir focado no modo de sobrevivência.", c: false},
+          {t: "operar constantemente no piloto automático.", c: true},
+          {t: "desenvolver resiliência frente aos desafios.", c: false},
+          {t: "aplicar a gestão de tempo produtiva.", c: false}
+        ],
+        exp: "Agir no piloto automático significa fazer as coisas mecanicamente, sem refletir sobre o motivo."
+      },
+      {
+        topic: "Metáfora da Travessia",
+        text: "Ao refletirmos sobre a nossa 'travessia diária', entendemos que o caminho representa a nossa vida e os nossos projetos. Nesse contexto, as adversidades e os ventos contrários que enfrentamos simbolizam:",
+        o: [
+          {t: "os atalhos que facilitam as nossas conquistas.", c: false},
+          {t: "os obstáculos que enfrentamos no dia a dia.", c: true},
+          {t: "as recompensas financeiras do nosso futuro.", c: false},
+          {t: "as amizades que fazemos durante a escola.", c: false}
+        ],
+        exp: "As adversidades diárias representam os obstáculos e desafios naturais de qualquer projeto."
+      },
+      {
+        topic: "Desistência",
+        text: "Diante de um grande obstáculo na rotina, muitas pessoas decidem desistir e abandonar seus planos. Sob a ótica da nossa reflexão, essa atitude de desistência ocorre principalmente porque essas pessoas:",
+        o: [
+          {t: "encontraram um caminho mais curto e fácil.", c: false},
+          {t: "perderam a motivação e o sentido da travessia.", c: true},
+          {t: "alcançaram seus objetivos antes do tempo previsto.", c: false},
+          {t: "perceberam que a jornada era segura e confortável.", c: false}
+        ],
+        exp: "A desistência ocorre quando perdemos a motivação e esquecemos o sentido daquilo que buscamos."
+      },
+      {
+        topic: "Curta Alike",
+        text: "O curta-metragem de animação 'Alike' apresenta uma cidade onde a maioria dos habitantes vive em tons de cinza. Visualmente, essa paleta de cores apagadas foi utilizada pelos criadores para representar uma sociedade:",
+        o: [
+          {t: "movida por propósitos criativos e inovadores.", c: false},
+          {t: "presa em rotinas burocráticas e sem motivação.", c: true},
+          {t: "focada no desenvolvimento emocional das pessoas.", c: false},
+          {t: "dedicada a atividades de lazer e entretenimento.", c: false}
+        ],
+        exp: "A ausência de cor simboliza uma rotina apática, burocrática e esvaziada de significado."
+      },
+      {
+        topic: "Perda da Essência",
+        text: "No início da animação 'Alike', a criança (Paste) possui uma cor vibrante, que vai se perdendo ao longo do tempo. A perda dessa cor acontece justamente quando o estudante:",
+        o: [
+          {t: "começa a brincar livremente com seus colegas.", c: false},
+          {t: "é forçado a realizar tarefas de forma mecânica.", c: true},
+          {t: "descobre novos talentos artísticos e musicais.", c: false},
+          {t: "recebe apoio e compreensão de seus professores.", c: false}
+        ],
+        exp: "A imposição de tarefas puramente mecânicas, sem espaço para a criação, apaga o entusiasmo (cor)."
+      },
+      {
+        topic: "Instintos e Motivação",
+        text: "Quando um estudante realiza suas tarefas diárias apenas por medo de receber uma bronca de seus responsáveis, dizemos que ele está agindo por um instinto básico. Esse instinto é classificado como:",
+        o: [
+          {t: "busca por autonomia.", c: false},
+          {t: "projeto de vida claro.", c: false},
+          {t: "instinto de sobrevivência.", c: true},
+          {t: "desenvolvimento pessoal.", c: false}
+        ],
+        exp: "Agir apenas por medo da punição é um mero instinto de sobrevivência, não um propósito real."
+      },
+      {
+        topic: "Sustentação do Esforço",
+        text: "Estudar motivado unicamente pelo medo de uma punição possui uma consequência prática negativa a longo prazo. Quando a matéria fica extremamente difícil e o cansaço mental bate, a tendência desse estudante é:",
+        o: [
+          {t: "redobrar o esforço para aprender o conteúdo.", c: false},
+          {t: "desistir do estudo e aceitar a consequência.", c: true},
+          {t: "buscar formas criativas de resolver o problema.", c: false},
+          {t: "desenvolver uma paixão genuína pela disciplina.", c: false}
+        ],
+        exp: "O medo é um motivador fraco a longo prazo. Diante de grande dificuldade, a tendência é a desistência."
+      },
+      {
+        topic: "Fuga da Rotina",
+        text: "Durante a dinâmica do quadro, refletimos sobre o objetivo de participar dos Jogos na Rede. Se o propósito de um estudante for apenas perder o horário de aula, o seu comportamento na quadra será caracterizado pela:",
+        o: [
+          {t: "dedicação extrema aos treinamentos da equipe.", c: false},
+          {t: "superação pessoal após uma derrota no jogo.", c: false},
+          {t: "falta de compromisso e engajamento esportivo.", c: true},
+          {t: "liderança inspiradora perante os seus colegas.", c: false}
+        ],
+        exp: "Se não há propósito no esporte, a participação torna-se vazia, resultando em falta de compromisso."
+      },
+      {
+        topic: "Esporte e Propósito",
+        text: "Um estudante que treina até a exaustão para os Jogos na Rede e volta no dia seguinte mesmo após uma derrota demonstra ter um propósito forte. Esse esporte, quando levado com significado, ensina fundamentalmente sobre:",
+        o: [
+          {t: "como evitar qualquer tipo de falha.", c: false},
+          {t: "como superar obstáculos e frustrações.", c: true},
+          {t: "como garantir privilégios na escola.", c: false},
+          {t: "como dispensar o auxílio de terceiros.", c: false}
+        ],
+        exp: "Com significado, o esporte vira uma grande escola sobre como superar frustrações e obstáculos."
+      },
+      {
+        topic: "Atitude Prática",
+        text: "Planejar um intercâmbio no 8º ano pode parecer um sonho muito distante devido à questão financeira. No entanto, o estudante que possui um propósito inabalável começa imediatamente a tomar atitudes reais, como por exemplo:",
+        o: [
+          {t: "esperar que alguém financie a sua viagem.", c: false},
+          {t: "abandonar as matérias regulares da escola.", c: false},
+          {t: "estudar um idioma novo por conta própria.", c: true},
+          {t: "ignorar as dificuldades reais de sua família.", c: false}
+        ],
+        exp: "Um propósito inabalável gera ação imediata, como estudar o idioma de forma independente."
+      },
+      {
+        topic: "Força do Significado",
+        text: "O que diferencia a pessoa que desiste no meio do caminho daquela pessoa que continua a travessia, mesmo enfrentando ventos contrários, é exatamente o:",
+        o: [
+          {t: "tamanho do significado que o objetivo possui.", c: true},
+          {t: "nível de inteligência adquirido no nascimento.", c: false},
+          {t: "tempo livre que a pessoa possui em sua casa.", c: false},
+          {t: "recurso financeiro que a pessoa tem guardado.", c: false}
+        ],
+        exp: "O tamanho do significado é o combustível que nos faz continuar quando as coisas ficam difíceis."
+      },
+      {
+        topic: "Significado Escolar",
+        text: "Encontrar motivação nas atividades cotidianas significa transformar obrigações cansativas em algo maior. Quando damos um significado real a uma tarefa escolar, nós conseguimos transformá-la em um(a):",
+        o: [
+          {t: "punição inevitável da nossa juventude.", c: false},
+          {t: "degrau importante para o nosso futuro.", c: true},
+          {t: "exigência exclusiva de nossos pais.", c: false},
+          {t: "passatempo rápido sem muito valor.", c: false}
+        ],
+        exp: "As tarefas escolares, quando têm significado, tornam-se degraus essenciais para conquistas futuras."
+      },
+      {
+        topic: "Introspecção",
+        text: "A reflexão escrita feita no caderno foi baseada em um pacto de privacidade. A principal função de escrever sem que os colegas ou o professor leiam é garantir que o estudante consiga:",
+        o: [
+          {t: "decorar as palavras exatas do quadro.", c: false},
+          {t: "ser honesto consigo mesmo e seus sonhos.", c: true},
+          {t: "criar uma história de ficção emocionante.", c: false},
+          {t: "responder o que a sociedade espera dele.", c: false}
+        ],
+        exp: "A privacidade anula a pressão social, permitindo uma conexão honesta com os próprios sentimentos."
+      },
+      {
+        topic: "Empatia e Propósito",
+        text: "No curta 'Alike', o pai decide mudar a rota e quebrar a rotina cinzenta ao perceber que o seu filho estava desanimado. Essa atitude demonstra que os propósitos pessoais também estão ligados à nossa capacidade de:",
+        o: [
+          {t: "impor regras mais severas aos outros.", c: false},
+          {t: "ter empatia e cuidar de quem amamos.", c: true},
+          {t: "ignorar as necessidades da nossa família.", c: false},
+          {t: "focar apenas no nosso sucesso no trabalho.", c: false}
+        ],
+        exp: "O cuidado com o bem-estar de quem amamos é, por si só, um dos propósitos mais fortes que existem."
+      },
+      {
+        topic: "Imediatismo",
+        text: "Viver de forma 'acelerada e imediatista' significa buscar recompensas instantâneas sem pensar no futuro. O grande risco de viver dessa maneira é transformar os nossos dias em:",
+        o: [
+          {t: "momentos de profundo aprendizado diário.", c: false},
+          {t: "ações focadas em grandes projetos de vida.", c: false},
+          {t: "tarefas vazias e sem nenhum sentido real.", c: true},
+          {t: "espaços de constante inovação tecnológica.", c: false}
+        ],
+        exp: "O imediatismo esvazia a vida de grandes projetos, reduzindo-a a ações rápidas e sem sentido."
+      },
+      {
+        topic: "Busca Ativa",
+        text: "Segundo a provocação inicial da aula, quando não compreendemos a razão das nossas ações, a nossa rotina torna-se pesada. Para evitar esse peso, precisamos exercitar constantemente a nossa:",
+        o: [
+          {t: "capacidade de esquecer as responsabilidades.", c: false},
+          {t: "busca ativa por entusiasmo e significado.", c: true},
+          {t: "obediência cega a todas as regras externas.", c: false},
+          {t: "habilidade de delegar as tarefas difíceis.", c: false}
+        ],
+        exp: "Encontrar significado requer busca ativa, tentativa e erro para descobrir o que realmente nos move."
+      },
+      {
+        topic: "Autonomia",
+        text: "O propósito autêntico para querer dominar os conhecimentos escolares, em vez de estudar apenas por pressão dos pais, deve estar focado na:",
+        o: [
+          {t: "construção de um futuro com autonomia.", c: true},
+          {t: "garantia de evitar castigos na adolescência.", c: false},
+          {t: "aceitação imediata pelos colegas de classe.", c: false},
+          {t: "tentativa de parecer superior aos demais.", c: false}
+        ],
+        exp: "A educação genuína visa à libertação e à autonomia do indivíduo perante o mundo."
+      },
+      {
+        topic: "Trabalho Mecânico",
+        text: "A metáfora visual do curta 'Alike' nos ensina sobre o mercado de trabalho futuro. Trabalhar apenas de forma mecânica e copiando padrões faz com que o indivíduo:",
+        o: [
+          {t: "destaque-se pela sua criatividade única.", c: false},
+          {t: "perca a sua capacidade de ser original.", c: true},
+          {t: "torne-se o líder criativo de sua equipe.", c: false},
+          {t: "desenvolva um pensamento muito crítico.", c: false}
+        ],
+        exp: "Agir como uma máquina retira o traço mais humano e valioso que possuímos: a criatividade original."
+      },
+      {
+        topic: "Resiliência",
+        text: "'As dificuldades fazem parte do caminho, mas não devem ser limitadoras'. Essa frase nos convida a entender os obstáculos não como muros intransponíveis, mas como desafios que exigem de nós:",
+        o: [
+          {t: "aceitação passiva e retorno ao início.", c: false},
+          {t: "redefinição de rotas e novas estratégias.", c: true},
+          {t: "transferência de culpa para os colegas.", c: false},
+          {t: "negação completa do problema enfrentado.", c: false}
+        ],
+        exp: "Obstáculos não servem para nos parar, mas para nos forçar a criar rotas e soluções mais inteligentes."
+      },
+      {
+        topic: "Tipos de Motivação",
+        text: "Compreender que a aprendizagem escolar é um meio para realizar sonhos e não um fim em si mesma ajuda o estudante a mudar a sua postura. Essa mudança de postura é conhecida como:",
+        o: [
+          {t: "desmotivação crônica e passageira.", c: false},
+          {t: "motivação intrínseca e duradoura.", c: true},
+          {t: "reflexão teórica e sem fundamento.", c: false},
+          {t: "obrigação externa e impositiva.", c: false}
+        ],
+        exp: "A motivação intrínseca nasce do próprio indivíduo, sustentando o foco muito além de notas ou cobranças."
+      },
+      {
+        topic: "Provocação Filosófica",
+        text: "Quando questionamos 'Por que levantamos da cama hoje?', estamos utilizando uma técnica filosófica e reflexiva para causar incômodo positivo. Esse incômodo tem como função principal:",
+        o: [
+          {t: "provocar ansiedade sem solução prática.", c: false},
+          {t: "estimular a autoavaliação do estudante.", c: true},
+          {t: "julgar o comportamento de outras pessoas.", c: false},
+          {t: "padronizar as respostas de toda a turma.", c: false}
+        ],
+        exp: "O objetivo das perguntas socráticas é retirar o estudante da passividade e estimulá-lo a pensar sobre si."
+      },
+      {
+        topic: "Autoconhecimento",
+        text: "Se um estudante se sente 'apagado' e sem motivação, assim como os personagens cinzentos do curta-metragem, o primeiro passo para resgatar sua vontade de agir é:",
+        o: [
+          {t: "afastar-se de todas as pessoas conhecidas.", c: false},
+          {t: "parar de estudar e abandonar seus planos.", c: false},
+          {t: "identificar o motivo real de sua tristeza.", c: true},
+          {t: "culpar o sistema educacional pelos erros.", c: false}
+        ],
+        exp: "Para solucionar um estado de apatia, o primeiro passo é sempre a investigação interna das causas."
+      },
+      {
+        topic: "Superação Prática",
+        text: "Superar o obstáculo financeiro no sonho de fazer um intercâmbio exige mais do que apenas vontade; exige atitude prática. Uma atitude condizente com a força de um propósito forte é:",
+        o: [
+          {t: "abandonar o objetivo por ser difícil demais.", c: false},
+          {t: "buscar bolsas de estudo com antecedência.", c: true},
+          {t: "reclamar da falta de oportunidades no país.", c: false},
+          {t: "esperar que as condições mudem sozinhas.", c: false}
+        ],
+        exp: "A força do propósito é convertida em atitudes de busca por soluções ativas, como correr atrás de bolsas."
+      },
+      {
+        topic: "Impacto Coletivo",
+        text: "Quando as nossas ações impactam o ambiente ao nosso redor de maneira positiva, criando um círculo de boas atitudes, nós estamos exercendo o que chamamos de:",
+        o: [
+          {t: "responsabilidade recíproca e empatia.", c: true},
+          {t: "isolamento voluntário e cauteloso.", c: false},
+          {t: "individualismo moderno e focado.", c: false},
+          {t: "submissão passiva às regras locais.", c: false}
+        ],
+        exp: "A responsabilidade recíproca garante que a minha motivação impulsione também as pessoas à minha volta."
+      },
+      {
+        topic: "Valor do Conhecimento",
+        text: "O 'modo de sobrevivência' no ambiente escolar é caracterizado pelo mínimo esforço necessário apenas para avançar de ano. Para transformar sobrevivência em propósito, o estudante precisa:",
+        o: [
+          {t: "diminuir a quantidade de estudo.", c: false},
+          {t: "enxergar valor no conhecimento.", c: true},
+          {t: "colar durante as provas difíceis.", c: false},
+          {t: "faltar às aulas menos importantes.", c: false}
+        ],
+        exp: "Só saímos do modo de sobrevivência quando enxergamos o valor e a aplicação real do que estudamos."
+      },
+      {
+        topic: "O Peso da Obrigação",
+        text: "Quando o curta-metragem mostra a mochila do personagem Paste ficando extremamente pesada por causa dos livros, isso simboliza, de forma figurada, que a educação imposta sem significado torna-se:",
+        o: [
+          {t: "uma ferramenta essencial de libertação intelectual.", c: false},
+          {t: "um fardo burocrático e exaustivo para a mente.", c: true},
+          {t: "um instrumento valioso de interação criativa.", c: false},
+          {t: "uma oportunidade rápida de diversão na escola.", c: false}
+        ],
+        exp: "Sem um propósito claro, o estudo deixa de ser um caminho para o futuro e vira apenas uma carga mental."
+      },
+      {
+        topic: "Obstáculos Emocionais",
+        text: "As adversidades encontradas na jornada da vida são diversas. Qual das opções abaixo representa um obstáculo emocional comum que faz com que muitos parem no meio do caminho?",
+        o: [
+          {t: "O medo constante de falhar perante os outros.", c: true},
+          {t: "A falta momentânea de recursos financeiros.", c: false},
+          {t: "O excesso de conteúdo passado nos livros.", c: false},
+          {t: "A distância física entre a casa e a escola.", c: false}
+        ],
+        exp: "O medo de falhar e a preocupação com o julgamento são paralisantes e matam a iniciativa."
+      },
+      {
+        topic: "Rotina e Sentido",
+        text: "Uma das lições mais importantes debatidas na aula é que a rotina só é prejudicial quando ela é:",
+        o: [
+          {t: "organizada através de horários fixos.", c: false},
+          {t: "orientada por um projeto de vida real.", c: false},
+          {t: "executada sem sentido ou reflexão prévia.", c: true},
+          {t: "equilibrada com momentos de lazer.", c: false}
+        ],
+        exp: "A rotina em si organiza a vida. O problema ocorre quando a seguimos cegamente, sem qualquer propósito."
+      },
+      {
+        topic: "Ação Estratégica",
+        text: "Ao preenchermos as colunas no quadro (Intercâmbio, Jogos, Aprovação), ficou evidente que objetivos diferentes possuem algo fundamental em comum. Para serem alcançados, todos eles necessitam da superação de:",
+        o: [
+          {t: "obstáculos reais através do planejamento.", c: true},
+          {t: "desejos impostos pela mídia tradicional.", c: false},
+          {t: "atividades de lazer e entretenimento geral.", c: false},
+          {t: "limites físicos definidos pela biologia.", c: false}
+        ],
+        exp: "Qualquer objetivo, não importa a área, demanda um planejamento real para superar as dificuldades do caminho."
+      },
+      {
+        topic: "Influência Positiva",
+        text: "Se uma pessoa encontra propósito em seu trabalho, como o pai do curta 'Alike' no final da animação, ela adquire a capacidade de:",
+        o: [
+          {t: "trabalhar menos horas com o mesmo salário.", c: false},
+          {t: "influenciar positivamente quem está ao redor.", c: true},
+          {t: "isolar-se completamente dos problemas alheios.", c: false},
+          {t: "exigir que as pessoas mudem as suas vidas.", c: false}
+        ],
+        exp: "Um indivíduo motivado irradia essa energia, sendo capaz de resgatar pessoas ao seu redor da apatia."
+      },
+      {
+        topic: "Foco e Distrações",
+        text: "Em um mundo altamente estimulante devido às telas e redes sociais, encontrar foco para atividades a longo prazo tornou-se um desafio. Para não perder a atenção, o estudante deve:",
+        o: [
+          {t: "apagar todas as suas redes sociais para sempre.", c: false},
+          {t: "ancorar sua atenção em um significado profundo.", c: true},
+          {t: "seguir todas as tendências lançadas na internet.", c: false},
+          {t: "rejeitar a tecnologia em favor de métodos antigos.", c: false}
+        ],
+        exp: "As distrações imediatas só perdem a força quando o nosso foco está ancorado em um propósito inegociável."
+      },
+      {
+        topic: "Atitude Resiliente",
+        text: "Qualifique a atitude de um estudante que, diante de uma nota ruim, decide analisar seus erros, mudar seu método de estudo e buscar ajuda dos professores:",
+        o: [
+          {t: "Atitude focada no modo automático de ação.", c: false},
+          {t: "Atitude fundamentada na desistência passiva.", c: false},
+          {t: "Atitude resiliente impulsionada por propósito.", c: true},
+          {t: "Atitude revoltada contra as regras escolares.", c: false}
+        ],
+        exp: "Avaliar falhas, recalcular a rota e tentar novamente são características essenciais da resiliência."
+      },
+      {
+        topic: "Ambiente Acolhedor",
+        text: "No curta 'Alike', a criatividade é constantemente podada (cortada) pela rotina mecânica da escola e do trabalho. O incentivo ao aplauso na nossa sala de aula teve o objetivo de combater essa poda, promovendo um ambiente de:",
+        o: [
+          {t: "competição acirrada entre os estudantes.", c: false},
+          {t: "acolhimento e valorização das ideias.", c: true},
+          {t: "silêncio absoluto durante as dinâmicas.", c: false},
+          {t: "memorização rápida de regras rígidas.", c: false}
+        ],
+        exp: "O aplauso quebra o julgamento, criando um local seguro para as pessoas demonstrarem suas vontades."
+      },
+      {
+        topic: "Benefícios Psicológicos",
+        text: "A Universidade da Califórnia destacou benefícios à saúde para quem possui propósito. Do ponto de vista psicológico, viver com significado ajuda o indivíduo a combater diretamente sentimentos de:",
+        o: [
+          {t: "euforia e agitação mental exagerada.", c: false},
+          {t: "apatia, depressão e desânimo crônico.", c: true},
+          {t: "confiança e foco nas relações interpessoais.", c: false},
+          {t: "energia física extrema durante os estudos.", c: false}
+        ],
+        exp: "O sentido de vida age como um antídoto poderoso contra os quadros de apatia, desânimo e depressão."
+      },
+      {
+        topic: "Ferramentas para o Futuro",
+        text: "É possível afirmar que um estudante compreendeu a essência da aula de hoje quando ele passa a enxergar as disciplinas curriculares não como obrigações isoladas, mas sim como:",
+        o: [
+          {t: "tarefas exclusivas do período da manhã.", c: false},
+          {t: "obstáculos criados para atrapalhar a vida.", c: false},
+          {t: "ferramentas úteis para a sua construção futura.", c: true},
+          {t: "regras inventadas para controlar a juventude.", c: false}
+        ],
+        exp: "O conhecimento transforma-se de um 'mal necessário' para a principal ferramenta de construção de vida."
+      },
+      {
+        topic: "Competências Socioemocionais",
+        text: "A ação de 'aplaudir os relatos uns dos outros' após a leitura dos propósitos serve para reforçar uma importante competência socioemocional, conhecida como:",
+        o: [
+          {t: "respeito e empatia pelo projeto alheio.", c: true},
+          {t: "individualismo focado no sucesso próprio.", c: false},
+          {t: "habilidade de memorização de narrativas.", c: false},
+          {t: "comunicação persuasiva e agressiva.", c: false}
+        ],
+        exp: "Incentivar as conquistas e sonhos dos colegas é o pilar fundamental do respeito e da empatia."
+      },
+      {
+        topic: "Bússola Interna",
+        text: "Se o nosso projeto de vida fosse uma bússola, os obstáculos do dia a dia seriam as montanhas no caminho. Diante de uma montanha muito alta, o papel do propósito é nos fornecer energia para:",
+        o: [
+          {t: "fingir que a montanha não existe na rota.", c: false},
+          {t: "esperar que alguém nos carregue até o topo.", c: false},
+          {t: "buscar formas de escalar ou contornar o relevo.", c: true},
+          {t: "quebrar a bússola e acampar no mesmo lugar.", c: false}
+        ],
+        exp: "A bússola (propósito) nos dá a direção e a força para escalar ou contornar qualquer montanha (obstáculo)."
+      },
+      {
+        topic: "Consequências da Apatia",
+        text: "A vida em 'piloto automático' é confortável a curto prazo porque não exige que o cérebro tome decisões difíceis. Porém, o custo a longo prazo desse conforto é a:",
+        o: [
+          {t: "conquista de todos os objetivos com facilidade.", c: false},
+          {t: "perda do controle sobre o próprio destino.", c: true},
+          {t: "melhoria significativa da saúde emocional.", c: false},
+          {t: "garantia de um futuro profissional brilhante.", c: false}
+        ],
+        exp: "Quando não fazemos escolhas ativas (piloto automático), terceiros ou o acaso decidem o nosso destino."
+      },
+      {
+        topic: "Consolidação da Aula",
+        text: "Qual é o aprendizado prático consolidado ao final desta aula para que a rotina escolar não adoeça o estudante?",
+        o: [
+          {t: "Abandonar qualquer tarefa que pareça levemente difícil ou cansativa.", c: false},
+          {t: "Compreender o significado das ações para não transformá-las em fardo.", c: true},
+          {t: "Reclamar diariamente das regras para aliviar a tensão do ambiente.", c: false},
+          {t: "Realizar as tarefas apenas nos dias em que houver muita inspiração.", c: false}
+        ],
+        exp: "Identificar o motivo de nossas ações transforma obrigações desgastantes em caminhos significativos."
+      }
+    ];
+
+    /* ==================================================
+       LÓGICA KAHOOT (Com Antifraude)
+    ================================================== */
+    let k_idx = 0; let k_score = 0; let k_corrects = 0; let k_hp = 100;
+    let k_fastCount = 0; let k_startTime = 0; let k_qStartTime = 0;
+    let readLockInt, fbLockInt, k_locked = true;
+
+    function startKahoot() {
+      const name = document.getElementById('player-name').value.trim();
+      if (!name) return alert("Digite seu nome completo!");
+      document.getElementById('start-screen').classList.add('hidden');
+      document.getElementById('quiz-screen').classList.remove('hidden');
+      k_idx = 0; k_score = 0; k_corrects = 0; k_hp = 100; k_fastCount = 0;
+      k_startTime = Date.now();
+      loadKahootQuestion();
+    }
+
+    function loadKahootQuestion() {
+      clearInterval(readLockInt);
+      if (k_idx >= quizzes.length) return showKahootFinal();
+
+      const q = quizzes[k_idx];
+      document.getElementById('q-counter').innerText = `Questão ${k_idx+1} de 40`;
+      document.getElementById('q-topic').innerText = q.topic;
+      document.getElementById('score-val').innerText = k_score;
+      document.getElementById('question-text').innerText = q.text;
+      document.getElementById('progress-fill').style.width = `${(k_idx/40)*100}%`;
+
+      const letters = ['A', 'B', 'C', 'D'];
+      const mixed = [...q.o].sort(() => Math.random() - 0.5);
+      
+      letters.forEach((l, i) => {
+        document.getElementById(`opt-${l}-text`).innerText = mixed[i].t;
+        document.getElementById(`btn-opt-${l}`).dataset.correct = mixed[i].c;
+      });
+
+      // TRAVA DE 4 SEGUNDOS
+      k_locked = true; let secs = 4;
+      ['A','B','C','D'].forEach(l => { 
+        document.getElementById(`btn-opt-${l}`).disabled = true; 
+        document.getElementById(`btn-opt-${l}`).style.border = 'none';
+      });
+      const lockBar = document.getElementById('reading-lock-bar');
+      lockBar.className = 'reading-lock-bar';
+      lockBar.innerHTML = `<span>📖 Leia com atenção: liberando em <strong id="reading-countdown">${secs}</strong>s...</span>`;
+
+      k_qStartTime = Date.now();
+      readLockInt = setInterval(() => {
+        secs--;
+        document.getElementById('reading-countdown').innerText = secs;
+        if(secs <= 0) {
+          clearInterval(readLockInt); k_locked = false;
+          ['A','B','C','D'].forEach(l => document.getElementById(`btn-opt-${l}`).disabled = false);
+          lockBar.className = 'reading-lock-bar unlocked';
+          lockBar.innerHTML = `<span>✅ Botões liberados!</span>`;
+        }
+      }, 1000);
+    }
+
+    function handleAnswer(letter) {
+      if(k_locked) return;
+      const duration = (Date.now() - k_qStartTime)/1000;
+      const btn = document.getElementById(`btn-opt-${letter}`);
+      const isCorrect = btn.dataset.correct === "true";
+
+      // ANTI-RUSH: 15s DE PUNIÇÃO
+      if(duration < 5) k_fastCount++; else k_fastCount = Math.max(0, k_fastCount-1);
+      if(k_fastCount >= 3) return triggerRush();
+
+      if(isCorrect) { k_corrects++; k_score += 1000; btn.style.border = '5px solid #00ff00'; }
+      else { btn.style.border = '5px solid #ff0000'; }
+
+      document.getElementById('quiz-screen').classList.add('hidden');
+      document.getElementById('feedback-screen').classList.remove('hidden');
+
+      const banner = document.getElementById('feedback-banner');
+      const nx = document.getElementById('next-btn');
+      const lockMsg = document.getElementById('lock-timer-msg');
+      document.getElementById('feedback-exp-text').innerText = quizzes[k_idx].exp;
+
+      if(isCorrect) {
+        banner.className = 'feedback-banner correct';
+        document.getElementById('feedback-title').innerText = "Correto! 🎉";
+        document.getElementById('feedback-subtitle').innerText = "+1000 pontos";
+        lockMsg.innerText = ""; nx.disabled = false; nx.innerText = "Avançar ➔";
+      } else {
+        banner.className = 'feedback-banner incorrect';
+        document.getElementById('feedback-title').innerText = "Erro Crítico! ❌";
+        document.getElementById('feedback-subtitle').innerText = "Leia a explicação para não errar novamente.";
+        
+        // TEMPO DE FOCO NO ERRO
+        let cd = 8; nx.disabled = true;
+        lockMsg.innerText = `⏳ Retendo foco. Liberando em ${cd}s...`;
+        nx.innerText = `Aguarde (${cd}s)`;
+        clearInterval(fbLockInt);
+        fbLockInt = setInterval(() => {
+          cd--;
+          if(cd > 0) { lockMsg.innerText = `⏳ Retendo foco. Liberando em ${cd}s...`; nx.innerText = `Aguarde (${cd}s)`; }
+          else { clearInterval(fbLockInt); lockMsg.innerText = "✅ Pode prosseguir!"; nx.disabled = false; nx.innerText = "Avançar ➔"; }
+        }, 1000);
+      }
+    }
+
+    function triggerRush() {
+      k_fastCount = 0;
+      document.getElementById('quiz-screen').classList.add('hidden');
+      document.getElementById('rush-alert-screen').style.display = 'block';
+      let rSec = 15;
+      document.getElementById('rush-countdown-val').innerText = rSec;
+      const t = setInterval(() => {
+        rSec--; document.getElementById('rush-countdown-val').innerText = rSec;
+        if(rSec <= 0) {
+          clearInterval(t); document.getElementById('rush-alert-screen').style.display = 'none';
+          document.getElementById('quiz-screen').classList.remove('hidden'); loadKahootQuestion();
+        }
+      }, 1000);
+    }
+
+    function nextQuestion() {
+      k_idx++;
+      document.getElementById('feedback-screen').classList.add('hidden');
+      if(k_idx < quizzes.length) { document.getElementById('quiz-screen').classList.remove('hidden'); loadKahootQuestion(); }
+      else { showKahootFinal(); }
+    }
+
+    function showKahootFinal() {
+      document.getElementById('quiz-screen').classList.add('hidden');
+      document.getElementById('final-screen').classList.remove('hidden');
+      
+      const totalS = Math.round((Date.now() - k_startTime)/1000);
+      const avg = Math.round(totalS/40);
+      const acc = Math.round((k_corrects/40)*100);
+      const name = document.getElementById('player-name').value;
+
+      document.getElementById('visto-nome').innerText = name;
+      document.getElementById('visto-acertos').innerText = `${k_corrects} / 40 (${acc}%)`;
+      document.getElementById('visto-pontos').innerText = `${k_score} pts`;
+      document.getElementById('visto-tempo-total').innerText = `${(totalS/60).toFixed(1)} min`;
+      document.getElementById('visto-tempo-medio').innerText = `${avg}s`;
+
+      const b = document.getElementById('visto-status-badge');
+      const d = document.getElementById('visto-diagnostico');
+      
+      // CRITÉRIO DO VISTO PEDAGÓGICO
+      if(acc >= 60 && avg >= 8) {
+        b.className = 'visto-badge aprovado'; b.innerText = '✅ VISTO CONCEDIDO';
+        d.innerText = 'Leitura atenta e bom aproveitamento'; d.style.color = '#2e7d32';
+      } else {
+        b.className = 'visto-badge recusado'; b.innerText = '❌ NÃO VALIDADO';
+        d.innerText = (acc < 60) ? 'Acertos abaixo do mínimo (60%)' : 'Chute detectado (Média < 8s)';
+        d.style.color = '#c62828';
+      }
+      document.getElementById('visto-hash').innerText = `#LOG-${name.substring(0,3).toUpperCase()}-${acc}P-${totalS}S`;
+    }
+
+    /* ==================================================
+       LÓGICA MODO GAME (PLATAFORMA)
+    ================================================== */
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    let g_state = 'PLAYING'; let g_camX = 0; let g_hp = 100; let g_loot = 0;
+    let g_frame; const g_keys = { r: false, l: false, u: false };
+    
+    const p = { x:50, y:100, w:45, h:45, vx:0, vy:0, speed:6, jump:-13.5, gnd:false, lastX:50, lastY:0, exp:'N', expT:0 };
+    let g_plats = [], g_loots = [], g_trees = [], g_portal = {}, g_width = 0;
+
+    function iniciarGame() {
+      canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+      g_plats=[]; g_loots=[]; g_trees=[]; g_camX = 0; g_hp = 100; g_loot = 0;
+      atualizarHpGame(0); let cx = 0; const gY = canvas.height - 80;
+      g_plats.push({x:0, y:gY, w:400, h:80});
+      const treeColors = ['#2d6a4f', '#40916c', '#52b788', '#d00000', '#f48c06', '#9b59b6', '#e67e22'];
+
+      for(let i=0; i<40; i++) {
+        cx += 300 + Math.random()*150; let w = 200 + Math.random()*100; let y = gY - Math.random()*120;
+        g_plats.push({x:cx, y:y, w:w, h:50});
+        g_loots.push({x:cx+(w/2)-15, y:y-45, w:35, h:35, active:true, idx:i});
+
+        if (Math.random() > 0.4) {
+          let numTrees = Math.floor(Math.random() * 2) + 1;
+          for(let t=0; t<numTrees; t++) {
+              let treeHeight = 70 + Math.random() * 80;
+              let treeX = cx + Math.random() * (w - 40) + 10;
+              let fruits = [];
+              let numFruits = Math.floor(Math.random() * 4) + 2;
+              for(let f=0; f<numFruits; f++) {
+                  fruits.push({ offX: (Math.random() - 0.5) * 70, offY: -treeHeight - 10 - (Math.random() * 40) });
+              }
+              g_trees.push({ x: treeX, y: y, h: treeHeight, color: treeColors[Math.floor(Math.random() * treeColors.length)], fruits: fruits });
+          }
+        }
+      }
+      cx += 400; g_plats.push({x:cx, y:gY, w:600, h:80});
+      g_portal = {x:cx+300, y:gY-100, w:70, h:100}; g_width = cx+1000;
+      g_state = 'PLAYING'; g_loop();
+    }
+
+    // Controles de Teclado
+    window.addEventListener('keydown', e => { if(activeApp!=='game') return; if(e.key==='ArrowRight') g_keys.r=true; if(e.key==='ArrowLeft') g_keys.l=true; if(e.key==='ArrowUp'||e.key===' ') g_keys.u=true; });
+    window.addEventListener('keyup', e => { if(activeApp!=='game') return; if(e.key==='ArrowRight') g_keys.r=false; if(e.key==='ArrowLeft') g_keys.l=false; if(e.key==='ArrowUp'||e.key===' ') g_keys.u=false; });
+    
+    // Controles Touch e Mouse unificados
+    const setupT = (id, k) => {
+      const b = document.getElementById(id);
+      if(b) {
+        b.addEventListener('touchstart', e => { e.preventDefault(); g_keys[k] = true; });
+        b.addEventListener('touchend', e => { e.preventDefault(); g_keys[k] = false; });
+        b.addEventListener('mousedown', e => { e.preventDefault(); g_keys[k] = true; });
+        b.addEventListener('mouseup', e => { e.preventDefault(); g_keys[k] = false; });
+        b.addEventListener('mouseleave', e => { e.preventDefault(); g_keys[k] = false; });
+      }
+    };
+    setupT('btn-left','l'); setupT('btn-right','r'); setupT('btn-jump','u');
+
+    function atualizarHpGame(val) {
+      g_hp += val; if(g_hp>100) g_hp=100;
+      if(val<0) { p.exp = 'H'; p.expT = 60; } else if(val>0){ p.exp = 'Y'; p.expT = 60; }
+      const b = document.getElementById('g-hp-fill');
+      b.style.width = g_hp+'%'; b.style.background = g_hp>50?'#00ff00':g_hp>20?'#ffcc00':'#ff0000';
+      if(g_hp<=0) {
+        g_state = 'OVER'; cancelAnimationFrame(g_frame);
+        document.getElementById('game-ui').classList.add('hidden');
+        document.getElementById('game-over-screen').classList.remove('hidden');
+      }
+    }
+
+    function abrirCaixaGame(i) {
+      g_state = 'QUIZ'; g_keys.l=g_keys.r=g_keys.u=false;
+      const m = document.getElementById('quiz-modal-game'); const c = document.getElementById('options-container-game');
+      const q = quizzes[i]; document.getElementById('question-text-game').innerText = (i+1)+". "+q.text;
+      c.innerHTML = '';
+      const mixed = [...q.o].sort(()=>Math.random()-0.5);
+      mixed.forEach(opt => {
+        const b = document.createElement('button'); b.className = 'opt-btn-game'; b.innerText = opt.t;
+        b.onclick = () => {
+          atualizarHpGame(opt.c ? 25 : -25);
+          m.style.opacity = '0';
+          setTimeout(() => { m.style.visibility = 'hidden'; if(g_hp>0) g_state = 'PLAYING'; }, 300);
+        };
+        c.appendChild(b);
+      });
+      m.style.visibility = 'visible'; m.style.opacity = '1';
+    }
+
+    function g_loop() {
+      if(activeApp !== 'game') return;
+      if(g_state === 'PLAYING') {
+        p.vy += 0.7; p.x += p.vx; p.y += p.vy;
+        p.vx = g_keys.r ? p.speed : g_keys.l ? -p.speed : 0;
+        if(p.x < 0) p.x = 0;
+        if(g_keys.u && p.gnd) { p.vy = p.jump; p.gnd = false; }
+        
+        p.gnd = false;
+        for(let pt of g_plats) {
+          if(p.vy>0 && p.x+p.w>pt.x && p.x<pt.x+pt.w && p.y+p.h>=pt.y && p.y+p.h<=pt.y+p.vy+3) {
+            p.gnd = true; p.vy = 0; p.y = pt.y-p.h; p.lastX = p.x; p.lastY = p.y-20;
+          }
+        }
+        if(p.y > canvas.height) { atualizarHpGame(-25); p.x = p.lastX; p.y = p.lastY-50; p.vy = 0; }
+        for(let l of g_loots) {
+          if(l.active && p.x<l.x+l.w && p.x+p.w>l.x && p.y<l.y+l.h && p.y+p.h>l.y) {
+            l.active = false; g_loot++; document.getElementById('loot-count').innerText = g_loot; abrirCaixaGame(l.idx);
+          }
+        }
+        if(p.x<g_portal.x+g_portal.w && p.x+p.w>g_portal.x && p.y<g_portal.y+g_portal.h && p.y+p.h>g_portal.y) {
+          document.getElementById('game-ui').classList.add('hidden');
+          document.getElementById('game-over-screen').classList.remove('hidden');
+          document.getElementById('game-over-title').innerText = "BOOYAH!";
+          document.getElementById('game-over-title').style.color = "#00ff00";
+          document.getElementById('game-over-msg').innerText = "Você encontrou o seu propósito e concluiu a missão!";
+        }
+        g_camX = Math.max(0, Math.min(p.x - canvas.width/3, g_width - canvas.width));
+      }
+
+      ctx.fillStyle = '#0d0d1a'; ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.save(); ctx.translate(-g_camX, 0);
+      ctx.fillStyle = '#ff0000'; ctx.globalAlpha=0.5; ctx.fillRect(g_camX, canvas.height-25, canvas.width, 25); ctx.globalAlpha=1;
+
+      // Desenha Árvores
+      for (let t of g_trees) {
+        if (t.x < g_camX - 150 || t.x > g_camX + canvas.width + 150) continue;
+        ctx.fillStyle = '#5c4033'; ctx.fillRect(t.x - 8, t.y - t.h, 16, t.h);
+        ctx.fillStyle = t.color; ctx.beginPath();
+        ctx.arc(t.x, t.y - t.h, 45, 0, Math.PI*2); ctx.arc(t.x - 25, t.y - t.h + 10, 35, 0, Math.PI*2);
+        ctx.arc(t.x + 25, t.y - t.h + 5, 35, 0, Math.PI*2); ctx.arc(t.x, t.y - t.h - 35, 40, 0, Math.PI*2); ctx.fill();
+        for (let f of t.fruits) {
+            let fx = t.x + f.offX; let fy = t.y + f.offY;
+            ctx.shadowBlur = 10; ctx.shadowColor = '#ffcc00'; ctx.fillStyle = '#ff3300';
+            ctx.beginPath(); ctx.arc(fx, fy, 6, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
+            ctx.fillStyle = '#00ff00'; ctx.beginPath(); ctx.arc(fx + 3, fy - 5, 3, 0, Math.PI*2); ctx.fill();
+        }
+      }
+
+      ctx.fillStyle = '#22223b';
+      for(let pt of g_plats) { ctx.fillRect(pt.x,pt.y,pt.w,pt.h); ctx.fillStyle='#00f3ff'; ctx.fillRect(pt.x,pt.y,pt.w,4); ctx.fillStyle='#22223b'; }
+      for(let l of g_loots) { if(l.active){ ctx.fillStyle='#ffcc00'; ctx.fillRect(l.x,l.y,l.w,l.h); ctx.fillStyle='#000'; ctx.font='24px Arial'; ctx.fillText('?',l.x+10,l.y+26); } }
+      ctx.fillStyle='#00ff00'; ctx.fillRect(g_portal.x, g_portal.y, g_portal.w, g_portal.h);
+      
+      // Avatar
+      ctx.fillStyle = p.color || '#fff'; ctx.fillRect(p.x, p.y, p.w, p.h);
+      ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(p.x+12, p.y+15, 10, 0, 7); ctx.fill(); ctx.beginPath(); ctx.arc(p.x+32, p.y+17, 7, 0, 7); ctx.fill();
+      ctx.fillStyle='#000';
+      if(p.exp === 'H') { ctx.font='14px Arial'; ctx.fillText("X",p.x+7,p.y+20); ctx.fillText("X",p.x+27,p.y+22); }
+      else { let px = g_keys.l?-3:g_keys.r?3:0; ctx.beginPath(); ctx.arc(p.x+12+px, p.y+15, 3, 0, 7); ctx.arc(p.x+32+px, p.y+17, 2, 0, 7); ctx.fill(); }
+      ctx.strokeStyle='#000'; ctx.lineWidth=2; ctx.beginPath();
+      if(p.exp === 'Y') ctx.arc(p.x+22, p.y+28, 8, 0, 3.14, false);
+      else if(p.exp === 'H') ctx.arc(p.x+22, p.y+35, 6, 3.14, 0, false);
+      else { ctx.moveTo(p.x+15, p.y+32); ctx.bezierCurveTo(p.x+20, p.y+36, p.x+25, p.y+28, p.x+30, p.y+32); }
+      ctx.stroke(); if(p.expT>0){ p.expT--; if(p.expT===0) p.exp='N'; }
+      ctx.restore();
+      g_frame = requestAnimationFrame(g_loop);
+    }
+  </script>
+</body>
+</html>
