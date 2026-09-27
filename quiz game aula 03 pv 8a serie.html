@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Safe Zone: Projeto de Vida</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;600;700&family=Teko:wght@600&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    /* =========================================
+       VARIÁVEIS E GERAIS
+    ========================================= */
+    :root {
+      --red: #E21B3C; --red-dark: #b8142e;
+      --blue: #1368CE; --blue-dark: #0f52a5;
+      --yellow: #D89E00; --yellow-dark: #b28200;
+      --green: #26890C; --green-dark: #1d6e09;
+      --bg-dark: #0d0d1a;
+      --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #0d0d1a 100%);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body, html {
+      font-family: 'Open Sans', sans-serif; background: var(--bg-dark);
+      color: #fff; min-height: 100vh; overflow: hidden; touch-action: none; user-select: none;
+    }
+    .hidden { display: none !important; }
+
+    /* =========================================
+       ALERTA ANTIFRAUDE GLOBAL
+    ========================================= */
+    #global-fraud-alert {
+      position: absolute; top: 10%; left: 50%; transform: translateX(-50%);
+      background: #ff0000; color: #fff; padding: 15px 30px; font-size: 1.5rem;
+      font-family: 'Teko', sans-serif; border-radius: 10px; box-shadow: 0 0 20px #ff0000;
+      z-index: 9999; display: none; text-align: center;
+    }
+
+    /* =========================================
+       TELA HUB (MENU PRINCIPAL)
+    ========================================= */
+    #hub-screen {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      background: var(--bg-gradient); z-index: 1000;
+    }
+    .hub-title { font-family: 'Teko', sans-serif; font-size: 5rem; color: #00f3ff; text-shadow: 0 0 20px #00f3ff; text-align: center; margin-bottom: 40px; line-height: 1; }
+    .hub-btn {
+      background: #ff9900; border: none; padding: 20px 40px; font-size: 2rem;
+      font-family: 'Teko', sans-serif; border-radius: 10px; cursor: pointer;
+      margin: 10px; width: 80%; max-width: 400px; transition: all 0.2s; box-shadow: 0 5px 15px rgba(255, 153, 0, 0.4);
+    }
+    .hub-btn:hover { transform: scale(1.05); }
+    .btn-kahoot { background: #864cbf; box-shadow: 0 5px 15px rgba(134, 76, 191, 0.4); color: white; }
+    .btn-kahoot:hover { background: #9b59b6; }
+
+    /* =========================================
+       MODO CLÁSSICO (KAHOOT + ANTIFRAUDE)
+    ========================================= */
+    #kahoot-container {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(135deg, #46178F 0%, #18033d 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 16px; overflow-y: auto; z-index: 500;
+    }
+    .app-container {
+      width: 100%; max-width: 1050px; background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px); border-radius: 24px; padding: 24px;
+      box-shadow: var(--shadow); border: 1px solid rgba(255, 255, 255, 0.15); margin: auto;
+    }
+    .top-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .brand-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.35rem; color: #ffd200; }
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); color: white;
+      padding: 8px 14px; border-radius: 99px; cursor: pointer; font-size: 0.85rem; font-weight: 700; font-family: 'Montserrat', sans-serif;
+    }
+    /* TELA INICIAL KAHOOT */
+    #start-screen { text-align: center; padding: 20px 10px; }
+    .anti-rush-badge { background: rgba(0, 230, 118, 0.2); color: #00e676; border: 1px solid #00e676; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-bottom: 12px; font-family: 'Montserrat', sans-serif; display: inline-block;}
+    h1.hero-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2.2rem; margin-bottom: 16px; text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); }
+    .rules-card { background: rgba(0, 0, 0, 0.25); border-radius: 14px; padding: 16px 20px; max-width: 650px; margin: 0 auto 24px auto; text-align: left; font-size: 0.92rem; line-height: 1.55; border-left: 4px solid #ffd200; }
+    .rules-card h4 { color: #ffd200; margin-bottom: 6px; font-family: 'Montserrat', sans-serif; }
+    .input-box input { width: 100%; max-width: 400px; padding: 14px; border-radius: 12px; border: 2px solid #ffd200; font-size: 1.1rem; font-family: 'Montserrat', sans-serif; font-weight: 700; text-align: center; outline: none; margin-bottom: 20px; }
+    .start-btn { background: #ffd200; color: #2b0c5e; border: none; padding: 16px 40px; font-family: 'Montserrat', sans-serif; font-size: 1.2rem; font-weight: 900; border-radius: 16px; cursor: pointer; text-transform: uppercase; }
+    /* QUIZ KAHOOT */
+    .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 12px; font-family: 'Montserrat', sans-serif; }
+    .q-badge { background: rgba(255, 255, 255, 0.2); padding: 6px 14px; border-radius: 20px; font-weight: 700; }
+    .q-topic { background: rgba(255, 210, 0, 0.25); color: #ffd200; border: 1px solid #ffd200; padding: 6px 14px; border-radius: 20px; font-weight: 700; }
+    .progress-track { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.15); border-radius: 10px; margin-bottom: 14px; overflow: hidden; }
+    .progress-fill { height: 100%; background: #ffd200; width: 0%; transition: width 0.3s; }
+    .reading-lock-bar { display: flex; justify-content: center; background: rgba(0, 0, 0, 0.3); padding: 8px; border-radius: 12px; margin-bottom: 14px; font-family: 'Montserrat', sans-serif; font-weight: 700; color: #ffd200; }
+    .reading-lock-bar.unlocked { background: rgba(0, 230, 118, 0.2); color: #00e676; }
+    .question-card { background: #ffffff; color: #222; border-radius: 16px; padding: 24px; margin-bottom: 18px; font-size: 1.1rem; font-weight: 600; border-left: 8px solid #ffd200; }
+    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .option-btn { border: none; border-radius: 14px; padding: 18px; color: white; font-size: 1rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 14px; text-align: left; box-shadow: 0 5px 0 rgba(0,0,0,0.3); }
+    .option-btn:disabled { cursor: not-allowed; filter: grayscale(0.5) opacity(0.65); transform: none !important; box-shadow: none !important; }
+    .opt-A { background: var(--red); box-shadow: 0 5px 0 var(--red-dark); } .opt-B { background: var(--blue); box-shadow: 0 5px 0 var(--blue-dark); } .opt-C { background: var(--yellow); box-shadow: 0 5px 0 var(--yellow-dark); } .opt-D { background: var(--green); box-shadow: 0 5px 0 var(--green-dark); }
+    .opt-icon { font-size: 1.5rem; font-weight: 900; min-width: 40px; height: 40px; background: rgba(0,0,0,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    /* PAUSA RUSH & FEEDBACK */
+    #rush-alert-screen { display: none; text-align: center; padding: 40px 20px; background: rgba(226, 27, 60, 0.95); border-radius: 20px; color: white; margin: 20px 0; }
+    .rush-countdown { font-family: 'Montserrat', sans-serif; font-size: 3.5rem; font-weight: 900; color: #ffd200; }
+    .feedback-banner { border-radius: 16px; padding: 20px; margin-bottom: 20px; text-align: center; font-family: 'Montserrat', sans-serif; }
+    .feedback-banner.correct { background: #26890c; } .feedback-banner.incorrect { background: #e21b3c; }
+    .feedback-explanation { background: #ffffff; color: #222; border-radius: 14px; padding: 22px; font-size: 1.1rem; text-align: left; margin-bottom: 24px; border-left: 6px solid #381273; }
+    .lock-timer-msg { margin-bottom: 16px; font-family: 'Montserrat', sans-serif; font-weight: 800; color: #ffd200; text-align: center;}
+    /* RESULTADO FINAL */
+    .visto-card { background: #ffffff; color: #222; border-radius: 18px; padding: 24px; max-width: 580px; margin: 0 auto 24px auto; text-align: left; }
+    .visto-header { display: flex; justify-content: space-between; border-bottom: 2px dashed #ccc; padding-bottom: 12px; margin-bottom: 16px; font-family: 'Montserrat', sans-serif; }
+    .visto-badge { padding: 6px 14px; border-radius: 20px; font-weight: 900; font-size: 0.85rem; }
+    .visto-badge.aprovado { background: #e8f5e9; color: #2e7d32; border: 1px solid #2e7d32; } .visto-badge.recusado { background: #ffebee; color: #c62828; border: 1px solid #c62828; }
+    .visto-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.98rem; }
+    .visto-code { margin-top: 14px; background: #f4f0fa; padding: 10px; border-radius: 8px; text-align: center; font-family: monospace; font-weight: 900; font-size: 1.1rem; color: #46178f; }
+
+    @media (max-width: 768px) { .options-grid { grid-template-columns: 1fr; } }
+
+    /* =========================================
+       MODO GAME (PLATAFORMA)
+    ========================================= */
+    #game-ui { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 500; font-family: 'Rajdhani', sans-serif; }
+    #gameCanvas { display: block; width: 100%; height: 100%; }
+    #hud-game { position: absolute; top: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; pointer-events: none; z-index: 10; }
+    .hp-box-game { background: rgba(0, 0, 0, 0.8); border: 2px solid #ff9900; padding: 5px 15px; border-radius: 8px; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
+    .hp-bar-bg-game { width: 120px; height: 15px; background: #333; border-radius: 10px; overflow: hidden; }
+    .hp-bar-fill-game { height: 100%; width: 100%; background: #00ff00; transition: width 0.3s; }
+    #mobile-controls { position: absolute; bottom: 20px; left: 0; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box; user-select: none; z-index: 10; }
+    .dir-btns { display: flex; gap: 15px; }
+    .btn-game { width: 65px; height: 65px; background: rgba(255, 153, 0, 0.3); border: 2px solid rgba(255, 153, 0, 0.8); border-radius: 50%; font-size: 24px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+    .btn-game:active { background: rgba(255, 153, 0, 0.7); transform: scale(0.95); }
+    #quiz-modal-game { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); display: flex; justify-content: center; align-items: center; visibility: hidden; opacity: 0; transition: opacity 0.3s; z-index: 20; }
+    .quiz-content-game { background: #1a1a2e; border: 3px solid #00f3ff; width: 90%; max-width: 500px; padding: 20px; border-radius: 15px; text-align: center; }
+    .quiz-content-game h2 { font-family: 'Teko', sans-serif; font-size: 2.5rem; color: #00f3ff; margin-bottom: 15px; }
+    .opt-btn-game { background: #0f3460; border: 1px solid #00f3ff; color: #fff; padding: 12px; border-radius: 8px; font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; cursor: pointer; text-align: left; width: 100%; margin-bottom: 8px; transition: 0.2s; }
+    .opt-btn-game:hover { background: #00f3ff; color: #000; font-weight: bold; }
+    #game-over-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1500; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <!-- ALERTA ANTIFRAUDE GLOBAL -->
+  <div id="global-fraud-alert">⚠️ ATENÇÃO: Troca de aba ou janela detectada! Você sofreu penalidade.</div>
+
+  <!-- MENU HUB -->
+  <div id="hub-screen">
+    <h1 class="hub-title">SAFE ZONE:<br>A TEIA DA SOLIDARIEDADE</h1>
+    <button class="hub-btn" onclick="openApp('game')">MODO AVENTURA<br><span style="font-size:1.2rem">(Correr, Pular e Loot)</span></button>
+    <button class="hub-btn btn-kahoot" onclick="openApp('kahoot')">MODO CLÁSSICO<br><span style="font-size:1.2rem">(Quiz com Visto Pedagógico)</span></button>
+  </div>
+
+  <!-- MODO CLÁSSICO KAHOOT (Com Antifraude e Visto) -->
+  <div id="kahoot-container" class="hidden">
+    <div class="app-container">
+      <div class="top-controls">
+        <div class="brand-title">⚡ SAFE ZONE • CIDADANIA</div>
+      </div>
+
+      <!-- TELA 1: INÍCIO KAHOOT -->
+      <div id="start-screen">
+        <div class="anti-rush-badge">🛡️ SISTEMA DE LEITURA CONSCIENTE ATIVADO</div>
+        <h1 class="hero-title">Missão: A Teia da Solidariedade</h1>
+        <div class="rules-card">
+          <h4>📋 Regras do Desafio:</h4>
+          • <strong>Tempo de Leitura:</strong> Trava de 4s para ler antes de liberar opções.<br>
+          • <strong>Se Errar:</strong> Trava de 8s para ler a explicação da resposta.<br>
+          • <strong>Anti-Chute:</strong> Respostas menores que 5s geram bloqueio de 15s.<br>
+          • <strong>Visto Pedagógico:</strong> Exige 60% de acerto e tempo médio de 8s por questão.
+        </div>
+        <div class="input-box">
+          <input type="text" id="player-name" placeholder="Digite seu nome completo..." autocomplete="off">
+        </div>
+        <button class="start-btn" onclick="startKahoot()">Iniciar Desafio</button>
+      </div>
+
+      <!-- PAUSA PARA O FOCO -->
+      <div id="rush-alert-screen">
+        <h2 style="font-family:'Montserrat', sans-serif; font-size:2rem; margin-bottom:10px;">⚠️ PAUSA PARA O FOCO!</h2>
+        <p>Você está clicando rápido demais e sem ler as perguntas. Respire fundo e aguarde:</p>
+        <div class="rush-countdown" id="rush-countdown-val">15</div>
+      </div>
+
+      <!-- TELA 2: QUIZ KAHOOT -->
+      <div id="quiz-screen" class="hidden">
+        <div class="quiz-header">
+          <div class="q-badge" id="q-counter">Questão 1 de 40</div>
+          <div class="q-topic" id="q-topic">Tópico</div>
+          <div style="color: #ffd200; font-weight:700;">Pontos: <span id="score-val">0</span></div>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="reading-lock-bar" id="reading-lock-bar">
+          <span>📖 Leia com atenção: liberando em <strong id="reading-countdown">4</strong>s...</span>
+        </div>
+        <div class="question-card" id="question-text">Texto</div>
+        <div class="options-grid" id="options-grid">
+          <button class="option-btn opt-A" id="btn-opt-A" onclick="handleAnswer('A')" disabled><div class="opt-icon">▲</div><div id="opt-A-text">A</div></button>
+          <button class="option-btn opt-B" id="btn-opt-B" onclick="handleAnswer('B')" disabled><div class="opt-icon">◆</div><div id="opt-B-text">B</div></button>
+          <button class="option-btn opt-C" id="btn-opt-C" onclick="handleAnswer('C')" disabled><div class="opt-icon">●</div><div id="opt-C-text">C</div></button>
+          <button class="option-btn opt-D" id="btn-opt-D" onclick="handleAnswer('D')" disabled><div class="opt-icon">■</div><div id="opt-D-text">D</div></button>
+        </div>
+      </div>
+
+      <!-- TELA 3: FEEDBACK -->
+      <div id="feedback-screen" class="hidden">
+        <div class="feedback-banner" id="feedback-banner">
+          <h2 id="feedback-title">Resposta!</h2>
+          <div id="feedback-subtitle">...</div>
+        </div>
+        <div class="feedback-explanation">
+          <strong>Entenda a situação:</strong><br><span id="feedback-exp-text">Explicação</span>
+        </div>
+        <div class="lock-timer-msg" id="lock-timer-msg"></div>
+        <button class="start-btn" id="next-btn" onclick="nextQuestion()" style="padding:12px 30px; font-size:1rem;">Avançar ➔</button>
+      </div>
+
+      <!-- TELA 4: VISTO PEDAGÓGICO FINAL -->
+      <div id="final-screen" class="hidden">
+        <h2 style="font-family:'Montserrat', sans-serif; font-size:2rem; color:#ffd200; margin-bottom:20px;">🎓 Relatório Final</h2>
+        <div class="visto-card">
+          <div class="visto-header">
+            <h3>COMPROVANTE DO VISTO PEDAGÓGICO</h3>
+            <div class="visto-badge" id="visto-status-badge">EM ANÁLISE</div>
+          </div>
+          <div class="visto-row"><span class="label">Estudante:</span><span class="val" id="visto-nome">Nome</span></div>
+          <div class="visto-row"><span class="label">Acertos:</span><span class="val" id="visto-acertos">0 / 40</span></div>
+          <div class="visto-row"><span class="label">Pontuação:</span><span class="val" id="visto-pontos">0 pts</span></div>
+          <div class="visto-row"><span class="label">Tempo Total:</span><span class="val" id="visto-tempo-total">0 min</span></div>
+          <div class="visto-row"><span class="label">Tempo Médio/Questão:</span><span class="val" id="visto-tempo-medio">0s</span></div>
+          <div class="visto-row"><span class="label">Situação da Leitura:</span><span class="val" id="visto-diagnostico">Adequada</span></div>
+          <div class="visto-code" id="visto-hash">#LOG-CEE-0000</div>
+        </div>
+        <button class="start-btn" onclick="location.reload()" style="font-size:1rem;">Voltar ao Menu Principal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODO GAME PLATAFORMA -->
+  <div id="game-ui" class="hidden">
+    <canvas id="gameCanvas"></canvas>
+    <div id="hud-game">
+      <div class="hp-box-game">HP <div class="hp-bar-bg-game"><div id="g-hp-fill" class="hp-bar-fill-game"></div></div></div>
+      <div class="hp-box-game" style="border-color: #00f3ff;">LOOT: <span id="loot-count">0</span>/40</div>
+    </div>
+    <div id="mobile-controls">
+      <div class="dir-btns"><div class="btn-game" id="btn-left">◀</div><div class="btn-game" id="btn-right">▶</div></div>
+      <div class="btn-game" id="btn-jump" style="width: 75px; height: 75px;">▲</div>
+    </div>
+    <div id="quiz-modal-game">
+      <div class="quiz-content-game">
+        <h2>CAIXA DE LOOT</h2>
+        <p id="question-text-game" style="font-size:1.2rem; margin-bottom:15px;"></p>
+        <div id="options-container-game"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA DE GAME OVER (Aventura) -->
+  <div id="game-over-screen" class="hidden">
+    <h1 style="font-family:'Teko', sans-serif; font-size:6rem; margin:0;" id="game-over-title">ELIMINADO</h1>
+    <p id="game-over-msg" style="font-size:2rem; margin-bottom:30px;">A falta de empatia consumiu sua energia.</p>
+    <button class="hub-btn" onclick="location.reload()" style="font-size:1.5rem;">VOLTAR AO MENU</button>
+  </div>
+
+  <script>
+    /* ==================================================
+       GLOBAL & ANTIFRAUDE DE NAVEGADOR
+    ================================================== */
+    document.addEventListener('contextmenu', e => e.preventDefault()); // Bloqueia botão direito
+    document.addEventListener('copy', e => e.preventDefault()); // Bloqueia cópia
+    document.addEventListener('keydown', e => {
+      if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) {
+        e.preventDefault(); // Bloqueia ferramentas de desenvolvedor F12
+      }
+    });
+
+    let activeApp = '';
+    window.addEventListener('blur', () => {
+      if (activeApp !== '') {
+        const alertBox = document.getElementById('global-fraud-alert');
+        alertBox.style.display = 'block';
+        if (activeApp === 'kahoot' && k_hp > 0) {
+            k_score = Math.max(0, k_score - 500);
+            if(document.getElementById('score-val')) document.getElementById('score-val').innerText = k_score;
+        } else if (activeApp === 'game') {
+            atualizarHpGame(-15);
+        }
+        setTimeout(() => { alertBox.style.display = 'none'; }, 3000);
+      }
+    });
+
+    function openApp(app) {
+      document.getElementById('hub-screen').classList.add('hidden');
+      activeApp = app;
+      if (app === 'kahoot') {
+        document.getElementById('kahoot-container').classList.remove('hidden');
+      } else {
+        document.getElementById('game-ui').classList.remove('hidden');
+        iniciarGame();
+      }
+    }
+
+    /* ==================================================
+       BANCO DE 40 QUESTÕES: SOLIDARIEDADE E EMPATIA
+    ================================================== */
+    const quizzes = [
+      {
+        topic: "Empatia Escolar",
+        text: "Um novo estudante chega à escola no meio do semestre e parece isolado durante o intervalo. Baseando-se no conceito de empatia e solidariedade social, a atitude mais adequada é:",
+        o: [
+          {t: "Ignorar a situação, pois ele precisa aprender a ser independente no novo ambiente.", c: false},
+          {t: "Avisar a coordenação para que um funcionário resolva o problema da solidão dele.", c: false},
+          {t: "Aproximar-se dele, apresentar o espaço e convidá-lo para interagir com o grupo.", c: true},
+          {t: "Observar de longe até que ele decida pedir ajuda para conseguir fazer novas amizades.", c: false}
+        ],
+        exp: "Aproximar-se e integrá-lo reforça o acolhimento e demonstra empatia prática."
+      },
+      {
+        topic: "Solidariedade Escolar",
+        text: "Durante uma prova importante, um estudante percebe que sua caneta parou de funcionar e ele não tem outra. Um colega ao lado percebe o desespero. A ação solidária imediata seria:",
+        o: [
+          {t: "Terminar a própria prova rapidamente para então emprestar a caneta no final.", c: false},
+          {t: "Emprestar uma caneta reserva discretamente para que o colega possa continuar.", c: true},
+          {t: "Orientar o colega a pedir permissão para sair e comprar uma caneta na secretaria.", c: false},
+          {t: "Focar apenas na própria prova, pois cada um deve ser responsável por seu material.", c: false}
+        ],
+        exp: "O empréstimo imediato resolve o desespero de forma recíproca e gentil."
+      },
+      {
+        topic: "Doação e Desapego",
+        text: "A turma decide organizar uma arrecadação de roupas de inverno. Um estudante tem roupas em bom estado, mas hesita em doar por apego. A reflexão que melhor incentiva a solidariedade é:",
+        o: [
+          {t: "O desapego material é necessário apenas quando as roupas não servem mais em nós.", c: false},
+          {t: "A doação é uma forma de esvaziar o armário para comprar novas peças da moda.", c: false},
+          {t: "A doação cria um ciclo de reciprocidade que aquece quem não tem recursos.", c: true},
+          {t: "O ato de doar só é válido se a pessoa receber algum reconhecimento público por isso.", c: false}
+        ],
+        exp: "Ressalta a solidariedade como ciclo de reciprocidade e responsabilidade pelo outro."
+      },
+      {
+        topic: "Responsabilidade Coletiva",
+        text: "Um grupo de estudantes precisa entregar um trabalho, mas um dos membros não possui computador em casa. A solução baseada na responsabilidade recíproca é:",
+        o: [
+          {t: "Excluir o colega do grupo, pois a falta de equipamento prejudicará a nota final.", c: false},
+          {t: "Reorganizar as tarefas para que ele faça a parte teórica manuscrita ou presencial.", c: true},
+          {t: "Exigir que ele vá a uma lan house diariamente para cumprir sua parte no projeto.", c: false},
+          {t: "Sugerir que ele faça o trabalho sozinho em outro formato para não atrasar o grupo.", c: false}
+        ],
+        exp: "A adaptação demonstra responsabilidade coletiva e acolhimento das limitações do membro do grupo."
+      },
+      {
+        topic: "Cuidado com o Outro",
+        text: "Durante o intervalo, um estudante derruba acidentalmente sua bandeja de lanche no chão, sujando o pátio. A atitude que reflete coesão social e empatia é:",
+        o: [
+          {t: "Rir da situação junto com os demais, ajudando a quebrar o gelo do momento.", c: false},
+          {t: "Chamar imediatamente a equipe de limpeza para que façam o trabalho deles.", c: false},
+          {t: "Ajudar o colega a recolher a sujeira e oferecer parte do próprio lanche a ele.", c: true},
+          {t: "Afastar-se rapidamente para não sujar os sapatos nem se envolver no incidente.", c: false}
+        ],
+        exp: "Atitude prática de empatia e partilha nos momentos de constrangimento e necessidade."
+      },
+      {
+        topic: "Voluntariado de Habilidades",
+        text: "Na escola, há uma campanha para ajudar a biblioteca que foi danificada por uma chuva forte. Qual das ações abaixo representa solidariedade baseada em habilidades?",
+        o: [
+          {t: "Aguardar que a direção da escola receba verbas do governo para fazer a reforma.", c: false},
+          {t: "Compartilhar a notícia nas redes sociais, esperando que outras pessoas resolvam.", c: false},
+          {t: "Ajudar a restaurar e catalogar os livros que foram salvos durante a tempestade.", c: true},
+          {t: "Criticar a infraestrutura do colégio, exigindo um prédio novo e mais resistente.", c: false}
+        ],
+        exp: "O uso da própria força, tempo e habilidade como voluntariado prático."
+      },
+      {
+        topic: "Tempo e Ensino",
+        text: "Um colega de sala está com muita dificuldade de compreender um conceito de matemática e a prova é no dia seguinte. Uma atitude solidária seria:",
+        o: [
+          {t: "Oferecer-se para estudar junto com ele no contraturno, explicando a matéria.", c: true},
+          {t: "Dizer a ele que matemática é dom e que algumas pessoas não aprendem rápido.", c: false},
+          {t: "Sugerir que ele decore as fórmulas, pois entender o conceito leva muito tempo.", c: false},
+          {t: "Fazer a prova e deixá-lo copiar as respostas discretamente no dia da avaliação.", c: false}
+        ],
+        exp: "Disponibilizar tempo para o ensino mútuo é uma profunda forma de solidariedade."
+      },
+      {
+        topic: "Resolução de Conflitos",
+        text: "Na elaboração de um projeto escolar, dois estudantes discordam fortemente sobre como apresentar o trabalho final. O uso da empatia na resolução do conflito seria:",
+        o: [
+          {t: "Impor a ideia de quem tem as melhores notas, visando a melhor avaliação possível.", c: false},
+          {t: "Pedir ao professor que expulse o colega divergente para evitar mais atrasos no grupo.", c: false},
+          {t: "Escutar ativamente a proposta do outro e buscar um meio-termo que agrade a ambos.", c: true},
+          {t: "Abandonar o trabalho e pedir para fazer sozinho, evitando o estresse da discussão.", c: false}
+        ],
+        exp: "A escuta ativa e a busca por consenso é a aplicação direta da empatia na comunicação."
+      },
+      {
+        topic: "Inclusão Estrutural",
+        text: "Um estudante cadeirante encontra o elevador da escola quebrado. A turma dele estuda no segundo andar. A ação da turma que demonstra empatia prática é:",
+        o: [
+          {t: "Assistir à aula normalmente e passar as anotações para o colega no final do dia.", c: false},
+          {t: "Pedir para a gestão transferir a aula de toda a turma para uma sala no andar térreo.", c: true},
+          {t: "Orientar o colega a voltar para casa e aguardar o conserto do equipamento.", c: false},
+          {t: "Fazer uma vaquinha para pagar um técnico de elevadores de forma particular.", c: false}
+        ],
+        exp: "A mobilização do coletivo para garantir a inclusão estrutural de todos."
+      },
+      {
+        topic: "Comunicação e Diversidade",
+        text: "Durante uma discussão em sala de aula, um estudante gagueja por nervosismo ao expor sua opinião. A reação coletiva fundamentada no respeito às diferenças deve ser:",
+        o: [
+          {t: "Completar as frases por ele rapidamente para que ele não se sinta envergonhado.", c: false},
+          {t: "Aguardar pacientemente em silêncio até que ele conclua seu raciocínio no seu tempo.", c: true},
+          {t: "Mudar de assunto imediatamente para tirar o foco da dificuldade do colega.", c: false},
+          {t: "Sugerir que ele entregue a opinião por escrito para evitar passar por isso novamente.", c: false}
+        ],
+        exp: "O respeito ao tempo, ao nervosismo e à diversidade da comunicação do outro."
+      },
+      {
+        topic: "Crise na Comunidade",
+        text: "Uma forte tempestade alaga um bairro vizinho, deixando famílias desabrigadas. Como indivíduos de uma comunidade, a manifestação de solidariedade social consiste em:",
+        o: [
+          {t: "Acompanhar as notícias pela televisão e torcer para que a situação melhore logo.", c: false},
+          {t: "Arrecadar roupas, alimentos e água potável para envio imediato aos abrigos locais.", c: true},
+          {t: "Isentar-se da responsabilidade, pois os impostos já pagam a Defesa Civil para agir.", c: false},
+          {t: "Visitar a região afetada apenas para registrar fotos e vídeos das ruas alagadas.", c: false}
+        ],
+        exp: "Ação comunitária direta e mobilização rápida diante de crises climáticas locais."
+      },
+      {
+        topic: "Dever Cidadão",
+        text: "O posto de saúde local avisa que os estoques de sangue estão críticos. Você atende a todos os requisitos de idade e saúde. A decisão ética pautada na responsabilidade é:",
+        o: [
+          {t: "Não doar, pois o hospital tem a obrigação de conseguir sangue de outras formas.", c: false},
+          {t: "Agendar uma doação de sangue, entendendo que é um ato de compromisso com a vida.", c: true},
+          {t: "Esperar que alguém da sua própria família precise para então ir até o hemocentro.", c: false},
+          {t: "Doar sangue apenas se houver alguma recompensa financeira ou benefício imediato.", c: false}
+        ],
+        exp: "A doação como dever cidadão, impessoal e fundamental para a manutenção da vida."
+      },
+      {
+        topic: "Solidariedade Cotidiana",
+        text: "Ao caminhar pelo bairro, você vê um idoso com dificuldades para carregar sacolas pesadas do mercado. A atitude empática e solidária no cotidiano é:",
+        o: [
+          {t: "Oferecer ajuda para carregar as sacolas até a residência dele, respeitando seu ritmo.", c: true},
+          {t: "Apressar o passo, assumindo que ele prefere não ser incomodado por estranhos.", c: false},
+          {t: "Dar um conselho rápido para que ele use um carrinho de compras na próxima vez.", c: false},
+          {t: "Chamar um táxi e obrigá-lo a entrar no veículo para garantir sua segurança na rua.", c: false}
+        ],
+        exp: "Atenção às limitações do outro e oferta de ajuda ativa, sem imposições."
+      },
+      {
+        topic: "Apoio a ONGs",
+        text: "Uma organização não governamental (ONG) de sua cidade cuida de animais abandonados, mas está sem recursos. A forma de voluntariado baseada em habilidades seria:",
+        o: [
+          {t: "Adotar todos os animais do abrigo, mesmo sem ter espaço ou dinheiro para mantê-los.", c: false},
+          {t: "Criar uma campanha nas redes sociais para engajar a comunidade em doações financeiras.", c: true},
+          {t: "Sugerir que a prefeitura assuma o abrigo e feche a ONG por falta de capacidade.", c: false},
+          {t: "Soltar os animais em parques públicos para que eles possam buscar a própria comida.", c: false}
+        ],
+        exp: "Voluntariado indireto utilizando habilidades de comunicação para apoiar causas."
+      },
+      {
+        topic: "Espaço Comum",
+        text: "Em uma praça pública, há lixo espalhado após um evento no final de semana, prejudicando o lazer dos moradores. Uma ação recíproca de cuidado com o espaço comum é:",
+        o: [
+          {t: "Evitar usar a praça e orientar os amigos a frequentarem espaços de lazer privados.", c: false},
+          {t: "Organizar um mutirão com a comunidade local para limpar a praça de forma conjunta.", c: true},
+          {t: "Jogar o próprio lixo no chão, justificando que o ambiente já está todo sujo mesmo.", c: false},
+          {t: "Exigir que apenas os organizadores do evento possam frequentar o local futuramente.", c: false}
+        ],
+        exp: "A responsabilidade proativa sobre a manutenção e limpeza do espaço comum."
+      },
+      {
+        topic: "Partilha de Recursos",
+        text: "Durante um racionamento severo de água na sua cidade, sua residência possui uma cisterna cheia, mas o vizinho não tem caixa d'água. A ação cooperativa seria:",
+        o: [
+          {t: "Lavar calçadas e carros, pois a água armazenada na cisterna pertence apenas a você.", c: false},
+          {t: "Vender a água da sua cisterna para os vizinhos interessados, visando lucro na crise.", c: false},
+          {t: "Ceder baldes de água potável para garantir que o vizinho tenha o mínimo necessário.", c: true},
+          {t: "Esconder o fato de que possui água para evitar que a vizinhança faça pedidos frequentes.", c: false}
+        ],
+        exp: "Partilha ética e solidária em situações de crise de sobrevivência e racionamento."
+      },
+      {
+        topic: "Projetos Comunitários",
+        text: "Uma horta comunitária foi criada em um terreno abandonado no bairro. Você não entende nada de plantio, mas quer ajudar. Uma contribuição válida seria:",
+        o: [
+          {t: "Criticar as técnicas de plantio utilizadas, sugerindo que contratem profissionais.", c: false},
+          {t: "Auxiliar na pintura dos muros ao redor ou na divulgação dos produtos da horta.", c: true},
+          {t: "Arrancar as plantas que parecem feias para melhorar a estética geral do ambiente.", c: false},
+          {t: "Abster-se de participar do projeto, pois apenas especialistas deveriam gerenciar hortas.", c: false}
+        ],
+        exp: "O uso de habilidades variadas e acessórias em prol de um projeto coletivo."
+      },
+      {
+        topic: "Economia Solidária",
+        text: "O comércio de um pequeno empreendedor do seu bairro foi assaltado, gerando grande prejuízo. O exercício da solidariedade por parte da vizinhança seria:",
+        o: [
+          {t: "Boicotar o comércio local por considerá-lo inseguro e passar a comprar em shoppings.", c: false},
+          {t: "Divulgar e comprar os produtos dessa pequena loja para ajudar na recuperação financeira.", c: true},
+          {t: "Orientar o comerciante a fechar as portas e buscar um emprego formal mais seguro.", c: false},
+          {t: "Pressionar as autoridades de forma agressiva sem oferecer nenhum suporte ao lojista.", c: false}
+        ],
+        exp: "O fortalecimento da economia comunitária local em momentos de vulnerabilidade."
+      },
+      {
+        topic: "Diálogo na Vizinhança",
+        text: "Um vizinho está realizando obras muito barulhentas durante a noite. Antes de acionar as autoridades, a abordagem empática para resolver o conflito seria:",
+        o: [
+          {t: "Ligar o aparelho de som no volume máximo para que o vizinho também seja incomodado.", c: false},
+          {t: "Dialogar amigavelmente com o vizinho, explicando o incômodo e buscando um acordo.", c: true},
+          {t: "Danificar o maquinário do vizinho anonimamente para interromper a fonte do barulho.", c: false},
+          {t: "Processar o vizinho imediatamente sem qualquer tentativa de comunicação preliminar.", c: false}
+        ],
+        exp: "A priorização do diálogo civilizado e da comunicação antes de medidas punitivas."
+      },
+      {
+        topic: "Acolhimento de Refugiados",
+        text: "Uma família de refugiados de outro país muda-se para a sua rua. Eles não falam o idioma local com fluência. Uma ação de coesão e acolhimento seria:",
+        o: [
+          {t: "Cumprimentá-los cordialmente e ajudar com informações úteis sobre o comércio local.", c: true},
+          {t: "Ignorar a presença deles, respeitando a privacidade até que eles aprendam o idioma.", c: false},
+          {t: "Exigir que eles se adaptem imediatamente aos costumes locais sem nenhum auxílio.", c: false},
+          {t: "Falar com eles sempre em tom elevado, acreditando que isso facilita a compreensão.", c: false}
+        ],
+        exp: "O acolhimento empático frente ao estrangeiro, quebrando barreiras socioculturais."
+      },
+      {
+        topic: "Combate ao Cyberbullying",
+        text: "No grupo de mensagens da turma, um estudante sofre cyberbullying por causa de uma foto engraçada tirada sem consentimento. O comportamento solidário do observador deve ser:",
+        o: [
+          {t: "Repassar a imagem para outros grupos, pois a intenção original era apenas fazer humor.", c: false},
+          {t: "Defender o colega publicamente no grupo e não compartilhar a fotografia com terceiros.", c: true},
+          {t: "Silenciar o grupo de mensagens e ignorar o fato, pois o problema não é diretamente seu.", c: false},
+          {t: "Rir da foto de forma discreta para não contrariar o estudante que iniciou a brincadeira.", c: false}
+        ],
+        exp: "A intervenção ativa de observadores é crucial para frear o assédio no ambiente digital."
+      },
+      {
+        topic: "Apoio Tecnológico",
+        text: "Uma pessoa idosa precisa utilizar um aplicativo bancário no caixa eletrônico, mas demonstra estar confusa e com medo de fraudes. A atitude correta e ética seria:",
+        o: [
+          {t: "Oferecer-se para fazer a operação por ela, pedindo sua senha para agilizar o processo.", c: false},
+          {t: "Sugerir com paciência as opções na tela, sem olhar os dados pessoais ou digitar a senha.", c: true},
+          {t: "Passar na frente dela na fila, justificando que ela deveria vir com um parente ao banco.", c: false},
+          {t: "Ignorar a situação, visto que o banco deve fornecer funcionários para esse atendimento.", c: false}
+        ],
+        exp: "Ajuda técnica e paciência, preservando a ética, a autonomia e a segurança do idoso."
+      },
+      {
+        topic: "Habilidades Digitais",
+        text: "Você domina o desenvolvimento de páginas de internet (HTML/CSS) e conhece uma ONG que precisa arrecadar fundos. O conceito de voluntariado tecnológico aplica-se ao:",
+        o: [
+          {t: "Orientar a ONG a contratar uma grande agência de tecnologia para realizar o serviço.", c: false},
+          {t: "Enviar links de tutoriais na internet para que os próprios membros da ONG estudem.", c: false},
+          {t: "Desenvolver o site de forma voluntária, organizando a presença digital da instituição.", c: true},
+          {t: "Exigir uma parcela das arrecadações em troca do seu trabalho de programação na web.", c: false}
+        ],
+        exp: "A doação de conhecimentos técnicos de alto valor agregado para causas sociais."
+      },
+      {
+        topic: "Combate às Fake News",
+        text: "Um amigo compartilha uma notícia alarmista em uma rede social sem verificar a fonte. Você percebe que se trata de uma notícia falsa (fake news). A atitude responsável é:",
+        o: [
+          {t: "Compartilhar a postagem também, pois o assunto é polêmico e gerará muitas curtidas.", c: false},
+          {t: "Xingar o amigo nos comentários para que todos vejam o erro e ele sinta vergonha.", c: false},
+          {t: "Avisá-lo no privado de forma respeitosa, enviando o link com a informação verdadeira.", c: true},
+          {t: "Denunciar o perfil do seu amigo para que a rede social bloqueie a conta dele para sempre.", c: false}
+        ],
+        exp: "A correção empática, que combate a desinformação sem humilhar ou ofender a pessoa."
+      },
+      {
+        topic: "Cultura do Cancelamento",
+        text: "O cancelamento virtual ocorre quando alguém erra e recebe ataques massivos na internet. Qual atitude rompe esse ciclo e introduz a empatia no meio digital?",
+        o: [
+          {t: "Somar-se aos ataques, pois a pressão pública é a única forma de ensinar responsabilidade.", c: false},
+          {t: "Promover o debate com a pessoa que errou, dando a oportunidade de retratação e diálogo.", c: true},
+          {t: "Criar perfis falsos para atacar o indivíduo sem expor a própria identidade nas redes.", c: false},
+          {t: "Excluir suas próprias redes sociais para não testemunhar os conflitos de outras pessoas.", c: false}
+        ],
+        exp: "O diálogo e a pedagogia social em substituição à cultura punitivista das redes."
+      },
+      {
+        topic: "Engajamento Digital",
+        text: "Uma campanha de financiamento coletivo (vaquinha online) é lançada para pagar o tratamento médico de um morador da comunidade. Mesmo sem dinheiro para doar, você pode ajudar ao:",
+        o: [
+          {t: "Compartilhar a campanha em suas redes, ampliando o alcance para possíveis doadores.", c: true},
+          {t: "Reclamar publicamente que o sistema de saúde falhou e que a vaquinha é um absurdo.", c: false},
+          {t: "Dizer aos organizadores que eles deveriam desistir porque o valor necessário é muito alto.", c: false},
+          {t: "Ignorar a campanha, pois solidariedade só tem valor quando há doação em dinheiro vivo.", c: false}
+        ],
+        exp: "A doação de influência e alcance digital é uma forma legítima de solidariedade."
+      },
+      {
+        topic: "Uso Ético da IA",
+        text: "Com a evolução da Inteligência Artificial, ferramentas conseguem fazer trabalhos inteiros. Um colega quer usar IA para fazer o projeto sozinho sem aprender. A ação cidadã seria:",
+        o: [
+          {t: "Usar a IA para fazer o seu próprio trabalho também, aproveitando a facilidade da ferramenta.", c: false},
+          {t: "Alertar o colega de que o processo de aprendizagem importa mais que apenas a nota final.", c: true},
+          {t: "Denunciar o colega anonimamente à direção para garantir que ele seja punido com nota zero.", c: false},
+          {t: "Pedir para ele colocar seu nome no trabalho gerado pela IA para que ambos sejam aprovados.", c: false}
+        ],
+        exp: "O zelo ético pelo aprendizado real e pela integridade acadêmica do colega."
+      },
+      {
+        topic: "Jogos Online",
+        text: "Em um jogo online multiplayer, um jogador iniciante da sua equipe está cometendo muitos erros, causando a derrota do grupo. O comportamento pautado na alteridade seria:",
+        o: [
+          {t: "Expulsá-lo da partida imediatamente para não comprometer a pontuação geral da sua equipe.", c: false},
+          {t: "Enviar mensagens agressivas para que ele entenda a seriedade do jogo e saia por conta própria.", c: false},
+          {t: "Orientá-lo com dicas sobre a mecânica do jogo, entendendo que todos já foram iniciantes.", c: true},
+          {t: "Abandonar a partida propositalmente para não precisar lidar com jogadores inexperientes.", c: false}
+        ],
+        exp: "A alteridade e a paciência aplicadas em ambientes competitivos e virtuais."
+      },
+      {
+        topic: "Inclusão Digital",
+        text: "Uma comunidade isolada no interior do estado recebe seu primeiro ponto de internet pública, mas poucos moradores sabem usar computadores. Uma atitude transformadora seria:",
+        o: [
+          {t: "Reservar o uso da internet apenas para o seu lazer, pois você já possui os conhecimentos.", c: false},
+          {t: "Criar uma oficina gratuita aos finais de semana para ensinar informática básica aos moradores.", c: true},
+          {t: "Sugerir que desliguem a internet, pois a comunidade não está pronta para usar a tecnologia.", c: false},
+          {t: "Cobrar altas taxas para enviar e receber mensagens pelas pessoas que não sabem usar a rede.", c: false}
+        ],
+        exp: "A alfabetização tecnológica tratada como um bem público e compartilhado."
+      },
+      {
+        topic: "Descarte Tecnológico",
+        text: "Seu computador antigo, mas funcional, está parado pegando poeira no armário, enquanto um estudante vizinho precisa de um aparelho para pesquisar. A atitude solidária é:",
+        o: [
+          {t: "Vender o equipamento por um valor muito alto, já que é uma tecnologia ainda útil para estudos.", c: false},
+          {t: "Desmontar o computador para aprender sobre suas peças, inutilizando-o para outras pessoas.", c: false},
+          {t: "Doar o equipamento para o vizinho, formatando-o para que ele tenha uma boa ferramenta.", c: true},
+          {t: "Guardar o computador por mais dez anos, pois ele pode ter valor sentimental futuramente.", c: false}
+        ],
+        exp: "O desapego sustentável que permite o acesso do outro à informação e tecnologia."
+      },
+      {
+        topic: "Transição Tecnológica",
+        text: "Em 2060, uma inteligência artificial passa a realizar 80% das funções burocráticas, causando grande desemprego. Como a solidariedade social deveria se manifestar nessa sociedade?",
+        o: [
+          {t: "Proibir completamente o uso de qualquer tecnologia para forçar a volta do trabalho manual.", c: false},
+          {t: "Instituir programas de transição de carreira e renda básica apoiados por toda a sociedade.", c: true},
+          {t: "Marginalizar os desempregados, considerando-os culpados por não se adaptarem aos robôs.", c: false},
+          {t: "Isolar as classes desempregadas em cidades separadas para evitar conflitos na capital.", c: false}
+        ],
+        exp: "A reorganização socioeconômica empática frente às grandes disrupções sistêmicas da IA."
+      },
+      {
+        topic: "Recursos Escassos",
+        text: "Em uma colônia espacial recém-fundada, a água disponível é restrita a 10 litros por habitante ao dia. Uma falha no sistema faz um setor perder sua cota. A atitude cooperativa é:",
+        o: [
+          {t: "Dividir a cota restante entre todos os setores até que o sistema de filtragem seja consertado.", c: true},
+          {t: "Ignorar o problema, mantendo o consumo normal no seu setor para garantir sua segurança.", c: false},
+          {t: "Cobrar valores altíssimos pelo repasse da sua cota de água, enriquecendo durante a crise.", c: false},
+          {t: "Sugerir que os habitantes do setor danificado retornem à Terra imediatamente sem apoio.", c: false}
+        ],
+        exp: "A partilha radical e o sacrifício coletivo como meio para a sobrevivência conjunta."
+      },
+      {
+        topic: "Compartilhamento",
+        text: "Num futuro onde carros autônomos substituem os particulares, o sistema de compartilhamento de viagens exige ética. Qual atitude demonstra empatia no uso desses veículos?",
+        o: [
+          {t: "Sujar o veículo autônomo de propósito, já que não há um motorista humano para reclamar.", c: false},
+          {t: "Reter o carro na sua porta além do tempo necessário para que outros usuários não o usem.", c: false},
+          {t: "Deixar o veículo limpo e liberá-lo rapidamente, pensando no próximo usuário da rede pública.", c: true},
+          {t: "Desativar as rotas de outras pessoas para que o carro faça apenas os seus trajetos diários.", c: false}
+        ],
+        exp: "O zelo e a responsabilidade civil no uso de sistemas e bens públicos automatizados."
+      },
+      {
+        topic: "Escassez e Partilha",
+        text: "No final do século, os alimentos frescos são escassos devido a mudanças climáticas, predominando a alimentação sintética. Você ganha uma cesta de frutas raras. A atitude altruísta é:",
+        o: [
+          {t: "Consumir tudo rapidamente sozinho para garantir a ingestão exclusiva de vitaminas naturais.", c: false},
+          {t: "Compartilhar as frutas com vizinhos e amigos próximos, celebrando juntos essa raridade.", c: true},
+          {t: "Esconder a cesta e fingir que nunca a recebeu para evitar pedidos de compartilhamento.", c: false},
+          {t: "Vender as frutas em leilão clandestino, lucrando de forma exacerbada sobre a escassez.", c: false}
+        ],
+        exp: "A alegria da partilha e do convívio superando o ímpeto da acumulação individualista."
+      },
+      {
+        topic: "Equidade Futura",
+        text: "Com a criação de implantes neurais para acelerar o aprendizado, surgiu uma grande desigualdade educacional, pois poucos podem pagar. A saída baseada na justiça social seria:",
+        o: [
+          {t: "Criar bancos de financiamento solidário para garantir que estudantes de baixa renda tenham acesso.", c: true},
+          {t: "Aceitar que a sociedade será dividida biologicamente entre os mais aptos e os não aptos.", c: false},
+          {t: "Priorizar a contratação exclusiva daqueles com implantes para aumentar a eficiência corporativa.", c: false},
+          {t: "Sabotar as fábricas de implantes, impedindo o avanço tecnológico para todos de forma radical.", c: false}
+        ],
+        exp: "A busca por equidade no acesso aos aprimoramentos e tecnologias cognitivas do amanhã."
+      },
+      {
+        topic: "Clima e Ação Conjunta",
+        text: "Em uma megacidade de 2075, as ilhas de calor exigem que os cidadãos plantem telhados verdes. Um idoso não tem força física para instalar o seu. A atitude de pertencimento da rua seria:",
+        o: [
+          {t: "Aplicar multas pesadas ao idoso para forçá-lo a contratar uma empresa especializada logo.", c: false},
+          {t: "Organizar um grupo de moradores voluntários para realizar a instalação no telhado do idoso.", c: true},
+          {t: "Denunciar o idoso às autoridades ecológicas para que ele perca o direito à moradia local.", c: false},
+          {t: "Ignorar o fato, já que o impacto ambiental de apenas um telhado sem verde é insignificante.", c: false}
+        ],
+        exp: "O trabalho braçal, solidário e coletivo em prol da sustentabilidade e auxílio ao vulnerável."
+      },
+      {
+        topic: "Isolamento e RV",
+        text: "A realidade virtual tornou-se tão imersiva que muitos jovens não saem mais de casa, sofrendo de isolamento extremo. A empatia da comunidade para reverter o quadro seria:",
+        o: [
+          {t: "Cortar a energia elétrica dessas casas à força para obrigar os jovens a saírem de seus quartos.", c: false},
+          {t: "Ridicularizar publicamente quem usa a realidade virtual para que sintam vergonha do hábito.", c: false},
+          {t: "Criar espaços de convivência físicos muito atrativos e convidá-los ativamente para participar.", c: true},
+          {t: "Abandonar o contato com esses jovens, pois a escolha de se isolar é puramente individual.", c: false}
+        ],
+        exp: "A promoção de reintegração social afetiva invés de punições e banimentos no mundo real."
+      },
+      {
+        topic: "Crise Sistêmica",
+        text: "O limite de emissão de carbono tornou-se pessoal e intransferível. Um estudante de outra cidade precisa viajar para uma cirurgia urgente, mas estourou seu limite. A comunidade deve:",
+        o: [
+          {t: "Exigir que ele espere o próximo ano, quando a cota de carbono dele for zerada novamente.", c: false},
+          {t: "Pressionar o sistema central para transferir voluntariamente pequenas frações das próprias cotas.", c: true},
+          {t: "Sugerir que ele faça a cirurgia de forma improvisada, já que quebrar regras ambientais é crime.", c: false},
+          {t: "Deixar a responsabilidade para o hospital, não se importando com o problema de deslocamento.", c: false}
+        ],
+        exp: "A doação comunitária de recursos ambientais intangíveis para salvar uma vida humana."
+      },
+      {
+        topic: "Saúde e Patentes",
+        text: "No futuro, remédios de alta tecnologia curam instantaneamente doenças graves, mas a patente pertence a uma megacorporação. A atitude que melhor traduz a solidariedade é:",
+        o: [
+          {t: "Boicotar todos os remédios, permitindo que doenças voltem a ser intratáveis para todos.", c: false},
+          {t: "Defender a democratização da fórmula e apoiar movimentos de saúde pública internacional.", c: true},
+          {t: "Comprar os remédios apenas para si e guardar em grandes estoques por segurança pessoal.", c: false},
+          {t: "Conformar-se com a situação, acreditando que a saúde é um produto de luxo inquestionável.", c: false}
+        ],
+        exp: "A defesa engajada, coletiva e institucional da saúde como direito humano global."
+      },
+      {
+        topic: "Gestão do Espaço",
+        text: "Com a migração massiva para cidades subterrâneas protegidas, o espaço tornou-se o bem mais valioso. Sua família tem um cômodo ocioso. A atitude que representa coesão local é:",
+        o: [
+          {t: "Ceder o espaço temporariamente para atividades comunitárias ou para abrigar quem precisa.", c: true},
+          {t: "Lacrar o cômodo para evitar que qualquer outra pessoa possa reivindicar o direito ao uso.", c: false},
+          {t: "Demolir as paredes do cômodo para ampliar a própria sala, ignorando a demanda populacional.", c: false},
+          {t: "Cobrar aluguéis abusivos, explorando o desespero das famílias que acabaram de chegar.", c: false}
+        ],
+        exp: "A subordinação do egoísmo patrimonial e a abertura do espaço ao bem social comum durante crises extremas."
+      }
+    ];
+
+    /* ==================================================
+       LÓGICA KAHOOT (Com Antifraude)
+    ================================================== */
+    let k_idx = 0; let k_score = 0; let k_corrects = 0; let k_hp = 100;
+    let k_fastCount = 0; let k_startTime = 0; let k_qStartTime = 0;
+    let readLockInt, fbLockInt, k_locked = true;
+
+    function startKahoot() {
+      const name = document.getElementById('player-name').value.trim();
+      if (!name) return alert("Digite seu nome completo!");
+      document.getElementById('start-screen').classList.add('hidden');
+      document.getElementById('quiz-screen').classList.remove('hidden');
+      k_idx = 0; k_score = 0; k_corrects = 0; k_hp = 100; k_fastCount = 0;
+      k_startTime = Date.now();
+      loadKahootQuestion();
+    }
+
+    function loadKahootQuestion() {
+      clearInterval(readLockInt);
+      if (k_idx >= quizzes.length) return showKahootFinal();
+
+      const q = quizzes[k_idx];
+      document.getElementById('q-counter').innerText = `Questão ${k_idx+1} de 40`;
+      document.getElementById('q-topic').innerText = q.topic;
+      document.getElementById('score-val').innerText = k_score;
+      document.getElementById('question-text').innerText = q.text;
+      document.getElementById('progress-fill').style.width = `${(k_idx/40)*100}%`;
+
+      const letters = ['A', 'B', 'C', 'D'];
+      const mixed = [...q.o].sort(() => Math.random() - 0.5);
+      
+      letters.forEach((l, i) => {
+        document.getElementById(`opt-${l}-text`).innerText = mixed[i].t;
+        document.getElementById(`btn-opt-${l}`).dataset.correct = mixed[i].c;
+      });
+
+      // TRAVA DE 4 SEGUNDOS
+      k_locked = true; let secs = 4;
+      ['A','B','C','D'].forEach(l => { 
+        document.getElementById(`btn-opt-${l}`).disabled = true; 
+        document.getElementById(`btn-opt-${l}`).style.border = 'none';
+      });
+      const lockBar = document.getElementById('reading-lock-bar');
+      lockBar.className = 'reading-lock-bar';
+      lockBar.innerHTML = `<span>📖 Leia com atenção: liberando em <strong id="reading-countdown">${secs}</strong>s...</span>`;
+
+      k_qStartTime = Date.now();
+      readLockInt = setInterval(() => {
+        secs--;
+        document.getElementById('reading-countdown').innerText = secs;
+        if(secs <= 0) {
+          clearInterval(readLockInt); k_locked = false;
+          ['A','B','C','D'].forEach(l => document.getElementById(`btn-opt-${l}`).disabled = false);
+          lockBar.className = 'reading-lock-bar unlocked';
+          lockBar.innerHTML = `<span>✅ Botões liberados!</span>`;
+        }
+      }, 1000);
+    }
+
+    function handleAnswer(letter) {
+      if(k_locked) return;
+      const duration = (Date.now() - k_qStartTime)/1000;
+      const btn = document.getElementById(`btn-opt-${letter}`);
+      const isCorrect = btn.dataset.correct === "true";
+
+      // ANTI-RUSH: 15s DE PUNIÇÃO
+      if(duration < 5) k_fastCount++; else k_fastCount = Math.max(0, k_fastCount-1);
+      if(k_fastCount >= 3) return triggerRush();
+
+      if(isCorrect) { k_corrects++; k_score += 1000; btn.style.border = '5px solid #00ff00'; }
+      else { btn.style.border = '5px solid #ff0000'; }
+
+      document.getElementById('quiz-screen').classList.add('hidden');
+      document.getElementById('feedback-screen').classList.remove('hidden');
+
+      const banner = document.getElementById('feedback-banner');
+      const nx = document.getElementById('next-btn');
+      const lockMsg = document.getElementById('lock-timer-msg');
+      document.getElementById('feedback-exp-text').innerText = quizzes[k_idx].exp;
+
+      if(isCorrect) {
+        banner.className = 'feedback-banner correct';
+        document.getElementById('feedback-title').innerText = "Correto! 🎉";
+        document.getElementById('feedback-subtitle').innerText = "+1000 pontos";
+        lockMsg.innerText = ""; nx.disabled = false; nx.innerText = "Avançar ➔";
+      } else {
+        banner.className = 'feedback-banner incorrect';
+        document.getElementById('feedback-title').innerText = "Erro Crítico! ❌";
+        document.getElementById('feedback-subtitle').innerText = "Leia a explicação para não errar novamente.";
+        
+        // TEMPO DE FOCO NO ERRO
+        let cd = 8; nx.disabled = true;
+        lockMsg.innerText = `⏳ Retendo foco. Liberando em ${cd}s...`;
+        nx.innerText = `Aguarde (${cd}s)`;
+        clearInterval(fbLockInt);
+        fbLockInt = setInterval(() => {
+          cd--;
+          if(cd > 0) { lockMsg.innerText = `⏳ Retendo foco. Liberando em ${cd}s...`; nx.innerText = `Aguarde (${cd}s)`; }
+          else { clearInterval(fbLockInt); lockMsg.innerText = "✅ Pode prosseguir!"; nx.disabled = false; nx.innerText = "Avançar ➔"; }
+        }, 1000);
+      }
+    }
+
+    function triggerRush() {
+      k_fastCount = 0;
+      document.getElementById('quiz-screen').classList.add('hidden');
+      document.getElementById('rush-alert-screen').style.display = 'block';
+      let rSec = 15;
+      document.getElementById('rush-countdown-val').innerText = rSec;
+      const t = setInterval(() => {
+        rSec--; document.getElementById('rush-countdown-val').innerText = rSec;
+        if(rSec <= 0) {
+          clearInterval(t); document.getElementById('rush-alert-screen').style.display = 'none';
+          document.getElementById('quiz-screen').classList.remove('hidden'); loadKahootQuestion();
+        }
+      }, 1000);
+    }
+
+    function nextQuestion() {
+      k_idx++;
+      document.getElementById('feedback-screen').classList.add('hidden');
+      if(k_idx < quizzes.length) { document.getElementById('quiz-screen').classList.remove('hidden'); loadKahootQuestion(); }
+      else { showKahootFinal(); }
+    }
+
+    function showKahootFinal() {
+      document.getElementById('quiz-screen').classList.add('hidden');
+      document.getElementById('final-screen').classList.remove('hidden');
+      
+      const totalS = Math.round((Date.now() - k_startTime)/1000);
+      const avg = Math.round(totalS/40);
+      const acc = Math.round((k_corrects/40)*100);
+      const name = document.getElementById('player-name').value;
+
+      document.getElementById('visto-nome').innerText = name;
+      document.getElementById('visto-acertos').innerText = `${k_corrects} / 40 (${acc}%)`;
+      document.getElementById('visto-pontos').innerText = `${k_score} pts`;
+      document.getElementById('visto-tempo-total').innerText = `${(totalS/60).toFixed(1)} min`;
+      document.getElementById('visto-tempo-medio').innerText = `${avg}s`;
+
+      const b = document.getElementById('visto-status-badge');
+      const d = document.getElementById('visto-diagnostico');
+      
+      // CRITÉRIO DO VISTO PEDAGÓGICO
+      if(acc >= 60 && avg >= 8) {
+        b.className = 'visto-badge aprovado'; b.innerText = '✅ VISTO CONCEDIDO';
+        d.innerText = 'Leitura atenta e bom aproveitamento'; d.style.color = '#2e7d32';
+      } else {
+        b.className = 'visto-badge recusado'; b.innerText = '❌ NÃO VALIDADO';
+        d.innerText = (acc < 60) ? 'Acertos abaixo do mínimo (60%)' : 'Chute detectado (Média < 8s)';
+        d.style.color = '#c62828';
+      }
+      document.getElementById('visto-hash').innerText = `#LOG-${name.substring(0,3).toUpperCase()}-${acc}P-${totalS}S`;
+    }
+
+    /* ==================================================
+       LÓGICA MODO GAME (PLATAFORMA)
+    ================================================== */
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    let g_state = 'PLAYING'; let g_camX = 0; let g_hp = 100; let g_loot = 0;
+    let g_frame; const g_keys = { r: false, l: false, u: false };
+    
+    const p = { x:50, y:100, w:45, h:45, vx:0, vy:0, speed:6, jump:-13.5, gnd:false, lastX:50, lastY:0, exp:'N', expT:0 };
+    let g_plats = [], g_loots = [], g_trees = [], g_portal = {}, g_width = 0;
+
+    function iniciarGame() {
+      canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+      g_plats=[]; g_loots=[]; g_trees=[]; g_camX = 0; g_hp = 100; g_loot = 0;
+      atualizarHpGame(0); let cx = 0; const gY = canvas.height - 80;
+      g_plats.push({x:0, y:gY, w:400, h:80});
+      const treeColors = ['#2d6a4f', '#40916c', '#52b788', '#d00000', '#f48c06', '#9b59b6', '#e67e22'];
+
+      for(let i=0; i<40; i++) {
+        cx += 300 + Math.random()*150; let w = 200 + Math.random()*100; let y = gY - Math.random()*120;
+        g_plats.push({x:cx, y:y, w:w, h:50});
+        g_loots.push({x:cx+(w/2)-15, y:y-45, w:35, h:35, active:true, idx:i});
+
+        if (Math.random() > 0.4) {
+          let numTrees = Math.floor(Math.random() * 2) + 1;
+          for(let t=0; t<numTrees; t++) {
+              let treeHeight = 70 + Math.random() * 80;
+              let treeX = cx + Math.random() * (w - 40) + 10;
+              let fruits = [];
+              let numFruits = Math.floor(Math.random() * 4) + 2;
+              for(let f=0; f<numFruits; f++) {
+                  fruits.push({ offX: (Math.random() - 0.5) * 70, offY: -treeHeight - 10 - (Math.random() * 40) });
+              }
+              g_trees.push({ x: treeX, y: y, h: treeHeight, color: treeColors[Math.floor(Math.random() * treeColors.length)], fruits: fruits });
+          }
+        }
+      }
+      cx += 400; g_plats.push({x:cx, y:gY, w:600, h:80});
+      g_portal = {x:cx+300, y:gY-100, w:70, h:100}; g_width = cx+1000;
+      g_state = 'PLAYING'; g_loop();
+    }
+
+    // Controles de Teclado
+    window.addEventListener('keydown', e => { if(activeApp!=='game') return; if(e.key==='ArrowRight') g_keys.r=true; if(e.key==='ArrowLeft') g_keys.l=true; if(e.key==='ArrowUp'||e.key===' ') g_keys.u=true; });
+    window.addEventListener('keyup', e => { if(activeApp!=='game') return; if(e.key==='ArrowRight') g_keys.r=false; if(e.key==='ArrowLeft') g_keys.l=false; if(e.key==='ArrowUp'||e.key===' ') g_keys.u=false; });
+    
+    // Controles Touch e Mouse unificados
+    const setupT = (id, k) => {
+      const b = document.getElementById(id);
+      if(b) {
+        b.addEventListener('touchstart', e => { e.preventDefault(); g_keys[k] = true; });
+        b.addEventListener('touchend', e => { e.preventDefault(); g_keys[k] = false; });
+        b.addEventListener('mousedown', e => { e.preventDefault(); g_keys[k] = true; });
+        b.addEventListener('mouseup', e => { e.preventDefault(); g_keys[k] = false; });
+        b.addEventListener('mouseleave', e => { e.preventDefault(); g_keys[k] = false; });
+      }
+    };
+    setupT('btn-left','l'); setupT('btn-right','r'); setupT('btn-jump','u');
+
+    function atualizarHpGame(val) {
+      g_hp += val; if(g_hp>100) g_hp=100;
+      if(val<0) { p.exp = 'H'; p.expT = 60; } else if(val>0){ p.exp = 'Y'; p.expT = 60; }
+      const b = document.getElementById('g-hp-fill');
+      b.style.width = g_hp+'%'; b.style.background = g_hp>50?'#00ff00':g_hp>20?'#ffcc00':'#ff0000';
+      if(g_hp<=0) {
+        g_state = 'OVER'; cancelAnimationFrame(g_frame);
+        document.getElementById('game-ui').classList.add('hidden');
+        document.getElementById('game-over-screen').classList.remove('hidden');
+      }
+    }
+
+    function abrirCaixaGame(i) {
+      g_state = 'QUIZ'; g_keys.l=g_keys.r=g_keys.u=false;
+      const m = document.getElementById('quiz-modal-game'); const c = document.getElementById('options-container-game');
+      const q = quizzes[i]; document.getElementById('question-text-game').innerText = (i+1)+". "+q.text;
+      c.innerHTML = '';
+      const mixed = [...q.o].sort(()=>Math.random()-0.5);
+      mixed.forEach(opt => {
+        const b = document.createElement('button'); b.className = 'opt-btn-game'; b.innerText = opt.t;
+        b.onclick = () => {
+          atualizarHpGame(opt.c ? 25 : -25);
+          m.style.opacity = '0';
+          setTimeout(() => { m.style.visibility = 'hidden'; if(g_hp>0) g_state = 'PLAYING'; }, 300);
+        };
+        c.appendChild(b);
+      });
+      m.style.visibility = 'visible'; m.style.opacity = '1';
+    }
+
+    function g_loop() {
+      if(activeApp !== 'game') return;
+      if(g_state === 'PLAYING') {
+        p.vy += 0.7; p.x += p.vx; p.y += p.vy;
+        p.vx = g_keys.r ? p.speed : g_keys.l ? -p.speed : 0;
+        if(p.x < 0) p.x = 0;
+        if(g_keys.u && p.gnd) { p.vy = p.jump; p.gnd = false; }
+        
+        p.gnd = false;
+        for(let pt of g_plats) {
+          if(p.vy>0 && p.x+p.w>pt.x && p.x<pt.x+pt.w && p.y+p.h>=pt.y && p.y+p.h<=pt.y+p.vy+3) {
+            p.gnd = true; p.vy = 0; p.y = pt.y-p.h; p.lastX = p.x; p.lastY = p.y-20;
+          }
+        }
+        if(p.y > canvas.height) { atualizarHpGame(-25); p.x = p.lastX; p.y = p.lastY-50; p.vy = 0; }
+        for(let l of g_loots) {
+          if(l.active && p.x<l.x+l.w && p.x+p.w>l.x && p.y<l.y+l.h && p.y+p.h>l.y) {
+            l.active = false; g_loot++; document.getElementById('loot-count').innerText = g_loot; abrirCaixaGame(l.idx);
+          }
+        }
+        if(p.x<g_portal.x+g_portal.w && p.x+p.w>g_portal.x && p.y<g_portal.y+g_portal.h && p.y+p.h>g_portal.y) {
+          document.getElementById('game-ui').classList.add('hidden');
+          document.getElementById('game-over-screen').classList.remove('hidden');
+          document.getElementById('game-over-title').innerText = "BOOYAH!";
+          document.getElementById('game-over-title').style.color = "#00ff00";
+          document.getElementById('game-over-msg').innerText = "Você venceu o egoísmo e concluiu a missão!";
+        }
+        g_camX = Math.max(0, Math.min(p.x - canvas.width/3, g_width - canvas.width));
+      }
+
+      ctx.fillStyle = '#0d0d1a'; ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.save(); ctx.translate(-g_camX, 0);
+      ctx.fillStyle = '#ff0000'; ctx.globalAlpha=0.5; ctx.fillRect(g_camX, canvas.height-25, canvas.width, 25); ctx.globalAlpha=1;
+
+      // Desenha Árvores
+      for (let t of g_trees) {
+        if (t.x < g_camX - 150 || t.x > g_camX + canvas.width + 150) continue;
+        ctx.fillStyle = '#5c4033'; ctx.fillRect(t.x - 8, t.y - t.h, 16, t.h);
+        ctx.fillStyle = t.color; ctx.beginPath();
+        ctx.arc(t.x, t.y - t.h, 45, 0, Math.PI*2); ctx.arc(t.x - 25, t.y - t.h + 10, 35, 0, Math.PI*2);
+        ctx.arc(t.x + 25, t.y - t.h + 5, 35, 0, Math.PI*2); ctx.arc(t.x, t.y - t.h - 35, 40, 0, Math.PI*2); ctx.fill();
+        for (let f of t.fruits) {
+            let fx = t.x + f.offX; let fy = t.y + f.offY;
+            ctx.shadowBlur = 10; ctx.shadowColor = '#ffcc00'; ctx.fillStyle = '#ff3300';
+            ctx.beginPath(); ctx.arc(fx, fy, 6, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
+            ctx.fillStyle = '#00ff00'; ctx.beginPath(); ctx.arc(fx + 3, fy - 5, 3, 0, Math.PI*2); ctx.fill();
+        }
+      }
+
+      ctx.fillStyle = '#22223b';
+      for(let pt of g_plats) { ctx.fillRect(pt.x,pt.y,pt.w,pt.h); ctx.fillStyle='#00f3ff'; ctx.fillRect(pt.x,pt.y,pt.w,4); ctx.fillStyle='#22223b'; }
+      for(let l of g_loots) { if(l.active){ ctx.fillStyle='#ffcc00'; ctx.fillRect(l.x,l.y,l.w,l.h); ctx.fillStyle='#000'; ctx.font='24px Arial'; ctx.fillText('?',l.x+10,l.y+26); } }
+      ctx.fillStyle='#00ff00'; ctx.fillRect(g_portal.x, g_portal.y, g_portal.w, g_portal.h);
+      
+      // Avatar
+      ctx.fillStyle = p.color || '#fff'; ctx.fillRect(p.x, p.y, p.w, p.h);
+      ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(p.x+12, p.y+15, 10, 0, 7); ctx.fill(); ctx.beginPath(); ctx.arc(p.x+32, p.y+17, 7, 0, 7); ctx.fill();
+      ctx.fillStyle='#000';
+      if(p.exp === 'H') { ctx.font='14px Arial'; ctx.fillText("X",p.x+7,p.y+20); ctx.fillText("X",p.x+27,p.y+22); }
+      else { let px = g_keys.l?-3:g_keys.r?3:0; ctx.beginPath(); ctx.arc(p.x+12+px, p.y+15, 3, 0, 7); ctx.arc(p.x+32+px, p.y+17, 2, 0, 7); ctx.fill(); }
+      ctx.strokeStyle='#000'; ctx.lineWidth=2; ctx.beginPath();
+      if(p.exp === 'Y') ctx.arc(p.x+22, p.y+28, 8, 0, 3.14, false);
+      else if(p.exp === 'H') ctx.arc(p.x+22, p.y+35, 6, 3.14, 0, false);
+      else { ctx.moveTo(p.x+15, p.y+32); ctx.bezierCurveTo(p.x+20, p.y+36, p.x+25, p.y+28, p.x+30, p.y+32); }
+      ctx.stroke(); if(p.expT>0){ p.expT--; if(p.expT===0) p.exp='N'; }
+      ctx.restore();
+      g_frame = requestAnimationFrame(g_loop);
+    }
+  </script>
+</body>
+</html>
