@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missão de Pesquisa: Filósofas e a Questão Feminina</title>
+    <style>
+        :root {
+            --bg-color: #f1f5f9;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --card-bg: #ffffff;
+            --accent: #ec4899;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-top: 5px solid var(--primary);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .instrucoes {
+            font-size: 1rem;
+            color: var(--text-light);
+        }
+
+        .accordion {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .accordion-item {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary);
+            transition: background-color 0.2s;
+        }
+
+        .accordion-header:hover {
+            background-color: #f8fafc;
+        }
+
+        .accordion-header::after {
+            content: '\25BC';
+            font-size: 0.9rem;
+            transition: transform 0.3s;
+        }
+
+        .accordion-item.active .accordion-header::after {
+            transform: rotate(-180deg);
+        }
+
+        .accordion-content {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+        }
+
+        .accordion-item.active .accordion-content {
+            padding: 0 20px 20px 20px;
+            max-height: 2000px;
+        }
+
+        .topic-list {
+            margin-top: 15px;
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+
+        .topic-list li {
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+
+        .missao-final {
+            background-color: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+
+        .missao-final h4 {
+            color: #166534;
+            margin-bottom: 5px;
+        }
+
+        .missao-final p {
+            font-size: 0.95rem;
+            color: #15803d;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Missão de Pesquisa: Filósofas e a Questão Feminina</h1>
+            <p class="instrucoes">Estudantes, localizem o seu grupo abaixo, distribuam os 8 tópicos de pesquisa entre os membros da equipe e construam a sua avaliação final.</p>
+        </header>
+
+        <div class="accordion">
+            
+            <!-- GRUPO 1 -->
+            <div class="accordion-item">
+                <div class="accordion-header">GRUPO 1: Simone de Beauvoir e a Construção do Gênero</div>
+                <div class="accordion-content">
+                    <p><strong>O que pesquisar (8 pontos):</strong></p>
+                    <ol class="topic-list">
+                        <li>Quem foi Simone de Beauvoir e qual o impacto histórico do seu livro <em>O Segundo Sexo</em> (1949).</li>
+                        <li>O significado da célebre frase: "Não se nasce mulher, torna-se mulher".</li>
+                        <li>A diferença conceitual fundamental entre <strong>Sexo</strong> (condição biológica) e <strong>Gênero</strong> (construção cultural).</li>
+                        <li>A teoria da mulher colocada como o "Outro" (o elemento secundário) perante o homem (considerado o sujeito universal e padrão).</li>
+                        <li>O papel da educação infantil e da família na imposição e treinamento de comportamentos "femininos" e "masculinos".</li>
+                        <li>O que é o "determinismo biológico" e como Beauvoir o desconstrói.</li>
+                        <li>A relação entre a independência financeira, o trabalho assalariado e a verdadeira emancipação da mulher.</li>
+                        <li>Três exemplos do nosso cotidiano moderno onde a sociedade ainda tenta justificar desigualdades sociais usando a biologia.</li>
+                    </ol>
+                    <div class="missao-final">
+                        <h4>🎯 Missão Final</h4>
+                        <p>Elaborem um quiz com <strong>10 questões de múltipla escolha</strong> (A, B, C, D) baseadas nestes 8 pontos para aplicarem à turma.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GRUPO 2 -->
+            <div class="accordion-item">
+                <div class="accordion-header">GRUPO 2: Angela Davis, Lélia Gonzalez e Interseccionalidade</div>
+                <div class="accordion-content">
+                    <p><strong>O que pesquisar (8 pontos):</strong></p>
+                    <ol class="topic-list">
+                        <li>A definição do conceito sociológico de <strong>Interseccionalidade</strong>.</li>
+                        <li>A biografia de Lélia Gonzalez e a sua importância para a fundação do movimento negro no Brasil.</li>
+                        <li>O argumento de Lélia sobre como o racismo e o sexismo não podem ser separados no Brasil devido à nossa herança escravocrata e colonial.</li>
+                        <li>O conceito de "Amefricanidade" criado por Lélia Gonzalez.</li>
+                        <li>Quem é Angela Davis e o argumento central do seu livro <em>Mulheres, Raça e Classe</em>.</li>
+                        <li>A explicação de Davis de que a libertação feminina é impossível sem o fim simultâneo da exploração do sistema capitalista.</li>
+                        <li>A diferença histórica nas pautas de luta: o que as mulheres brancas reivindicavam (direito ao trabalho fora de casa) versus a realidade das mulheres negras (que sempre trabalharam em condições precárias).</li>
+                        <li>Exemplos estatísticos atuais sobre a desigualdade salarial que comprovem a necessidade da interseccionalidade no mercado de trabalho.</li>
+                    </ol>
+                    <div class="missao-final">
+                        <h4>🎯 Missão Final</h4>
+                        <p>Elaborem um quiz com <strong>10 questões de múltipla escolha</strong> (A, B, C, D) baseadas nestes 8 pontos para aplicarem à turma.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GRUPO 3 -->
+            <div class="accordion-item">
+                <div class="accordion-header">GRUPO 3: Djamila Ribeiro e o Lugar de Fala</div>
+                <div class="accordion-content">
+                    <p><strong>O que pesquisar (8 pontos):</strong></p>
+                    <ol class="topic-list">
+                        <li>Quem é Djamila Ribeiro e qual a sua contribuição para a popularização da filosofia no Brasil contemporâneo.</li>
+                        <li>A definição exata do conceito de <strong>"Lugar de Fala"</strong>.</li>
+                        <li>A desconstrução do mito de que o lugar de fala serve para proibir ou censurar pessoas de falarem sobre determinados assuntos.</li>
+                        <li>A importância de dar protagonismo e visibilidade política às vozes de grupos que foram historicamente silenciados e marginalizados.</li>
+                        <li>A distinção ética entre "falar sobre um grupo" e tentar "falar em nome de um grupo" passando por cima da vivência deles.</li>
+                        <li>O impacto que a ausência de representatividade na mídia (televisão, cinema) e na política causa na autoimagem das mulheres negras.</li>
+                        <li>Qual deve ser a postura e a responsabilidade de quem possui privilégios sociais ao debater pautas de minorias.</li>
+                        <li>Exemplos de situações escolares ou profissionais em que o lugar de fala é frequentemente desrespeitado através do silenciamento.</li>
+                    </ol>
+                    <div class="missao-final">
+                        <h4>🎯 Missão Final</h4>
+                        <p>Elaborem um quiz com <strong>10 questões de múltipla escolha</strong> (A, B, C, D) baseadas nestes 8 pontos para aplicarem à turma.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GRUPO 4 -->
+            <div class="accordion-item">
+                <div class="accordion-header">GRUPO 4: Judith Butler e a Performatividade de Gênero</div>
+                <div class="accordion-content">
+                    <p><strong>O que pesquisar (8 pontos):</strong></p>
+                    <ol class="topic-list">
+                        <li>Quem é a filósofa Judith Butler e o impacto do seu livro <em>Problemas de Gênero</em>.</li>
+                        <li>O significado detalhado da afirmação de que o gênero é <strong>performativo</strong>.</li>
+                        <li>A teoria de que o gênero não é algo que "nós somos" intimamente, mas sim um conjunto de atos e expectativas que "nós fazemos" ou encenamos.</li>
+                        <li>Como as instituições de poder (Estado, leis, hospitais, escolas) impõem e fiscalizam a manutenção rigorosa das normas de gênero.</li>
+                        <li>Como a repetição diária e constante dessas normas cria na sociedade a falsa ilusão de que o gênero é um destino natural e fixo.</li>
+                        <li>A crítica da autora à imposição de que existem apenas duas caixas comportamentais rigorosas (masculino e feminino).</li>
+                        <li>O impacto que a rigidez das normas de gênero causa na forma de exclusão, preconceito e violência contra quem não se encaixa nos padrões.</li>
+                        <li>Exemplos práticos de "performances" diárias que a sociedade exige (forma de se sentar, roupas, entonação de voz, estética corporal).</li>
+                    </ol>
+                    <div class="missao-final">
+                        <h4>🎯 Missão Final</h4>
+                        <p>Elaborem um quiz com <strong>10 questões de múltipla escolha</strong> (A, B, C, D) baseadas nestes 8 pontos para aplicarem à turma.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GRUPO 5 -->
+            <div class="accordion-item">
+                <div class="accordion-header">GRUPO 5: As Manifestações da Violência e Empoderamento</div>
+                <div class="accordion-content">
+                    <p><strong>O que pesquisar (8 pontos):</strong></p>
+                    <ol class="topic-list">
+                        <li>A definição sociológica de violência de gênero: por que razão não se trata de casos isolados, mas de um problema estrutural e sistêmico.</li>
+                        <li>As características da <strong>violência física</strong> e o modo como ela costuma ser o último estágio de um longo ciclo de abusos.</li>
+                        <li>A <strong>violência psicológica</strong>: como o controle, a humilhação e a manipulação operam invisivelmente para destruir a autoestima da vítima.</li>
+                        <li>A <strong>violência patrimonial e econômica</strong>: como o controle do dinheiro e a destruição de bens são usados para manter a submissão.</li>
+                        <li>A <strong>violência institucional</strong>: como o próprio Estado, as delegacias, os hospitais e as leis muitas vezes falham e revitimizam a mulher que busca ajuda.</li>
+                        <li>A relação perigosa entre o "machismo leve" do cotidiano (piadas, divisão desigual de tarefas) e a aceitação das violências mais extremas.</li>
+                        <li>A definição filosófica e política do conceito de <strong>Empoderamento</strong> (o resgate da autonomia, não apenas como estética, mas como tomada de poder real e ação transformadora).</li>
+                        <li>Estratégias práticas e redes de apoio que os próprios estudantes podem criar e fortalecer no ambiente escolar para enfrentar ativamente os preconceitos.</li>
+                    </ol>
+                    <div class="missao-final">
+                        <h4>🎯 Missão Final</h4>
+                        <p>Elaborem um quiz com <strong>10 questões de múltipla escolha</strong> (A, B, C, D) baseadas nestes 8 pontos para aplicarem à turma.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.accordion-header').forEach(button => {
+            button.addEventListener('click', () => {
+                const accordionItem = button.parentElement;
+                
+                document.querySelectorAll('.accordion-item').forEach(item => {
+                    if (item !== accordionItem) {
+                        item.classList.remove('active');
+                    }
+                });
+
+                accordionItem.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>
