@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz de Filosofia: A Ciência Colocada à Prova</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #E21B3C;
+      --red-dark: #b8142e;
+      --blue: #1368CE;
+      --blue-dark: #0f52a5;
+      --yellow: #D89E00;
+      --yellow-dark: #b28200;
+      --green: #26890C;
+      --green-dark: #1d6e09;
+      --bg-dark: #381273;
+      --bg-gradient: linear-gradient(135deg, #46178F 0%, #18033d 100%);
+      --card-bg: #ffffff;
+      --text-main: #222222;
+      --text-light: #ffffff;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow-x: hidden;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1050px;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      position: relative;
+    }
+
+    .top-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .brand-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 1.35rem;
+      color: #ffd200;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ctrl-btns {
+      display: flex;
+      gap: 10px;
+    }
+
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 8px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 700;
+      transition: all 0.2s;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    /* TELA INICIAL */
+    #start-screen {
+      text-align: center;
+      padding: 30px 16px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: #ffd200;
+      color: #381273;
+      padding: 6px 18px;
+      border-radius: 30px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+    }
+
+    .anti-rush-badge {
+      display: inline-block;
+      background: rgba(0, 230, 118, 0.2);
+      color: #00e676;
+      border: 1px solid #00e676;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    h1.hero-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 2.3rem;
+      line-height: 1.25;
+      margin-bottom: 16px;
+      color: #ffffff;
+      text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    p.hero-desc {
+      font-size: 1.05rem;
+      max-width: 760px;
+      margin: 0 auto 24px auto;
+      line-height: 1.6;
+      color: #e0d5f8;
+    }
+
+    .rules-card {
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 14px;
+      padding: 16px 20px;
+      max-width: 800px;
+      margin: 0 auto 24px auto;
+      text-align: left;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      border-left: 4px solid #ffd200;
+    }
+
+    .rules-card h4 {
+      color: #ffd200;
+      margin-bottom: 10px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.1rem;
+    }
+    
+    .rules-card ul {
+        margin-left: 20px;
+        margin-bottom: 15px;
+        color: #e0d5f8;
+    }
+    
+    .rules-card li { margin-bottom: 6px; }
+
+    .input-box {
+      margin: 0 auto 20px auto;
+      max-width: 420px;
+    }
+
+    .input-box label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .input-box input {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 12px;
+      border: 2px solid #ffd200;
+      font-size: 1.1rem;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      background: #ffffff;
+      color: #222;
+    }
+
+    .start-btn {
+      background: #ffd200;
+      color: #2b0c5e;
+      border: none;
+      padding: 18px 48px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 900;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #b39200, 0 10px 20px rgba(0, 0, 0, 0.3);
+      transition: all 0.15s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .start-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 9px 0 #b39200, 0 14px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    /* TELA DO QUIZ */
+    #quiz-screen {
+      display: none;
+    }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .q-badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .q-topic {
+      background: rgba(255, 210, 0, 0.25);
+      color: #ffd200;
+      border: 1px solid #ffd200;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .stats-box {
+      display: flex;
+      gap: 16px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+    }
+
+    .score-display {
+      color: #ffd200;
+      font-size: 1.1rem;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #ffd200;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .reading-lock-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 8px 16px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #ffd200;
+    }
+
+    .reading-lock-bar.unlocked {
+      background: rgba(0, 230, 118, 0.2);
+      color: #00e676;
+    }
+
+    .question-card {
+      background: #ffffff;
+      color: #222222;
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      line-height: 1.65;
+      font-size: 1.1rem;
+      border-left: 8px solid #ffd200;
+    }
+
+    .question-text {
+      white-space: pre-line;
+      font-weight: 600;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+      h1.hero-title {
+        font-size: 1.7rem;
+      }
+      .question-card {
+        padding: 16px 18px;
+        font-size: 1rem;
+      }
+    }
+
+    .option-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 18px 20px;
+      color: white;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 700;
+      line-height: 1.45;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+      transition: all 0.2s ease;
+      box-shadow: 0 5px 0 rgba(0, 0, 0, 0.3);
+      user-select: none;
+      position: relative;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+      box-shadow: 0 8px 0 rgba(0, 0, 0, 0.35);
+    }
+
+    .option-btn:active:not(:disabled) {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .option-btn:disabled {
+      cursor: not-allowed;
+      filter: grayscale(0.5) opacity(0.65);
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .option-btn.opt-A { background: var(--red); box-shadow: 0 5px 0 var(--red-dark); }
+    .option-btn.opt-B { background: var(--blue); box-shadow: 0 5px 0 var(--blue-dark); }
+    .option-btn.opt-C { background: var(--yellow); box-shadow: 0 5px 0 var(--yellow-dark); }
+    .option-btn.opt-D { background: var(--green); box-shadow: 0 5px 0 var(--green-dark); }
+
+    .opt-icon {
+      font-size: 1.5rem;
+      font-weight: 900;
+      min-width: 40px;
+      height: 40px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .opt-text {
+      flex-grow: 1;
+    }
+
+    /* PAUSA DE FOCO (RADICAL ANTI-RUSH) */
+    #rush-alert-screen {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+      background: rgba(226, 27, 60, 0.95);
+      border-radius: 20px;
+      color: white;
+      margin: 20px 0;
+      animation: popIn 0.3s ease;
+    }
+
+    .rush-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .rush-desc {
+      font-size: 1.15rem;
+      max-width: 650px;
+      margin: 0 auto 20px auto;
+      line-height: 1.6;
+    }
+
+    .rush-countdown {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: #ffd200;
+      margin-bottom: 12px;
+    }
+
+    /* FEEDBACK IMEDIATO COM TRAVA NO ERRO */
+    #feedback-screen {
+      display: none;
+      text-align: center;
+      padding: 24px 16px;
+    }
+
+    .feedback-banner {
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      animation: popIn 0.25s ease;
+    }
+
+    .feedback-banner.correct { background: #26890c; color: #ffffff; }
+    .feedback-banner.incorrect { background: #e21b3c; color: #ffffff; }
+
+    .feedback-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .feedback-explanation {
+      background: #ffffff;
+      color: #222222;
+      border-radius: 14px;
+      padding: 22px;
+      font-size: 1.1rem;
+      line-height: 1.65;
+      text-align: left;
+      margin-bottom: 24px;
+      border-left: 6px solid #381273;
+    }
+
+    .feedback-explanation strong {
+      color: #381273;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .lock-timer-msg {
+      margin-bottom: 16px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: #ffd200;
+    }
+
+    .next-btn {
+      background: #ffd200;
+      color: #2b0c5e;
+      border: none;
+      padding: 16px 44px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 900;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #b39200;
+      transition: all 0.15s;
+    }
+
+    .next-btn:disabled {
+      background: #888888;
+      color: #dddddd;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    /* RESULTADO FINAL & COMPROVANTE PEDAGÓGICO */
+    #final-screen {
+      display: none;
+      text-align: center;
+      padding: 24px 16px;
+    }
+
+    .podium-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 2.4rem;
+      color: #ffd200;
+      margin-bottom: 10px;
+    }
+
+    .user-greeting {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    .visto-card {
+      background: #ffffff;
+      color: #222222;
+      border-radius: 18px;
+      padding: 24px;
+      max-width: 580px;
+      margin: 0 auto 24px auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      text-align: left;
+    }
+
+    .visto-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px dashed #ccc;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .visto-header h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 1.15rem;
+      color: #381273;
+    }
+
+    .visto-badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 900;
+      font-size: 0.85rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .visto-badge.aprovado { background: #e8f5e9; color: #2e7d32; border: 1px solid #2e7d32; }
+    .visto-badge.recusado { background: #ffebee; color: #c62828; border: 1px solid #c62828; }
+
+    .visto-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 0.98rem;
+    }
+
+    .visto-row span.label { color: #666; font-weight: 600; }
+    .visto-row span.val { font-weight: 800; color: #222; font-family: 'Montserrat', sans-serif; }
+
+    .visto-code {
+      margin-top: 14px;
+      background: #f4f0fa;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      font-family: monospace;
+      font-weight: 900;
+      font-size: 1.1rem;
+      color: #46178f;
+      letter-spacing: 2px;
+      border: 1px solid #d4c5eb;
+    }
+
+    .final-actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .action-btn {
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-restart { background: #ffd200; color: #2b0c5e; box-shadow: 0 4px 0 #b39200; }
+    .btn-review { background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255, 255, 255, 0.4); }
+
+    #review-container {
+      display: none;
+      text-align: left;
+      margin-top: 24px;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 16px;
+      padding: 20px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .review-item {
+      background: #ffffff;
+      color: #222;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      border-left: 6px solid #26890c;
+    }
+
+    .review-item.was-wrong { border-left-color: #e21b3c; }
+    .review-header {
+      font-weight: 800;
+      font-family: 'Montserrat', sans-serif;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .review-text { font-size: 0.95rem; margin-bottom: 10px; white-space: pre-line; }
+    .review-answer { font-size: 0.9rem; background: #f1f3f5; padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; }
+    .review-exp { font-size: 0.85rem; color: #555; font-style: italic; }
+
+    @keyframes popIn {
+      0% { transform: scale(0.9); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <div class="top-controls">
+      <div class="brand-title">
+        <span>⚡ ÁGORA DIGITAL • FILOSOFIA</span>
+      </div>
+      <div class="ctrl-btns">
+        <button id="sound-btn" class="icon-btn" onclick="toggleSound()">🔊 Som: ON</button>
+        <button class="icon-btn" onclick="toggleFullscreen()">⛶ Tela Cheia</button>
+      </div>
+    </div>
+
+    <!-- TELA 1: INÍCIO -->
+    <div id="start-screen">
+      <div class="hero-badge">1ª Série EM • Aula 04</div><br>
+      <div class="anti-rush-badge">🛡️ SISTEMA DE LEITURA CONSCIENTE ATIVADO</div>
+      <h1 class="hero-title">A Ciência Colocada à Prova:<br>O Problema da Verificação</h1>
+      
+      <p class="hero-desc">
+        Desafio de consolidação do aprendizado! Teste seus conhecimentos sobre a filosofia de Karl Popper, o princípio da falseabilidade e como a ciência age perante problemas reais do cotidiano e da sustentabilidade.
+      </p>
+
+      <div class="rules-card">
+        <h4>📋 Estrutura da Aula:</h4>
+        <ul>
+            <li><strong>Temática da Aula:</strong> A Ciência Colocada à Prova – O Problema da Verificação.</li>
+            <li><strong>Objetos de Conhecimento:</strong> Verificação e Método.</li>
+            <li><strong>Objetivo de Aprendizagem:</strong> Compreender que a ciência não é um conjunto de verdades absolutas, mas sim um método rigoroso baseado no falseamento que nos permite questionar problemas reais, como os ambientais.</li>
+        </ul>
+        <h4>⚙️ Como Funciona o Quiz:</h4>
+        • <strong>Tempo de Leitura:</strong> Cada questão precisa de 4 segundos de leitura antes de liberar os botões.<br>
+        • <strong>Se Errar, Leia a Dica:</strong> A explicação didática ficará na tela por 8 segundos antes de liberar o avanço.<br>
+        • <strong>Anti-Chute:</strong> Respostas muito rápidas ativam a trava de leitura de 15 segundos.<br>
+        • <strong>Visto do Professor:</strong> Para receber o visto pedagógico, o estudante precisa de pelo menos 60% de acertos e ter feito uma leitura consciente.
+      </div>
+
+      <div class="input-box">
+        <label for="player-name">Seu Nome Completo (Estudante):</label>
+        <input type="text" id="player-name" placeholder="Digite seu nome completo aqui..." value="">
+      </div>
+
+      <button class="start-btn" onclick="startQuiz()">Iniciar Desafio</button>
+    </div>
+
+    <!-- PAUSA PARA O FOCO -->
+    <div id="rush-alert-screen">
+      <div class="rush-title">⚠️ PAUSA PARA O FOCO!</div>
+      <div class="rush-desc">
+        Estudante, o sistema detectou respostas muito rápidas. O objetivo deste desafio é exercitar a reflexão filosófica. Respire fundo, leia o texto e aguarde a liberação:
+      </div>
+      <div class="rush-countdown" id="rush-countdown-val">15</div>
+      <p style="font-size: 0.9rem; color: #ffd200;">A questão voltará automaticamente assim que o tempo zerar.</p>
+    </div>
+
+    <!-- TELA 2: QUIZ EM ANDAMENTO -->
+    <div id="quiz-screen">
+      <div class="quiz-header">
+        <div class="q-badge" id="q-counter">Questão 1 de 20</div>
+        <div class="q-topic" id="q-topic">Tópico</div>
+        <div class="stats-box">
+          <div class="score-display">Pontos: <span id="score-val">0</span></div>
+        </div>
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+
+      <div class="reading-lock-bar" id="reading-lock-bar">
+        <span>📖 Leia a pergunta com atenção: botões liberados em <strong id="reading-countdown">4</strong>s...</span>
+      </div>
+
+      <div class="question-card">
+        <div class="question-text" id="question-text">Texto da questão</div>
+      </div>
+
+      <div class="options-grid" id="options-grid">
+        <button class="option-btn opt-A" id="btn-opt-A" onclick="handleAnswer('A')" disabled>
+          <div class="opt-icon">▲</div>
+          <div class="opt-text" id="opt-A-text">Alternativa A</div>
+        </button>
+        <button class="option-btn opt-B" id="btn-opt-B" onclick="handleAnswer('B')" disabled>
+          <div class="opt-icon">◆</div>
+          <div class="opt-text" id="opt-B-text">Alternativa B</div>
+        </button>
+        <button class="option-btn opt-C" id="btn-opt-C" onclick="handleAnswer('C')" disabled>
+          <div class="opt-icon">●</div>
+          <div class="opt-text" id="opt-C-text">Alternativa C</div>
+        </button>
+        <button class="option-btn opt-D" id="btn-opt-D" onclick="handleAnswer('D')" disabled>
+          <div class="opt-icon">■</div>
+          <div class="opt-text" id="opt-D-text">Alternativa D</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- TELA 3: FEEDBACK IMEDIATO -->
+    <div id="feedback-screen">
+      <div class="feedback-banner" id="feedback-banner">
+        <div class="feedback-title" id="feedback-title">Resposta Correta!</div>
+        <div id="feedback-subtitle">+1000 pontos</div>
+      </div>
+
+      <div class="feedback-explanation">
+        <strong>Explicação para Aprender:</strong><br>
+        <span id="feedback-exp-text">Texto explicativo</span>
+      </div>
+
+      <div class="lock-timer-msg" id="lock-timer-msg"></div>
+      <button class="next-btn" id="next-btn" onclick="nextQuestion()">Avançar ➔</button>
+    </div>
+
+    <!-- TELA 4: RESULTADO FINAL & COMPROVANTE PEDAGÓGICO -->
+    <div id="final-screen">
+      <div class="podium-title">🎓 Desafio Concluído!</div>
+      <div class="user-greeting" id="final-user-greeting">Estudante</div>
+
+      <div class="visto-card">
+        <div class="visto-header">
+          <h3>COMPROVANTE DO VISTO PEDAGÓGICO</h3>
+          <div class="visto-badge" id="visto-status-badge">EM ANÁLISE</div>
+        </div>
+
+        <div class="visto-row">
+          <span class="label">Estudante:</span>
+          <span class="val" id="visto-nome">Nome</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Acertos:</span>
+          <span class="val" id="visto-acertos">0 / 20 (0%)</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Pontuação:</span>
+          <span class="val" id="visto-pontos">0 pts</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Tempo Total:</span>
+          <span class="val" id="visto-tempo-total">0 min</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Tempo Médio por Pergunta:</span>
+          <span class="val" id="visto-tempo-medio">0s</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Situação da Leitura:</span>
+          <span class="val" id="visto-diagnostico">Adequada</span>
+        </div>
+
+        <div class="visto-code" id="visto-hash">#FILO-0000</div>
+      </div>
+
+      <div class="final-actions">
+        <button class="action-btn btn-restart" onclick="restartQuiz()">🔄 Tentar Novamente</button>
+        <button class="action-btn btn-review" onclick="toggleReview()">📋 Ver Gabarito Completo</button>
+      </div>
+
+      <div id="review-container"></div>
+    </div>
+
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        "id": 1,
+        "topic": "Observação Direta",
+        "text": "No vídeo, o professor afirma haver 42 cadeiras em uma sala fechada e a única forma de checar isso é abrindo a porta e contando. Sobre a natureza das afirmações acerca do mundo físico, esse exemplo demonstra que:",
+        "options": [
+          {"letter": "A", "text": "As afirmações precisam de observação direta ou testes práticos para que possamos confirmar ou descartar sua validade.", "correct": true},
+          {"letter": "B", "text": "A validade de uma afirmação depende da capacidade de deduzirmos a resposta usando apenas a lógica mental.", "correct": false},
+          {"letter": "C", "text": "Uma afirmação é considerada verdadeira se for dita por alguém que possua grande autoridade no assunto estudado.", "correct": false},
+          {"letter": "D", "text": "O conhecimento do mundo físico baseia-se na concordância da maioria das pessoas sobre o que parece ser o correto.", "correct": false}
+        ],
+        "explanation": "A verificação empírica exige que possamos testar na prática (abrir a porta e contar) para confirmar ou descartar uma afirmação."
+      },
+      {
+        "id": 2,
+        "topic": "Estrutura do Erro Dogmático",
+        "text": "O dono da garagem afirma ter um dragão invisível e incorpóreo, justificando por que farinha ou tinta não podem revelá-lo. Na filosofia da ciência, qual é o erro central estrutural dessa afirmação?",
+        "options": [
+          {"letter": "A", "text": "O erro consiste em propor a existência de uma criatura mitológica que já foi refutada pelos biólogos modernos.", "correct": false},
+          {"letter": "B", "text": "O problema está na falta de tecnologia adequada para registrar as emissões de calor ou som da criatura invisível.", "correct": false},
+          {"letter": "C", "text": "A afirmação foi construída de um jeito que bloqueia qualquer tentativa de teste que possa provar que ela está errada.", "correct": true},
+          {"letter": "D", "text": "A falha ocorre porque o dono da garagem não utilizou a linguagem acadêmica correta para descrever seu experimento.", "correct": false}
+        ],
+        "explanation": "Uma teoria infalseável comete o erro estrutural de criar desculpas infinitas para fugir dos testes, blindando-se da realidade."
+      },
+      {
+        "id": 3,
+        "topic": "Ônus da Prova",
+        "text": "Bertrand Russell imaginou um bule minúsculo orbitando o Sol e argumentou que a frase 'prove que eu estou errado' é uma armadilha intelectual. Por que essa exigência contraria o pensamento científico?",
+        "options": [
+          {"letter": "A", "text": "Porque a ciência adota o ceticismo radical, acreditando que nenhuma afirmação sobre o universo pode ser provada.", "correct": false},
+          {"letter": "B", "text": "Porque a astronomia baseia-se na observação matemática de grandes corpos celestes e ignora pequenos objetos.", "correct": false},
+          {"letter": "C", "text": "Porque a falta de provas visuais de um objeto não significa automaticamente que esse objeto deixe de existir no espaço.", "correct": false},
+          {"letter": "D", "text": "Porque quem inventa uma teoria impossível de ser testada é quem deve apresentar as evidências, e não quem duvida.", "correct": true}
+        ],
+        "explanation": "O ônus da prova pertence a quem faz a afirmação extraordinária. Dizer 'prove que eu estou errado' é inverter a lógica do método científico."
+      },
+      {
+        "id": 4,
+        "topic": "O Valor do Erro",
+        "text": "O vídeo compara ideias infalseáveis a 'um labirinto sem saída'. Para a construção do saber, por que descobrir que uma teoria está errada é um passo positivo e necessário?",
+        "options": [
+          {"letter": "A", "text": "Porque isso demonstra a superioridade das ciências humanas sobre as ciências exatas na compreensão da realidade.", "correct": false},
+          {"letter": "B", "text": "Porque permite eliminar falsas certezas e redirecionar a investigação para caminhos que correspondam aos fatos.", "correct": true},
+          {"letter": "C", "text": "Porque o principal objetivo do cientista é invalidar todo o conhecimento que foi produzido pelas gerações passadas.", "correct": false},
+          {"letter": "D", "text": "Porque o erro comprova que a natureza é complexa demais para ser compreendida por meio de testes de laboratório.", "correct": false}
+        ],
+        "explanation": "O erro na ciência não é um fracasso, mas sim o processo contínuo de afastar as falsas respostas e nos aproximar gradativamente da verdade."
+      },
+      {
+        "id": 5,
+        "topic": "Ideias à Prova de Balas",
+        "text": "O título 'Ideias à prova de balas' refere-se a crenças que jamais podem ser contestadas. No contexto da busca pelo conhecimento, qual é o principal risco de adotarmos esse tipo de pensamento?",
+        "options": [
+          {"letter": "A", "text": "Passamos a acreditar em ilusões criadas pela nossa mente e nunca teremos como perceber que estamos no caminho errado.", "correct": true},
+          {"letter": "B", "text": "Geramos conflitos intensos dentro da comunidade de pesquisadores, dificultando a aprovação financeira de novos projetos.", "correct": false},
+          {"letter": "C", "text": "Adotamos uma postura de dúvida constante, o que nos impede de utilizar qualquer tipo de tecnologia já desenvolvida.", "correct": false},
+          {"letter": "D", "text": "Ignoramos o fato de que a ciência precisa ser guiada por verdades estabelecidas há séculos pela tradição da sociedade.", "correct": false}
+        ],
+        "explanation": "Crenças dogmáticas nos trancam em labirintos de ilusões onde, sem a capacidade de teste, ficamos cegos para as evidências em contrário."
+      },
+      {
+        "id": 6,
+        "topic": "O Conceito de Falseabilidade",
+        "text": "Segundo a explicação do vídeo inspirada em Karl Popper, uma afirmação teórica só ganha o status de 'científica' quando:",
+        "options": [
+          {"letter": "A", "text": "O pesquisador consegue defender sua hipótese contra qualquer tipo de crítica utilizando argumentos lógicos perfeitos.", "correct": false},
+          {"letter": "B", "text": "A teoria é submetida a diversos laboratórios diferentes e todos eles chegam exatamente à mesma conclusão positiva.", "correct": false},
+          {"letter": "C", "text": "O princípio formulado consegue prever de forma exata e matemática todos os fenômenos da natureza sem exceções.", "correct": false},
+          {"letter": "D", "text": "Existe uma possibilidade real de aplicarmos testes práticos que mostrem, se for o caso, que a ideia está equivocada.", "correct": true}
+        ],
+        "explanation": "Popper definiu a falseabilidade como o marco da ciência: a teoria tem que 'dar a cara a bater' e admitir meios de ser testada e refutada."
+      },
+      {
+        "id": 7,
+        "topic": "Dinâmica da Ciência",
+        "text": "Muitas pessoas confundem ciência com um 'livro de verdades absolutas'. Com base no falseacionismo, qual é a postura que define o trabalho de um cientista sério?",
+        "options": [
+          {"letter": "A", "text": "A busca incansável por acumular fatos que confirmem definitivamente suas crenças iniciais sobre o universo.", "correct": false},
+          {"letter": "B", "text": "O respeito irrestrito aos resultados publicados pelos cientistas mais antigos e famosos da história humana.", "correct": false},
+          {"letter": "C", "text": "A disposição constante de submeter todas as teorias a testes severos que podem derrubá-las e obrigar revisões.", "correct": true},
+          {"letter": "D", "text": "A capacidade de criar modelos teóricos tão complexos que apenas poucos especialistas consigam compreendê-los.", "correct": false}
+        ],
+        "explanation": "Um cientista verdadeiro não protege suas ideias; ele as submete constantemente a testes rigorosos com o objetivo de achar falhas e aprimorá-las."
+      },
+      {
+        "id": 8,
+        "topic": "Dogma vs. Teoria",
+        "text": "Ao contrário de uma teoria científica, um dogma exige aceitação incondicional. Levando em conta a estrutura lógica explicada no vídeo, o que caracteriza um pensamento dogmático?",
+        "options": [
+          {"letter": "A", "text": "Uma ideia desenhada para ser imune a testes, que não aceita refutações e usa desculpas para explicar suas falhas.", "correct": true},
+          {"letter": "B", "text": "Uma teoria que foi testada milhares de vezes e, até o presente momento, não apresentou nenhum resultado negativo.", "correct": false},
+          {"letter": "C", "text": "Uma observação baseada exclusivamente no senso comum e nas percepções diárias, sem uso de equipamentos.", "correct": false},
+          {"letter": "D", "text": "Um conjunto de regras matemáticas que só podem ser decifradas através do uso de computadores de última geração.", "correct": false}
+        ],
+        "explanation": "A principal característica do dogma é sua imunidade artificial: ele sempre cria um álibi ('Deus quis assim', 'o cosmos reequilibrou') para nunca ser provado falso."
+      },
+      {
+        "id": 9,
+        "topic": "O Álibi da Crença",
+        "text": "Se alguém lhe diz: 'Esta terapia alternativa sempre cura, se você não sarou é porque no fundo duvidou do processo'. Qual é o problema estrutural dessa afirmação para a filosofia da ciência?",
+        "options": [
+          {"letter": "A", "text": "A afirmação foca na resposta psicológica do paciente em vez de analisar a composição orgânica do tratamento.", "correct": false},
+          {"letter": "B", "text": "A afirmação cria um álibi perfeito para justificar a própria falha, tornando a hipótese impossível de ser testada.", "correct": true},
+          {"letter": "C", "text": "A afirmação exige um alto grau de conhecimento espiritual que os pesquisadores de laboratório não possuem.", "correct": false},
+          {"letter": "D", "text": "A eficácia da terapia dependeria de amostragens estatísticas gigantescas para ser aceita pelos hospitais.", "correct": false}
+        ],
+        "explanation": "Afirmar que a falha da terapia é culpa da 'dúvida oculta' do paciente cria um muro onde o método jamais pode ser responsabilizado por não funcionar."
+      },
+      {
+        "id": 10,
+        "topic": "O Guia Turístico",
+        "text": "O narrador compara teorias a guias de turismo. Se o guia estiver errado, o viajante se perde. De que maneira o critério de falseabilidade atua como um 'bom guia' para o pesquisador?",
+        "options": [
+          {"letter": "A", "text": "Obrigando o pesquisador a consultar a opinião da maioria da população antes de divulgar seus resultados práticos.", "correct": false},
+          {"letter": "B", "text": "Garantindo que os cientistas deduzam suas teorias utilizando apenas cálculos no papel, evitando o risco dos campos.", "correct": false},
+          {"letter": "C", "text": "Assegurando que a teoria se apoie em verdades históricas incontestáveis que não precisam ser testadas novamente.", "correct": false},
+          {"letter": "D", "text": "Exigindo que o erro deixe rastros observáveis, para que a rota de pesquisa seja corrigida imediatamente ao falhar.", "correct": true}
+        ],
+        "explanation": "O bom guia turístico, assim como a boa teoria, permite que você observe a realidade e perceba imediatamente quando a rota (a ideia) falhou, possibilitando o retorno e o ajuste."
+      },
+      {
+        "id": 11,
+        "topic": "Aplicando no Meio Ambiente",
+        "text": "Uma fábrica descarta fluidos em um rio e seu advogado declara: 'O fluido é neutralizado por uma força energética invisível do ecossistema e não causa danos'. Por que essa afirmação replica o problema do dragão?",
+        "options": [
+          {"letter": "A", "text": "Porque a legislação ambiental do país impede que empresas utilizem argumentos filosóficos em sua própria defesa.", "correct": false},
+          {"letter": "B", "text": "Porque as reações químicas no fundo dos rios ocorrem de forma muito lenta para serem observadas diariamente.", "correct": false},
+          {"letter": "C", "text": "Porque afirma a existência de um processo de limpeza impossível de ser medido ou contestado por instrumentos.", "correct": true},
+          {"letter": "D", "text": "Porque o advogado não apresentou o embasamento matemático exigido para provar a diluição da substância química.", "correct": false}
+        ],
+        "explanation": "Assim como a tinta e a farinha não servem no dragão invisível, usar justificativas 'mágicas' ou 'imateriais' impede a medição da poluição real no rio."
+      },
+      {
+        "id": 12,
+        "topic": "Ciência e Sustentabilidade",
+        "text": "A falseabilidade é essencial para a elaboração de políticas sustentáveis. Qual das afirmações abaixo possui a estrutura testável exigida pela ciência?",
+        "options": [
+          {"letter": "A", "text": "O destino da floresta amazônica já está protegido por uma inteligência cósmica que reequilibra a natureza.", "correct": false},
+          {"letter": "B", "text": "A emissão excessiva de gás carbônico por automóveis nas grandes cidades aumenta o índice de acidez das chuvas.", "correct": true},
+          {"letter": "C", "text": "A natureza possui uma resiliência oculta incalculável que sempre consegue reverter as mudanças climáticas globais.", "correct": false},
+          {"letter": "D", "text": "O fim da poluição oceânica depende apenas de a humanidade sintonizar seus pensamentos com a energia da água.", "correct": false}
+        ],
+        "explanation": "O índice de acidez das chuvas (pH) pode ser coletado e analisado em laboratórios. Se não houver alteração ácida após as medições, a teoria pode ser falsificada e refeita."
+      },
+      {
+        "id": 13,
+        "topic": "Testagem de Problemas Reais",
+        "text": "A frase 'O descarte de pilhas em aterros comuns libera metais pesados que contaminam o lençol freático' é aceita como premissa científica válida porque:",
+        "options": [
+          {"letter": "A", "text": "Permite a coleta e análise de amostras da terra e da água subterrânea para provar a presença ou ausência do metal.", "correct": true},
+          {"letter": "B", "text": "Reflete a opinião unânime alcançada pelos pesquisadores em conferências internacionais sobre o meio ambiente.", "correct": false},
+          {"letter": "C", "text": "Resulta de um raciocínio puramente dedutivo que conecta as partes das pilhas aos componentes da terra úmida.", "correct": false},
+          {"letter": "D", "text": "Foi estabelecida há décadas por instituições respeitadas e, portanto, não necessita passar por revisões atuais.", "correct": false}
+        ],
+        "explanation": "Sua validade reside na sua abertura ao teste físico. A água e o solo do aterro podem ser enviados para análise toxicológica para refutar ou corroborar a frase."
+      },
+      {
+        "id": 14,
+        "topic": "A Cegueira Dogmática",
+        "text": "Se uma gestão pública justifica a mortalidade de peixes dizendo que 'isso ocorre devido ao alinhamento desfavorável das estrelas neste mês', qual é a principal consequência prática desse argumento infalseável?",
+        "options": [
+          {"letter": "A", "text": "Ele obriga a gestão pública a contratar astrônomos caros para tentar prever o próximo evento de mortalidade animal.", "correct": false},
+          {"letter": "B", "text": "Ele estimula a população a respeitar os ciclos da natureza, diminuindo o consumo desenfreado de peixes na região.", "correct": false},
+          {"letter": "C", "text": "Ele entra em conflito com a legislação estadual, que exige análises estatísticas para aprovar justificativas esotéricas.", "correct": false},
+          {"letter": "D", "text": "Ele impede a investigação material da qualidade da água, ocultando as verdadeiras causas poluidoras e suas soluções.", "correct": true}
+        ],
+        "explanation": "Argumentos místicos transferem a culpa para o 'sobrenatural', paralisando a atuação da sociedade e protegendo o verdadeiro poluidor material do rio."
+      },
+      {
+        "id": 15,
+        "topic": "Consumo e Testes",
+        "text": "Propagandas frequentemente sugerem, nas entrelinhas: 'A capacidade de regeneração do planeta é infinita; não há limites para a produção de lixo'. Usando a lente da ciência testável, qual a atitude correta diante disso?",
+        "options": [
+          {"letter": "A", "text": "Considerar a afirmação como uma teoria econômica válida, já que o foco da ciência natural é apenas a biologia humana.", "correct": false},
+          {"letter": "B", "text": "Exigir dados empíricos e observações verificáveis que demonstrem o tempo exato de decomposição de cada resíduo.", "correct": true},
+          {"letter": "C", "text": "Aceitar o argumento provisoriamente, aguardando que novas tecnologias espaciais resolvam a falta de recursos no futuro.", "correct": false},
+          {"letter": "D", "text": "Refutar a frase com base na percepção popular, pois o senso comum sabe intuitivamente que os recursos estão acabando.", "correct": false}
+        ],
+        "explanation": "O método científico não aceita promessas inquestionáveis. Ele cobra dados empíricos palpáveis, como as tabelas de decomposição de plástico e metais na natureza."
+      },
+      {
+        "id": 16,
+        "topic": "Políticas Públicas",
+        "text": "Para elaborar propostas eficientes de redução de danos ecológicos, a sociedade e o Estado precisam embasar suas políticas públicas em:",
+        "options": [
+          {"letter": "A", "text": "Consensos políticos que evitem causar pânico na população, priorizando discursos confortáveis sobre a natureza.", "correct": false},
+          {"letter": "B", "text": "Afirmações teóricas que dispensem medições práticas e confiem na conscientização emocional dos cidadãos locais.", "correct": false},
+          {"letter": "C", "text": "Teorias rigorosas que corram o risco da falsificação, podendo ser testadas, medidas e aprimoradas pelos dados reais.", "correct": true},
+          {"letter": "D", "text": "Modelos científicos irrefutáveis e permanentes, garantindo que a lei ambiental nunca precisará sofrer atualizações.", "correct": false}
+        ],
+        "explanation": "As melhores leis não são absolutas, mas sim aquelas baseadas na ciência falseável, pois elas mudam e se adaptam conforme novos dados ambientais são medidos."
+      },
+      {
+        "id": 17,
+        "topic": "Obstáculos à Sustentabilidade",
+        "text": "Por que as afirmações corporativas que fogem propositalmente de avaliações empíricas são o grande obstáculo no combate à poluição sistêmica?",
+        "options": [
+          {"letter": "A", "text": "Porque elas impedem um diagnóstico verdadeiro do impacto ambiental, permitindo que a degradação continue invisível à lei.", "correct": true},
+          {"letter": "B", "text": "Porque elas aumentam os custos governamentais ao exigirem que o Ministério Público prove as intenções éticas da empresa.", "correct": false},
+          {"letter": "C", "text": "Porque elas provocam uma sobrecarga de informações acadêmicas, confundindo as pessoas que desejam reciclar em casa.", "correct": false},
+          {"letter": "D", "text": "Porque elas obrigam as instituições de ensino a mudar constantemente os currículos escolares das disciplinas de biologia.", "correct": false}
+        ],
+        "explanation": "Enquanto não provamos materialmente o impacto, a empresa usa desculpas dogmáticas ('nosso fluido vira energia limpa') para evitar multas e continuar destruindo o ambiente."
+      },
+      {
+        "id": 18,
+        "topic": "O Teste Prático",
+        "text": "Uma pesquisa levanta a hipótese: 'A instalação de telhados verdes reduz em 20% a temperatura interna dos prédios'. Segundo o princípio da falseabilidade, se os termômetros mostrarem que não houve qualquer alteração, o que deve ocorrer?",
+        "options": [
+          {"letter": "A", "text": "Os termômetros devem ser reajustados para se adequarem aos cálculos físicos que previram o resfriamento.", "correct": false},
+          {"letter": "B", "text": "A pesquisa deve alegar que fatores invisíveis externos prejudicaram os dados coletados durante aquele período.", "correct": false},
+          {"letter": "C", "text": "A conclusão original é mantida como um ideal a ser alcançado, mesmo que não tenha funcionado no mundo físico.", "correct": false},
+          {"letter": "D", "text": "A hipótese deve ser classificada como incorreta ou incompleta, forçando a equipe a revisar a teoria estrutural.", "correct": true}
+        ],
+        "explanation": "Na verdadeira ciência, a realidade manda na teoria. Se os termômetros dizem 'não', não inventamos desculpas místicas, nós mudamos a teoria e repensamos a tecnologia."
+      },
+      {
+        "id": 19,
+        "topic": "Ciência vs. Crença Popular",
+        "text": "Ao diferenciar uma pesquisa científica sobre os impactos do lixo urbano de uma opinião popular inquestionável, a característica central a ser destacada é que:",
+        "options": [
+          {"letter": "A", "text": "A pesquisa científica busca a confirmação inabalável de suas teses, enquanto a opinião popular muda rapidamente com o tempo.", "correct": false},
+          {"letter": "B", "text": "A pesquisa científica utiliza equipamentos industriais caríssimos, enquanto a opinião popular baseia-se na sabedoria da comunidade.", "correct": false},
+          {"letter": "C", "text": "A pesquisa científica apresenta métricas que aceitam ser colocadas à prova, enquanto a opinião se defende com desculpas abstratas.", "correct": true},
+          {"letter": "D", "text": "A pesquisa científica atende sempre aos interesses de conservação, enquanto a opinião busca favorecer o consumo de produtos.", "correct": false}
+        ],
+        "explanation": "A grande diferença apontada por Popper não são os equipamentos caros, mas a estrutura lógica de aceitar o erro. A ciência diz 'teste-me'; o dogma popular diz 'acredite em mim'."
+      },
+      {
+        "id": 20,
+        "topic": "Cidadania e Falseabilidade",
+        "text": "Após analisar as metáforas de Popper e casos de impacto ecológico, concluímos que a falseabilidade atua como uma ferramenta de cidadania porque:",
+        "options": [
+          {"letter": "A", "text": "Garante que os cientistas tomem todas as decisões políticas e ambientais sem a interferência de opiniões leigas do povo.", "correct": false},
+          {"letter": "B", "text": "Funciona como um filtro crítico, impedindo que aceitemos dogmas cegos e nos dando ferramentas lógicas para cobrar provas reais.", "correct": true},
+          {"letter": "C", "text": "Revela que todas as propostas de sustentabilidade elaboradas até o momento possuem falhas irreparáveis e devem ser descartadas.", "correct": false},
+          {"letter": "D", "text": "Demonstra que a proteção da natureza depende exclusivamente do desenvolvimento de computadores mais potentes para os laboratórios.", "correct": false}
+        ],
+        "explanation": "Compreender como a ciência funciona empodera o estudante. A falseabilidade se torna um escudo contra discursos políticos demagógicos e falsas promessas corporativas."
+      }
+    ];
+
+    let currentIndex = 0;
+    let score = 0;
+    let correctCount = 0;
+    let userAnswers = [];
+    let soundEnabled = true;
+
+    let questionStartTime = 0;
+    let quizStartTime = 0;
+    let fastAnswersStreak = 0;
+    let readingLockInterval = null;
+    let feedbackLockInterval = null;
+    let isQuestionLocked = true;
+
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new AudioCtx();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function playTone(freq, type, duration, delay = 0) {
+      if (!soundEnabled) return;
+      try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + delay + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + delay);
+        osc.stop(audioCtx.currentTime + delay + duration);
+      } catch (e) {}
+    }
+
+    function soundCorrect() {
+      playTone(523.25, 'sine', 0.12, 0);
+      playTone(659.25, 'sine', 0.12, 0.08);
+      playTone(783.99, 'sine', 0.2, 0.16);
+      playTone(1046.50, 'sine', 0.35, 0.24);
+    }
+
+    function soundWrong() {
+      playTone(300, 'sawtooth', 0.2, 0);
+      playTone(220, 'sawtooth', 0.35, 0.15);
+    }
+
+    function soundClick() {
+      playTone(850, 'triangle', 0.04, 0);
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('sound-btn').innerText = soundEnabled ? "🔊 Som: ON" : "🔇 Som: OFF";
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    function startQuiz() {
+      const nameInput = document.getElementById('player-name').value.trim();
+      if (!nameInput) {
+        alert("Digite o seu nome completo para que o seu visto possa ser registado pelo professor.");
+        return;
+      }
+
+      initAudio();
+      soundClick();
+
+      currentIndex = 0;
+      score = 0;
+      correctCount = 0;
+      userAnswers = [];
+      fastAnswersStreak = 0;
+      quizStartTime = Date.now();
+
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('final-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'none';
+      document.getElementById('quiz-screen').style.display = 'block';
+
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      clearInterval(readingLockInterval);
+      const q = quizData[currentIndex];
+
+      document.getElementById('q-counter').innerText = `Questão ${currentIndex + 1} de ${quizData.length}`;
+      document.getElementById('q-topic').innerText = q.topic;
+      document.getElementById('score-val').innerText = score;
+      document.getElementById('question-text').innerText = q.text;
+
+      const progressPercent = ((currentIndex) / quizData.length) * 100;
+      document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+
+      const letters = ['A', 'B', 'C', 'D'];
+      letters.forEach(letter => {
+        const opt = q.options.find(o => o.letter === letter);
+        document.getElementById(`opt-${letter}-text`).innerText = opt.text;
+      });
+
+      // TRAVA DE 4 SEGUNDOS
+      isQuestionLocked = true;
+      let lockSeconds = 4;
+      setOptionsDisabled(true);
+
+      const lockBar = document.getElementById('reading-lock-bar');
+      lockBar.className = 'reading-lock-bar';
+      lockBar.innerHTML = `<span>📖 Leia com calma: liberando botões em <strong id="reading-countdown">${lockSeconds}</strong>s...</span>`;
+
+      questionStartTime = Date.now();
+
+      readingLockInterval = setInterval(() => {
+        lockSeconds--;
+        const cd = document.getElementById('reading-countdown');
+        if (cd) cd.innerText = lockSeconds;
+
+        if (lockSeconds <= 0) {
+          clearInterval(readingLockInterval);
+          isQuestionLocked = false;
+          setOptionsDisabled(false);
+          lockBar.className = 'reading-lock-bar unlocked';
+          lockBar.innerHTML = `<span>✅ Pergunta lida. Escolha a alternativa correta!</span>`;
+        }
+      }, 1000);
+    }
+
+    function setOptionsDisabled(disabled) {
+      ['A', 'B', 'C', 'D'].forEach(letter => {
+        const btn = document.getElementById(`btn-opt-${letter}`);
+        if (btn) btn.disabled = disabled;
+      });
+    }
+
+    function handleAnswer(chosenLetter) {
+      if (isQuestionLocked) return;
+
+      const answerDuration = (Date.now() - questionStartTime) / 1000;
+      const q = quizData[currentIndex];
+      const correctOpt = q.options.find(o => o.correct);
+      const isCorrect = chosenLetter === correctOpt.letter;
+
+      // DETECTOR DE CHUTE RÁPIDO
+      if (answerDuration < 5) {
+        fastAnswersStreak++;
+      } else {
+        fastAnswersStreak = Math.max(0, fastAnswersStreak - 1);
+      }
+
+      if (fastAnswersStreak >= 3) {
+        triggerRushBlock();
+        return;
+      }
+
+      let pointsEarned = 0;
+      if (isCorrect) {
+        correctCount++;
+        pointsEarned = 1000;
+        score += pointsEarned;
+        soundCorrect();
+      } else {
+        soundWrong();
+      }
+
+      userAnswers.push({
+        question: q,
+        chosen: chosenLetter,
+        correct: correctOpt.letter,
+        isCorrect: isCorrect,
+        timeTaken: answerDuration
+      });
+
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'block';
+
+      const banner = document.getElementById('feedback-banner');
+      const title = document.getElementById('feedback-title');
+      const sub = document.getElementById('feedback-subtitle');
+      const expText = document.getElementById('feedback-exp-text');
+      const nextBtn = document.getElementById('next-btn');
+      const lockMsg = document.getElementById('lock-timer-msg');
+
+      banner.className = 'feedback-banner ' + (isCorrect ? 'correct' : 'incorrect');
+
+      if (isCorrect) {
+        title.innerText = "Mandou Bem! Acertou! 🎉";
+        sub.innerText = `+${pointsEarned} pontos conquistados`;
+        expText.innerText = q.explanation;
+        lockMsg.innerText = "";
+        nextBtn.disabled = false;
+        nextBtn.innerText = "Próxima Questão ➔";
+      } else {
+        title.innerText = "Resposta Errada! ❌";
+        sub.innerText = `Você marcou a letra (${chosenLetter}). A correta era a (${correctOpt.letter}).`;
+        expText.innerText = q.explanation;
+
+        // TRAVA DE 8 SEGUNDOS NO ERRO
+        let cooldown = 8;
+        nextBtn.disabled = true;
+        lockMsg.innerText = `⏳ Leia a explicação para aprender o conceito. Liberando em ${cooldown}s...`;
+        nextBtn.innerText = `Aguarde (${cooldown}s)`;
+
+        clearInterval(feedbackLockInterval);
+        feedbackLockInterval = setInterval(() => {
+          cooldown--;
+          if (cooldown > 0) {
+            lockMsg.innerText = `⏳ Leia a explicação para aprender o conceito. Liberando em ${cooldown}s...`;
+            nextBtn.innerText = `Aguarde (${cooldown}s)`;
+          } else {
+            clearInterval(feedbackLockInterval);
+            lockMsg.innerText = "✅ Explicação lida. Agora você pode seguir em frente!";
+            nextBtn.disabled = false;
+            nextBtn.innerText = "Próxima Questão ➔";
+          }
+        }, 1000);
+      }
+    }
+
+    function triggerRushBlock() {
+      fastAnswersStreak = 0;
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'block';
+
+      let rushSeconds = 15;
+      const countDisplay = document.getElementById('rush-countdown-val');
+      countDisplay.innerText = rushSeconds;
+
+      const rushTimer = setInterval(() => {
+        rushSeconds--;
+        countDisplay.innerText = rushSeconds;
+        if (rushSeconds <= 0) {
+          clearInterval(rushTimer);
+          document.getElementById('rush-alert-screen').style.display = 'none';
+          document.getElementById('quiz-screen').style.display = 'block';
+          loadQuestion();
+        }
+      }, 1000);
+    }
+
+    function nextQuestion() {
+      soundClick();
+      currentIndex++;
+      document.getElementById('feedback-screen').style.display = 'none';
+
+      if (currentIndex < quizData.length) {
+        document.getElementById('quiz-screen').style.display = 'block';
+        loadQuestion();
+      } else {
+        showFinalResults();
+      }
+    }
+
+    function showFinalResults() {
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'none';
+      document.getElementById('final-screen').style.display = 'block';
+
+      const playerName = document.getElementById('player-name').value.trim() || "Estudante";
+      document.getElementById('final-user-greeting').innerText = `Relatório individual de: ${playerName}`;
+
+      const totalTimeSec = Math.round((Date.now() - quizStartTime) / 1000);
+      const totalTimeMin = (totalTimeSec / 60).toFixed(1);
+      const avgTimePerQuestion = Math.round(totalTimeSec / quizData.length);
+      const accuracy = Math.round((correctCount / quizData.length) * 100);
+
+      document.getElementById('visto-nome').innerText = playerName;
+      document.getElementById('visto-acertos').innerText = `${correctCount} de ${quizData.length} (${accuracy}%)`;
+      document.getElementById('visto-pontos').innerText = `${score} pts`;
+      document.getElementById('visto-tempo-total').innerText = `${totalTimeMin} minutos (${totalTimeSec}s)`;
+      document.getElementById('visto-tempo-medio').innerText = `${avgTimePerQuestion} segundos por pergunta`;
+
+      const badge = document.getElementById('visto-status-badge');
+      const diag = document.getElementById('visto-diagnostico');
+
+      const isApproved = (accuracy >= 60) && (avgTimePerQuestion >= 8);
+
+      if (isApproved) {
+        badge.className = 'visto-badge aprovado';
+        badge.innerText = '✅ VISTO CONCEDIDO';
+        diag.innerText = 'Leitura atenta e bom aproveitamento';
+        diag.style.color = '#2e7d32';
+      } else {
+        badge.className = 'visto-badge recusado';
+        badge.innerText = '❌ NÃO VALIDADO';
+        if (accuracy < 60 && avgTimePerQuestion < 8) {
+          diag.innerText = 'Acertos abaixo de 60% e respostas muito rápidas (chute detectado)';
+        } else if (accuracy < 60) {
+          diag.innerText = 'Acertos abaixo do mínimo necessário (mínimo de 60%)';
+        } else {
+          diag.innerText = 'Respostas muito rápidas: mostre ao professor antes de refazer';
+        }
+        diag.style.color = '#c62828';
+      }
+
+      const initials = playerName.substring(0, 3).toUpperCase().replace(/[^A-Z]/g, 'EST');
+      const hashStr = `#FILO-${initials}-${accuracy}P-${totalTimeSec}S`;
+      document.getElementById('visto-hash').innerText = hashStr;
+
+      const reviewBox = document.getElementById('review-container');
+      reviewBox.innerHTML = '<h3 style="margin-bottom:16px; color:#ffd200;">Gabarito Explicado das 20 Questões:</h3>';
+      
+      userAnswers.forEach((item, idx) => {
+        const correctOptObj = item.question.options.find(o => o.correct);
+        const div = document.createElement('div');
+        div.className = `review-item ${item.isCorrect ? '' : 'was-wrong'}`;
+        div.innerHTML = `
+          <div class="review-header">
+            <span>Questão ${idx + 1}: ${item.question.topic} (${Math.round(item.timeTaken)}s)</span>
+            <span>${item.isCorrect ? '✅ Acertou' : '❌ Errou'}</span>
+          </div>
+          <div class="review-text">${item.question.text}</div>
+          <div class="review-answer"><strong>Resposta Certa (${item.correct}):</strong> ${correctOptObj.text}</div>
+          ${!item.isCorrect && item.chosen ? `<div class="review-answer" style="color:#e21b3c;"><strong>Você marcou:</strong> (${item.chosen})</div>` : ''}
+          <div class="review-exp"><strong>Explicação:</strong> ${item.question.explanation}</div>
+        `;
+        reviewBox.appendChild(div);
+      });
+    }
+
+    function toggleReview() {
+      soundClick();
+      const box = document.getElementById('review-container');
+      box.style.display = box.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function restartQuiz() {
+      soundClick();
+      document.getElementById('final-screen').style.display = 'none';
+      document.getElementById('start-screen').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
