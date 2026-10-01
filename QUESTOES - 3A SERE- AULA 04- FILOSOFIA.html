@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz de Filosofia: Política e Poder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #E21B3C;
+      --red-dark: #b8142e;
+      --blue: #1368CE;
+      --blue-dark: #0f52a5;
+      --yellow: #D89E00;
+      --yellow-dark: #b28200;
+      --green: #26890C;
+      --green-dark: #1d6e09;
+      --bg-dark: #381273;
+      --bg-gradient: linear-gradient(135deg, #46178F 0%, #18033d 100%);
+      --card-bg: #ffffff;
+      --text-main: #222222;
+      --text-light: #ffffff;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow-x: hidden;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1050px;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      position: relative;
+    }
+
+    .top-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .brand-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 1.35rem;
+      color: #ffd200;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ctrl-btns {
+      display: flex;
+      gap: 10px;
+    }
+
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 8px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 700;
+      transition: all 0.2s;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    /* TELA INICIAL */
+    #start-screen {
+      text-align: center;
+      padding: 30px 16px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: #ffd200;
+      color: #381273;
+      padding: 6px 18px;
+      border-radius: 30px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+    }
+
+    .anti-rush-badge {
+      display: inline-block;
+      background: rgba(0, 230, 118, 0.2);
+      color: #00e676;
+      border: 1px solid #00e676;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    h1.hero-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 2.3rem;
+      line-height: 1.25;
+      margin-bottom: 16px;
+      color: #ffffff;
+      text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    p.hero-desc {
+      font-size: 1.05rem;
+      max-width: 760px;
+      margin: 0 auto 24px auto;
+      line-height: 1.6;
+      color: #e0d5f8;
+    }
+
+    .rules-card {
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 14px;
+      padding: 16px 20px;
+      max-width: 800px;
+      margin: 0 auto 24px auto;
+      text-align: left;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      border-left: 4px solid #ffd200;
+    }
+
+    .rules-card h4 {
+      color: #ffd200;
+      margin-bottom: 10px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.1rem;
+    }
+    
+    .rules-card ul {
+        margin-left: 20px;
+        margin-bottom: 15px;
+        color: #e0d5f8;
+    }
+    
+    .rules-card li { margin-bottom: 6px; }
+
+    .input-box {
+      margin: 0 auto 20px auto;
+      max-width: 420px;
+    }
+
+    .input-box label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .input-box input {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 12px;
+      border: 2px solid #ffd200;
+      font-size: 1.1rem;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      background: #ffffff;
+      color: #222;
+    }
+
+    .start-btn {
+      background: #ffd200;
+      color: #2b0c5e;
+      border: none;
+      padding: 18px 48px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 900;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #b39200, 0 10px 20px rgba(0, 0, 0, 0.3);
+      transition: all 0.15s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .start-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 9px 0 #b39200, 0 14px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    /* TELA DO QUIZ */
+    #quiz-screen {
+      display: none;
+    }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .q-badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .q-topic {
+      background: rgba(255, 210, 0, 0.25);
+      color: #ffd200;
+      border: 1px solid #ffd200;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .stats-box {
+      display: flex;
+      gap: 16px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+    }
+
+    .score-display {
+      color: #ffd200;
+      font-size: 1.1rem;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #ffd200;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .reading-lock-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 8px 16px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #ffd200;
+    }
+
+    .reading-lock-bar.unlocked {
+      background: rgba(0, 230, 118, 0.2);
+      color: #00e676;
+    }
+
+    .question-card {
+      background: #ffffff;
+      color: #222222;
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      line-height: 1.65;
+      font-size: 1.1rem;
+      border-left: 8px solid #ffd200;
+    }
+
+    .question-text {
+      white-space: pre-line;
+      font-weight: 600;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+      h1.hero-title {
+        font-size: 1.7rem;
+      }
+      .question-card {
+        padding: 16px 18px;
+        font-size: 1rem;
+      }
+    }
+
+    .option-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 18px 20px;
+      color: white;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 700;
+      line-height: 1.45;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+      transition: all 0.2s ease;
+      box-shadow: 0 5px 0 rgba(0, 0, 0, 0.3);
+      user-select: none;
+      position: relative;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+      box-shadow: 0 8px 0 rgba(0, 0, 0, 0.35);
+    }
+
+    .option-btn:active:not(:disabled) {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .option-btn:disabled {
+      cursor: not-allowed;
+      filter: grayscale(0.5) opacity(0.65);
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .option-btn.opt-A { background: var(--red); box-shadow: 0 5px 0 var(--red-dark); }
+    .option-btn.opt-B { background: var(--blue); box-shadow: 0 5px 0 var(--blue-dark); }
+    .option-btn.opt-C { background: var(--yellow); box-shadow: 0 5px 0 var(--yellow-dark); }
+    .option-btn.opt-D { background: var(--green); box-shadow: 0 5px 0 var(--green-dark); }
+
+    .opt-icon {
+      font-size: 1.5rem;
+      font-weight: 900;
+      min-width: 40px;
+      height: 40px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .opt-text {
+      flex-grow: 1;
+    }
+
+    /* PAUSA DE FOCO (RADICAL ANTI-RUSH) */
+    #rush-alert-screen {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+      background: rgba(226, 27, 60, 0.95);
+      border-radius: 20px;
+      color: white;
+      margin: 20px 0;
+      animation: popIn 0.3s ease;
+    }
+
+    .rush-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .rush-desc {
+      font-size: 1.15rem;
+      max-width: 650px;
+      margin: 0 auto 20px auto;
+      line-height: 1.6;
+    }
+
+    .rush-countdown {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: #ffd200;
+      margin-bottom: 12px;
+    }
+
+    /* FEEDBACK IMEDIATO COM TRAVA NO ERRO */
+    #feedback-screen {
+      display: none;
+      text-align: center;
+      padding: 24px 16px;
+    }
+
+    .feedback-banner {
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      animation: popIn 0.25s ease;
+    }
+
+    .feedback-banner.correct { background: #26890c; color: #ffffff; }
+    .feedback-banner.incorrect { background: #e21b3c; color: #ffffff; }
+
+    .feedback-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .feedback-explanation {
+      background: #ffffff;
+      color: #222222;
+      border-radius: 14px;
+      padding: 22px;
+      font-size: 1.1rem;
+      line-height: 1.65;
+      text-align: left;
+      margin-bottom: 24px;
+      border-left: 6px solid #381273;
+    }
+
+    .feedback-explanation strong {
+      color: #381273;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .lock-timer-msg {
+      margin-bottom: 16px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: #ffd200;
+    }
+
+    .next-btn {
+      background: #ffd200;
+      color: #2b0c5e;
+      border: none;
+      padding: 16px 44px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 900;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #b39200;
+      transition: all 0.15s;
+    }
+
+    .next-btn:disabled {
+      background: #888888;
+      color: #dddddd;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    /* RESULTADO FINAL & COMPROVANTE PEDAGÓGICO */
+    #final-screen {
+      display: none;
+      text-align: center;
+      padding: 24px 16px;
+    }
+
+    .podium-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 2.4rem;
+      color: #ffd200;
+      margin-bottom: 10px;
+    }
+
+    .user-greeting {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    .visto-card {
+      background: #ffffff;
+      color: #222222;
+      border-radius: 18px;
+      padding: 24px;
+      max-width: 580px;
+      margin: 0 auto 24px auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      text-align: left;
+    }
+
+    .visto-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px dashed #ccc;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .visto-header h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 1.15rem;
+      color: #381273;
+    }
+
+    .visto-badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 900;
+      font-size: 0.85rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .visto-badge.aprovado { background: #e8f5e9; color: #2e7d32; border: 1px solid #2e7d32; }
+    .visto-badge.recusado { background: #ffebee; color: #c62828; border: 1px solid #c62828; }
+
+    .visto-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 0.98rem;
+    }
+
+    .visto-row span.label { color: #666; font-weight: 600; }
+    .visto-row span.val { font-weight: 800; color: #222; font-family: 'Montserrat', sans-serif; }
+
+    .visto-code {
+      margin-top: 14px;
+      background: #f4f0fa;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      font-family: monospace;
+      font-weight: 900;
+      font-size: 1.1rem;
+      color: #46178f;
+      letter-spacing: 2px;
+      border: 1px solid #d4c5eb;
+    }
+
+    .final-actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .action-btn {
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-restart { background: #ffd200; color: #2b0c5e; box-shadow: 0 4px 0 #b39200; }
+    .btn-review { background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255, 255, 255, 0.4); }
+
+    #review-container {
+      display: none;
+      text-align: left;
+      margin-top: 24px;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 16px;
+      padding: 20px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .review-item {
+      background: #ffffff;
+      color: #222;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      border-left: 6px solid #26890c;
+    }
+
+    .review-item.was-wrong { border-left-color: #e21b3c; }
+    .review-header {
+      font-weight: 800;
+      font-family: 'Montserrat', sans-serif;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .review-text { font-size: 0.95rem; margin-bottom: 10px; white-space: pre-line; }
+    .review-answer { font-size: 0.9rem; background: #f1f3f5; padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; }
+    .review-exp { font-size: 0.85rem; color: #555; font-style: italic; }
+
+    @keyframes popIn {
+      0% { transform: scale(0.9); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <div class="top-controls">
+      <div class="brand-title">
+        <span>⚡ ÁGORA DIGITAL • FILOSOFIA</span>
+      </div>
+      <div class="ctrl-btns">
+        <button id="sound-btn" class="icon-btn" onclick="toggleSound()">🔊 Som: ON</button>
+        <button class="icon-btn" onclick="toggleFullscreen()">⛶ Tela Cheia</button>
+      </div>
+    </div>
+
+    <!-- TELA 1: INÍCIO -->
+    <div id="start-screen">
+      <div class="hero-badge">3ª Série EM • Aula 03</div><br>
+      <div class="anti-rush-badge">🛡️ SISTEMA DE LEITURA CONSCIENTE ATIVADO</div>
+      <h1 class="hero-title">Política, Estado e<br>Democracia</h1>
+      
+      <p class="hero-desc">
+        Desafio de consolidação do aprendizado! Teste seus conhecimentos sobre Estado, contratualismo, laicidade e a aplicação prática da filosofia política.
+      </p>
+
+      <div class="rules-card">
+        <h4>📋 Estrutura da Aula:</h4>
+        <ul>
+            <li><strong>Temática da Aula:</strong> Política, Poder e Estado.</li>
+            <li><strong>Objetos de Conhecimento:</strong> Origem do Estado, Contratualismo (Hobbes, Locke, Rousseau), Democracia Constitucional, Estado Laico e Legislação.</li>
+            <li><strong>Objetivo de Aprendizagem:</strong> Compreender a estruturação do poder político moderno, diferenciando as teorias sobre a origem da sociedade e refletindo sobre as tensões democráticas.</li>
+        </ul>
+        <h4>⚙️ Como Funciona o Quiz:</h4>
+        • <strong>Tempo de Leitura:</strong> Cada questão precisa de 4 segundos de leitura antes de liberar os botões.<br>
+        • <strong>Se Errar, Leia a Dica:</strong> A explicação didática ficará na tela por 8 segundos antes de liberar o avanço.<br>
+        • <strong>Anti-Chute:</strong> Respostas muito rápidas ativam a trava de leitura de 15 segundos.<br>
+        • <strong>Visto do Professor:</strong> Para receber o visto pedagógico, o estudante precisa de pelo menos 60% de acertos e ter feito uma leitura consciente.
+      </div>
+
+      <div class="input-box">
+        <label for="player-name">Seu Nome Completo (Estudante):</label>
+        <input type="text" id="player-name" placeholder="Digite seu nome completo aqui..." value="">
+      </div>
+
+      <button class="start-btn" onclick="startQuiz()">Iniciar Desafio</button>
+    </div>
+
+    <!-- PAUSA PARA O FOCO -->
+    <div id="rush-alert-screen">
+      <div class="rush-title">⚠️ PAUSA PARA O FOCO!</div>
+      <div class="rush-desc">
+        Estudante, o sistema detectou respostas muito rápidas. O objetivo deste desafio é exercitar a reflexão filosófica. Respire fundo, leia o texto e aguarde a liberação:
+      </div>
+      <div class="rush-countdown" id="rush-countdown-val">15</div>
+      <p style="font-size: 0.9rem; color: #ffd200;">A questão voltará automaticamente assim que o tempo zerar.</p>
+    </div>
+
+    <!-- TELA 2: QUIZ EM ANDAMENTO -->
+    <div id="quiz-screen">
+      <div class="quiz-header">
+        <div class="q-badge" id="q-counter">Questão 1 de 40</div>
+        <div class="q-topic" id="q-topic">Tópico</div>
+        <div class="stats-box">
+          <div class="score-display">Pontos: <span id="score-val">0</span></div>
+        </div>
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+
+      <div class="reading-lock-bar" id="reading-lock-bar">
+        <span>📖 Leia a pergunta com atenção: botões liberados em <strong id="reading-countdown">4</strong>s...</span>
+      </div>
+
+      <div class="question-card">
+        <div class="question-text" id="question-text">Texto da questão</div>
+      </div>
+
+      <div class="options-grid" id="options-grid">
+        <button class="option-btn opt-A" id="btn-opt-A" onclick="handleAnswer('A')" disabled>
+          <div class="opt-icon">▲</div>
+          <div class="opt-text" id="opt-A-text">Alternativa A</div>
+        </button>
+        <button class="option-btn opt-B" id="btn-opt-B" onclick="handleAnswer('B')" disabled>
+          <div class="opt-icon">◆</div>
+          <div class="opt-text" id="opt-B-text">Alternativa B</div>
+        </button>
+        <button class="option-btn opt-C" id="btn-opt-C" onclick="handleAnswer('C')" disabled>
+          <div class="opt-icon">●</div>
+          <div class="opt-text" id="opt-C-text">Alternativa C</div>
+        </button>
+        <button class="option-btn opt-D" id="btn-opt-D" onclick="handleAnswer('D')" disabled>
+          <div class="opt-icon">■</div>
+          <div class="opt-text" id="opt-D-text">Alternativa D</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- TELA 3: FEEDBACK IMEDIATO -->
+    <div id="feedback-screen">
+      <div class="feedback-banner" id="feedback-banner">
+        <div class="feedback-title" id="feedback-title">Resposta Correta!</div>
+        <div id="feedback-subtitle">+1000 pontos</div>
+      </div>
+
+      <div class="feedback-explanation">
+        <strong>Explicação para Aprender:</strong><br>
+        <span id="feedback-exp-text">Texto explicativo</span>
+      </div>
+
+      <div class="lock-timer-msg" id="lock-timer-msg"></div>
+      <button class="next-btn" id="next-btn" onclick="nextQuestion()">Avançar ➔</button>
+    </div>
+
+    <!-- TELA 4: RESULTADO FINAL & COMPROVANTE PEDAGÓGICO -->
+    <div id="final-screen">
+      <div class="podium-title">🎓 Desafio Concluído!</div>
+      <div class="user-greeting" id="final-user-greeting">Estudante</div>
+
+      <div class="visto-card">
+        <div class="visto-header">
+          <h3>COMPROVANTE DO VISTO PEDAGÓGICO</h3>
+          <div class="visto-badge" id="visto-status-badge">EM ANÁLISE</div>
+        </div>
+
+        <div class="visto-row">
+          <span class="label">Estudante:</span>
+          <span class="val" id="visto-nome">Nome</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Acertos:</span>
+          <span class="val" id="visto-acertos">0 / 40 (0%)</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Pontuação:</span>
+          <span class="val" id="visto-pontos">0 pts</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Tempo Total:</span>
+          <span class="val" id="visto-tempo-total">0 min</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Tempo Médio por Pergunta:</span>
+          <span class="val" id="visto-tempo-medio">0s</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Situação da Leitura:</span>
+          <span class="val" id="visto-diagnostico">Adequada</span>
+        </div>
+
+        <div class="visto-code" id="visto-hash">#FILO-0000</div>
+      </div>
+
+      <div class="final-actions">
+        <button class="action-btn btn-restart" onclick="restartQuiz()">🔄 Tentar Novamente</button>
+        <button class="action-btn btn-review" onclick="toggleReview()">📋 Ver Gabarito Completo</button>
+      </div>
+
+      <div id="review-container"></div>
+    </div>
+
+  </div>
+
+  <script>
+    // As 40 questões integradas à dinâmica do template e corrigidas
+    const quizData = [
+      {
+        "id": 1,
+        "topic": "Origem da Política",
+        "text": "Ao investigar a etimologia da palavra 'política', deparamo-nos com o termo grego 'pólis'. No contexto da Grécia Antiga, esse conceito referia-se a qual elemento estrutural?",
+        "options": [
+          {"letter": "A", "text": "Aos assuntos estritamente voltados à vida privada.", "correct": false},
+          {"letter": "B", "text": "À estrutura religiosa que guiava o império grego.", "correct": false},
+          {"letter": "C", "text": "À cidade-estado e aos debates de interesse público.", "correct": true},
+          {"letter": "D", "text": "Às normativas de comércio internacional e navegação.", "correct": false}
+        ],
+        "explanation": "Na Grécia Antiga, a 'pólis' representava a cidade-estado. A política nasce como a arte de administrar e debater os interesses públicos dessas cidades."
+      },
+      {
+        "id": 2,
+        "topic": "Ação Política",
+        "text": "A provocação 'É possível viver fora da política?' sugere uma reflexão profunda sobre a ação humana. Qual é a conclusão geral dessa provocação no estudo filosófico?",
+        "options": [
+          {"letter": "A", "text": "A política ocorre apenas no momento da votação oficial.", "correct": false},
+          {"letter": "B", "text": "Toda ação humana realizada em sociedade é uma ação política.", "correct": true},
+          {"letter": "C", "text": "Somente os governantes exercem de fato a política real.", "correct": false},
+          {"letter": "D", "text": "O cidadão comum está isento de qualquer influência política.", "correct": false}
+        ],
+        "explanation": "Como vivemos em sociedade, nossas escolhas, falas e posicionamentos afetam o meio e as outras pessoas, sendo, portanto, atos essencialmente políticos."
+      },
+      {
+        "id": 3,
+        "topic": "Conceito de Estado",
+        "text": "Na análise das estruturas de poder, é crucial diferenciar Estado e Governo. Qual das alternativas define corretamente o conceito de Estado?",
+        "options": [
+          {"letter": "A", "text": "Gestão transitória que administra os recursos públicos disponíveis.", "correct": false},
+          {"letter": "B", "text": "Grupo de líderes políticos eleitos para um mandato temporário.", "correct": false},
+          {"letter": "C", "text": "Instituição permanente que organiza um povo em um território.", "correct": true},
+          {"letter": "D", "text": "Conjunto de leis elaboradas exclusivamente pelo legislativo.", "correct": false}
+        ],
+        "explanation": "O Estado é a estrutura fixa e institucional (território, povo e soberania), diferente do governo, que é quem administra o Estado temporariamente."
+      },
+      {
+        "id": 4,
+        "topic": "Conceito de Governo",
+        "text": "Em contrapartida à definição de Estado, como podemos conceituar de forma precisa o que vem a ser o 'Governo' dentro da estrutura política?",
+        "options": [
+          {"letter": "A", "text": "A gestão transitória e temporária que administra a instituição estatal.", "correct": true},
+          {"letter": "B", "text": "A organização permanente de cidadãos que habitam o território.", "correct": false},
+          {"letter": "C", "text": "A soberania inabalável que protege as fronteiras do país.", "correct": false},
+          {"letter": "D", "text": "O monopólio contínuo do uso legítimo da força física nacional.", "correct": false}
+        ],
+        "explanation": "O governo é transitório. Ele é o grupo de pessoas que assume o controle da máquina estatal por um período determinado."
+      },
+      {
+        "id": 5,
+        "topic": "Teoria de Max Weber",
+        "text": "O sociólogo Max Weber formulou uma teoria fundamental sobre o Estado moderno. Segundo sua definição clássica, o que caracteriza exclusivamente essa entidade?",
+        "options": [
+          {"letter": "A", "text": "A capacidade de intervir na economia internacional livremente.", "correct": false},
+          {"letter": "B", "text": "O direito de promover a censura prévia dos meios de comunicação.", "correct": false},
+          {"letter": "C", "text": "O monopólio absoluto do uso legítimo da força física no território.", "correct": true},
+          {"letter": "D", "text": "A isenção total de obrigações tributárias e fiscais para os cidadãos.", "correct": false}
+        ],
+        "explanation": "Weber define que apenas o Estado possui o direito legalmente aceito (monopólio legítimo) de usar a força armada e policial para garantir a ordem."
+      },
+      {
+        "id": 6,
+        "topic": "Monopólio da Força",
+        "text": "Por que motivo, segundo as teorias sociológicas do poder, a sociedade civil delega exclusivamente ao Estado o direito de usar a força armada e policial?",
+        "options": [
+          {"letter": "A", "text": "Para garantir que a força seja usada apenas para proteger governantes.", "correct": false},
+          {"letter": "B", "text": "Para evitar o caos se qualquer indivíduo usasse a força 'legitimamente'.", "correct": true},
+          {"letter": "C", "text": "Para que as empresas privadas não precisem contratar seguranças.", "correct": false},
+          {"letter": "D", "text": "Para centralizar o orçamento econômico e gerar mais arrecadação.", "correct": false}
+        ],
+        "explanation": "Se qualquer cidadão tivesse o direito de usar a força física legitimamente para fazer sua própria justiça, a sociedade retornaria ao caos e à violência."
+      },
+      {
+        "id": 7,
+        "topic": "Contratualismo",
+        "text": "O 'Contrato Social' é um conceito central na filosofia política. Qual é a definição exata desse acordo imaginário formulado por filósofos?",
+        "options": [
+          {"letter": "A", "text": "Acordo econômico firmado para proteger as corporações mercantis.", "correct": false},
+          {"letter": "B", "text": "Pacto religioso para garantir a imunidade tributária dos templos.", "correct": false},
+          {"letter": "C", "text": "Acordo onde pessoas perdem liberdades naturais em troca de ordem.", "correct": true},
+          {"letter": "D", "text": "Tratado internacional assinado para evitar conflitos bélicos globais.", "correct": false}
+        ],
+        "explanation": "No Contrato Social, os indivíduos concordam em abrir mão de agir livremente baseados apenas em seus instintos para obedecer às leis e garantir a convivência."
+      },
+      {
+        "id": 8,
+        "topic": "O Estado de Natureza",
+        "text": "No contexto do contratualismo, o que os seres humanos abandonam especificamente ao aceitarem viver em sociedade sob a autoridade de um Estado constituído?",
+        "options": [
+          {"letter": "A", "text": "A proteção jurídica oferecida pelo poder judiciário nacional.", "correct": false},
+          {"letter": "B", "text": "O estado de natureza, caracterizado por uma vida sem leis.", "correct": true},
+          {"letter": "C", "text": "O direito fundamental à liberdade de crença e religião.", "correct": false},
+          {"letter": "D", "text": "A necessidade natural de acumular bens e propriedades.", "correct": false}
+        ],
+        "explanation": "O estado de natureza seria a condição humana antes do surgimento das leis e da sociedade civil, onde reinaria a lei do mais forte."
+      },
+      {
+        "id": 9,
+        "topic": "Pensamento de Hobbes",
+        "text": "O filósofo Thomas Hobbes possuía uma visão bastante pessimista. Para ele, a natureza humana é inerentemente violenta, o que ele resumiu na famosa frase:",
+        "options": [
+          {"letter": "A", "text": "O homem nasce bom, mas a propriedade privada o corrompe.", "correct": false},
+          {"letter": "B", "text": "A humanidade é dotada de razão e busca a paz perpétua.", "correct": false},
+          {"letter": "C", "text": "O homem é o lobo do homem, vivendo em constante guerra.", "correct": true},
+          {"letter": "D", "text": "A sociedade democrática é o destino final e natural do homem.", "correct": false}
+        ],
+        "explanation": "Para Hobbes, sem a imposição do Estado, os homens agiriam como predadores uns dos outros ('homo homini lupus')."
+      },
+      {
+        "id": 10,
+        "topic": "O Estado Absoluto",
+        "text": "Devido à sua visão sobre a natureza humana, que tipo de Estado Thomas Hobbes defendia como necessário para impor a ordem e evitar a morte generalizada?",
+        "options": [
+          {"letter": "A", "text": "Um Estado Democrático focado apenas na proteção das minorias.", "correct": false},
+          {"letter": "B", "text": "Um Estado Liberal que atuasse somente como juiz imparcial.", "correct": false},
+          {"letter": "C", "text": "Um Estado Absoluto capaz de impor a ordem através do medo.", "correct": true},
+          {"letter": "D", "text": "Um Estado Laico dedicado à educação e saúde de todos.", "correct": false}
+        ],
+        "explanation": "Hobbes defende o 'Leviatã', um Estado todo-poderoso (absolutista) necessário para frear a natureza perversa do ser humano e garantir a vida."
+      },
+      {
+        "id": 11,
+        "topic": "Direitos Naturais (Locke)",
+        "text": "Em contraste com Hobbes, John Locke apresentava uma visão mais otimista. Segundo Locke, os seres humanos nascem dotados de razão e de direitos inerentes, que são:",
+        "options": [
+          {"letter": "A", "text": "Direitos ao poder absoluto, à dominação e ao território livre.", "correct": false},
+          {"letter": "B", "text": "Direitos à vida, à liberdade civil e à propriedade privada.", "correct": true},
+          {"letter": "C", "text": "Direitos de uso exclusivo da força armada e militar.", "correct": false},
+          {"letter": "D", "text": "Direitos à isenção de regras jurídicas e controle governamental.", "correct": false}
+        ],
+        "explanation": "Locke é o pai do liberalismo e defende que o ser humano já nasce com direitos essenciais: a vida, a liberdade e os bens (propriedade)."
+      },
+      {
+        "id": 12,
+        "topic": "Direito de Rebelião",
+        "text": "Para John Locke, o Estado surge apenas como um juiz imparcial. Caso esse Estado Liberal se torne tirânico e desrespeite os direitos naturais, o que os cidadãos podem fazer?",
+        "options": [
+          {"letter": "A", "text": "Devem aceitar pacificamente, pois o contrato social é inquebrável.", "correct": false},
+          {"letter": "B", "text": "Devem transferir a soberania para um líder religioso absoluto.", "correct": false},
+          {"letter": "C", "text": "Têm o direito inalienável e legítimo de se rebelarem contra ele.", "correct": true},
+          {"letter": "D", "text": "Têm a obrigação de recorrer a outros países para intervenção.", "correct": false}
+        ],
+        "explanation": "Se o governo desrespeita os direitos básicos de vida e propriedade, Locke argumenta que a sociedade tem o direito legítimo de derrubar esse governante."
+      },
+      {
+        "id": 13,
+        "topic": "Pensamento de Rousseau",
+        "text": "Jean-Jacques Rousseau foi um contratualista mais radical. Ao analisar a origem dos problemas sociais, ele afirmou que o homem nasce bom e livre, mas é corrompido pela:",
+        "options": [
+          {"letter": "A", "text": "Criação das instituições religiosas confessionalistas da época.", "correct": false},
+          {"letter": "B", "text": "Invenção da propriedade privada que gerou a desigualdade.", "correct": true},
+          {"letter": "C", "text": "Necessidade humana de acumular conhecimento científico.", "correct": false},
+          {"letter": "D", "text": "Ausência completa de um Estado absolutista opressor.", "correct": false}
+        ],
+        "explanation": "Rousseau afirmava que a sociedade e, principalmente, a propriedade privada, corrompem a bondade original do ser humano, causando as desigualdades."
+      },
+      {
+        "id": 14,
+        "topic": "A Vontade Geral",
+        "text": "Para Rousseau, a solução política não era um monarca absoluto nem apenas um juiz liberal. O Estado Democrático deveria, segundo ele, estar a serviço do quê?",
+        "options": [
+          {"letter": "A", "text": "Do lucro exclusivo das grandes corporações comerciais.", "correct": false},
+          {"letter": "B", "text": "Da manutenção dos privilégios da elite intelectual.", "correct": false},
+          {"letter": "C", "text": "Da vontade dos governantes transitórios no poder.", "correct": false},
+          {"letter": "D", "text": "Da 'Vontade Geral', servindo aos interesses de todo o povo.", "correct": true}
+        ],
+        "explanation": "O modelo democrático de Rousseau baseia-se na 'vontade geral', que busca o bem comum acima dos interesses egoístas."
+      },
+      {
+        "id": 15,
+        "topic": "Democracia Constitucional",
+        "text": "A democracia moderna não se resume apenas a fazer o que a maioria quer. Na verdade, ela é caracterizada como um sistema de democracia constitucional que se apoia em:",
+        "options": [
+          {"letter": "A", "text": "Monopólio da economia privada e fim das regulamentações.", "correct": false},
+          {"letter": "B", "text": "Soberania popular atrelada à proteção de direitos fundamentais.", "correct": true},
+          {"letter": "C", "text": "Controle restrito da oposição política e censura de ideias.", "correct": false},
+          {"letter": "D", "text": "Imposição militar sobre as camadas populares de baixa renda.", "correct": false}
+        ],
+        "explanation": "A democracia real não é só eleição; é o equilíbrio entre o poder de decisão do povo e as barreiras constitucionais que protegem direitos fundamentais."
+      },
+      {
+        "id": 16,
+        "topic": "A Tirania da Maioria",
+        "text": "O que ocorreria em um cenário hipotético em que a vontade da maioria fosse absoluta e não houvesse proteção constitucional para frear o poder da massa?",
+        "options": [
+          {"letter": "A", "text": "A sociedade alcançaria um nível pleno e perfeito de igualdade.", "correct": false},
+          {"letter": "B", "text": "Ocorreria uma 'tirania da maioria', onde 51% oprimiria 49%.", "correct": true},
+          {"letter": "C", "text": "O Estado perderia totalmente o monopólio legítimo da força.", "correct": false},
+          {"letter": "D", "text": "O pluralismo político seria fortalecido e a paz consolidada.", "correct": false}
+        ],
+        "explanation": "Sem proteção constitucional, uma votação majoritária poderia legalizar injustiças severas contra quem pensa ou é diferente, criando a tirania da maioria."
+      },
+      {
+        "id": 17,
+        "topic": "Direitos Inalienáveis",
+        "text": "Para evitar a tirania da maioria, a democracia garante Direitos Humanos Fundamentais (como vida e expressão). Qual é a principal característica desses direitos perante a lei?",
+        "options": [
+          {"letter": "A", "text": "São temporários e devem ser renovados a cada pleito eleitoral.", "correct": false},
+          {"letter": "B", "text": "Podem ser suspensos sempre que houver déficit financeiro público.", "correct": false},
+          {"letter": "C", "text": "São inalienáveis e não podem ser cassados por uma simples votação.", "correct": true},
+          {"letter": "D", "text": "Aplicam-se exclusivamente aos membros dos partidos políticos.", "correct": false}
+        ],
+        "explanation": "Eles pertencem a todos os indivíduos pela sua natureza humana e nenhuma eleição tem o poder legítimo de extirpá-los (cláusula pétrea)."
+      },
+      {
+        "id": 18,
+        "topic": "Proteção das Minorias",
+        "text": "A verdadeira democracia constitucional garante que os grupos minoritários (étnicos, religiosos ou políticos) não sejam esmagados. O que isso lhes assegura?",
+        "options": [
+          {"letter": "A", "text": "O direito de governar sozinhos sem consultar a ampla maioria.", "correct": false},
+          {"letter": "B", "text": "O direito inegável de existir, expressar ideias e disputar eleições.", "correct": true},
+          {"letter": "C", "text": "O privilégio de não pagar impostos sobre propriedades rurais.", "correct": false},
+          {"letter": "D", "text": "A obrigatoriedade de adotar a religião oficial do Estado.", "correct": false}
+        ],
+        "explanation": "A proteção garante a participação e a dignidade; ser minoria em uma votação não significa perder o direito de existir ou de se manifestar livremente."
+      },
+      {
+        "id": 19,
+        "topic": "Império da Lei",
+        "text": "O princípio do 'Império da Lei' (Estado de Direito) é uma barreira contra o autoritarismo. Na prática, o que esse importante princípio democrático estabelece?",
+        "options": [
+          {"letter": "A", "text": "Que governantes e maiorias também devem obedecer à Constituição.", "correct": true},
+          {"letter": "B", "text": "Que as leis servem apenas para controlar os cidadãos mais pobres.", "correct": false},
+          {"letter": "C", "text": "Que a força militar está acima das decisões do Poder Judiciário.", "correct": false},
+          {"letter": "D", "text": "Que o Presidente da República pode anular sentenças judiciais.", "correct": false}
+        ],
+        "explanation": "No Estado Democrático de Direito, ninguém, nem mesmo o governante eleito, está acima da Constituição."
+      },
+      {
+        "id": 20,
+        "topic": "Pluralismo Político",
+        "text": "O 'Pluralismo Político' pressupõe que a sociedade abriga diferentes visões. Qual é o mecanismo essencial que a democracia utiliza para lidar com essa diversidade?",
+        "options": [
+          {"letter": "A", "text": "O esmagamento violento da oposição partidária minoritária.", "correct": false},
+          {"letter": "B", "text": "A imposição de censura aos grupos com opiniões divergentes.", "correct": false},
+          {"letter": "C", "text": "O debate aberto, o diálogo e a busca estruturada por consensos.", "correct": true},
+          {"letter": "D", "text": "A eliminação do processo eleitoral para evitar confrontos.", "correct": false}
+        ],
+        "explanation": "A democracia requer pluralidade; ela se consolida no embate argumentativo e civilizado entre diferentes pontos de vista, não na censura."
+      },
+      {
+        "id": 21,
+        "topic": "Majoritarismo Puro",
+        "text": "Se compararmos os sistemas de poder, quem é que detém a autoridade para decidir os rumos do país em um cenário de 'Majoritarismo Puro'?",
+        "options": [
+          {"letter": "A", "text": "Apenas um monarca com poderes herdados por sangue.", "correct": false},
+          {"letter": "B", "text": "A maioria, agindo com freios constitucionais rigorosos.", "correct": false},
+          {"letter": "C", "text": "As instituições independentes como o Tribunal Superior.", "correct": false},
+          {"letter": "D", "text": "A maioria, agindo sem freios, limites ou restrições legais.", "correct": true}
+        ],
+        "explanation": "No majoritarismo puro, a maioria pode literalmente tudo o que desejar em uma votação, mesmo que decida perseguir pessoas. Por isso a Constituição é essencial."
+      },
+      {
+        "id": 22,
+        "topic": "Direitos Constitucionais",
+        "text": "Nesse mesmo contexto de comparação, como os direitos das minorias são tratados dentro de uma 'Democracia Constitucional' madura e em pleno funcionamento?",
+        "options": [
+          {"letter": "A", "text": "São protegidos de forma contínua e considerados invioláveis.", "correct": true},
+          {"letter": "B", "text": "São sistematicamente ignorados pelo aparelho estatal.", "correct": false},
+          {"letter": "C", "text": "Podem ser revogados caso a maioria da população deseje.", "correct": false},
+          {"letter": "D", "text": "São transferidos para a jurisdição exclusiva de ONGs.", "correct": false}
+        ],
+        "explanation": "A Constituição madura serve de escudo contra rompantes extremistas, garantindo permanentemente a existência e expressão dos grupos minoritários."
+      },
+      {
+        "id": 23,
+        "topic": "Papel da Constituição",
+        "text": "Qual é o papel central da Constituição em relação ao processo de decisão dentro do sistema democrático moderno?",
+        "options": [
+          {"letter": "A", "text": "Define apenas o cronograma e as datas exatas das eleições.", "correct": false},
+          {"letter": "B", "text": "Permite que o vencedor das eleições governe de forma arbitrária.", "correct": false},
+          {"letter": "C", "text": "Define claramente os limites do que pode ou não ser decidido.", "correct": true},
+          {"letter": "D", "text": "Substitui a necessidade de existir um parlamento ou congresso.", "correct": false}
+        ],
+        "explanation": "A Constituição dita as 'regras do jogo'. Ela diz não apenas como as leis são feitas, mas também o limite daquilo que não pode virar lei (por ofender direitos básicos)."
+      },
+      {
+        "id": 24,
+        "topic": "Estado Confessional",
+        "text": "Historicamente, o mundo ocidental passou por uma transição do 'Estado Confessional' para o 'Estado Laico'. O que caracterizava o modelo de Estado Confessional?",
+        "options": [
+          {"letter": "A", "text": "A laicidade absoluta e o combate direto às crenças populares.", "correct": false},
+          {"letter": "B", "text": "A separação rigorosa entre as atividades políticas e o clero.", "correct": false},
+          {"letter": "C", "text": "Um modelo em que a religião oficial guiava a criação das leis.", "correct": true},
+          {"letter": "D", "text": "A total pluralidade e o respeito equivalente a todos os deuses.", "correct": false}
+        ],
+        "explanation": "No modelo confessional, o Estado e uma religião específica atuam juntos, limitando outras crenças e legislando através de preceitos de fé religiosa."
+      },
+      {
+        "id": 25,
+        "topic": "Estado Laico",
+        "text": "O conceito de laicidade gera muita confusão. De acordo com a teoria política, como podemos definir corretamente a laicidade do Estado?",
+        "options": [
+          {"letter": "A", "text": "É a promoção ativa e institucionalizada do ateísmo moderno.", "correct": false},
+          {"letter": "B", "text": "É a posição de estrita neutralidade do Estado em matéria religiosa.", "correct": true},
+          {"letter": "C", "text": "É a perseguição formal de todas as manifestações de fé pública.", "correct": false},
+          {"letter": "D", "text": "É o dever de financiar financeiramente todas as igrejas do país.", "correct": false}
+        ],
+        "explanation": "Ser laico não significa ser contra a religião; significa que as políticas públicas e leis se mantêm neutras para garantir que todos possam professar ou não sua fé livremente."
+      },
+      {
+        "id": 26,
+        "topic": "Laicidade no Brasil",
+        "text": "O Brasil é oficialmente considerado um Estado laico. Qual documento e dispositivo legal estabelecem formalmente essa posição de neutralidade religiosa do país?",
+        "options": [
+          {"letter": "A", "text": "A Declaração Universal dos Direitos Humanos, artigo 5º.", "correct": false},
+          {"letter": "B", "text": "O Código de Processo Penal Brasileiro, aprovado em 1941.", "correct": false},
+          {"letter": "C", "text": "A Constituição Federal promulgada em 1988, no seu artigo 19.", "correct": true},
+          {"letter": "D", "text": "O Tratado Internacional de Tordesilhas assinado no passado.", "correct": false}
+        ],
+        "explanation": "O Artigo 19 da Constituição de 1988 proíbe a União, Estados e Municípios de estabelecerem cultos religiosos ou igrejas, ou de embaraçar o funcionamento destes."
+      },
+      {
+        "id": 27,
+        "topic": "Frente Parlamentar",
+        "text": "Embora o Brasil seja laico no papel, existem tensões na prática. Na esfera legislativa, como se manifestam as Frentes Parlamentares Religiosas?",
+        "options": [
+          {"letter": "A", "text": "Propõem leis baseadas em dogmas de fé, ignorando a pluralidade.", "correct": true},
+          {"letter": "B", "text": "Defendem a completa extinção das isenções de impostos de templos.", "correct": false},
+          {"letter": "C", "text": "Focam apenas em garantir políticas públicas voltadas à ciência.", "correct": false},
+          {"letter": "D", "text": "Promovem a neutralidade total em pautas de costumes morais.", "correct": false}
+        ],
+        "explanation": "Esses blocos parlamentares frequentemente tentam moldar as leis e a moralidade civil do país segundo dogmas e crenças específicas, tensionando a laicidade do Estado."
+      },
+      {
+        "id": 28,
+        "topic": "Símbolos Religiosos",
+        "text": "A presença de crucifixos e imagens religiosas em tribunais e plenários é apontada por críticos como uma flexibilização da laicidade. Qual é o principal argumento dessa crítica?",
+        "options": [
+          {"letter": "A", "text": "Argumenta-se que isso eleva os gastos públicos com decoração.", "correct": false},
+          {"letter": "B", "text": "Argumenta-se que a arte barroca deve ficar restrita aos museus.", "correct": false},
+          {"letter": "C", "text": "Argumenta-se que isso privilegia o Cristianismo frente a outras fés.", "correct": true},
+          {"letter": "D", "text": "Argumenta-se que os prédios perdem sua funcionalidade acústica.", "correct": false}
+        ],
+        "explanation": "A presença fixa de símbolos de apenas uma religião nos recintos públicos sinaliza preferência, quebrando, teoricamente, a neutralidade do Estado sobre a diversidade religiosa."
+      },
+      {
+        "id": 29,
+        "topic": "Linguagem Institucional",
+        "text": "No que diz respeito aos documentos e aos atos oficiais do Estado brasileiro, qual exemplo demonstra claramente uma interferência da linguagem religiosa institucionalizada?",
+        "options": [
+          {"letter": "A", "text": "O uso exclusivo do calendário islâmico para eventos públicos.", "correct": false},
+          {"letter": "B", "text": "A frase 'sob a proteção de Deus' constante no preâmbulo da Constituição.", "correct": true},
+          {"letter": "C", "text": "A substituição de nomes de ruas por termos unicamente científicos.", "correct": false},
+          {"letter": "D", "text": "A remoção de todos os feriados cristãos do calendário nacional.", "correct": false}
+        ],
+        "explanation": "O preâmbulo da própria Constituição Federal cita formalmente a 'proteção de Deus', demonstrando a dificuldade histórica de desvincular a religiosidade do texto estatal."
+      },
+      {
+        "id": 30,
+        "topic": "Ensino Religioso",
+        "text": "Na área da educação pública, o Ensino Religioso gera intensos debates. O que o Supremo Tribunal Federal (STF) decidiu sobre essa disciplina no ano de 2017?",
+        "options": [
+          {"letter": "A", "text": "Decidiu que o ensino deve focar apenas na história do ateísmo.", "correct": false},
+          {"letter": "B", "text": "Decidiu pela remoção imediata da disciplina de todas as escolas.", "correct": false},
+          {"letter": "C", "text": "Decidiu que o ensino pode ter caráter estritamente científico.", "correct": false},
+          {"letter": "D", "text": "Decidiu que esse ensino facultativo pode ser de modelo confessional.", "correct": true}
+        ],
+        "explanation": "Em uma decisão polêmica, o STF autorizou que o ensino religioso nas escolas públicas pudesse ter viés confessional (professando crenças específicas), desde que a matrícula seja optativa."
+      },
+      {
+        "id": 31,
+        "topic": "Debate Criacionista",
+        "text": "Outra tensão educacional envolve o currículo de Ciências. Há tentativas frequentes de grupos políticos e religiosos para interferir nesse conteúdo visando o quê?",
+        "options": [
+          {"letter": "A", "text": "Aumentar a carga horária de física quântica e astronomia.", "correct": false},
+          {"letter": "B", "text": "Equiparar o ensino do criacionismo à teoria científica da evolução.", "correct": true},
+          {"letter": "C", "text": "Proibir totalmente o ensino da biologia molecular nas escolas.", "correct": false},
+          {"letter": "D", "text": "Substituir as aulas práticas por longas palestras teóricas.", "correct": false}
+        ],
+        "explanation": "Grupos frequentemente defendem que narrativas criacionistas religiosas ganhem o mesmo status científico que a teoria da evolução dentro das aulas de Biologia em escolas laicas."
+      },
+      {
+        "id": 32,
+        "topic": "Religião na Saúde",
+        "text": "No âmbito dos direitos sociais e da saúde pública, agentes frequentemente negam ou atrasam procedimentos de aborto legal fundamentando-se em:",
+        "options": [
+          {"letter": "A", "text": "Falta de infraestrutura hospitalar e ausência de insumos médicos.", "correct": false},
+          {"letter": "B", "text": "Decisões recentes do Ministério da Fazenda sobre orçamento.", "correct": false},
+          {"letter": "C", "text": "Suas convicções religiosas particulares que se sobrepõem à lei.", "correct": true},
+          {"letter": "D", "text": "Estudos científicos que comprovam a viabilidade médica alternativa.", "correct": false}
+        ],
+        "explanation": "Embora existam casos previstos por lei para o aborto, frequentemente profissionais do estado alegam objeção de consciência religiosa para não cumprir os protocolos de saúde legais."
+      },
+      {
+        "id": 33,
+        "topic": "Imunidade Tributária",
+        "text": "Do ponto de vista econômico e tributário, a laicidade também é tensionada pela Constituição Federal através de qual mecanismo garantido às organizações religiosas?",
+        "options": [
+          {"letter": "A", "text": "Obrigatoriedade de financiar obras de infraestrutura urbana.", "correct": false},
+          {"letter": "B", "text": "Imunidade tributária total aplicada aos templos de qualquer culto.", "correct": true},
+          {"letter": "C", "text": "Taxação extra para corporações que recebem doações públicas.", "correct": false},
+          {"letter": "D", "text": "Proibição de arrecadar dízimos através de meios digitais e online.", "correct": false}
+        ],
+        "explanation": "A Constituição garante que os templos religiosos sejam isentos de cobrança de impostos, o que atrai discussões sobre patrimônio e influência política dessas organizações na esfera laica."
+      },
+      {
+        "id": 34,
+        "topic": "A Prática da Laicidade",
+        "text": "Apesar de toda a estrutura civil, cientistas políticos, juristas e sociólogos concluem que a laicidade estatal praticada no Brasil atualmente é:",
+        "options": [
+          {"letter": "A", "text": "Totalmente inexistente, sendo o país um Estado teocrático declarado.", "correct": false},
+          {"letter": "B", "text": "Absolutamente pura, sem qualquer tipo de interferência religiosa.", "correct": false},
+          {"letter": "C", "text": "Constantemente tensionada e flexibilizada em diversas esferas.", "correct": true},
+          {"letter": "D", "text": "Perfeita, servindo de modelo absoluto para nações do Oriente.", "correct": false}
+        ],
+        "explanation": "Apesar do princípio ser claro, ele entra constantemente em embate na educação, na saúde e na elaboração das leis devido ao perfil profundamente religioso de grande parte da sociedade."
+      },
+      {
+        "id": 35,
+        "topic": "Pena de Morte no Brasil",
+        "text": "Mudando para o tema da justiça severa, qual é a única circunstância em que a aplicação da pena de morte é permitida no Brasil, segundo a Constituição?",
+        "options": [
+          {"letter": "A", "text": "Em caso de crimes hediondos cometidos contra altas autoridades.", "correct": false},
+          {"letter": "B", "text": "Em caso de terrorismo interno e tráfico internacional de drogas.", "correct": false},
+          {"letter": "C", "text": "Em caso de guerra declarada de maneira oficial e formal.", "correct": true},
+          {"letter": "D", "text": "Em caso de reincidência contínua em crimes de corrupção passiva.", "correct": false}
+        ],
+        "explanation": "O Brasil não possui pena de morte em tempos de paz, sendo ela estritamente reservada a circunstâncias extremas durante a vigência de estado de guerra declarada."
+      },
+      {
+        "id": 36,
+        "topic": "Código Penal Militar",
+        "text": "Dentro desse cenário excepcional, em qual âmbito legal e código específico o crime de deserção passível de pena de morte está detalhadamente tipificado?",
+        "options": [
+          {"letter": "A", "text": "No Código Civil Brasileiro, revisado após o fim da ditadura.", "correct": false},
+          {"letter": "B", "text": "No Código Penal Militar, através do Decreto-Lei nº 1.001/1969.", "correct": true},
+          {"letter": "C", "text": "No Estatuto da Criança e do Adolescente e varas de família.", "correct": false},
+          {"letter": "D", "text": "No Código de Defesa do Consumidor para prestadores estatais.", "correct": false}
+        ],
+        "explanation": "É a jurisdição do Código Penal Militar que regula e penaliza a infração militar em cenário bélico com punição letal."
+      },
+      {
+        "id": 37,
+        "topic": "Deserção em Combate",
+        "text": "Para que o crime de deserção alcance a pena máxima de morte, a lei militar exige um contexto muito específico. O abandono do posto deve ocorrer necessariamente em:",
+        "options": [
+          {"letter": "A", "text": "Tempos de treinamento rigoroso nas instalações de tiro.", "correct": false},
+          {"letter": "B", "text": "Finais de semana onde haja efetivo reduzido no quartel general.", "correct": false},
+          {"letter": "C", "text": "Cenário de combate, diante das forças inimigas ou iminente confronto.", "correct": true},
+          {"letter": "D", "text": "Manifestações civis pacíficas realizadas nas capitais federais.", "correct": false}
+        ],
+        "explanation": "Para ensejar o fuzilamento, não basta apenas faltar ao serviço militar; a deserção deve ocorrer de forma gravosa na presença de força inimiga em tempo de guerra."
+      },
+      {
+        "id": 38,
+        "topic": "O Dolo Específico",
+        "text": "Além do contexto de combate, o crime de deserção na presença do inimigo exige o 'dolo específico', que representa qual estado psicológico do militar?",
+        "options": [
+          {"letter": "A", "text": "Um surto psicótico temporário causado pelo barulho da batalha.", "correct": false},
+          {"letter": "B", "text": "A falta de atenção e o desconhecimento das regras de engajamento.", "correct": false},
+          {"letter": "C", "text": "A intenção deliberada de abandonar o dever para escapar do perigo.", "correct": true},
+          {"letter": "D", "text": "Um erro de cálculo estratégico na movimentação das tropas.", "correct": false}
+        ],
+        "explanation": "O dolo se caracteriza pela vontade consciente e intencional; a lei exige que o soldado decida lucidamente fugir diante de ameaça real ao país."
+      },
+      {
+        "id": 39,
+        "topic": "Estado de Guerra",
+        "text": "Para que a punição extrema da pena de morte tenha validade jurídica inquestionável sobre um desertor militar, qual autoridade deve ter declarado o estado de guerra?",
+        "options": [
+          {"letter": "A", "text": "O Comandante Geral do batalhão daquela região de fronteira.", "correct": false},
+          {"letter": "B", "text": "O Ministro do Supremo Tribunal Militar em votação aberta.", "correct": false},
+          {"letter": "C", "text": "O Presidente da República, respeitando os termos constitucionais.", "correct": true},
+          {"letter": "D", "text": "O Secretário de Segurança Pública do Estado em questão.", "correct": false}
+        ],
+        "explanation": "Apenas o Chefe de Estado brasileiro possui o poder legal de declarar o Estado de Guerra de forma soberana."
+      },
+      {
+        "id": 40,
+        "topic": "Execução Militar",
+        "text": "Caso a pena de morte militar seja formalmente decretada e definitivamente julgada pela Justiça Militar no Brasil, qual é o método legal exclusivo para a sua execução?",
+        "options": [
+          {"letter": "A", "text": "A injeção letal de compostos químicos aplicados em ambiente clínico.", "correct": false},
+          {"letter": "B", "text": "O fuzilamento, conforme estabelecido no artigo 56 do Código Militar.", "correct": true},
+          {"letter": "C", "text": "A cadeira elétrica, inspirada nos modelos utilizados nos tribunais.", "correct": false},
+          {"letter": "D", "text": "O enforcamento em praça pública para servir de exemplo moral.", "correct": false}
+        ],
+        "explanation": "A legislação militar brasileira prevê explicitamente a penalização através do fuzilamento em casos comprovados e julgados, apenas em tempo de guerra externa declarada."
+      }
+    ];
+
+    let currentIndex = 0;
+    let score = 0;
+    let correctCount = 0;
+    let userAnswers = [];
+    let soundEnabled = true;
+
+    let questionStartTime = 0;
+    let quizStartTime = 0;
+    let fastAnswersStreak = 0;
+    let readingLockInterval = null;
+    let feedbackLockInterval = null;
+    let isQuestionLocked = true;
+
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new AudioCtx();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function playTone(freq, type, duration, delay = 0) {
+      if (!soundEnabled) return;
+      try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + delay + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + delay);
+        osc.stop(audioCtx.currentTime + delay + duration);
+      } catch (e) {}
+    }
+
+    function soundCorrect() {
+      playTone(523.25, 'sine', 0.12, 0);
+      playTone(659.25, 'sine', 0.12, 0.08);
+      playTone(783.99, 'sine', 0.2, 0.16);
+      playTone(1046.50, 'sine', 0.35, 0.24);
+    }
+
+    function soundWrong() {
+      playTone(300, 'sawtooth', 0.2, 0);
+      playTone(220, 'sawtooth', 0.35, 0.15);
+    }
+
+    function soundClick() {
+      playTone(850, 'triangle', 0.04, 0);
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('sound-btn').innerText = soundEnabled ? "🔊 Som: ON" : "🔇 Som: OFF";
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    function startQuiz() {
+      const nameInput = document.getElementById('player-name').value.trim();
+      if (!nameInput) {
+        alert("Digite o seu nome completo para que o seu visto possa ser registado pelo professor.");
+        return;
+      }
+
+      initAudio();
+      soundClick();
+
+      currentIndex = 0;
+      score = 0;
+      correctCount = 0;
+      userAnswers = [];
+      fastAnswersStreak = 0;
+      quizStartTime = Date.now();
+
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('final-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'none';
+      document.getElementById('quiz-screen').style.display = 'block';
+
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      clearInterval(readingLockInterval);
+      const q = quizData[currentIndex];
+
+      document.getElementById('q-counter').innerText = `Questão ${currentIndex + 1} de ${quizData.length}`;
+      document.getElementById('q-topic').innerText = q.topic;
+      document.getElementById('score-val').innerText = score;
+      document.getElementById('question-text').innerText = q.text;
+
+      const progressPercent = ((currentIndex) / quizData.length) * 100;
+      document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+
+      const letters = ['A', 'B', 'C', 'D'];
+      letters.forEach(letter => {
+        const opt = q.options.find(o => o.letter === letter);
+        document.getElementById(`opt-${letter}-text`).innerText = opt.text;
+      });
+
+      // TRAVA DE 4 SEGUNDOS
+      isQuestionLocked = true;
+      let lockSeconds = 4;
+      setOptionsDisabled(true);
+
+      const lockBar = document.getElementById('reading-lock-bar');
+      lockBar.className = 'reading-lock-bar';
+      lockBar.innerHTML = `<span>📖 Leia com calma: liberando botões em <strong id="reading-countdown">${lockSeconds}</strong>s...</span>`;
+
+      questionStartTime = Date.now();
+
+      readingLockInterval = setInterval(() => {
+        lockSeconds--;
+        const cd = document.getElementById('reading-countdown');
+        if (cd) cd.innerText = lockSeconds;
+
+        if (lockSeconds <= 0) {
+          clearInterval(readingLockInterval);
+          isQuestionLocked = false;
+          setOptionsDisabled(false);
+          lockBar.className = 'reading-lock-bar unlocked';
+          lockBar.innerHTML = `<span>✅ Pergunta lida. Escolha a alternativa correta!</span>`;
+        }
+      }, 1000);
+    }
+
+    function setOptionsDisabled(disabled) {
+      ['A', 'B', 'C', 'D'].forEach(letter => {
+        const btn = document.getElementById(`btn-opt-${letter}`);
+        if (btn) btn.disabled = disabled;
+      });
+    }
+
+    function handleAnswer(chosenLetter) {
+      if (isQuestionLocked) return;
+
+      const answerDuration = (Date.now() - questionStartTime) / 1000;
+      const q = quizData[currentIndex];
+      const correctOpt = q.options.find(o => o.correct);
+      const isCorrect = chosenLetter === correctOpt.letter;
+
+      // DETECTOR DE CHUTE RÁPIDO
+      if (answerDuration < 5) {
+        fastAnswersStreak++;
+      } else {
+        fastAnswersStreak = Math.max(0, fastAnswersStreak - 1);
+      }
+
+      if (fastAnswersStreak >= 3) {
+        triggerRushBlock();
+        return;
+      }
+
+      let pointsEarned = 0;
+      if (isCorrect) {
+        correctCount++;
+        pointsEarned = 1000;
+        score += pointsEarned;
+        soundCorrect();
+      } else {
+        soundWrong();
+      }
+
+      userAnswers.push({
+        question: q,
+        chosen: chosenLetter,
+        correct: correctOpt.letter,
+        isCorrect: isCorrect,
+        timeTaken: answerDuration
+      });
+
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'block';
+
+      const banner = document.getElementById('feedback-banner');
+      const title = document.getElementById('feedback-title');
+      const sub = document.getElementById('feedback-subtitle');
+      const expText = document.getElementById('feedback-exp-text');
+      const nextBtn = document.getElementById('next-btn');
+      const lockMsg = document.getElementById('lock-timer-msg');
+
+      banner.className = 'feedback-banner ' + (isCorrect ? 'correct' : 'incorrect');
+
+      if (isCorrect) {
+        title.innerText = "Mandou Bem! Acertou! 🎉";
+        sub.innerText = `+${pointsEarned} pontos conquistados`;
+        expText.innerText = q.explanation;
+        lockMsg.innerText = "";
+        nextBtn.disabled = false;
+        nextBtn.innerText = "Próxima Questão ➔";
+      } else {
+        title.innerText = "Resposta Errada! ❌";
+        sub.innerText = `Você marcou a letra (${chosenLetter}). A correta era a (${correctOpt.letter}).`;
+        expText.innerText = q.explanation;
+
+        // TRAVA DE 8 SEGUNDOS NO ERRO
+        let cooldown = 8;
+        nextBtn.disabled = true;
+        lockMsg.innerText = `⏳ Leia a explicação para aprender o conceito. Liberando em ${cooldown}s...`;
+        nextBtn.innerText = `Aguarde (${cooldown}s)`;
+
+        clearInterval(feedbackLockInterval);
+        feedbackLockInterval = setInterval(() => {
+          cooldown--;
+          if (cooldown > 0) {
+            lockMsg.innerText = `⏳ Leia a explicação para aprender o conceito. Liberando em ${cooldown}s...`;
+            nextBtn.innerText = `Aguarde (${cooldown}s)`;
+          } else {
+            clearInterval(feedbackLockInterval);
+            lockMsg.innerText = "✅ Explicação lida. Agora você pode seguir em frente!";
+            nextBtn.disabled = false;
+            nextBtn.innerText = "Próxima Questão ➔";
+          }
+        }, 1000);
+      }
+    }
+
+    function triggerRushBlock() {
+      fastAnswersStreak = 0;
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'block';
+
+      let rushSeconds = 15;
+      const countDisplay = document.getElementById('rush-countdown-val');
+      countDisplay.innerText = rushSeconds;
+
+      const rushTimer = setInterval(() => {
+        rushSeconds--;
+        countDisplay.innerText = rushSeconds;
+        if (rushSeconds <= 0) {
+          clearInterval(rushTimer);
+          document.getElementById('rush-alert-screen').style.display = 'none';
+          document.getElementById('quiz-screen').style.display = 'block';
+          loadQuestion();
+        }
+      }, 1000);
+    }
+
+    function nextQuestion() {
+      soundClick();
+      currentIndex++;
+      document.getElementById('feedback-screen').style.display = 'none';
+
+      if (currentIndex < quizData.length) {
+        document.getElementById('quiz-screen').style.display = 'block';
+        loadQuestion();
+      } else {
+        showFinalResults();
+      }
+    }
+
+    function showFinalResults() {
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'none';
+      document.getElementById('final-screen').style.display = 'block';
+
+      const playerName = document.getElementById('player-name').value.trim() || "Estudante";
+      document.getElementById('final-user-greeting').innerText = `Relatório individual de: ${playerName}`;
+
+      const totalTimeSec = Math.round((Date.now() - quizStartTime) / 1000);
+      const totalTimeMin = (totalTimeSec / 60).toFixed(1);
+      const avgTimePerQuestion = Math.round(totalTimeSec / quizData.length);
+      const accuracy = Math.round((correctCount / quizData.length) * 100);
+
+      document.getElementById('visto-nome').innerText = playerName;
+      document.getElementById('visto-acertos').innerText = `${correctCount} de ${quizData.length} (${accuracy}%)`;
+      document.getElementById('visto-pontos').innerText = `${score} pts`;
+      document.getElementById('visto-tempo-total').innerText = `${totalTimeMin} minutos (${totalTimeSec}s)`;
+      document.getElementById('visto-tempo-medio').innerText = `${avgTimePerQuestion} segundos por pergunta`;
+
+      const badge = document.getElementById('visto-status-badge');
+      const diag = document.getElementById('visto-diagnostico');
+
+      const isApproved = (accuracy >= 60) && (avgTimePerQuestion >= 8);
+
+      if (isApproved) {
+        badge.className = 'visto-badge aprovado';
+        badge.innerText = '✅ VISTO CONCEDIDO';
+        diag.innerText = 'Leitura atenta e bom aproveitamento';
+        diag.style.color = '#2e7d32';
+      } else {
+        badge.className = 'visto-badge recusado';
+        badge.innerText = '❌ NÃO VALIDADO';
+        if (accuracy < 60 && avgTimePerQuestion < 8) {
+          diag.innerText = 'Acertos abaixo de 60% e respostas muito rápidas (chute detectado)';
+        } else if (accuracy < 60) {
+          diag.innerText = 'Acertos abaixo do mínimo necessário (mínimo de 60%)';
+        } else {
+          diag.innerText = 'Respostas muito rápidas: mostre ao professor antes de refazer';
+        }
+        diag.style.color = '#c62828';
+      }
+
+      const initials = playerName.substring(0, 3).toUpperCase().replace(/[^A-Z]/g, 'EST');
+      const hashStr = `#FILO-${initials}-${accuracy}P-${totalTimeSec}S`;
+      document.getElementById('visto-hash').innerText = hashStr;
+
+      const reviewBox = document.getElementById('review-container');
+      reviewBox.innerHTML = '<h3 style="margin-bottom:16px; color:#ffd200;">Gabarito Explicado das 40 Questões:</h3>';
+      
+      userAnswers.forEach((item, idx) => {
+        const correctOptObj = item.question.options.find(o => o.correct);
+        const div = document.createElement('div');
+        div.className = `review-item ${item.isCorrect ? '' : 'was-wrong'}`;
+        div.innerHTML = `
+          <div class="review-header">
+            <span>Questão ${idx + 1}: ${item.question.topic} (${Math.round(item.timeTaken)}s)</span>
+            <span>${item.isCorrect ? '✅ Acertou' : '❌ Errou'}</span>
+          </div>
+          <div class="review-text">${item.question.text}</div>
+          <div class="review-answer"><strong>Resposta Certa (${item.correct}):</strong> ${correctOptObj.text}</div>
+          ${!item.isCorrect && item.chosen ? `<div class="review-answer" style="color:#e21b3c;"><strong>Você marcou:</strong> (${item.chosen})</div>` : ''}
+          <div class="review-exp"><strong>Explicação:</strong> ${item.question.explanation}</div>
+        `;
+        reviewBox.appendChild(div);
+      });
+    }
+
+    function toggleReview() {
+      soundClick();
+      const box = document.getElementById('review-container');
+      box.style.display = box.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function restartQuiz() {
+      soundClick();
+      document.getElementById('final-screen').style.display = 'none';
+      document.getElementById('start-screen').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
