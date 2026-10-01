@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisa: Pensadoras Contemporâneas</title>
+    <style>
+        :root {
+            --primary-color: #9b59b6; /* Roxo suave */
+            --secondary-color: #8e44ad;
+            --bg-color: #1e1e24; /* Fundo escuro para conforto visual na TV */
+            --card-bg: #2b2b36;
+            --text-color: #f5f6fa;
+            --accent-color: #00cec9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 2vh 2vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 3.5rem;
+            margin-bottom: 0.2em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.8rem;
+            color: #dcdde1;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .info-bar {
+            display: flex;
+            justify-content: space-around;
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            font-size: 1.4rem;
+            border-left: 6px solid var(--accent-color);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+
+        .card h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 15px;
+            font-size: 2rem;
+            margin-top: 0;
+        }
+
+        .author-list {
+            list-style: none;
+            padding: 0;
+            font-size: 1.6rem;
+        }
+
+        .author-list li {
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(155, 89, 182, 0.15);
+            border-radius: 8px;
+            border-left: 5px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .author-list span {
+            font-weight: bold;
+            color: var(--bg-color);
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+            font-size: 1.5rem;
+        }
+
+        .questions {
+            font-size: 1.5rem;
+        }
+
+        .questions p {
+            margin-bottom: 25px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .highlight {
+            color: #ffeaa7;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        /* Responsividade para ecrãs menores */
+        @media(max-width: 992px) {
+            .grid { grid-template-columns: 1fr; }
+            h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pensadoras Contemporâneas e a Interseccionalidade</h1>
+        <div class="subtitle">Feminismos Plurais, Gêneros e Sexualidades</div>
+
+        <div class="info-bar">
+            <div>⏱️ <strong>Duração:</strong> 50 minutos</div>
+            <div>👤 <strong>Formato:</strong> Individual</div>
+            <div>📓 <strong>Avaliação:</strong> Visto no Caderno</div>
+        </div>
+
+        <div class="grid">
+            <!-- Bloco 1: A Missão -->
+            <div class="card">
+                <h2>1. A Sua Missão</h2>
+                <p style="font-size: 1.4rem;">A sua missão é pesquisar sobre <strong>todas as cinco</strong> pensadoras contemporâneas listadas abaixo:</p>
+                <ul class="author-list">
+                    <li><span>1</span> Simone de Beauvoir</li>
+                    <li><span>2</span> Angela Davis</li>
+                    <li><span>3</span> Djamila Ribeiro</li>
+                    <li><span>4</span> Judith Butler</li>
+                    <li><span>5</span> Lélia Gonzalez</li>
+                </ul>
+            </div>
+
+            <!-- Bloco 2: Roteiro do Caderno -->
+            <div class="card">
+                <h2>2. Roteiro de Pesquisa</h2>
+                <span class="highlight">Atenção: Copie as perguntas abaixo e responda no seu caderno para <strong>CADA UMA</strong> das pensadoras.</span>
+                <div class="questions">
+                    <p><strong>A) Quem é a pensadora?</strong><br>
+                    <span style="font-size: 1.1rem; color: #a4b0be;">Escreva um breve resumo de quem ela é/foi, a sua nacionalidade e em que época publicou as suas ideias principais.</span></p>
+                    
+                    <p><strong>B) Qual é a sua ideia central?</strong><br>
+                    <span style="font-size: 1.1rem; color: #a4b0be;">Resuma, em duas ou três linhas, o que ela defende sobre a condição da mulher na sociedade.</span></p>
+                    
+                    <p><strong>C) A Lente da Interseccionalidade:</strong><br>
+                    <span style="font-size: 1.1rem; color: #a4b0be;">Como a autora aborda ou se relaciona com a ideia de que fatores como raça e classe social se misturam ao género para aprofundar as desigualdades sociais?</span></p>
+                    
+                    <p><strong>D) Aplicação Prática:</strong><br>
+                    <span style="font-size: 1.1rem; color: #a4b0be;">Como as ideias desta filósofa nos ajudam hoje a problematizar preconceitos, desconstruir estereótipos de género e promover os Direitos Humanos?</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
