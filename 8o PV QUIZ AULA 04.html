@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz: Ações Conscientes e Resolução de Conflitos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #E21B3C;
+      --red-dark: #b8142e;
+      --blue: #1368CE;
+      --blue-dark: #0f52a5;
+      --yellow: #D89E00;
+      --yellow-dark: #b28200;
+      --green: #26890C;
+      --green-dark: #1d6e09;
+      --bg-dark: #381273;
+      --bg-gradient: linear-gradient(135deg, #46178F 0%, #18033d 100%);
+      --card-bg: #ffffff;
+      --text-main: #222222;
+      --text-light: #ffffff;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow-x: hidden;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1050px;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      position: relative;
+    }
+
+    .top-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .brand-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 1.35rem;
+      color: #ffd200;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ctrl-btns {
+      display: flex;
+      gap: 10px;
+    }
+
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 8px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 700;
+      transition: all 0.2s;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    /* TELA INICIAL */
+    #start-screen {
+      text-align: center;
+      padding: 20px 16px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: #ffd200;
+      color: #381273;
+      padding: 6px 18px;
+      border-radius: 30px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+    }
+
+    .anti-rush-badge {
+      display: inline-block;
+      background: rgba(0, 230, 118, 0.2);
+      color: #00e676;
+      border: 1px solid #00e676;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    h1.hero-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 2.1rem;
+      line-height: 1.25;
+      margin-bottom: 16px;
+      color: #ffffff;
+      text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .case-study-box {
+      background: #ffffff;
+      color: #222;
+      border-radius: 14px;
+      padding: 20px;
+      max-width: 850px;
+      margin: 0 auto 24px auto;
+      text-align: left;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      border-left: 6px solid #e21b3c;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .case-study-box h3 {
+      color: #b8142e;
+      font-family: 'Montserrat', sans-serif;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+    }
+
+    .rules-card {
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 14px;
+      padding: 16px 20px;
+      max-width: 850px;
+      margin: 0 auto 24px auto;
+      text-align: left;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      border-left: 4px solid #ffd200;
+    }
+
+    .rules-card h4 {
+      color: #ffd200;
+      margin-bottom: 10px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.1rem;
+    }
+    
+    .rules-card ul {
+        margin-left: 20px;
+        margin-bottom: 15px;
+        color: #e0d5f8;
+    }
+    
+    .rules-card li { margin-bottom: 6px; }
+
+    .input-box {
+      margin: 0 auto 20px auto;
+      max-width: 420px;
+    }
+
+    .input-box label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .input-box input {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 12px;
+      border: 2px solid #ffd200;
+      font-size: 1.1rem;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      background: #ffffff;
+      color: #222;
+    }
+
+    .start-btn {
+      background: #ffd200;
+      color: #2b0c5e;
+      border: none;
+      padding: 18px 48px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 900;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #b39200, 0 10px 20px rgba(0, 0, 0, 0.3);
+      transition: all 0.15s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .start-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 9px 0 #b39200, 0 14px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    /* TELA DO QUIZ */
+    #quiz-screen { display: none; }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .q-badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .q-topic {
+      background: rgba(255, 210, 0, 0.25);
+      color: #ffd200;
+      border: 1px solid #ffd200;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .stats-box {
+      display: flex;
+      gap: 16px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+    }
+
+    .score-display {
+      color: #ffd200;
+      font-size: 1.1rem;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #ffd200;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .reading-lock-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 8px 16px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #ffd200;
+    }
+
+    .reading-lock-bar.unlocked {
+      background: rgba(0, 230, 118, 0.2);
+      color: #00e676;
+    }
+
+    .question-card {
+      background: #ffffff;
+      color: #222222;
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      line-height: 1.65;
+      font-size: 1.05rem;
+      border-left: 8px solid #ffd200;
+    }
+
+    .question-text {
+      white-space: pre-line;
+      font-weight: 600;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .options-grid { grid-template-columns: 1fr; }
+      h1.hero-title { font-size: 1.7rem; }
+      .question-card { padding: 16px 18px; font-size: 1rem; }
+    }
+
+    .option-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 18px 20px;
+      color: white;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 1.02rem;
+      font-weight: 700;
+      line-height: 1.45;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+      transition: all 0.2s ease;
+      box-shadow: 0 5px 0 rgba(0, 0, 0, 0.3);
+      user-select: none;
+      position: relative;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+      box-shadow: 0 8px 0 rgba(0, 0, 0, 0.35);
+    }
+
+    .option-btn:active:not(:disabled) {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .option-btn:disabled {
+      cursor: not-allowed;
+      filter: grayscale(0.5) opacity(0.65);
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .option-btn.opt-A { background: var(--red); box-shadow: 0 5px 0 var(--red-dark); }
+    .option-btn.opt-B { background: var(--blue); box-shadow: 0 5px 0 var(--blue-dark); }
+    .option-btn.opt-C { background: var(--yellow); box-shadow: 0 5px 0 var(--yellow-dark); }
+    .option-btn.opt-D { background: var(--green); box-shadow: 0 5px 0 var(--green-dark); }
+
+    .opt-icon {
+      font-size: 1.5rem;
+      font-weight: 900;
+      min-width: 40px;
+      height: 40px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .opt-text { flex-grow: 1; }
+
+    /* PAUSA DE FOCO */
+    #rush-alert-screen {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+      background: rgba(226, 27, 60, 0.95);
+      border-radius: 20px;
+      color: white;
+      margin: 20px 0;
+      animation: popIn 0.3s ease;
+    }
+
+    .rush-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .rush-desc {
+      font-size: 1.15rem;
+      max-width: 650px;
+      margin: 0 auto 20px auto;
+      line-height: 1.6;
+    }
+
+    .rush-countdown {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: #ffd200;
+      margin-bottom: 12px;
+    }
+
+    /* FEEDBACK IMEDIATO */
+    #feedback-screen {
+      display: none;
+      text-align: center;
+      padding: 24px 16px;
+    }
+
+    .feedback-banner {
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      animation: popIn 0.25s ease;
+    }
+
+    .feedback-banner.correct { background: #26890c; color: #ffffff; }
+    .feedback-banner.incorrect { background: #e21b3c; color: #ffffff; }
+
+    .feedback-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .feedback-explanation {
+      background: #ffffff;
+      color: #222222;
+      border-radius: 14px;
+      padding: 22px;
+      font-size: 1.1rem;
+      line-height: 1.65;
+      text-align: left;
+      margin-bottom: 24px;
+      border-left: 6px solid #381273;
+    }
+
+    .feedback-explanation strong {
+      color: #381273;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .lock-timer-msg {
+      margin-bottom: 16px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: #ffd200;
+    }
+
+    .next-btn {
+      background: #ffd200;
+      color: #2b0c5e;
+      border: none;
+      padding: 16px 44px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 900;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #b39200;
+      transition: all 0.15s;
+    }
+
+    .next-btn:disabled {
+      background: #888888;
+      color: #dddddd;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    /* RESULTADO FINAL */
+    #final-screen {
+      display: none;
+      text-align: center;
+      padding: 24px 16px;
+    }
+
+    .podium-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 2.4rem;
+      color: #ffd200;
+      margin-bottom: 10px;
+    }
+
+    .user-greeting { font-size: 1.2rem; margin-bottom: 20px; }
+
+    .visto-card {
+      background: #ffffff;
+      color: #222222;
+      border-radius: 18px;
+      padding: 24px;
+      max-width: 580px;
+      margin: 0 auto 24px auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      text-align: left;
+    }
+
+    .visto-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px dashed #ccc;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .visto-header h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 1.15rem;
+      color: #381273;
+    }
+
+    .visto-badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 900;
+      font-size: 0.85rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .visto-badge.aprovado { background: #e8f5e9; color: #2e7d32; border: 1px solid #2e7d32; }
+    .visto-badge.recusado { background: #ffebee; color: #c62828; border: 1px solid #c62828; }
+
+    .visto-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 0.98rem;
+    }
+
+    .visto-row span.label { color: #666; font-weight: 600; }
+    .visto-row span.val { font-weight: 800; color: #222; font-family: 'Montserrat', sans-serif; }
+
+    .visto-code {
+      margin-top: 14px;
+      background: #f4f0fa;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      font-family: monospace;
+      font-weight: 900;
+      font-size: 1.1rem;
+      color: #46178f;
+      letter-spacing: 2px;
+      border: 1px solid #d4c5eb;
+    }
+
+    .final-actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .action-btn {
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-restart { background: #ffd200; color: #2b0c5e; box-shadow: 0 4px 0 #b39200; }
+    .btn-review { background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255, 255, 255, 0.4); }
+
+    #review-container {
+      display: none;
+      text-align: left;
+      margin-top: 24px;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 16px;
+      padding: 20px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .review-item {
+      background: #ffffff;
+      color: #222;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      border-left: 6px solid #26890c;
+    }
+
+    .review-item.was-wrong { border-left-color: #e21b3c; }
+    .review-header {
+      font-weight: 800;
+      font-family: 'Montserrat', sans-serif;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .review-text { font-size: 0.95rem; margin-bottom: 10px; white-space: pre-line; }
+    .review-answer { font-size: 0.9rem; background: #f1f3f5; padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; }
+    .review-exp { font-size: 0.85rem; color: #555; font-style: italic; }
+
+    @keyframes popIn {
+      0% { transform: scale(0.9); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <div class="top-controls">
+      <div class="brand-title">
+        <span>⚡ ÁGORA DIGITAL • CONVIVÊNCIA</span>
+      </div>
+      <div class="ctrl-btns">
+        <button id="sound-btn" class="icon-btn" onclick="toggleSound()">🔊 Som: ON</button>
+        <button class="icon-btn" onclick="toggleFullscreen()">⛶ Tela Cheia</button>
+      </div>
+    </div>
+
+    <!-- TELA 1: INÍCIO -->
+    <div id="start-screen">
+      <div class="hero-badge">Projeto de Vida / Competências Socioemocionais</div><br>
+      <div class="anti-rush-badge">🛡️ SISTEMA DE LEITURA CONSCIENTE ATIVADO</div>
+      <h1 class="hero-title">Ações Conscientes e<br>Resolução de Conflitos</h1>
+
+      <div class="case-study-box">
+        <h3>📖 Estudo de Caso: "O Áudio no Grupo da Turma"</h3>
+        <p>Faltava apenas um dia para a entrega do projeto final de Ciências. A turma do 8º ano havia sido dividida em grupos de quatro pessoas. No grupo de Lucas, Mariana era a responsável por formatar a pesquisa e enviar o documento final. No entanto, chegou a noite de quinta-feira e Mariana não havia enviado a sua parte nem respondido às mensagens no WhatsApp.</p><br>
+        <p>Tomado pelo estresse e pela ansiedade de tirar uma nota baixa, Lucas perdeu a paciência. Em vez de tentar ligar para Mariana ou falar com o professor, ele gravou um áudio de dois minutos e enviou no <strong>grupo geral da turma inteira</strong> no WhatsApp. No áudio, Lucas expôs Mariana, chamando-a de "irresponsável", "encostada" e dizendo que ela sempre se aproveitava do esforço dos outros.</p><br>
+        <p>A reação foi imediata. A turma se dividiu em duas: uma parte começou a mandar mensagens apoiando Lucas, enquanto a outra metade defendeu Mariana, dizendo que Lucas havia sido cruel e desproporcional. Na manhã seguinte, o clima na sala de aula estava insustentável. Ninguém prestava atenção na aula, o silêncio era tenso e pequenos grupos trocavam olhares hostis.</p><br>
+        <p><strong>O que Lucas não sabia</strong> era que a mãe de Mariana havia passado mal na tarde de quinta-feira, e ela passou a noite inteira no hospital, sem bateria no celular e sem acesso à internet. Mariana chegou à escola na sexta-feira arrasada, não apenas pela situação em casa, mas pela humilhação pública perante todos os colegas.</p>
+      </div>
+
+      <div class="rules-card">
+        <h4>⚙️ Como Funciona o Quiz:</h4>
+        • <strong>Tempo de Leitura:</strong> Cada questão precisa de 4 segundos de leitura antes de liberar os botões.<br>
+        • <strong>Se Errar, Leia a Dica:</strong> A explicação didática ficará na tela por 8 segundos antes de liberar o avanço.<br>
+        • <strong>Anti-Chute:</strong> Respostas muito rápidas ativam a trava de leitura de 15 segundos.<br>
+        • <strong>Visto do Professor:</strong> Para receber o visto pedagógico, o estudante precisa de pelo menos 60% de acertos e ter feito uma leitura consciente.
+      </div>
+
+      <div class="input-box">
+        <label for="player-name">Seu Nome Completo (Estudante):</label>
+        <input type="text" id="player-name" placeholder="Digite seu nome completo aqui..." value="">
+      </div>
+
+      <button class="start-btn" onclick="startQuiz()">Iniciar Desafio</button>
+    </div>
+
+    <!-- PAUSA PARA O FOCO -->
+    <div id="rush-alert-screen">
+      <div class="rush-title">⚠️ PAUSA PARA O FOCO!</div>
+      <div class="rush-desc">
+        Estudante, o sistema detectou respostas muito rápidas. O objetivo deste desafio é exercitar a reflexão. Respire fundo, leia o texto e aguarde a liberação:
+      </div>
+      <div class="rush-countdown" id="rush-countdown-val">15</div>
+      <p style="font-size: 0.9rem; color: #ffd200;">A questão voltará automaticamente assim que o tempo zerar.</p>
+    </div>
+
+    <!-- TELA 2: QUIZ EM ANDAMENTO -->
+    <div id="quiz-screen">
+      <div class="quiz-header">
+        <div class="q-badge" id="q-counter">Questão 1 de 40</div>
+        <div class="q-topic" id="q-topic">Tópico</div>
+        <div class="stats-box">
+          <div class="score-display">Pontos: <span id="score-val">0</span></div>
+        </div>
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+
+      <div class="reading-lock-bar" id="reading-lock-bar">
+        <span>📖 Leia a pergunta com atenção: botões liberados em <strong id="reading-countdown">4</strong>s...</span>
+      </div>
+
+      <div class="question-card">
+        <div class="question-text" id="question-text">Texto da questão</div>
+      </div>
+
+      <div class="options-grid" id="options-grid">
+        <button class="option-btn opt-A" id="btn-opt-A" onclick="handleAnswer('A')" disabled>
+          <div class="opt-icon">▲</div>
+          <div class="opt-text" id="opt-A-text">Alternativa A</div>
+        </button>
+        <button class="option-btn opt-B" id="btn-opt-B" onclick="handleAnswer('B')" disabled>
+          <div class="opt-icon">◆</div>
+          <div class="opt-text" id="opt-B-text">Alternativa B</div>
+        </button>
+        <button class="option-btn opt-C" id="btn-opt-C" onclick="handleAnswer('C')" disabled>
+          <div class="opt-icon">●</div>
+          <div class="opt-text" id="opt-C-text">Alternativa C</div>
+        </button>
+        <button class="option-btn opt-D" id="btn-opt-D" onclick="handleAnswer('D')" disabled>
+          <div class="opt-icon">■</div>
+          <div class="opt-text" id="opt-D-text">Alternativa D</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- TELA 3: FEEDBACK IMEDIATO -->
+    <div id="feedback-screen">
+      <div class="feedback-banner" id="feedback-banner">
+        <div class="feedback-title" id="feedback-title">Resposta Correta!</div>
+        <div id="feedback-subtitle">+1000 pontos</div>
+      </div>
+
+      <div class="feedback-explanation">
+        <strong>Explicação para Aprender:</strong><br>
+        <span id="feedback-exp-text">Texto explicativo</span>
+      </div>
+
+      <div class="lock-timer-msg" id="lock-timer-msg"></div>
+      <button class="next-btn" id="next-btn" onclick="nextQuestion()">Avançar ➔</button>
+    </div>
+
+    <!-- TELA 4: RESULTADO FINAL & COMPROVANTE PEDAGÓGICO -->
+    <div id="final-screen">
+      <div class="podium-title">🎓 Desafio Concluído!</div>
+      <div class="user-greeting" id="final-user-greeting">Estudante</div>
+
+      <div class="visto-card">
+        <div class="visto-header">
+          <h3>COMPROVANTE DO VISTO PEDAGÓGICO</h3>
+          <div class="visto-badge" id="visto-status-badge">EM ANÁLISE</div>
+        </div>
+
+        <div class="visto-row">
+          <span class="label">Estudante:</span>
+          <span class="val" id="visto-nome">Nome</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Acertos:</span>
+          <span class="val" id="visto-acertos">0 / 40 (0%)</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Pontuação:</span>
+          <span class="val" id="visto-pontos">0 pts</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Tempo Total:</span>
+          <span class="val" id="visto-tempo-total">0 min</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Tempo Médio por Pergunta:</span>
+          <span class="val" id="visto-tempo-medio">0s</span>
+        </div>
+        <div class="visto-row">
+          <span class="label">Situação da Leitura:</span>
+          <span class="val" id="visto-diagnostico">Adequada</span>
+        </div>
+
+        <div class="visto-code" id="visto-hash">#FILO-0000</div>
+      </div>
+
+      <div class="final-actions">
+        <button class="action-btn btn-restart" onclick="restartQuiz()">🔄 Tentar Novamente</button>
+        <button class="action-btn btn-review" onclick="toggleReview()">📋 Ver Gabarito Completo</button>
+      </div>
+
+      <div id="review-container"></div>
+    </div>
+
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        id: 1,
+        topic: "Gatilhos de Conflito",
+        text: "No estudo de caso, qual foi o principal gatilho que transformou o atraso em um conflito destrutivo?",
+        options: [
+          {letter: "A", text: "A falha de comunicação e a suposição imediata de má intenção por parte de Lucas.", correct: true},
+          {letter: "B", text: "A divisão da turma em dois grupos rivais durante a aula de sexta-feira.", correct: false},
+          {letter: "C", text: "A falta de uma regra clara da escola sobre como formatar trabalhos de Ciências.", correct: false},
+          {letter: "D", text: "A ausência do professor no grupo de WhatsApp dos estudantes para mediar a conversa.", correct: false}
+        ],
+        explanation: "O conflito escalou rapidamente porque Lucas não buscou entender o motivo do atraso; ele logo presumiu que a colega agiu por má-fé (suposição), gerando uma reação agressiva."
+      },
+      {
+        id: 2,
+        topic: "Ação Consciente",
+        text: "Considerando as ações conscientes para resolução de conflitos, o que Lucas deveria ter feito antes de enviar o áudio?",
+        options: [
+          {letter: "A", text: "Exigir que outro colega do grupo fizesse a parte de Mariana para evitar o atraso.", correct: false},
+          {letter: "B", text: "Enviar uma mensagem escrita no grupo da turma, pois o texto soa menos agressivo que o áudio.", correct: false},
+          {letter: "C", text: "Buscar o diálogo privado com a colega e, na ausência de resposta, comunicar a situação ao professor no dia seguinte.", correct: true},
+          {letter: "D", text: "Aceitar que a nota seria baixa e decidir nunca mais realizar trabalhos em grupo.", correct: false}
+        ],
+        explanation: "Uma ação consciente envolve esgotar as tentativas de diálogo privado. Caso o colega não responda, o professor é a autoridade pedagógica para lidar com a situação sem exposição pública."
+      },
+      {
+        id: 3,
+        topic: "Harmonia Coletiva",
+        text: "O impacto do áudio de Lucas não se restringiu a Mariana. Isso ilustra qual conceito sobre a harmonia escolar?",
+        options: [
+          {letter: "A", text: "Conflitos virtuais não interferem no ambiente físico da sala de aula.", correct: false},
+          {letter: "B", text: "O conflito entre dois indivíduos pode contaminar a atmosfera e o convívio de todo o coletivo.", correct: true},
+          {letter: "C", text: "A harmonia escolar depende exclusivamente da intervenção da equipe pedagógica.", correct: false},
+          {letter: "D", text: "O coletivo sempre se beneficia quando os problemas são expostos publicamente.", correct: false}
+        ],
+        explanation: "A escola é um ecossistema. Uma hostilidade que surge entre duas pessoas afeta a sensação de segurança, a atenção e o clima emocional de toda a turma."
+      },
+      {
+        id: 4,
+        topic: "Empatia",
+        text: "Ao descobrir o verdadeiro motivo do sumiço de Mariana (a internação da mãe), o sentimento gerado evidencia a importância de qual habilidade socioemocional?",
+        options: [
+          {letter: "A", text: "Produtividade, para garantir que o trabalho seja entregue.", correct: false},
+          {letter: "B", text: "Competitividade, para separar quem se dedica de quem tem imprevistos.", correct: false},
+          {letter: "C", text: "Persuasão, para convencer a turma de que o erro não foi intencional.", correct: false},
+          {letter: "D", text: "Empatia, para compreender que o outro pode estar enfrentando batalhas desconhecidas.", correct: true}
+        ],
+        explanation: "A empatia é a capacidade de considerar o que o outro pode estar vivendo. Ao não ser empático, Lucas julgou Mariana sem conhecer o sofrimento pelo qual ela passava."
+      },
+      {
+        id: 5,
+        topic: "Restauração",
+        text: "Qual seria o primeiro passo para restaurar a harmonia na sala de aula após esse episódio?",
+        options: [
+          {letter: "A", text: "Proibir o uso de grupos de WhatsApp entre os estudantes da escola.", correct: false},
+          {letter: "B", text: "Ignorar o ocorrido e focar apenas na apresentação do trabalho de Ciências.", correct: false},
+          {letter: "C", text: "Promover uma roda de diálogo para que os envolvidos expressem seus sentimentos e busquem reparação.", correct: true},
+          {letter: "D", text: "Transferir Lucas ou Mariana de turma para evitar novos confrontos visuais.", correct: false}
+        ],
+        explanation: "Omitir ou ignorar o conflito não resolve o ressentimento. O diálogo mediado permite a escuta ativa, a compreensão mútua e o genuíno pedido de desculpas (reparação)."
+      },
+      {
+        id: 6,
+        topic: "Conceito de Harmonia",
+        text: "O que define o conceito de 'harmonia escolar'?",
+        options: [
+          {letter: "A", text: "O equilíbrio e a boa convivência fundamentados no respeito mútuo entre todos os membros da comunidade.", correct: true},
+          {letter: "B", text: "A ausência total de discussões ou divergências de opiniões dentro da sala de aula.", correct: false},
+          {letter: "C", text: "A concordância unânime de todos os estudantes sobre os temas abordados nas aulas.", correct: false},
+          {letter: "D", text: "O cumprimento rigoroso das regras punitivas impostas pela direção da escola.", correct: false}
+        ],
+        explanation: "Harmonia não é a ausência de conflitos, mas sim a capacidade de conviver em equilíbrio com as diferenças através do respeito mútuo."
+      },
+      {
+        id: 7,
+        topic: "Estratégia de Evitação",
+        text: "Por que evitar um conflito é, muitas vezes, considerado a melhor estratégia inicial?",
+        options: [
+          {letter: "A", text: "Porque demonstra superioridade intelectual em relação à pessoa que deseja discutir.", correct: false},
+          {letter: "B", text: "Porque poupa o desgaste físico e emocional, permitindo abordar a questão de cabeça fria.", correct: true},
+          {letter: "C", text: "Porque garante que a pessoa ofendida guarde o ressentimento para usar no futuro.", correct: false},
+          {letter: "D", text: "Porque elimina a necessidade de desenvolver habilidades de argumentação e negociação.", correct: false}
+        ],
+        explanation: "Evitar o conflito imediato no momento da raiva é uma atitude de autorregulação emocional. Dá tempo para esfriar a cabeça e não agir por impulso."
+      },
+      {
+        id: 8,
+        topic: "Ação Perante o Conflito",
+        text: "Quando não é possível evitar o conflito, a ação consciente exige que o estudante:",
+        options: [
+          {letter: "A", text: "Utilize o volume da voz para demonstrar convicção e encerrar o assunto.", correct: false},
+          {letter: "B", text: "Busque imediatamente aliados na turma para fortalecer seu lado na discussão.", correct: false},
+          {letter: "C", text: "Cede inteiramente aos desejos do outro para não prolongar o desconforto.", correct: false},
+          {letter: "D", text: "Identifique a causa do problema e busque uma solução focada no problema, não em ataques pessoais.", correct: true}
+        ],
+        explanation: "Atacar a pessoa (ad hominem) só gera mais atrito. O foco deve ser o problema em si, buscando construir uma solução prática e razoável."
+      },
+      {
+        id: 9,
+        topic: "Diálogo Pacífico",
+        text: "Em uma situação de tensão, qual é a função do diálogo pacífico?",
+        options: [
+          {letter: "A", text: "Criar uma ponte de entendimento onde ambas as partes possam expor suas percepções de forma segura.", correct: true},
+          {letter: "B", text: "Convencer a outra parte de que a sua visão de mundo é a única correta e aceitável.", correct: false},
+          {letter: "C", text: "Ocultar os verdadeiros sentimentos para não magoar as pessoas envolvidas.", correct: false},
+          {letter: "D", text: "Transformar o conflito em um debate competitivo para ver quem tem os melhores argumentos.", correct: false}
+        ],
+        explanation: "O diálogo pacífico não busca 'vencer', mas sim compreender e ser compreendido. É criar um espaço seguro para alinhar as percepções."
+      },
+      {
+        id: 10,
+        topic: "Compreendendo o Outro",
+        text: "Ao refletir sobre a ignorância ou o preconceito de quem ofende (como abordado nas discussões filosóficas), uma postura empática leva o estudante a perceber que:",
+        options: [
+          {letter: "A", text: "Deve revidar com a mesma intensidade para impor limites morais.", correct: false},
+          {letter: "B", text: "O ofensor tem total clareza do dano que causa e o faz por pura estratégia.", correct: false},
+          {letter: "C", text: "Aquele que ataca muitas vezes é vítima de suas próprias limitações e sofrimentos internos.", correct: true},
+          {letter: "D", text: "É inútil dialogar na escola, pois as opiniões preconcebidas nunca se transformam.", correct: false}
+        ],
+        explanation: "Muitas vezes a agressão reflete as próprias frustrações de quem agride. Perceber isso ajuda a não absorver o ataque pessoalmente e a responder com mais sabedoria."
+      },
+      {
+        id: 11,
+        topic: "Exercício de Empatia",
+        text: "O que significa 'superar o comodismo' no desenvolvimento da empatia?",
+        options: [
+          {letter: "A", text: "Passar a concordar com todas as atitudes dos colegas para evitar atritos constantes.", correct: false},
+          {letter: "B", text: "Fazer o esforço mental e emocional ativo de se colocar na perspectiva de uma realidade que não é a sua.", correct: true},
+          {letter: "C", text: "Relevar agressões físicas e verbais acreditando que o tempo resolverá o problema.", correct: false},
+          {letter: "D", text: "Intervir em todas as discussões da escola, assumindo a postura de juiz dos colegas.", correct: false}
+        ],
+        explanation: "A empatia não é natural ou preguiçosa. Ela exige que você saia da sua zona de conforto e faça um esforço mental ativo para enxergar o mundo pelos olhos do outro."
+      },
+      {
+        id: 12,
+        topic: "Estratégias de Resolução",
+        text: "Quando duas partes conflitantes fazem um acordo baseado na 'razão' para poderem coexistir, qual estratégia de resolução de conflitos é ilustrada?",
+        options: [
+          {letter: "A", text: "Evitação, fingindo que o problema não existe.", correct: false},
+          {letter: "B", text: "Competição, onde o mais forte domina o mais fraco.", correct: false},
+          {letter: "C", text: "Acomodação, onde um lado desiste de tudo para agradar o outro.", correct: false},
+          {letter: "D", text: "Negociação, onde as partes chegam a um acordo prático de convivência.", correct: true}
+        ],
+        explanation: "A negociação envolve usar a lógica (razão) para que os dois lados cheguem a um meio-termo que permita a convivência em paz."
+      },
+      {
+        id: 13,
+        topic: "Reagir x Responder",
+        text: "Qual é a principal diferença entre 'reagir' a uma provocação e 'responder' a ela?",
+        options: [
+          {letter: "A", text: "Responder envolve um intervalo de tempo para pensar e escolher a ação de forma consciente.", correct: true},
+          {letter: "B", text: "Reagir é um processo intelectual, enquanto responder é instintivo e imediato.", correct: false},
+          {letter: "C", text: "Responder significa necessariamente gritar de volta, enquanto reagir é ficar em silêncio.", correct: false},
+          {letter: "D", text: "Não há diferença; ambas são ações impulsivas geradas por estímulos externos.", correct: false}
+        ],
+        explanation: "Reagir é o instinto 'bateu, levou'. Responder requer autorregulação: você para, analisa a situação, e escolhe conscientemente qual atitude vai tomar."
+      },
+      {
+        id: 14,
+        topic: "A Fofoca no Ambiente",
+        text: "A fofoca no ambiente escolar é um elemento destruidor da harmonia porque:",
+        options: [
+          {letter: "A", text: "Demonstra que os estudantes possuem um vocabulário restrito e pouca criatividade.", correct: false},
+          {letter: "B", text: "Distorce os fatos, alimenta suposições e cria conflitos baseados em informações irreais ou parciais.", correct: true},
+          {letter: "C", text: "Força a coordenação pedagógica a instalar câmeras nas salas de aula.", correct: false},
+          {letter: "D", text: "Substitui o tempo que os estudantes deveriam passar estudando matemática e ciências.", correct: false}
+        ],
+        explanation: "O telefone sem fio destrói reputações. A fofoca espalha 'achismos' como verdades, gerando ressentimentos profundos antes mesmo que a pessoa saiba do que está sendo acusada."
+      },
+      {
+        id: 15,
+        topic: "Comunicação Não-Violenta",
+        text: "A Comunicação Não-Violenta (CNV) baseia-se em pilares claros. Qual das alternativas reflete o uso correto da CNV na prática?",
+        options: [
+          {letter: "A", text: "Acusar o colega pelo sentimento ruim: 'Você me deixou com muita raiva hoje.'", correct: false},
+          {letter: "B", text: "Generalizar o comportamento do outro: 'Você nunca faz a sua parte do trabalho.'", correct: false},
+          {letter: "C", text: "Expressar uma necessidade não atendida: 'Eu fico ansioso quando os prazos não são cumpridos.'", correct: true},
+          {letter: "D", text: "Exigir mudanças imediatas: 'Se você não mudar seu jeito, está fora do grupo.'", correct: false}
+        ],
+        explanation: "A CNV foca em observar o fato sem julgar, expor o próprio sentimento (ficou ansioso) e a própria necessidade, sem colocar a culpa no caráter do outro."
+      },
+      {
+        id: 16,
+        topic: "Mediação",
+        text: "O papel de um mediador na resolução de um conflito entre estudantes é:",
+        options: [
+          {letter: "A", text: "Facilitar o diálogo para que as próprias partes encontrem uma solução justa e equilibrada.", correct: true},
+          {letter: "B", text: "Atuar como um juiz, decidindo quem está certo e aplicando a respectiva punição.", correct: false},
+          {letter: "C", text: "Defender o estudante que for mais tímido ou que tiver menos amigos na sala.", correct: false},
+          {letter: "D", text: "Impor uma solução rápida para que a aula não seja interrompida por muito tempo.", correct: false}
+        ],
+        explanation: "Um mediador não é um juiz que dá a sentença. O mediador acalma os ânimos e ajuda os dois lados a se ouvirem para chegarem, sozinhos, à solução do problema."
+      },
+      {
+        id: 17,
+        topic: "Escuta Ativa",
+        text: "O que caracteriza a 'escuta ativa' durante um desentendimento?",
+        options: [
+          {letter: "A", text: "Ouvir calado enquanto elabora mentalmente a melhor resposta para refutar o argumento do outro.", correct: false},
+          {letter: "B", text: "Concordar com tudo o que o outro diz apenas para encerrar a conversa rapidamente.", correct: false},
+          {letter: "C", text: "Interromper o colega frequentemente para corrigir fatos e detalhes da história.", correct: false},
+          {letter: "D", text: "Prestar atenção genuína no que está sendo dito, validando os sentimentos do outro sem julgamento precipitado.", correct: true}
+        ],
+        explanation: "A escuta ativa não é só ficar quieto. É tentar entender a dor do outro genuinamente, demonstrando empatia em vez de apenas formular um contra-ataque na mente."
+      },
+      {
+        id: 18,
+        topic: "Responsabilidade Afetiva",
+        text: "A responsabilidade afetiva no ambiente escolar implica que o estudante deve:",
+        options: [
+          {letter: "A", text: "Ser responsável por resolver os problemas familiares e pessoais de todos os seus amigos.", correct: false},
+          {letter: "B", text: "Ter consciência do impacto que suas palavras, brincadeiras e atitudes causam no bem-estar dos colegas.", correct: true},
+          {letter: "C", text: "Omitir suas próprias opiniões caso perceba que elas divergem do pensamento da maioria da turma.", correct: false},
+          {letter: "D", text: "Priorizar os sentimentos dos outros em detrimento da sua própria saúde mental e limites pessoais.", correct: false}
+        ],
+        explanation: "Significa entender que o que você acha ser apenas uma 'brincadeira' pode machucar alguém, e assumir o dever de zelar pela forma como suas atitudes atingem os outros."
+      },
+      {
+        id: 19,
+        topic: "Divergências em Grupo",
+        text: "Em um trabalho, surgem divergências profundas de ideias. A atitude mais consciente para o grupo é:",
+        options: [
+          {letter: "A", text: "Realizar uma votação rápida e ignorar os argumentos da minoria derrotada.", correct: false},
+          {letter: "B", text: "Fazer com que o líder do grupo imponha sua ideia, garantindo a produtividade.", correct: false},
+          {letter: "C", text: "Compreender as diferentes perspectivas e tentar construir uma ideia que integre os melhores pontos de cada um.", correct: true},
+          {letter: "D", text: "Dividir o grupo e entregar o trabalho separadamente, evitando o cansaço do debate.", correct: false}
+        ],
+        explanation: "O trabalho em grupo serve justamente para exercitar a colaboração. Juntar os pontos fortes de visões diferentes cria um resultado muito mais rico e coeso."
+      },
+      {
+        id: 20,
+        topic: "Diversidade de Personalidades",
+        text: "Ao lidar com personalidades fortemente contrastantes na sala de aula, o recomendado é:",
+        options: [
+          {letter: "A", text: "Buscar pontos em comum e respeitar as diferenças como complementares, e não como ameaças.", correct: true},
+          {letter: "B", text: "Evitar o contato visual e a interação permanente com aqueles que pensam de modo diferente.", correct: false},
+          {letter: "C", text: "Tentar mudar a personalidade do colega através de críticas constantes ao seu comportamento.", correct: false},
+          {letter: "D", text: "Requerer que a escola separe os estudantes em turmas baseadas em testes de personalidade.", correct: false}
+        ],
+        explanation: "A sociedade é feita de diversidade. Aprender que pessoas mais introvertidas ou extrovertidas não são ameaças, mas formas diferentes de estar no mundo, é o núcleo da tolerância."
+      },
+      {
+        id: 21,
+        topic: "Redes Sociais",
+        text: "O impacto do uso de redes sociais (como o WhatsApp) nos conflitos escolares costuma ser amplificado porque:",
+        options: [
+          {letter: "A", text: "O aplicativo possui falhas de segurança que alteram as mensagens enviadas.", correct: false},
+          {letter: "B", text: "A linguagem escrita é sempre interpretada exatamente da mesma forma por todos os leitores.", correct: false},
+          {letter: "C", text: "A ausência de tom de voz e expressão facial facilita mal-entendidos, e o alcance da mensagem é imediato e público.", correct: true},
+          {letter: "D", text: "Os estudantes não sabem utilizar os recursos tecnológicos de forma adequada para fins escolares.", correct: false}
+        ],
+        explanation: "Na internet, perdemos a linguagem corporal. Além disso, uma ofensa ganha uma plateia gigantesca em questão de segundos, transformando um erro em humilhação pública."
+      },
+      {
+        id: 22,
+        topic: "Feedback Correto",
+        text: "A melhor forma de abordar um colega que cometeu um erro que prejudicou a turma é:",
+        options: [
+          {letter: "A", text: "Fazer uma piada em voz alta na sala para que ele perceba o erro de forma descontraída.", correct: false},
+          {letter: "B", text: "Reclamar sobre ele com outros colegas, criando uma pressão social para que ele se corrija.", correct: false},
+          {letter: "C", text: "Exigir que o professor aplique uma punição exemplar na frente de todos.", correct: false},
+          {letter: "D", text: "Chamá-lo para uma conversa particular, apontando o fato ocorrido e como isso impactou o grupo.", correct: true}
+        ],
+        explanation: "Elogia-se em público e corrige-se em particular. Chamar no canto preserva a dignidade da pessoa e aumenta as chances de ela reconhecer o erro sem ficar na defensiva."
+      },
+      {
+        id: 23,
+        topic: "O Silêncio da Turma",
+        text: "O silêncio da maioria diante de uma injustiça (como o bullying) na escola:",
+        options: [
+          {letter: "A", text: "É a atitude mais neutra e segura a ser tomada para não se envolver no problema alheio.", correct: false},
+          {letter: "B", text: "Atua como um reforço silencioso, validando e perpetuando a atitude do agressor no coletivo.", correct: true},
+          {letter: "C", text: "Ajuda a vítima a criar resiliência emocional por não receber ajuda externa.", correct: false},
+          {letter: "D", text: "Demonstra maturidade da turma em saber separar questões pessoais do foco nos estudos.", correct: false}
+        ],
+        explanation: "Quem cala consente. O silêncio mostra ao agressor que o grupo aceita aquele comportamento. A omissão é parte da engrenagem do bullying."
+      },
+      {
+        id: 24,
+        topic: "O Poder do Perdão",
+        text: "No contexto da convivência escolar, o perdão após um conflito resolvido atua como:",
+        options: [
+          {letter: "A", text: "Uma forma de libertar o coletivo do peso do ressentimento, permitindo a reconstrução da confiança.", correct: true},
+          {letter: "B", text: "Um sinal de fraqueza da parte que perdoa, mostrando que ela aceitará futuras ofensas.", correct: false},
+          {letter: "C", text: "Um apagamento literal da memória, obrigando os estudantes a fingirem que nada aconteceu.", correct: false},
+          {letter: "D", text: "Uma obrigação imposta pelas regras da escola que deve ser cumprida imediatamente após a briga.", correct: false}
+        ],
+        explanation: "Perdoar não é apagar o passado nem virar melhor amigo, mas sim retirar a energia de vingança e ressentimento para que a sala possa voltar a funcionar harmonicamente."
+      },
+      {
+        id: 25,
+        topic: "Regras de Convivência",
+        text: "Regras de convivência e combinados de turma servem prioritariamente para:",
+        options: [
+          {letter: "A", text: "Limitar a expressão da individualidade e controlar o comportamento dos jovens.", correct: false},
+          {letter: "B", text: "Servir como instrumento de punição rigorosa para quem não atinge as notas esperadas.", correct: false},
+          {letter: "C", text: "Estabelecer expectativas claras e limites mútuos que previnem desentendimentos no coletivo.", correct: true},
+          {letter: "D", text: "Burocratizar as relações humanas, substituindo a empatia por normas escritas.", correct: false}
+        ],
+        explanation: "Quando as regras estão claras, evitam-se 'achismos'. Elas protegem o espaço coletivo, garantindo que o direito de um não atropele o bem-estar do outro."
+      },
+      {
+        id: 26,
+        topic: "Ganha-Ganha",
+        text: "Na resolução de conflitos, o que caracteriza a solução 'ganha-ganha'?",
+        options: [
+          {letter: "A", text: "Ambas as partes abrem mão de tudo o que queriam inicialmente para não gerar atrito.", correct: false},
+          {letter: "B", text: "O resultado atende aos interesses essenciais de todas as partes envolvidas através de concessões mútuas.", correct: true},
+          {letter: "C", text: "Uma das partes vence o argumento, mas a outra ganha um prêmio de consolação.", correct: false},
+          {letter: "D", text: "O mediador escolhe a solução que beneficia a si mesmo, pacificando os dois lados envolvidos.", correct: false}
+        ],
+        explanation: "A solução ganha-ganha ocorre quando ambos os lados se sentem ouvidos e encontram um caminho onde as necessidades principais de todos são respeitadas."
+      },
+      {
+        id: 27,
+        topic: "Crítica x Ofensa",
+        text: "Uma crítica construtiva diferencia-se de uma ofensa porque a crítica construtiva:",
+        options: [
+          {letter: "A", text: "É feita em público para servir de exemplo, enquanto a ofensa é feita em particular.", correct: false},
+          {letter: "B", text: "Foca exclusivamente em aspectos imutáveis da personalidade do outro.", correct: false},
+          {letter: "C", text: "Usa sarcasmo leve para aliviar a tensão do feedback negativo.", correct: false},
+          {letter: "D", text: "Avalia a atitude ou o comportamento passível de melhora, mantendo o respeito pela pessoa.", correct: true}
+        ],
+        explanation: "Uma ofensa ataca *quem a pessoa é*. Uma crítica construtiva foca *no que a pessoa fez*, sempre com o objetivo de ajudá-la a melhorar e corrigir a rota."
+      },
+      {
+        id: 28,
+        topic: "Autorregulação",
+        text: "A autorregulação emocional permite ao estudante:",
+        options: [
+          {letter: "A", text: "Evitar que a frustração inicial se transforme em um comportamento agressivo irreversível.", correct: true},
+          {letter: "B", text: "Desligar totalmente seus sentimentos durante o período de aulas na escola.", correct: false},
+          {letter: "C", text: "Manipular as emoções dos colegas para vencer os debates realizados nas disciplinas.", correct: false},
+          {letter: "D", text: "Absorver toda a raiva calado, garantindo a paz aparente da sala de aula indefinidamente.", correct: false}
+        ],
+        explanation: "Não se trata de não sentir raiva (isso é impossível), mas sim de perceber a raiva e gerenciá-la antes de cometer um ato estúpido do qual vai se arrepender."
+      },
+      {
+        id: 29,
+        topic: "Intervenção",
+        text: "Se dois estudantes discutem de forma acalorada no meio de uma apresentação da turma:",
+        options: [
+          {letter: "A", text: "Os demais colegas devem filmar a situação para debaterem depois.", correct: false},
+          {letter: "B", text: "O professor e a turma devem intervir para acalmar os ânimos, protegendo o ambiente coletivo.", correct: true},
+          {letter: "C", text: "A atitude correta é deixá-los resolver sozinhos, pois a liberdade de expressão não pode ser cerceada.", correct: false},
+          {letter: "D", text: "A coordenação deve aprovar a atitude se a discussão for sobre o tema da disciplina.", correct: false}
+        ],
+        explanation: "Uma briga descontrolada afeta a segurança da escola inteira. A intervenção imediata da figura de autoridade é fundamental para restaurar a ordem e a segurança."
+      },
+      {
+        id: 30,
+        topic: "Respeito à Diversidade",
+        text: "O respeito à diversidade e às personalidades contrastantes na escola contribui para a harmonia porque:",
+        options: [
+          {letter: "A", text: "Exige que todos se vistam e pensem de maneira padronizada para evitar atritos.", correct: false},
+          {letter: "B", text: "Permite que a sala de aula seja dividida em grupos homogêneos que não interagem entre si.", correct: false},
+          {letter: "C", text: "Torna os estudantes indiferentes às peculiaridades de cada indivíduo.", correct: false},
+          {letter: "D", text: "Enriquece o ambiente de aprendizagem, desconstruindo preconceitos e gerando pluralidade de visões.", correct: true}
+        ],
+        explanation: "Viver com quem pensa diferente de nós é o que expande nossa mente, reduz preconceitos baseados na ignorância e nos prepara para a vida em sociedade."
+      },
+      {
+        id: 31,
+        topic: "Prevenção",
+        text: "Ações preventivas de conflito na sala de aula incluem rotinas como:",
+        options: [
+          {letter: "A", text: "Realizar testes semanais para ranquear os melhores e os piores desempenhos da turma.", correct: false},
+          {letter: "B", text: "Restringir o convívio apenas aos intervalos, focando o tempo de aula em silêncio absoluto.", correct: false},
+          {letter: "C", text: "Praticar atividades de autoconhecimento e rodas de empatia propostas pelo Projeto de Vida.", correct: true},
+          {letter: "D", text: "Incentivar uma cultura de denúncia anônima de pequenas infrações cometidas pelos colegas.", correct: false}
+        ],
+        explanation: "As aulas de Projeto de Vida servem justamente como prevenção: ao ensinar autoconhecimento e empatia, reduz-se a taxa de violência e intolerância antes que ocorram."
+      },
+      {
+        id: 32,
+        topic: "Visão Filosófica",
+        text: "No processo maieútico de Sócrates, a resolução de um impasse intelectual dá-se através:",
+        options: [
+          {letter: "A", text: "Do questionamento contínuo, que leva o indivíduo a reconhecer sua ignorância e buscar a verdade.", correct: true},
+          {letter: "B", text: "Da imposição da opinião do mestre sobre a mente vazia do discípulo.", correct: false},
+          {letter: "C", text: "Da leitura silenciosa de textos antigos sem a necessidade de diálogo interpessoal.", correct: false},
+          {letter: "D", text: "Do uso de argumentos agressivos para desestabilizar emocionalmente o oponente.", correct: false}
+        ],
+        explanation: "A maieútica (dar à luz) é a arte do diálogo. Em vez de impor uma resposta, fazem-se perguntas para que a pessoa perceba suas próprias falhas e amplie sua visão."
+      },
+      {
+        id: 33,
+        topic: "Papel do Projeto de Vida",
+        text: "Qual é o papel da disciplina de Projeto de Vida na redução de conflitos coletivos?",
+        options: [
+          {letter: "A", text: "Garantir que todos escolham a mesma profissão para reduzir a competitividade no futuro.", correct: false},
+          {letter: "B", text: "Auxiliar o estudante a desenvolver competências socioemocionais, mapeando seus limites e valores.", correct: true},
+          {letter: "C", text: "Substituir a psicoterapia individual, resolvendo diagnósticos clínicos de todos os jovens.", correct: false},
+          {letter: "D", text: "Oferecer aulas teóricas de direito penal para ensinar o que é proibido por lei.", correct: false}
+        ],
+        explanation: "Saber quem você é e do que você precisa (autoconhecimento) ajuda a gerenciar frustrações sem descontá-las no coletivo."
+      },
+      {
+        id: 34,
+        topic: "Cultura de Paz",
+        text: "A 'cultura de paz' na escola não significa ausência de conflitos, mas sim:",
+        options: [
+          {letter: "A", text: "Que os conflitos são resolvidos exclusivamente pela direção da escola.", correct: false},
+          {letter: "B", text: "A capacidade de ignorar as injustiças para não perturbar a tranquilidade do ambiente.", correct: false},
+          {letter: "C", text: "Que os desentendimentos sejam abordados através da negociação, do diálogo e da não-violência.", correct: true},
+          {letter: "D", text: "A proibição de debates sobre política ou sociedade durante as aulas.", correct: false}
+        ],
+        explanation: "Conflitos sempre existirão em grupos humanos. A Cultura de Paz significa transformar *a forma* como os resolvemos, abandonando a agressão pela via do diálogo civilizado."
+      },
+      {
+        id: 35,
+        topic: "Causa Raiz",
+        text: "Identificar a 'causa raiz' (o motivo real) de um conflito é essencial porque:",
+        options: [
+          {letter: "A", text: "Omitir a causa real permite que o conflito seja resolvido muito mais rapidamente.", correct: false},
+          {letter: "B", text: "Garante que a pessoa culpada seja exposta publicamente para toda a escola.", correct: false},
+          {letter: "C", text: "Resolve-se o problema estrutural, impedindo que o mesmo sintoma gere novas brigas no futuro.", correct: true},
+          {letter: "D", text: "Permite que o professor descubra quem começou a briga e desconte pontos da nota.", correct: false}
+        ],
+        explanation: "Focar só na discussão superficial é como tomar remédio para febre sem curar a infecção. Achar a causa raiz garante que o atrito não voltará amanhã."
+      },
+      {
+        id: 36,
+        topic: "Admissão de Erro",
+        text: "Quando um estudante admite genuinamente que errou em uma discussão perante a turma:",
+        options: [
+          {letter: "A", text: "Ele quebra o ciclo de retaliação e abre espaço para a vulnerabilidade e a resolução madura.", correct: true},
+          {letter: "B", text: "Ele perde a autoridade no grupo e demonstra fraqueza intelectual perante os colegas.", correct: false},
+          {letter: "C", text: "O erro é imediatamente apagado das consequências práticas do que foi feito.", correct: false},
+          {letter: "D", text: "Ele se isenta de qualquer necessidade de reparação do dano causado à outra pessoa.", correct: false}
+        ],
+        explanation: "Reconhecer um erro não é fraqueza, mas sim o maior sinal de força emocional. Isso desarma a raiva da outra pessoa e cria uma ponte para resolver a situação."
+      },
+      {
+        id: 37,
+        topic: "Atitude Consciente",
+        text: "Qual das atitudes abaixo melhor representa a 'ação consciente' proposta pelo tema da aula?",
+        options: [
+          {letter: "A", text: "Responder a um xingamento com outro mais alto, para garantir a própria defesa.", correct: false},
+          {letter: "B", text: "Analisar as próprias emoções antes de enviar uma mensagem em um grupo de WhatsApp.", correct: true},
+          {letter: "C", text: "Participar de intrigas desde que não seja o autor principal da ofensa.", correct: false},
+          {letter: "D", text: "Reclamar das regras da escola sem sugerir alternativas práticas de melhoria.", correct: false}
+        ],
+        explanation: "Ação consciente significa não viver no 'piloto automático'. É parar, respirar e analisar o impacto da sua atitude (como enviar uma mensagem) antes de fazê-la."
+      },
+      {
+        id: 38,
+        topic: "Visões de Mundo",
+        text: "Em um desentendimento sobre visões de mundo diferentes (religião, política, gostos):",
+        options: [
+          {letter: "A", text: "A harmonia é restaurada quando uma das partes convence a outra de que está errada.", correct: false},
+          {letter: "B", text: "O objetivo deve ser o respeito pela pluralidade, aceitando que não é necessário concordar para conviver.", correct: true},
+          {letter: "C", text: "O conflito deve ser evitado através da proibição dessas pautas no ambiente escolar.", correct: false},
+          {letter: "D", text: "A parte que pertencer à maioria deve impor seu ponto de vista em prol da uniformidade.", correct: false}
+        ],
+        explanation: "Conviver não exige concordância absoluta. A maturidade sociopolítica exige que você saiba sentar na mesma sala que alguém de opiniões diferentes, respeitando seu direito de existir."
+      },
+      {
+        id: 39,
+        topic: "Impacto Sistêmico",
+        text: "Sobre o impacto coletivo das atitudes individuais na escola, podemos afirmar que:",
+        options: [
+          {letter: "A", text: "A escola é um ecossistema interconectado; uma sala com clima hostil afeta o foco e a segurança emocional de todos.", correct: true},
+          {letter: "B", text: "O humor de um indivíduo afeta, no máximo, a pessoa que senta ao seu lado na carteira.", correct: false},
+          {letter: "C", text: "A aprendizagem cognitiva não sofre qualquer tipo de interferência das relações sociais da turma.", correct: false},
+          {letter: "D", text: "As consequências das ações isoladas restringem-se aos horários de intervalo e recreio.", correct: false}
+        ],
+        explanation: "Atitudes individuais reverberam no ambiente escolar (efeito dominó). O sentimento de tensão atrapalha diretamente a aprendizagem e a saúde mental geral da turma."
+      },
+      {
+        id: 40,
+        topic: "A Resolução Final",
+        text: "A verdadeira e definitiva resolução de um conflito ocorre quando:",
+        options: [
+          {letter: "A", text: "Os envolvidos param de se falar definitivamente, garantindo que não haverá novos atritos.", correct: false},
+          {letter: "B", text: "As partes compreendem o ponto de vista oposto e estabelecem um novo padrão de respeito para o futuro.", correct: true},
+          {letter: "C", text: "A equipe diretiva ameaça suspender os envolvidos caso o assunto volte a ser comentado.", correct: false},
+          {letter: "D", text: "Um dos estudantes pede desculpas da boca para fora apenas para fugir da advertência.", correct: false}
+        ],
+        explanation: "A paz imposta por ameaça ou o silêncio ressentido são falsas resoluções. O conflito só se encerra de verdade quando há um novo acordo maduro de respeito mútuo para as próximas interações."
+      }
+    ];
+
+    let currentIndex = 0;
+    let score = 0;
+    let correctCount = 0;
+    let userAnswers = [];
+    let soundEnabled = true;
+
+    let questionStartTime = 0;
+    let quizStartTime = 0;
+    let fastAnswersStreak = 0;
+    let readingLockInterval = null;
+    let feedbackLockInterval = null;
+    let isQuestionLocked = true;
+
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new AudioCtx();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function playTone(freq, type, duration, delay = 0) {
+      if (!soundEnabled) return;
+      try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + delay + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + delay);
+        osc.stop(audioCtx.currentTime + delay + duration);
+      } catch (e) {}
+    }
+
+    function soundCorrect() {
+      playTone(523.25, 'sine', 0.12, 0);
+      playTone(659.25, 'sine', 0.12, 0.08);
+      playTone(783.99, 'sine', 0.2, 0.16);
+      playTone(1046.50, 'sine', 0.35, 0.24);
+    }
+
+    function soundWrong() {
+      playTone(300, 'sawtooth', 0.2, 0);
+      playTone(220, 'sawtooth', 0.35, 0.15);
+    }
+
+    function soundClick() {
+      playTone(850, 'triangle', 0.04, 0);
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('sound-btn').innerText = soundEnabled ? "🔊 Som: ON" : "🔇 Som: OFF";
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    function startQuiz() {
+      const nameInput = document.getElementById('player-name').value.trim();
+      if (!nameInput) {
+        alert("Digite o seu nome completo para que o seu visto possa ser registado pelo professor.");
+        return;
+      }
+
+      initAudio();
+      soundClick();
+
+      currentIndex = 0;
+      score = 0;
+      correctCount = 0;
+      userAnswers = [];
+      fastAnswersStreak = 0;
+      quizStartTime = Date.now();
+
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('final-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'none';
+      document.getElementById('quiz-screen').style.display = 'block';
+
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      clearInterval(readingLockInterval);
+      const q = quizData[currentIndex];
+
+      document.getElementById('q-counter').innerText = `Questão ${currentIndex + 1} de ${quizData.length}`;
+      document.getElementById('q-topic').innerText = q.topic;
+      document.getElementById('score-val').innerText = score;
+      document.getElementById('question-text').innerText = q.text;
+
+      const progressPercent = ((currentIndex) / quizData.length) * 100;
+      document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+
+      const letters = ['A', 'B', 'C', 'D'];
+      letters.forEach(letter => {
+        const opt = q.options.find(o => o.letter === letter);
+        document.getElementById(`opt-${letter}-text`).innerText = opt.text;
+      });
+
+      // TRAVA DE 4 SEGUNDOS
+      isQuestionLocked = true;
+      let lockSeconds = 4;
+      setOptionsDisabled(true);
+
+      const lockBar = document.getElementById('reading-lock-bar');
+      lockBar.className = 'reading-lock-bar';
+      lockBar.innerHTML = `<span>📖 Leia com calma: liberando botões em <strong id="reading-countdown">${lockSeconds}</strong>s...</span>`;
+
+      questionStartTime = Date.now();
+
+      readingLockInterval = setInterval(() => {
+        lockSeconds--;
+        const cd = document.getElementById('reading-countdown');
+        if (cd) cd.innerText = lockSeconds;
+
+        if (lockSeconds <= 0) {
+          clearInterval(readingLockInterval);
+          isQuestionLocked = false;
+          setOptionsDisabled(false);
+          lockBar.className = 'reading-lock-bar unlocked';
+          lockBar.innerHTML = `<span>✅ Pergunta lida. Escolha a alternativa correta!</span>`;
+        }
+      }, 1000);
+    }
+
+    function setOptionsDisabled(disabled) {
+      ['A', 'B', 'C', 'D'].forEach(letter => {
+        const btn = document.getElementById(`btn-opt-${letter}`);
+        if (btn) btn.disabled = disabled;
+      });
+    }
+
+    function handleAnswer(chosenLetter) {
+      if (isQuestionLocked) return;
+
+      const answerDuration = (Date.now() - questionStartTime) / 1000;
+      const q = quizData[currentIndex];
+      const correctOpt = q.options.find(o => o.correct);
+      const isCorrect = chosenLetter === correctOpt.letter;
+
+      // DETECTOR DE CHUTE RÁPIDO
+      if (answerDuration < 5) {
+        fastAnswersStreak++;
+      } else {
+        fastAnswersStreak = Math.max(0, fastAnswersStreak - 1);
+      }
+
+      if (fastAnswersStreak >= 3) {
+        triggerRushBlock();
+        return;
+      }
+
+      let pointsEarned = 0;
+      if (isCorrect) {
+        correctCount++;
+        pointsEarned = 1000;
+        score += pointsEarned;
+        soundCorrect();
+      } else {
+        soundWrong();
+      }
+
+      userAnswers.push({
+        question: q,
+        chosen: chosenLetter,
+        correct: correctOpt.letter,
+        isCorrect: isCorrect,
+        timeTaken: answerDuration
+      });
+
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'block';
+
+      const banner = document.getElementById('feedback-banner');
+      const title = document.getElementById('feedback-title');
+      const sub = document.getElementById('feedback-subtitle');
+      const expText = document.getElementById('feedback-exp-text');
+      const nextBtn = document.getElementById('next-btn');
+      const lockMsg = document.getElementById('lock-timer-msg');
+
+      banner.className = 'feedback-banner ' + (isCorrect ? 'correct' : 'incorrect');
+
+      if (isCorrect) {
+        title.innerText = "Mandou Bem! Acertou! 🎉";
+        sub.innerText = `+${pointsEarned} pontos conquistados`;
+        expText.innerText = q.explanation;
+        lockMsg.innerText = "";
+        nextBtn.disabled = false;
+        nextBtn.innerText = "Próxima Questão ➔";
+      } else {
+        title.innerText = "Resposta Errada! ❌";
+        sub.innerText = `Você marcou a letra (${chosenLetter}). A correta era a (${correctOpt.letter}).`;
+        expText.innerText = q.explanation;
+
+        // TRAVA DE 8 SEGUNDOS NO ERRO
+        let cooldown = 8;
+        nextBtn.disabled = true;
+        lockMsg.innerText = `⏳ Leia a explicação para aprender o conceito. Liberando em ${cooldown}s...`;
+        nextBtn.innerText = `Aguarde (${cooldown}s)`;
+
+        clearInterval(feedbackLockInterval);
+        feedbackLockInterval = setInterval(() => {
+          cooldown--;
+          if (cooldown > 0) {
+            lockMsg.innerText = `⏳ Leia a explicação para aprender o conceito. Liberando em ${cooldown}s...`;
+            nextBtn.innerText = `Aguarde (${cooldown}s)`;
+          } else {
+            clearInterval(feedbackLockInterval);
+            lockMsg.innerText = "✅ Explicação lida. Agora você pode seguir em frente!";
+            nextBtn.disabled = false;
+            nextBtn.innerText = "Próxima Questão ➔";
+          }
+        }, 1000);
+      }
+    }
+
+    function triggerRushBlock() {
+      fastAnswersStreak = 0;
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'block';
+
+      let rushSeconds = 15;
+      const countDisplay = document.getElementById('rush-countdown-val');
+      countDisplay.innerText = rushSeconds;
+
+      const rushTimer = setInterval(() => {
+        rushSeconds--;
+        countDisplay.innerText = rushSeconds;
+        if (rushSeconds <= 0) {
+          clearInterval(rushTimer);
+          document.getElementById('rush-alert-screen').style.display = 'none';
+          document.getElementById('quiz-screen').style.display = 'block';
+          loadQuestion();
+        }
+      }, 1000);
+    }
+
+    function nextQuestion() {
+      soundClick();
+      currentIndex++;
+      document.getElementById('feedback-screen').style.display = 'none';
+
+      if (currentIndex < quizData.length) {
+        document.getElementById('quiz-screen').style.display = 'block';
+        loadQuestion();
+      } else {
+        showFinalResults();
+      }
+    }
+
+    function showFinalResults() {
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'none';
+      document.getElementById('final-screen').style.display = 'block';
+
+      const playerName = document.getElementById('player-name').value.trim() || "Estudante";
+      document.getElementById('final-user-greeting').innerText = `Relatório individual de: ${playerName}`;
+
+      const totalTimeSec = Math.round((Date.now() - quizStartTime) / 1000);
+      const totalTimeMin = (totalTimeSec / 60).toFixed(1);
+      const avgTimePerQuestion = Math.round(totalTimeSec / quizData.length);
+      const accuracy = Math.round((correctCount / quizData.length) * 100);
+
+      document.getElementById('visto-nome').innerText = playerName;
+      document.getElementById('visto-acertos').innerText = `${correctCount} de ${quizData.length} (${accuracy}%)`;
+      document.getElementById('visto-pontos').innerText = `${score} pts`;
+      document.getElementById('visto-tempo-total').innerText = `${totalTimeMin} minutos (${totalTimeSec}s)`;
+      document.getElementById('visto-tempo-medio').innerText = `${avgTimePerQuestion} segundos por pergunta`;
+
+      const badge = document.getElementById('visto-status-badge');
+      const diag = document.getElementById('visto-diagnostico');
+
+      const isApproved = (accuracy >= 60) && (avgTimePerQuestion >= 8);
+
+      if (isApproved) {
+        badge.className = 'visto-badge aprovado';
+        badge.innerText = '✅ VISTO CONCEDIDO';
+        diag.innerText = 'Leitura atenta e bom aproveitamento';
+        diag.style.color = '#2e7d32';
+      } else {
+        badge.className = 'visto-badge recusado';
+        badge.innerText = '❌ NÃO VALIDADO';
+        if (accuracy < 60 && avgTimePerQuestion < 8) {
+          diag.innerText = 'Acertos abaixo de 60% e respostas muito rápidas (chute detectado)';
+        } else if (accuracy < 60) {
+          diag.innerText = 'Acertos abaixo do mínimo necessário (mínimo de 60%)';
+        } else {
+          diag.innerText = 'Respostas muito rápidas: mostre ao professor antes de refazer';
+        }
+        diag.style.color = '#c62828';
+      }
+
+      const initials = playerName.substring(0, 3).toUpperCase().replace(/[^A-Z]/g, 'EST');
+      const hashStr = `#FILO-${initials}-${accuracy}P-${totalTimeSec}S`;
+      document.getElementById('visto-hash').innerText = hashStr;
+
+      const reviewBox = document.getElementById('review-container');
+      reviewBox.innerHTML = `<h3 style="margin-bottom:16px; color:#ffd200;">Gabarito Explicado das ${quizData.length} Questões:</h3>`;
+      
+      userAnswers.forEach((item, idx) => {
+        const correctOptObj = item.question.options.find(o => o.correct);
+        const div = document.createElement('div');
+        div.className = `review-item ${item.isCorrect ? '' : 'was-wrong'}`;
+        div.innerHTML = `
+          <div class="review-header">
+            <span>Questão ${idx + 1}: ${item.question.topic} (${Math.round(item.timeTaken)}s)</span>
+            <span>${item.isCorrect ? '✅ Acertou' : '❌ Errou'}</span>
+          </div>
+          <div class="review-text">${item.question.text}</div>
+          <div class="review-answer"><strong>Resposta Certa (${item.correct}):</strong> ${correctOptObj.text}</div>
+          ${!item.isCorrect && item.chosen ? `<div class="review-answer" style="color:#e21b3c;"><strong>Você marcou:</strong> (${item.chosen})</div>` : ''}
+          <div class="review-exp"><strong>Explicação:</strong> ${item.question.explanation}</div>
+        `;
+        reviewBox.appendChild(div);
+      });
+    }
+
+    function toggleReview() {
+      soundClick();
+      const box = document.getElementById('review-container');
+      box.style.display = box.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function restartQuiz() {
+      soundClick();
+      document.getElementById('final-screen').style.display = 'none';
+      document.getElementById('start-screen').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
