@@ -1,0 +1,2258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Quiz de Filosofia: O Peptídeo, a Patente e a Liderança</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #E21B3C; --red-dark: #b8142e;
+      --blue: #1368CE; --blue-dark: #0f52a5;
+      --yellow: #B37A00; --yellow-dark: #8a5f00;
+      --green: #1B6B09; --green-dark: #145205;
+      --bg-gradient: linear-gradient(135deg, #46178F 0%, #18033d 100%);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+    input, textarea { user-select: text !important; -webkit-user-select: text !important; }
+
+    html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--bg-gradient);
+      color: #fff;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(8px, 1.5vw, 32px);
+      padding-top: max(clamp(8px, 1.5vw, 32px), env(safe-area-inset-top));
+      padding-bottom: max(clamp(8px, 1.5vw, 32px), env(safe-area-inset-bottom));
+      padding-left: max(clamp(8px, 1.5vw, 32px), env(safe-area-inset-left));
+      padding-right: max(clamp(8px, 1.5vw, 32px), env(safe-area-inset-right));
+      overflow-x: hidden;
+      transition: filter 0.2s ease;
+    }
+    body.tab-blurred { filter: blur(25px); pointer-events: none; }
+
+    @media print {
+      body { display: none !important; }
+      body::before { content: "⚠️ IMPRESSÃO BLOQUEADA"; display: block; font-size: 2rem; padding: 60px 20px; text-align: center; color: #E21B3C; }
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: min(96vw, 1050px);
+      background: rgba(255,255,255,0.08);
+      border-radius: clamp(16px, 2vw, 28px);
+      padding: clamp(14px, 2.2vw, 34px);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,0.15);
+      position: relative;
+    }
+
+    .top-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: clamp(10px, 1.5vw, 18px);
+      flex-wrap: wrap;
+      gap: clamp(8px, 1vw, 12px);
+    }
+    .brand-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: clamp(0.95rem, 0.6vw + 0.7rem, 1.5rem);
+      color: #ffd200;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ctrl-btns { display: flex; gap: clamp(6px, 0.8vw, 10px); flex-wrap: wrap; }
+    .icon-btn {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      padding: clamp(6px, 0.7vw, 10px) clamp(12px, 1.2vw, 18px);
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: clamp(0.75rem, 0.3vw + 0.65rem, 0.95rem);
+      font-weight: 700;
+      transition: all 0.2s;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .icon-btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
+    .icon-btn.apostila { background: rgba(255,210,0,0.2); border-color: #ffd200; color: #ffd200; }
+    .icon-btn.apostila:hover { background: #ffd200; color: #2b0c5e; }
+    .icon-btn.estudo { background: rgba(0,230,118,0.2); border-color: #00e676; color: #00e676; }
+    .icon-btn.estudo:hover { background: #00e676; color: #0a3d16; }
+
+    #start-screen { text-align: center; padding: clamp(16px, 2.5vw, 36px) clamp(8px, 1.5vw, 20px); }
+
+    .hero-badge {
+      display: inline-block;
+      background: #ffd200;
+      color: #381273;
+      padding: clamp(4px, 0.5vw, 8px) clamp(14px, 1.4vw, 22px);
+      border-radius: 30px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: clamp(0.7rem, 0.3vw + 0.6rem, 0.9rem);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+    }
+
+    .anti-rush-badge, .security-badge, .confidence-badge {
+      display: inline-block;
+      padding: clamp(3px, 0.4vw, 6px) clamp(10px, 1vw, 16px);
+      border-radius: 20px;
+      font-size: clamp(0.68rem, 0.3vw + 0.58rem, 0.85rem);
+      font-weight: 700;
+      margin-bottom: 12px;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .anti-rush-badge { background: rgba(0,230,118,0.2); color: #00e676; border: 1px solid #00e676; }
+    .security-badge { background: rgba(226,27,60,0.2); color: #ff5252; border: 1px solid #ff5252; margin-left: 8px; }
+    .confidence-badge { background: rgba(255,210,0,0.2); color: #ffd200; border: 1px solid #ffd200; margin-left: 8px; }
+
+    h1.hero-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: clamp(1.3rem, 2.6vw + 0.6rem, 2.8rem);
+      line-height: 1.25;
+      margin-bottom: 16px;
+      color: #fff;
+      text-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+
+    p.hero-desc {
+      font-size: clamp(0.9rem, 0.5vw + 0.75rem, 1.2rem);
+      max-width: 760px;
+      margin: 0 auto 24px auto;
+      line-height: 1.6;
+      color: #e0d5f8;
+    }
+
+    .rules-card {
+      background: rgba(0,0,0,0.25);
+      border-radius: 14px;
+      padding: clamp(14px, 1.8vw, 22px) clamp(16px, 2vw, 26px);
+      max-width: 800px;
+      margin: 0 auto 24px auto;
+      text-align: left;
+      font-size: clamp(0.85rem, 0.4vw + 0.72rem, 1.05rem);
+      line-height: 1.55;
+      border-left: 4px solid #ffd200;
+    }
+    .rules-card h4 {
+      color: #ffd200;
+      margin-bottom: 10px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(0.95rem, 0.4vw + 0.8rem, 1.2rem);
+    }
+    .rules-card ul { margin-left: 20px; margin-bottom: 15px; color: #e0d5f8; }
+    .rules-card li { margin-bottom: 6px; }
+    .rules-card kbd {
+      background: #ffd200;
+      color: #2b0c5e;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 900;
+      font-family: monospace;
+      font-size: 0.9em;
+    }
+
+    #resume-card {
+      display: none;
+      background: linear-gradient(135deg, #00c853, #00963e);
+      border-radius: 16px;
+      padding: clamp(16px, 2vw, 24px) clamp(18px, 2.2vw, 28px);
+      max-width: 800px;
+      margin: 0 auto 20px auto;
+      text-align: left;
+      box-shadow: 0 8px 24px rgba(0,200,83,0.4);
+      animation: popIn 0.4s ease;
+    }
+    #resume-card h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: clamp(1rem, 0.5vw + 0.85rem, 1.3rem);
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    #resume-card p {
+      font-size: clamp(0.85rem, 0.3vw + 0.75rem, 1rem);
+      line-height: 1.5;
+      margin-bottom: 14px;
+      color: rgba(255,255,255,0.95);
+    }
+    .resume-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .resume-btn {
+      padding: clamp(8px, 1vw, 12px) clamp(18px, 1.6vw, 24px);
+      border-radius: 10px;
+      border: none;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: clamp(0.85rem, 0.3vw + 0.75rem, 1rem);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .resume-btn-continue { background: #fff; color: #00963e; box-shadow: 0 4px 0 rgba(0,0,0,0.15); }
+    .resume-btn-continue:hover { transform: translateY(-2px); }
+    .resume-btn-reset { background: rgba(0,0,0,0.25); color: #fff; border: 1px solid rgba(255,255,255,0.4); }
+    .resume-btn-reset:hover { background: rgba(0,0,0,0.4); }
+
+    .input-box { margin: 0 auto 20px auto; max-width: 420px; }
+    .input-box label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 700;
+      font-size: clamp(0.85rem, 0.3vw + 0.75rem, 1rem);
+    }
+    .input-box input {
+      width: 100%;
+      padding: clamp(11px, 1.2vw, 16px) clamp(14px, 1.4vw, 20px);
+      border-radius: 12px;
+      border: 2px solid #ffd200;
+      font-size: clamp(0.95rem, 0.4vw + 0.8rem, 1.15rem);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      background: #fff;
+      color: #222;
+    }
+
+    .start-btn {
+      background: #ffd200;
+      color: #2b0c5e;
+      border: none;
+      padding: clamp(14px, 1.6vw, 20px) clamp(28px, 3vw, 52px);
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1rem, 0.6vw + 0.85rem, 1.35rem);
+      font-weight: 900;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #b39200, 0 10px 20px rgba(0,0,0,0.3);
+      transition: all 0.15s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .start-btn:hover { transform: translateY(-3px); box-shadow: 0 9px 0 #b39200, 0 14px 25px rgba(0,0,0,0.4); }
+
+    #quiz-screen { display: none; }
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: clamp(8px, 1vw, 12px);
+    }
+    .q-badge {
+      background: rgba(255,255,255,0.2);
+      padding: clamp(4px, 0.5vw, 8px) clamp(10px, 1vw, 16px);
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: clamp(0.8rem, 0.3vw + 0.7rem, 1rem);
+      font-family: 'Montserrat', sans-serif;
+    }
+    .q-topic {
+      background: rgba(255,210,0,0.25);
+      color: #ffd200;
+      border: 1px solid #ffd200;
+      padding: clamp(4px, 0.5vw, 8px) clamp(10px, 1vw, 16px);
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: clamp(0.72rem, 0.3vw + 0.62rem, 0.9rem);
+      font-family: 'Montserrat', sans-serif;
+    }
+    .stats-box { display: flex; gap: clamp(6px, 0.7vw, 10px); font-family: 'Montserrat', sans-serif; font-weight: 700; }
+    .counter-badge {
+      padding: clamp(4px, 0.5vw, 8px) clamp(10px, 1vw, 16px);
+      border-radius: 20px;
+      font-size: clamp(0.8rem, 0.3vw + 0.7rem, 1rem);
+      font-weight: 900;
+      font-family: 'Montserrat', sans-serif;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .counter-badge.acertos { background: rgba(0,230,118,0.2); color: #00e676; border: 2px solid #00e676; }
+    .counter-badge.erros { background: rgba(226,27,60,0.2); color: #ff5252; border: 2px solid #ff5252; }
+
+    .progress-track {
+      width: 100%;
+      height: clamp(6px, 0.6vw, 10px);
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    .progress-fill { height: 100%; background: #ffd200; width: 0%; transition: width 0.3s ease; }
+
+    .question-timer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0,0,0,0.35);
+      padding: clamp(6px, 0.8vw, 10px) clamp(12px, 1.4vw, 20px);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.82rem, 0.3vw + 0.72rem, 1rem);
+      color: #ffd200;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+    .question-timer-bar.warning { background: rgba(226,27,60,0.35); color: #fff; border-color: #ff5252; animation: pulse 1s infinite; }
+    .question-timer-bar.urgent { background: rgba(226,27,60,0.6); color: #fff; border-color: #fff; animation: pulse 0.5s infinite; }
+    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+    #question-timer { font-size: clamp(1.05rem, 0.5vw + 0.9rem, 1.5rem); font-weight: 900; }
+
+    .reading-lock-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(8px, 1vw, 12px);
+      background: rgba(0,0,0,0.3);
+      padding: clamp(8px, 1vw, 12px) clamp(12px, 1.4vw, 18px);
+      border-radius: 12px;
+      margin-bottom: 14px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(0.78rem, 0.3vw + 0.68rem, 0.95rem);
+      font-weight: 700;
+      color: #ffd200;
+      transition: all 0.3s;
+      flex-wrap: wrap;
+    }
+    .reading-lock-bar.reflection { background: rgba(255,210,0,0.15); color: #ffd200; border: 1px solid #ffd200; }
+    .reading-lock-bar.unlocked { background: rgba(0,230,118,0.2); color: #00e676; }
+
+    .skip-reflection-btn {
+      display: none;
+      background: rgba(0,0,0,0.35);
+      color: #ffd200;
+      border: 2px solid #ffd200;
+      padding: clamp(5px, 0.6vw, 8px) clamp(12px, 1.2vw, 18px);
+      border-radius: 20px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: clamp(0.7rem, 0.3vw + 0.6rem, 0.88rem);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      animation: popIn 0.3s ease;
+    }
+    .skip-reflection-btn:hover { background: #ffd200; color: #2b0c5e; transform: translateY(-2px); }
+
+    .apostila-inline-btn {
+      background: rgba(255,255,255,0.15);
+      color: #ffd200;
+      border: 2px dashed #ffd200;
+      padding: clamp(5px, 0.6vw, 8px) clamp(12px, 1.2vw, 18px);
+      border-radius: 20px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: clamp(0.7rem, 0.3vw + 0.6rem, 0.88rem);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .apostila-inline-btn:hover { background: #ffd200; color: #2b0c5e; transform: translateY(-2px); }
+
+    .question-card {
+      background: #fff;
+      color: #222;
+      border-radius: 16px;
+      padding: clamp(16px, 1.8vw, 30px) clamp(18px, 2.4vw, 36px) clamp(18px, 2vw, 32px) clamp(18px, 2.4vw, 36px);
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      line-height: 1.7;
+      font-size: clamp(0.92rem, 0.45vw + 0.78rem, 1.2rem);
+      border-left: clamp(5px, 0.6vw, 9px) solid #ffd200;
+    }
+
+    .question-text { font-weight: 600; line-height: 1.7; word-wrap: break-word; overflow-wrap: break-word; }
+
+    .question-text .quote-block {
+      display: block;
+      background: #ede7f6;
+      border-left: 4px solid #46178F;
+      padding: clamp(10px, 1.2vw, 16px) clamp(12px, 1.4vw, 20px);
+      margin: 12px 0;
+      border-radius: 8px;
+      font-style: italic;
+      font-weight: 400;
+      color: #2a2a2a;
+      line-height: 1.65;
+      text-align: justify;
+      white-space: normal;
+    }
+
+    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(10px, 1.2vw, 16px); }
+
+    .option-btn {
+      border: none;
+      border-radius: 14px;
+      padding: clamp(13px, 1.4vw, 22px) clamp(14px, 1.6vw, 24px);
+      color: #fff;
+      font-family: 'Open Sans', sans-serif;
+      font-size: clamp(0.88rem, 0.4vw + 0.75rem, 1.1rem);
+      font-weight: 700;
+      line-height: 1.45;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: clamp(10px, 1vw, 16px);
+      text-align: left;
+      transition: all 0.2s ease;
+      box-shadow: 0 5px 0 rgba(0,0,0,0.3);
+      user-select: none;
+      position: relative;
+      min-height: 56px;
+    }
+    .option-btn:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.08); box-shadow: 0 8px 0 rgba(0,0,0,0.35); }
+    .option-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,0.3); }
+    .option-btn:disabled { cursor: not-allowed; filter: grayscale(0.5) opacity(0.65); transform: none !important; box-shadow: none !important; }
+    .option-btn.selecionado { outline: 4px solid #ffd200; outline-offset: 4px; }
+    .option-btn.opt-A { background: var(--red); box-shadow: 0 5px 0 var(--red-dark); }
+    .option-btn.opt-B { background: var(--blue); box-shadow: 0 5px 0 var(--blue-dark); }
+    .option-btn.opt-C { background: var(--yellow); box-shadow: 0 5px 0 var(--yellow-dark); }
+    .option-btn.opt-D { background: var(--green); box-shadow: 0 5px 0 var(--green-dark); }
+
+    .opt-icon {
+      font-size: clamp(1.2rem, 0.6vw + 0.9rem, 1.6rem);
+      font-weight: 900;
+      min-width: clamp(34px, 2.5vw, 44px);
+      height: clamp(34px, 2.5vw, 44px);
+      background: rgba(0,0,0,0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+      flex-shrink: 0;
+    }
+    .opt-text { flex-grow: 1; }
+
+    #confidence-overlay, #apostila-overlay, #estudo-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 3, 40, 0.92);
+      align-items: center;
+      justify-content: center;
+      padding: clamp(10px, 2vw, 24px);
+      animation: popIn 0.3s ease;
+    }
+    #confidence-overlay { z-index: 1000; }
+    #apostila-overlay, #estudo-overlay { z-index: 1100; }
+    #confidence-overlay.visible, #apostila-overlay.visible, #estudo-overlay.visible { display: flex; }
+
+    .confidence-modal {
+      background: linear-gradient(135deg, #46178F 0%, #250756 100%);
+      border: 3px solid #ffd200;
+      border-radius: clamp(18px, 2vw, 26px);
+      padding: clamp(22px, 3vw, 42px) clamp(18px, 2.5vw, 36px);
+      max-width: min(94vw, 680px);
+      width: 100%;
+      max-height: 90vh;
+      max-height: 90dvh;
+      overflow-y: auto;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.7), 0 0 80px rgba(255,210,0,0.25);
+    }
+    .confidence-modal h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: clamp(1.3rem, 1.2vw + 0.9rem, 2.1rem);
+      color: #fff;
+      margin-bottom: 10px;
+      text-shadow: 0 3px 12px rgba(0,0,0,0.5);
+    }
+    .confidence-modal .subtitle {
+      font-size: clamp(0.85rem, 0.35vw + 0.75rem, 1.05rem);
+      color: #e0d5f8;
+      margin-bottom: clamp(18px, 2vw, 30px);
+      line-height: 1.55;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .confidence-modal .subtitle strong { color: #ffd200; }
+    .confidence-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(10px, 1.2vw, 16px); }
+
+    .confidence-btn {
+      border: 3px solid transparent;
+      border-radius: 16px;
+      padding: clamp(13px, 1.5vw, 22px) clamp(12px, 1.2vw, 18px);
+      cursor: pointer;
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: clamp(0.85rem, 0.35vw + 0.75rem, 1.05rem);
+      display: flex;
+      align-items: center;
+      gap: clamp(8px, 1vw, 14px);
+      text-align: left;
+      transition: all 0.2s ease;
+      box-shadow: 0 5px 0 rgba(0,0,0,0.3);
+    }
+    .confidence-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 0 rgba(0,0,0,0.35); border-color: #ffd200; }
+    .confidence-btn .conf-emoji { font-size: clamp(1.5rem, 1vw + 1rem, 2.2rem); flex-shrink: 0; }
+    .confidence-btn .conf-texto { display: flex; flex-direction: column; }
+    .confidence-btn .conf-titulo { font-size: clamp(0.9rem, 0.4vw + 0.78rem, 1.15rem); font-weight: 900; }
+    .confidence-btn .conf-desc { font-size: clamp(0.68rem, 0.25vw + 0.6rem, 0.85rem); font-weight: 500; opacity: 0.8; margin-top: 2px; }
+    .confidence-btn.conf-chutei    { background: rgba(226,27,60,0.25); }
+    .confidence-btn.conf-naosei    { background: rgba(179,122,0,0.3); }
+    .confidence-btn.conf-acho      { background: rgba(19,104,206,0.3); }
+    .confidence-btn.conf-certeza   { background: rgba(0,200,83,0.25); }
+
+    .apostila-modal {
+      background: #fff;
+      color: #222;
+      border-radius: clamp(14px, 1.6vw, 22px);
+      max-width: min(94vw, 900px);
+      width: 100%;
+      max-height: 90vh;
+      max-height: 90dvh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.7);
+      overflow: hidden;
+      border: 3px solid #ffd200;
+    }
+    .apostila-modal.estudo { border-color: #00e676; }
+    .apostila-header {
+      background: linear-gradient(135deg, #46178F 0%, #250756 100%);
+      padding: clamp(12px, 1.5vw, 22px) clamp(16px, 2vw, 28px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: clamp(8px, 1vw, 14px);
+    }
+    .apostila-modal.estudo .apostila-header { background: linear-gradient(135deg, #0a5c2e 0%, #063d1e 100%); }
+    .apostila-header h2 {
+      font-family: 'Montserrat', sans-serif;
+      color: #ffd200;
+      font-size: clamp(0.95rem, 0.6vw + 0.75rem, 1.4rem);
+      font-weight: 900;
+    }
+    .apostila-modal.estudo .apostila-header h2 { color: #00e676; }
+    .apostila-close-btn {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.4);
+      padding: clamp(6px, 0.7vw, 10px) clamp(14px, 1.4vw, 22px);
+      border-radius: 999px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: clamp(0.75rem, 0.3vw + 0.65rem, 0.92rem);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .apostila-close-btn:hover { background: #E21B3C; border-color: #E21B3C; }
+    .apostila-body {
+      padding: clamp(16px, 2vw, 30px) clamp(18px, 2.4vw, 34px);
+      overflow-y: auto;
+      line-height: 1.7;
+      font-size: clamp(0.88rem, 0.4vw + 0.75rem, 1.08rem);
+      color: #333;
+      user-select: text !important;
+      -webkit-user-select: text !important;
+    }
+    .apostila-body h3 {
+      font-family: 'Montserrat', sans-serif;
+      color: #46178F;
+      font-size: clamp(1rem, 0.5vw + 0.85rem, 1.25rem);
+      margin-top: 22px;
+      margin-bottom: 10px;
+      border-bottom: 2px solid #ffd200;
+      padding-bottom: 6px;
+    }
+    .apostila-body h3:first-child { margin-top: 0; }
+    .apostila-body h4 {
+      font-family: 'Montserrat', sans-serif;
+      color: #381273;
+      font-size: clamp(0.9rem, 0.4vw + 0.78rem, 1.1rem);
+      margin-top: 16px;
+      margin-bottom: 8px;
+    }
+    .apostila-body p { margin-bottom: 12px; text-align: justify; }
+    .apostila-body ul { margin: 8px 0 14px 24px; }
+    .apostila-body li { margin-bottom: 6px; }
+    .apostila-body strong { color: #46178F; }
+
+    .apostila-body.case h3 { color: #0a5c2e; border-bottom-color: #00e676; }
+    .apostila-body.case p { margin-bottom: 14px; text-align: justify; }
+
+    #rush-alert-screen {
+      display: none;
+      text-align: center;
+      padding: clamp(24px, 4vw, 50px) clamp(14px, 2vw, 24px);
+      background: rgba(226,27,60,0.95);
+      border-radius: 20px;
+      color: #fff;
+      margin: 20px 0;
+      animation: popIn 0.3s ease;
+    }
+    .rush-title { font-family: 'Montserrat', sans-serif; font-size: clamp(1.3rem, 1.6vw + 0.8rem, 2.4rem); font-weight: 900; margin-bottom: 12px; }
+    .rush-desc { font-size: clamp(0.9rem, 0.5vw + 0.75rem, 1.2rem); max-width: 650px; margin: 0 auto 20px auto; line-height: 1.6; }
+    .rush-countdown { font-family: 'Montserrat', sans-serif; font-size: clamp(2.2rem, 2.5vw + 1.2rem, 3.8rem); font-weight: 900; color: #ffd200; margin-bottom: 12px; }
+
+    #feedback-screen { display: none; text-align: center; padding: clamp(16px, 2.2vw, 30px) clamp(8px, 1.5vw, 20px); }
+    .feedback-banner {
+      border-radius: 16px;
+      padding: clamp(14px, 1.8vw, 24px);
+      margin-bottom: clamp(14px, 1.8vw, 24px);
+      animation: popIn 0.25s ease;
+    }
+    .feedback-banner.correct { background: #26890c; color: #fff; }
+    .feedback-banner.incorrect { background: #e21b3c; color: #fff; }
+    .feedback-banner.timeout { background: #B37A00; color: #fff; }
+    .feedback-title { font-family: 'Montserrat', sans-serif; font-size: clamp(1.3rem, 1.5vw + 0.8rem, 2.4rem); font-weight: 900; margin-bottom: 6px; }
+    .confidence-recap {
+      display: inline-block;
+      margin-top: 12px;
+      background: rgba(0,0,0,0.25);
+      padding: clamp(6px, 0.8vw, 10px) clamp(14px, 1.4vw, 20px);
+      border-radius: 12px;
+      font-size: clamp(0.8rem, 0.3vw + 0.7rem, 1rem);
+      font-weight: 700;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+    .feedback-explanation {
+      background: #fff;
+      color: #222;
+      border-radius: 14px;
+      padding: clamp(16px, 2vw, 26px);
+      font-size: clamp(0.92rem, 0.4vw + 0.78rem, 1.15rem);
+      line-height: 1.65;
+      text-align: left;
+      margin-bottom: clamp(18px, 2vw, 28px);
+      border-left: clamp(4px, 0.5vw, 7px) solid #381273;
+    }
+    .feedback-explanation strong { color: #381273; font-family: 'Montserrat', sans-serif; }
+    .lock-timer-msg {
+      margin-bottom: 16px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: clamp(0.9rem, 0.4vw + 0.78rem, 1.1rem);
+      color: #ffd200;
+    }
+
+    .next-btn {
+      background: #ffd200;
+      color: #2b0c5e;
+      border: none;
+      padding: clamp(13px, 1.5vw, 18px) clamp(28px, 3vw, 48px);
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1rem, 0.5vw + 0.85rem, 1.35rem);
+      font-weight: 900;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #b39200;
+      transition: all 0.15s;
+    }
+    .next-btn:disabled { background: #888; color: #ddd; box-shadow: none; cursor: not-allowed; }
+
+    #final-screen { display: none; text-align: center; padding: clamp(16px, 2.2vw, 30px) clamp(8px, 1.5vw, 20px); }
+    .podium-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: clamp(1.5rem, 1.8vw + 1rem, 2.8rem); color: #ffd200; margin-bottom: 10px; }
+    .user-greeting { font-size: clamp(1rem, 0.5vw + 0.85rem, 1.3rem); margin-bottom: 20px; }
+
+    .visto-card {
+      background: #fff;
+      color: #222;
+      border-radius: 18px;
+      padding: clamp(16px, 2vw, 28px);
+      max-width: min(96vw, 620px);
+      margin: 0 auto 24px auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      text-align: left;
+    }
+    .visto-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px dashed #ccc;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .visto-header h3 { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: clamp(0.95rem, 0.4vw + 0.82rem, 1.2rem); color: #381273; }
+    .visto-badge { padding: clamp(4px, 0.5vw, 8px) clamp(10px, 1vw, 16px); border-radius: 20px; font-weight: 900; font-size: clamp(0.72rem, 0.3vw + 0.62rem, 0.9rem); font-family: 'Montserrat', sans-serif; }
+    .visto-badge.aprovado { background: #e8f5e9; color: #2e7d32; border: 1px solid #2e7d32; }
+    .visto-badge.recusado { background: #ffebee; color: #c62828; border: 1px solid #c62828; }
+    .visto-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: clamp(0.82rem, 0.3vw + 0.72rem, 1rem); gap: 10px; }
+    .visto-row span.label { color: #666; font-weight: 600; }
+    .visto-row span.val { font-weight: 800; color: #222; font-family: 'Montserrat', sans-serif; text-align: right; }
+    .visto-row span.val.acertos { color: #2e7d32; }
+    .visto-row span.val.erros { color: #c62828; }
+    .visto-code {
+      margin-top: 14px;
+      background: #f4f0fa;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      font-family: monospace;
+      font-weight: 900;
+      font-size: clamp(0.85rem, 0.4vw + 0.72rem, 1.2rem);
+      color: #46178f;
+      letter-spacing: 2px;
+      border: 1px solid #d4c5eb;
+      word-break: break-all;
+    }
+
+    .confidence-report { margin-top: 16px; padding: clamp(12px, 1.4vw, 18px); background: #f4f0fa; border-radius: 12px; border-left: 4px solid #46178f; }
+    .confidence-report h4 { font-family: 'Montserrat', sans-serif; font-size: clamp(0.9rem, 0.4vw + 0.78rem, 1.1rem); color: #381273; margin-bottom: 10px; font-weight: 900; }
+    .conf-stat-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: clamp(0.8rem, 0.3vw + 0.7rem, 0.95rem); border-bottom: 1px dashed #d4c5eb; gap: 8px; flex-wrap: wrap; }
+    .conf-stat-row:last-child { border-bottom: none; }
+    .conf-stat-row .label { display: flex; align-items: center; gap: 8px; color: #444; font-weight: 600; }
+    .conf-stat-row .valor { font-family: 'Montserrat', sans-serif; font-weight: 900; color: #222; }
+    .conf-stat-row .pct-bom { color: #2e7d32; }
+    .conf-stat-row .pct-medio { color: #B37A00; }
+    .conf-stat-row .pct-ruim { color: #c62828; }
+
+    .conf-alerta { margin-top: 12px; padding: 12px; background: #fff3cd; border-left: 4px solid #ffa000; border-radius: 8px; font-size: clamp(0.8rem, 0.3vw + 0.7rem, 0.95rem); color: #664d03; }
+    .conf-alerta.bom { background: #e8f5e9; border-left-color: #2e7d32; color: #1b5e20; }
+    .conf-alerta.ruim { background: #f8d7da; border-left-color: #c62828; color: #721c24; }
+
+    .security-alert { margin-top: 14px; padding: 12px; border-radius: 10px; background: #fff3cd; border-left: 4px solid #ffa000; font-size: clamp(0.8rem, 0.3vw + 0.7rem, 0.95rem); color: #664d03; }
+    .security-alert.danger { background: #f8d7da; border-left-color: #c62828; color: #721c24; }
+
+    .final-actions { display: flex; justify-content: center; gap: clamp(10px, 1.2vw, 16px); flex-wrap: wrap; margin-bottom: 24px; }
+    .action-btn {
+      padding: clamp(11px, 1.3vw, 16px) clamp(18px, 2vw, 30px);
+      border-radius: 12px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: clamp(0.88rem, 0.35vw + 0.75rem, 1.1rem);
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-restart { background: #ffd200; color: #2b0c5e; box-shadow: 0 4px 0 #b39200; }
+    .btn-review { background: rgba(255,255,255,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.4); }
+
+    #review-container {
+      display: none;
+      text-align: left;
+      margin-top: 24px;
+      background: rgba(0,0,0,0.25);
+      border-radius: 16px;
+      padding: clamp(14px, 1.6vw, 22px);
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    .review-item { background: #fff; color: #222; border-radius: 12px; padding: clamp(12px, 1.4vw, 18px); margin-bottom: 14px; border-left: 6px solid #26890c; }
+    .review-item.was-wrong { border-left-color: #e21b3c; }
+    .review-header { font-weight: 800; font-family: 'Montserrat', sans-serif; margin-bottom: 8px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: clamp(0.82rem, 0.3vw + 0.72rem, 1rem); }
+    .review-text { font-size: clamp(0.82rem, 0.3vw + 0.72rem, 0.98rem); margin-bottom: 10px; white-space: pre-line; }
+    .review-answer { font-size: clamp(0.78rem, 0.3vw + 0.68rem, 0.94rem); background: #f1f3f5; padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; }
+    .review-exp { font-size: clamp(0.75rem, 0.3vw + 0.65rem, 0.9rem); color: #555; font-style: italic; }
+    .review-conf { font-size: clamp(0.75rem, 0.3vw + 0.65rem, 0.9rem); margin-top: 6px; padding: 6px 10px; background: #f4f0fa; border-radius: 6px; color: #46178f; font-weight: 700; }
+
+    @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+    @media (max-width: 1024px) {
+      .app-container { max-width: min(96vw, 960px); }
+    }
+
+    @media (max-width: 768px) {
+      .options-grid { grid-template-columns: 1fr; }
+      .brand-title { font-size: 1rem; }
+      .icon-btn { padding: 6px 12px; font-size: 0.75rem; }
+      .confidence-grid { grid-template-columns: 1fr; }
+      .question-card { border-left-width: 6px; }
+      .top-controls { justify-content: center; }
+      .ctrl-btns { justify-content: center; width: 100%; }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 6px; }
+      .app-container { border-radius: 14px; padding: 12px; }
+      .hero-badge { font-size: 0.68rem; padding: 4px 12px; }
+      .anti-rush-badge, .security-badge, .confidence-badge {
+        font-size: 0.62rem;
+        padding: 3px 9px;
+        margin-left: 0;
+        display: block;
+        margin-bottom: 6px;
+      }
+      .security-badge, .confidence-badge { margin-left: 0; }
+      .quiz-header { justify-content: center; }
+      .stats-box { width: 100%; justify-content: center; }
+      .visto-row { flex-direction: column; align-items: flex-start; gap: 4px; }
+      .visto-row span.val { text-align: left; }
+      .final-actions { flex-direction: column; align-items: stretch; }
+      .action-btn { width: 100%; }
+    }
+
+    @media (max-width: 360px) {
+      .brand-title { font-size: 0.9rem; }
+      .icon-btn { padding: 5px 10px; font-size: 0.7rem; }
+      .opt-icon { min-width: 30px; height: 30px; font-size: 1rem; }
+    }
+
+    @media (min-width: 1600px) {
+      html { font-size: 18px; }
+      .app-container { max-width: min(90vw, 1500px); }
+      .question-card { font-size: 1.3rem; }
+      .option-btn { font-size: 1.15rem; min-height: 70px; }
+      .apostila-modal { max-width: min(80vw, 1300px); }
+      .confidence-modal { max-width: min(70vw, 900px); }
+      .visto-card { max-width: min(70vw, 820px); }
+    }
+
+    @media (min-width: 2200px) {
+      html { font-size: 22px; }
+      .app-container { max-width: min(80vw, 1900px); }
+      .option-btn { min-height: 90px; }
+      .apostila-modal { max-width: min(70vw, 1600px); }
+    }
+
+    @media (max-height: 500px) and (orientation: landscape) {
+      body { padding: 6px; align-items: flex-start; }
+      .app-container { border-radius: 12px; padding: 10px; }
+      .question-card { padding: 12px 16px; }
+      .options-grid { grid-template-columns: 1fr 1fr; }
+      #start-screen { padding: 10px; }
+      .rules-card { max-height: 200px; overflow-y: auto; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <div class="top-controls">
+      <div class="brand-title"><span>⚡ ÁGORA DIGITAL • FILOSOFIA</span></div>
+      <div class="ctrl-btns">
+        <button class="icon-btn apostila" onclick="abrirApostila()" title="Reler a síntese do caso">📖 Apostila</button>
+        <button class="icon-btn estudo" onclick="abrirEstudo()" title="Ler o estudo de caso">📋 Estudo de Caso</button>
+        <button class="icon-btn" onclick="toggleFullscreen()" title="Atalho: tecla F">⛶ Tela Cheia (F)</button>
+      </div>
+    </div>
+
+    <div id="start-screen">
+      <div class="hero-badge">Situações-Problema • Estudo de Caso</div>
+      <span class="anti-rush-badge">🛡️ LEITURA CONSCIENTE</span>
+      <span class="security-badge">🔒 MONITORADO</span>
+      <span class="confidence-badge">🎯 TERMÔMETRO DE CONFIANÇA</span>
+      <h1 class="hero-title">O Peptídeo, a Patente e a Liderança:<br>Ciência, Poder e Desigualdade</h1>
+
+      <p class="hero-desc">Leia o estudo de caso e analise como o financiamento público, a patente, os estereótipos de gênero e o mercado definiram quem lidera, quem lucra e quem fica sem acesso à inovação.</p>
+
+      <div id="resume-card">
+        <h3>💾 Você tem um quiz em andamento!</h3>
+        <p id="resume-info"></p>
+        <div class="resume-actions">
+          <button class="resume-btn resume-btn-continue" onclick="continuarQuiz()">▶️ Continuar</button>
+          <button class="resume-btn resume-btn-reset" onclick="descartarSave()">🗑️ Começar do Zero</button>
+        </div>
+      </div>
+
+      <div class="rules-card">
+        <h4>📋 Sobre o Desafio:</h4>
+        <ul>
+            <li><strong>Temática:</strong> Produção do conhecimento científico, patentes, gênero e poder.</li>
+            <li><strong>Tema Integrador:</strong> Gênero, Sexualidade, Poder e Sociedade (TI16).</li>
+            <li><strong>Objeto de Conhecimento:</strong> Valores econômicos; Valores humanos; Ciência.</li>
+            <li><strong>Objetivo de Aprendizagem:</strong> Analisar como relações de poder econômico e de gênero condicionam a produção, a apropriação e o acesso ao conhecimento científico.</li>
+        </ul>
+        <h4>⚙️ Como Funciona o Quiz:</h4>
+        • <strong>Fase de Leitura:</strong> 4 segundos para ler a pergunta.<br>
+        • <strong>Fase de Reflexão:</strong> 5 segundos para pensar. Se já refletiu, aparece o botão <em>"Já refleti, pular"</em> após 2 segundos.<br>
+        • <strong>📖 Apostila e 📋 Estudo de Caso:</strong> a qualquer momento, use os botões no topo para reler a síntese e o caso completo.<br>
+        • <strong>🎯 Termômetro de Confiança:</strong> ao responder, você dirá o quanto está certo da sua resposta (Chutei / Não sei / Acho que sim / Tenho certeza). <em>Seja sincero — o professor analisará esse dado.</em><br>
+        • <strong>⏱️ Tempo Limite:</strong> 30 segundos para responder após a liberação.<br>
+        • <strong>Se Errar, Leia a Dica:</strong> a explicação fica na tela por 8 segundos antes de liberar o avanço.<br>
+        • <strong>Anti-Chute:</strong> respostas muito rápidas ativam a trava de leitura de 15 segundos.<br>
+        • <strong>🎲 Ordem Aleatória:</strong> as perguntas e alternativas são embaralhadas a cada tentativa.<br>
+        • <strong>💾 Salvamento Automático:</strong> se você fechar ou atualizar a página sem querer, seu progresso é preservado.<br>
+        • <strong>⛶ Tela Cheia:</strong> aperte a tecla <kbd>F</kbd>.<br>
+        • <strong>Monitoramento:</strong> trocar de aba, tentar imprimir ou tirar print fica registrado.<br>
+        • <strong>Visto do Professor:</strong> mínimo de 60% de acertos e leitura consciente.
+      </div>
+
+      <div class="input-box">
+        <label for="player-name">Seu Nome Completo (Estudante):</label>
+        <input type="text" id="player-name" placeholder="Digite seu nome completo aqui..." value="">
+      </div>
+
+      <button class="start-btn" onclick="startQuiz()">Iniciar Desafio</button>
+    </div>
+
+    <div id="confidence-overlay">
+      <div class="confidence-modal">
+        <h2>🎯 Quão certo você está?</h2>
+        <p class="subtitle">
+          Seja <strong>sincero</strong> — este dado ajuda o professor a entender
+          o que você realmente aprendeu. Não há resposta errada aqui.
+        </p>
+        <div class="confidence-grid">
+          <button class="confidence-btn conf-chutei" onclick="escolherConfianca('chutei')">
+            <span class="conf-emoji">🤔</span>
+            <span class="conf-texto">
+              <span class="conf-titulo">Chutei</span>
+              <span class="conf-desc">Não tenho ideia / fui no impulso</span>
+            </span>
+          </button>
+          <button class="confidence-btn conf-naosei" onclick="escolherConfianca('nao_sei')">
+            <span class="conf-emoji">😐</span>
+            <span class="conf-texto">
+              <span class="conf-titulo">Não sei</span>
+              <span class="conf-desc">Fiquei muito em dúvida</span>
+            </span>
+          </button>
+          <button class="confidence-btn conf-acho" onclick="escolherConfianca('acho')">
+            <span class="conf-emoji">😊</span>
+            <span class="conf-texto">
+              <span class="conf-titulo">Acho que sim</span>
+              <span class="conf-desc">Estou razoavelmente seguro</span>
+            </span>
+          </button>
+          <button class="confidence-btn conf-certeza" onclick="escolherConfianca('certeza')">
+            <span class="conf-emoji">🎯</span>
+            <span class="conf-texto">
+              <span class="conf-titulo">Tenho certeza</span>
+              <span class="conf-desc">Domino totalmente o conteúdo</span>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="apostila-overlay">
+      <div class="apostila-modal">
+        <div class="apostila-header">
+          <h2>📖 Apostila — O que o caso mostra</h2>
+          <button class="apostila-close-btn" onclick="fecharApostila()">✕ Fechar</button>
+        </div>
+        <div class="apostila-body" id="apostila-content">
+
+          <h3>O que o caso mostra</h3>
+          <p>O financiamento público iniciou a pesquisa, mas o capital privado definiu seu destino. A patente concentrou o controle. A justificativa da demissão usou estereótipos de gênero: mulher acadêmica e passiva, homem agressivo e racional. O preço final excluiu a população que participou dos testes. O executivo ficou com o reconhecimento, enquanto as cientistas e os voluntários desapareceram da história.</p>
+          <p>O Estado também aparece nessa cadeia. Os cortes de fomento, a falta de regulação e a ausência de proteção à pesquisa pública não foram fatalidade. Foram escolhas que permitiram a venda da patente e a mudança de finalidade.</p>
+
+
+        </div>
+      </div>
+    </div>
+
+    <div id="estudo-overlay">
+      <div class="apostila-modal estudo">
+        <div class="apostila-header">
+          <h2>📋 Estudo de Caso — O Peptídeo</h2>
+          <button class="apostila-close-btn" onclick="fecharEstudo()">✕ Fechar</button>
+        </div>
+        <div class="apostila-body case">
+
+          <h3>Estudo de caso: o peptídeo, a patente e a liderança</h3>
+          <h3>Contexto</h3>
+          <p>Em 2018, seis pesquisadores de um laboratório de biotecnologia metabólica de uma universidade estadual começaram um projeto. Cinco eram mulheres e um era homem. Eles buscavam um peptídeo sintético para regular a insulina e prolongar a saciedade. A aplicação principal era o tratamento de diabetes tipo 2 e obesidade. A motivação vinha do hospital universitário ligado ao SUS, onde a população de baixa renda tinha altos índices de diabetes descompensada e obesidade e pouco acesso a tratamentos eficazes.</p>
+          <p>Durante três anos, 47 pacientes voluntários do SUS participaram das fases pré-clínicas e clínicas iniciais. Os resultados mostraram redução média de 32% nos níveis glicêmicos e de 18% na massa corporal em seis meses.</p>
+          <p>Até 2021, o projeto recebeu R$ 2,3 milhões em editais públicos da fundação de amparo à pesquisa estadual e do CNPq. O laboratório era liderado pela Dra. Marina Oliveira, cientista negra, de origem periférica, com pós-doutorado em biotecnologia molecular.</p>
+          <h3>O corte e a venda</h3>
+          <p>Em 2022, os editais estaduais sofreram corte de 60%. O laboratório perdeu bolsas de iniciação científica, ficou com equipamentos sucateados e não conseguiu renovar insumos importados. A equipe submeteu o projeto a fundos privados e a uma aceleradora de biotech. Uma farmacêutica multinacional comprou a patente por R$ 12 milhões. O mercado estimado era de R$ 4 bilhões por ano. O contrato previa transferência total de tecnologia e direitos de exploração comercial.</p>
+          <h3>A troca de chefia</h3>
+          <p>Na transição, a empresa impôs uma reestruturação. O conselho administrativo retirou as criadoras da liderança do projeto. A Dra. Marina e as colegas foram rebaixadas a consultoras científicas, sem poder de decisão. A ata registrou a justificativa: as cientistas tinham perfil "muito acadêmico e passivo", e o lançamento internacional exigia "agressividade comercial", "racionalidade estratégica" e "liderança firme". O escolhido foi Ricardo Menezes, executivo branco, vindo do mercado financeiro, sem formação em saúde ou biotecnologia. O currículo dele destacava reestruturação de ativos e maximização de valor para acionistas.</p>
+          <h3>O novo produto</h3>
+          <p>Sob a nova gestão, o peptídeo mudou de finalidade. Em 2024, chegou às farmácias como SlimPept, a R$ 2.800 por mês. A indicação principal deixou de ser diabetes tipo 2 e passou a ser controle estético de peso para adultos de alto poder aquisitivo. Os pacientes do SUS que participaram dos testes nunca tiveram acesso ao remédio. O hospital universitário não recebeu royalties. A universidade estadual, que cedeu laboratórios e pesquisadores, ficou fora da repartição de benefícios.</p>
+          <h3>O apagamento</h3>
+          <p>Ricardo Menezes apareceu em capas de revistas de negócios como "o visionário por trás da fórmula que revolucionou o mercado de emagrecimento". Em entrevistas, disse: "Peguei uma pesquisa acadêmica promissora e transformei em produto global". As pesquisadoras não foram citadas. Nos registros de patente, os nomes delas aparecem como coinventoras, mas os direitos de exploração pertencem apenas à corporação. No marketing, os voluntários do SUS são mencionados como "participantes anônimos de estudos iniciais".</p>
+
+        </div>
+      </div>
+    </div>
+
+    <div id="rush-alert-screen">
+      <div class="rush-title">⚠️ PAUSA PARA O FOCO!</div>
+      <div class="rush-desc">
+        Estudante, o sistema detectou respostas muito rápidas. O objetivo deste desafio é exercitar a reflexão filosófica. Respire fundo, leia o texto e aguarde a liberação:
+      </div>
+      <div class="rush-countdown" id="rush-countdown-val">15</div>
+      <p style="font-size: 0.9rem; color: #ffd200;">A questão voltará automaticamente assim que o tempo zerar.</p>
+    </div>
+
+    <div id="quiz-screen">
+      <div class="quiz-header">
+        <div class="q-badge" id="q-counter">Questão 1 de 20</div>
+        <div class="q-topic" id="q-topic">Tópico</div>
+        <div class="stats-box">
+          <span class="counter-badge acertos">✅ <span id="acertos-val">0</span></span>
+          <span class="counter-badge erros">❌ <span id="erros-val">0</span></span>
+        </div>
+      </div>
+
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+
+      <div class="question-timer-bar" id="question-timer-bar">
+        <span>⏱️ Tempo para responder:</span>
+        <span><strong id="question-timer">30</strong>s</span>
+      </div>
+
+      <div class="reading-lock-bar" id="reading-lock-bar"></div>
+
+      <div class="question-card"><div class="question-text" id="question-text">Texto da questão</div></div>
+
+      <div class="options-grid" id="options-grid">
+        <button class="option-btn opt-A" id="btn-opt-A" onclick="handleAnswer('A')" disabled>
+          <div class="opt-icon">▲</div><div class="opt-text" id="opt-A-text">Alternativa A</div>
+        </button>
+        <button class="option-btn opt-B" id="btn-opt-B" onclick="handleAnswer('B')" disabled>
+          <div class="opt-icon">◆</div><div class="opt-text" id="opt-B-text">Alternativa B</div>
+        </button>
+        <button class="option-btn opt-C" id="btn-opt-C" onclick="handleAnswer('C')" disabled>
+          <div class="opt-icon">●</div><div class="opt-text" id="opt-C-text">Alternativa C</div>
+        </button>
+        <button class="option-btn opt-D" id="btn-opt-D" onclick="handleAnswer('D')" disabled>
+          <div class="opt-icon">■</div><div class="opt-text" id="opt-D-text">Alternativa D</div>
+        </button>
+      </div>
+    </div>
+
+    <div id="feedback-screen">
+      <div class="feedback-banner" id="feedback-banner">
+        <div class="feedback-title" id="feedback-title">Resposta Correta!</div>
+        <div id="feedback-subtitle"></div>
+        <div id="feedback-confidence" class="confidence-recap" style="display:none;"></div>
+      </div>
+      <div class="feedback-explanation">
+        <strong>Explicação para Aprender:</strong><br>
+        <span id="feedback-exp-text">Texto explicativo</span>
+      </div>
+      <div class="lock-timer-msg" id="lock-timer-msg"></div>
+      <button class="next-btn" id="next-btn" onclick="nextQuestion()">Avançar ➔</button>
+    </div>
+
+    <div id="final-screen">
+      <div class="podium-title">🎓 Desafio Concluído!</div>
+      <div class="user-greeting" id="final-user-greeting">Estudante</div>
+
+      <div class="visto-card">
+        <div class="visto-header">
+          <h3>COMPROVANTE DO VISTO PEDAGÓGICO</h3>
+          <div class="visto-badge" id="visto-status-badge">EM ANÁLISE</div>
+        </div>
+
+        <div class="visto-row"><span class="label">Estudante:</span><span class="val" id="visto-nome">Nome</span></div>
+        <div class="visto-row"><span class="label">✅ Acertos:</span><span class="val acertos" id="visto-acertos">0 / 20 (0%)</span></div>
+        <div class="visto-row"><span class="label">❌ Erros:</span><span class="val erros" id="visto-erros">0 / 20 (0%)</span></div>
+        <div class="visto-row"><span class="label">Tempo Total:</span><span class="val" id="visto-tempo-total">0 min</span></div>
+        <div class="visto-row"><span class="label">Tempo Médio por Pergunta:</span><span class="val" id="visto-tempo-medio">0s</span></div>
+        <div class="visto-row"><span class="label">Situação da Leitura:</span><span class="val" id="visto-diagnostico">Adequada</span></div>
+
+        <div class="visto-code" id="visto-hash">#FILO-0000</div>
+
+        <div class="confidence-report" id="confidence-report"></div>
+        <div id="security-report"></div>
+      </div>
+
+      <div class="final-actions">
+        <button class="action-btn btn-restart" onclick="restartQuiz()">🔄 Tentar Novamente</button>
+        <button class="action-btn btn-review" onclick="toggleReview()">📋 Ver Gabarito Completo</button>
+      </div>
+
+      <div id="review-container"></div>
+    </div>
+
+  </div>
+
+  <script>
+    'use strict';
+
+    const eventLog = {
+      printAttempts: 0, devtoolsAttempts: 0, contextMenuAttempts: 0,
+      viewSourceAttempts: 0, saveAttempts: 0, printCSSAttempts: 0,
+      tabSwitches: 0, blurEvents: 0, apostilaOpens: 0, estudoOpens: 0
+    };
+
+    document.addEventListener('keydown', function (e) {
+      const k = (e.key || '').toLowerCase();
+      if (e.key === 'PrintScreen' || e.keyCode === 44) { e.preventDefault(); eventLog.printAttempts++; return false; }
+      if (e.shiftKey && e.metaKey && k === 's') { e.preventDefault(); eventLog.printAttempts++; return false; }
+      if (e.metaKey && e.shiftKey && ['3','4','5'].indexOf(e.key) !== -1) { e.preventDefault(); eventLog.printAttempts++; return false; }
+      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['i','j','c'].indexOf(k) !== -1) ||
+          (e.metaKey && e.altKey && ['i','j','c'].indexOf(k) !== -1)) { e.preventDefault(); eventLog.devtoolsAttempts++; return false; }
+      if ((e.ctrlKey || e.metaKey) && k === 'u') { e.preventDefault(); eventLog.viewSourceAttempts++; return false; }
+      if ((e.ctrlKey || e.metaKey) && k === 's') { e.preventDefault(); eventLog.saveAttempts++; return false; }
+      if ((e.ctrlKey || e.metaKey) && k === 'p') { e.preventDefault(); eventLog.printAttempts++; return false; }
+    }, true);
+
+    document.addEventListener('keydown', function (e) {
+      const tag = document.activeElement ? document.activeElement.tagName : '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if ((e.key || '').toLowerCase() === 'f') { e.preventDefault(); toggleFullscreen(); }
+      if ((e.key || '').toLowerCase() === 'escape') { fecharApostila(); fecharEstudo(); }
+    });
+
+    document.addEventListener('contextmenu', function (e) { e.preventDefault(); eventLog.contextMenuAttempts++; return false; });
+    document.addEventListener('dragstart', function (e) { e.preventDefault(); return false; });
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { document.body.classList.add('tab-blurred'); eventLog.tabSwitches++; }
+      else { document.body.classList.remove('tab-blurred'); }
+    });
+    window.addEventListener('blur', function () { document.body.classList.add('tab-blurred'); eventLog.blurEvents++; });
+    window.addEventListener('focus', function () { document.body.classList.remove('tab-blurred'); });
+    window.addEventListener('beforeprint', function () { eventLog.printCSSAttempts++; });
+
+    const _gab = "BCDACBABCABCADACDDAD";
+
+    const quizData = [
+  {
+    "id": 1,
+    "topic": "Financiamento e produção do conhecimento",
+    "text": "O laboratório da universidade estadual concluiu os testes iniciais do peptídeo, mas não tinha recursos para construir as fábricas de alta tecnologia exigidas pela produção em escala. Os editais públicos haviam sido cortados e a equipe passou a procurar fundos privados para manter o projeto vivo. Ao analisar essa etapa da produção do conhecimento, qual hipótese explica o obstáculo estrutural que as pesquisadoras enfrentaram?",
+    "options": [
+      {
+        "letter": "A",
+        "text": "A legislação brasileira proíbe universidades estaduais de registrar patentes na área farmacêutica, o que inviabiliza a produção industrial."
+      },
+      {
+        "letter": "B",
+        "text": "A falta de financiamento público contínuo faz o conhecimento gerado na universidade depender de capital privado para chegar à produção."
+      },
+      {
+        "letter": "C",
+        "text": "A escassez de voluntários no sistema público de saúde atrasou a coleta de dados e impediu a liberação do medicamento."
+      },
+      {
+        "letter": "D",
+        "text": "O desinteresse acadêmico por problemas reais de saúde faz projetos serem cancelados ainda nas fases iniciais de laboratório."
+      }
+    ],
+    "explanation": "Sem financiamento público contínuo, a universidade não consegue levar a pesquisa até a fase industrial e passa a depender de capital privado. O caso mostra que os cortes de fomento foram uma escolha política, não uma fatalidade."
+  },
+  {
+    "id": 2,
+    "topic": "Estereótipos de gênero",
+    "text": "Depois de comprar a patente, o conselho administrativo da multinacional afastou as criadoras da chefia do projeto. A ata da reunião registrou que as cientistas tinham perfil \"muito acadêmico e passivo\" e que o lançamento internacional exigia \"agressividade comercial\", \"racionalidade estratégica\" e \"liderança firme\". Essa troca de liderança demonstra que:",
+    "options": [
+      {
+        "letter": "A",
+        "text": "As universidades públicas preparam as pesquisadoras apenas para a docência e desestimulam o empreendedorismo na área médica."
+      },
+      {
+        "letter": "B",
+        "text": "A boa gestão das grandes empresas depende de separar os pesquisadores teóricos dos profissionais de venda."
+      },
+      {
+        "letter": "C",
+        "text": "Os estereótipos de gênero são usados por estruturas de poder financeiro para legitimar o afastamento de mulheres das posições de comando."
+      },
+      {
+        "letter": "D",
+        "text": "A ciência contemporânea valoriza apenas o mérito técnico na escolha de gestores e ignora discursos sobre comportamento."
+      }
+    ],
+    "explanation": "O vocabulário da ata opõe a mulher \"passiva\" ao homem \"agressivo e racional\". Esse estereótipo serve de justificativa aparentemente técnica para afastar as criadoras do comando."
+  },
+  {
+    "id": 3,
+    "topic": "Mudança de finalidade",
+    "text": "O peptídeo nasceu para tratar diabetes tipo 2 e obesidade em pacientes de baixa renda, com testes feitos em voluntários de um hospital do SUS. Dois anos depois da venda da patente, o medicamento chegou às farmácias a R$ 2.800 por mês, indicado para controle estético de peso em adultos de alto poder aquisitivo. Essa mudança de finalidade evidencia um conflito em que:",
+    "options": [
+      {
+        "letter": "A",
+        "text": "O avanço da medicina estética curou a obesidade nas comunidades atendidas pelos hospitais públicos."
+      },
+      {
+        "letter": "B",
+        "text": "As decisões do mercado financeiro coincidem com as necessidades apontadas pelos relatórios do SUS."
+      },
+      {
+        "letter": "C",
+        "text": "Os princípios éticos da pesquisa original garantiram que o medicamento chegasse a todas as classes sociais."
+      },
+      {
+        "letter": "D",
+        "text": "A busca de lucro no mercado comercial e estético se sobrepôs ao objetivo inicial de melhorar a saúde da população."
+      }
+    ],
+    "explanation": "O objetivo original era a saúde da população pobre. Sob a lógica do lucro, o produto passou a atender um público de alto poder aquisitivo, com preço que exclui quem participou dos testes."
+  },
+  {
+    "id": 4,
+    "topic": "Apagamento das criadoras",
+    "text": "Ricardo Menezes, executivo vindo do mercado financeiro, passou a estampar capas de revistas de negócios como o \"visionário\" responsável pela fórmula. Em entrevistas, afirmou ter pegado \"uma pesquisa acadêmica promissora\" e transformado em produto global. As pesquisadoras que sintetizaram o peptídeo não foram citadas. A invisibilidade das criadoras na mídia reflete:",
+    "options": [
+      {
+        "letter": "A",
+        "text": "O apagamento do trabalho intelectual de mulheres e de pesquisadores regionais quando uma invenção passa a valer muito dinheiro."
+      },
+      {
+        "letter": "B",
+        "text": "Regras internas das universidades estaduais que proíbem pesquisadoras de conceder entrevistas a revistas de negócios."
+      },
+      {
+        "letter": "C",
+        "text": "A escolha das próprias cientistas de manter anonimato para evitar a pressão pública depois do sucesso do remédio."
+      },
+      {
+        "letter": "D",
+        "text": "O reconhecimento de que a ideia original da molécula importa menos que a estratégia de venda nas farmácias."
+      }
+    ],
+    "explanation": "Quando a invenção se torna lucrativa, o reconhecimento vai para o executivo e o trabalho intelectual das cientistas é apagado. O caso mostra que o executivo ficou com o crédito, enquanto as pesquisadoras desapareceram da história."
+  },
+  {
+    "id": 5,
+    "topic": "Ética na produção tecnológica",
+    "text": "Quarenta e sete pacientes de um hospital universitário participaram das fases pré-clínicas e clínicas, assumindo os riscos da testagem. Quando o medicamento chegou ao mercado, nenhum deles teve acesso ao tratamento, e o hospital não recebeu royalties. Sobre a ética na produção tecnológica, esse desfecho revela que:",
+    "options": [
+      {
+        "letter": "A",
+        "text": "O SUS dispõe de recursos próprios suficientes para comprar qualquer medicamento lançado por empresas internacionais."
+      },
+      {
+        "letter": "B",
+        "text": "A legislação exige que cidadãos vulneráveis cedam dados clínicos para que as farmacêuticas mantenham seus lucros."
+      },
+      {
+        "letter": "C",
+        "text": "A colaboração popular é apropriada por grupos privados, que depois retêm para si os benefícios da inovação científica."
+      },
+      {
+        "letter": "D",
+        "text": "Os contratos de pesquisa garantem que todo participante de teste clínico receba o medicamento gratuitamente por toda a vida."
+      }
+    ],
+    "explanation": "Os voluntários assumiram riscos e ajudaram a produzir o conhecimento, mas o benefício foi retido pela empresa. No marketing, eles aparecem apenas como \"participantes anônimos\"."
+  },
+  {
+    "id": 6,
+    "topic": "Desigualdade de acesso (TI16)",
+    "text": "No hospital universitário que sediou os testes, mulheres de bairros periféricos formam a maior parte dos pacientes com diabetes severa. Nenhuma delas consegue pagar os R$ 2.800 mensais do medicamento que ajudou a testar. Considerando o tema integrador Gênero, Sexualidade, Poder e Sociedade (TI16), essa exclusão ocorre porque:",
+    "options": [
+      {
+        "letter": "A",
+        "text": "As campanhas de saúde pública erradicaram as doenças metabólicas nessas comunidades por meio de restrições alimentares."
+      },
+      {
+        "letter": "B",
+        "text": "As desigualdades econômicas limitam o acesso às inovações tecnológicas criadas justamente para resolver problemas da população pobre."
+      },
+      {
+        "letter": "C",
+        "text": "A indústria farmacêutica concentra suas vendas nas farmácias populares, o que dificulta a distribuição nas grandes redes."
+      },
+      {
+        "letter": "D",
+        "text": "A composição química do peptídeo age de forma imprevisível conforme o nível de escolaridade do paciente."
+      }
+    ],
+    "explanation": "O preço de mercado cria uma barreira econômica que atinge sobretudo as mulheres pobres, justamente o grupo para o qual a pesquisa foi pensada."
+  },
+  {
+    "id": 7,
+    "topic": "Patente e controle",
+    "text": "Com a venda da patente, as cientistas perderam o poder de definir o preço do peptídeo, suas indicações e o público a ser atendido. A multinacional passou a controlar integralmente a exploração comercial da molécula. Nesse cenário, o registro de patente costuma funcionar como:",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Um instrumento jurídico que assegura monopólio à empresa compradora e permite a ela ditar as restrições de acesso à inovação."
+      },
+      {
+        "letter": "B",
+        "text": "Um selo oficial de qualidade que atesta a segurança do medicamento para consumo em larga escala nos países vizinhos."
+      },
+      {
+        "letter": "C",
+        "text": "Um contrato civil que obriga a empresa compradora a manter intacto o foco social definido antes pelas pesquisadoras."
+      },
+      {
+        "letter": "D",
+        "text": "Uma garantia de retorno financeiro que obriga o Estado a receber uma porcentagem do lucro de todas as vendas no território."
+      }
+    ],
+    "explanation": "A patente concentra o controle nas mãos de quem a detém. Os nomes das cientistas constam como coinventoras, mas os direitos de exploração pertencem apenas à corporação."
+  },
+  {
+    "id": 8,
+    "topic": "Linguagem e gênero",
+    "text": "A justificativa da empresa para afastar as cientistas opunha dois perfis: de um lado, o \"acadêmico e passivo\" das pesquisadoras; de outro, a \"agressividade comercial\", a \"racionalidade\" e a \"liderança firme\" do novo diretor. Ao analisar o vocabulário usado nessa justificativa, nota-se que ele:",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Descreve diferenças reais de formação entre quem pesquisa em laboratório e quem trabalha em sedes administrativas."
+      },
+      {
+        "letter": "B",
+        "text": "Associa firmeza e racionalidade a um padrão de comportamento masculino e, com isso, desqualifica o perfil das mulheres pesquisadoras."
+      },
+      {
+        "letter": "C",
+        "text": "Registra que as cientistas se recusaram a estudar economia para se concentrar exclusivamente nos testes hospitalares."
+      },
+      {
+        "letter": "D",
+        "text": "Reconhece que a reflexão acadêmica cuidadosa é uma vantagem para aumentar o faturamento no lançamento de produtos."
+      }
+    ],
+    "explanation": "As qualidades valorizadas (agressividade, racionalidade, firmeza) são associadas ao masculino, e a \"passividade\" ao feminino. Isso desqualifica as pesquisadoras por um estereótipo, não por competência."
+  },
+  {
+    "id": 9,
+    "topic": "Neutralidade da tecnologia",
+    "text": "A discussão sobre a neutralidade da ciência é um dos pontos da investigação filosófica. O peptídeo foi sintetizado para tratar uma doença que atinge sobretudo a população pobre, mas circula hoje como produto de estética para quem pode pagar. Esse percurso mostra que a tecnologia não é politicamente neutra porque:",
+    "options": [
+      {
+        "letter": "A",
+        "text": "O laboratório construiu o remédio de propósito para atender aos padrões estéticos das classes de altíssimo poder aquisitivo."
+      },
+      {
+        "letter": "B",
+        "text": "As invenções biomédicas resolvem naturalmente as opressões de gênero estruturadas nas agências reguladoras do mercado mundial."
+      },
+      {
+        "letter": "C",
+        "text": "As finalidades práticas de uma inovação são moldadas pelos interesses financeiros de quem detém a propriedade das vias de distribuição comercial."
+      },
+      {
+        "letter": "D",
+        "text": "As fórmulas farmacêuticas perdem o efeito curativo quando são licenciadas e vendidas por laboratórios privados."
+      }
+    ],
+    "explanation": "A mesma molécula serviu a finalidades opostas conforme quem a controlava. O destino de uma tecnologia depende dos interesses de quem detém sua propriedade e distribuição."
+  },
+  {
+    "id": 10,
+    "topic": "Desvio de finalidade",
+    "text": "Um projeto de mulheres pesquisadoras, voltado a uma epidemia que atinge a população pobre, transforma-se em artigo de beleza restrito a quem paga milhares de reais por mês. O desvio de finalidade da pesquisa indica que o mercado:",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Redireciona a utilidade do conhecimento científico para os estratos sociais capazes de oferecer retorno financeiro substancial e imediato."
+      },
+      {
+        "letter": "B",
+        "text": "Promove o prestígio acadêmico e divide as homenagens da mídia de maneira equilibrada entre empresas e universidades criadoras."
+      },
+      {
+        "letter": "C",
+        "text": "Valoriza a função social definida pela academia e distribui o tratamento de modo subsidiado a todos os pacientes de baixa renda."
+      },
+      {
+        "letter": "D",
+        "text": "Prioriza a fabricação das invenções com base apenas na urgência humanitária, sem considerar a renda dos consumidores."
+      }
+    ],
+    "explanation": "O mercado orienta o conhecimento para quem pode pagar. Por isso o remédio deixou de ser tratamento de diabetes para a população pobre e virou produto estético."
+  },
+  {
+    "id": 11,
+    "topic": "Poder de decisão",
+    "text": "Na transição da patente, o conselho administrativo da multinacional retirou as idealizadoras do remédio do conselho decisório e as rebaixou a consultoras sem poder de voto. As decisões sobre preço, indicação e distribuição passaram a ser tomadas sem elas. Esse episódio demonstra que, nas relações hierárquicas e institucionais:",
+    "options": [
+      {
+        "letter": "A",
+        "text": "As patentes modernas garantem que todas as pesquisadoras participem das assembleias que definem os valores dos tratamentos."
+      },
+      {
+        "letter": "B",
+        "text": "O poder de dirigir uma inovação é monopolizado por quem dispõe do capital necessário para a produção em massa."
+      },
+      {
+        "letter": "C",
+        "text": "O agendamento da produção de medicamentos ocorre por deliberação democrática, com as partes clínicas votando a distribuição do acesso."
+      },
+      {
+        "letter": "D",
+        "text": "Os lucros das vendas em escala financiam, por regra do mercado livre, novas turmas de pesquisadoras da rede estadual de ensino."
+      }
+    ],
+    "explanation": "Quem tem o capital para a produção em escala passa a mandar na inovação, mesmo sem tê-la criado. As cientistas ficaram sem poder sobre preço, indicação e distribuição."
+  },
+  {
+    "id": 12,
+    "topic": "Contradição do discurso de mercado",
+    "text": "Se o novo diretor afirmasse em entrevista que \"as engrenagens econômicas funcionam de forma justa para todos\", os fatos do caso o contradiriam. As criadoras foram afastadas da liderança, as pacientes do SUS perderam o acesso e a comunidade que cedeu corpos e dados não recebeu nada. Essa contradição comprova que:",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Os grandes laboratórios de estética reduziram as barreiras de classe ao admitir milhares de operários nas novas fábricas."
+      },
+      {
+        "letter": "B",
+        "text": "As autoras da tecnologia mantiveram o acesso livre ao medicamento para os usuários do sistema público graças ao faturamento externo."
+      },
+      {
+        "letter": "C",
+        "text": "A expansão mercantil impulsionou ao mesmo tempo o apagamento estrutural das mulheres na ciência e a falta de assistência às populações mais vulneráveis."
+      },
+      {
+        "letter": "D",
+        "text": "A elevação progressiva dos preços nas farmácias elimina as doenças crônicas ao reduzir o sedentarismo."
+      }
+    ],
+    "explanation": "Os fatos mostram exclusão de gênero (cientistas afastadas) e exclusão de classe (pacientes sem acesso) ocorrendo juntas, o que desmente a ideia de um mercado justo para todos."
+  },
+  {
+    "id": 13,
+    "topic": "Apropriação privada da inovação",
+    "text": "A pesquisa tinha potencial para melhorar a saúde pública e nasceu de uma demanda concreta do hospital universitário. Sem subsídio estatal para a fase industrial, a equipe viu a molécula seguir outro caminho. Esse percurso mostra que a inovação:",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Passou de possível tratamento para a população pobre a mecanismo privado de lucro, distante das carências que a originaram."
+      },
+      {
+        "letter": "B",
+        "text": "Tornou-se a base da arrecadação de impostos que modernizou as emergências dos hospitais envolvidos no estudo."
+      },
+      {
+        "letter": "C",
+        "text": "Provocou o barateamento de outros compostos farmacêuticos e manteve estável o custo do tratamento em bairros pobres."
+      },
+      {
+        "letter": "D",
+        "text": "Gerou centenas de bolsas patrocinadas pela fábrica para estudantes de biologia dos institutos federais."
+      }
+    ],
+    "explanation": "A pesquisa nasceu de uma necessidade do SUS e acabou como produto privado de lucro. O hospital e a universidade ficaram fora da repartição de benefícios."
+  },
+  {
+    "id": 14,
+    "topic": "Reconhecimento e autoridade",
+    "text": "A capa da revista de negócios estampou o executivo como o \"visionário\" capaz de firmar contratos internacionais. A escolha da imagem sugere que a credibilidade pública no mundo dos negócios:",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Assenta-se apenas em metodologias quantitativas e em publicações avaliadas por cientistas externos aos laboratórios."
+      },
+      {
+        "letter": "B",
+        "text": "Permanece independente de questões de classe, porque toda inovação oficializada conquista respeito universal."
+      },
+      {
+        "letter": "C",
+        "text": "É definida pelos conselhos profissionais de química, que credenciam quem pode falar em nome da inovação."
+      },
+      {
+        "letter": "D",
+        "text": "Continua atrelada a mecanismos seletivos que reservam as posições de autoridade, inovação e visão de futuro aos representantes do poder patriarcal."
+      }
+    ],
+    "explanation": "A mídia reconhece como \"visionário\" o executivo homem e branco, e não as criadoras. Isso revela mecanismos seletivos que reservam a autoridade a determinados grupos."
+  },
+  {
+    "id": 15,
+    "topic": "Papel do Estado",
+    "text": "O corte de financiamento atinge com mais força as regiões distantes dos polos financeiros dominantes. O laboratório da universidade estadual perdeu bolsas, equipamentos e insumos, e a pesquisa só sobreviveu porque uma multinacional comprou a patente. A ausência de apoio governamental contínuo acarreta:",
+    "options": [
+      {
+        "letter": "A",
+        "text": "A transferência de invenções estratégicas, que poderiam atender a população, para o controle e as diretrizes comerciais de grandes empresas."
+      },
+      {
+        "letter": "B",
+        "text": "O crescimento da manipulação informal de fármacos, que supre com agilidade as lacunas das políticas públicas de saúde."
+      },
+      {
+        "letter": "C",
+        "text": "A multiplicação das oportunidades de empreendedorismo universitário, com a abertura de milhares de laboratórios locais."
+      },
+      {
+        "letter": "D",
+        "text": "A revitalização das instalações escolares por corporações estrangeiras, que investem voluntariamente na saúde do país."
+      }
+    ],
+    "explanation": "Os cortes de fomento e a falta de proteção à pesquisa pública permitiram a venda da patente. Invenções que poderiam servir à população passam ao controle comercial de grandes empresas."
+  },
+  {
+    "id": 16,
+    "topic": "O paradoxo da descoberta",
+    "text": "O caso do peptídeo apresenta um paradoxo: a descoberta só existiu porque pacientes do SUS cederam tempo, corpo e dados, e porque pesquisadoras públicas trabalharam com financiamento estatal. Depois de pronta, a tecnologia ficou trancada por uma patente privada e fora do alcance de quem a tornou possível. Esse paradoxo mostra que o desenvolvimento tecnológico:",
+    "options": [
+      {
+        "letter": "A",
+        "text": "Precisa da aprovação de executivos para garantir que os princípios ativos sigam os protocolos de pureza."
+      },
+      {
+        "letter": "B",
+        "text": "Impede que pessoas com menos escolaridade participem das testagens preventivas feitas nas universidades."
+      },
+      {
+        "letter": "C",
+        "text": "Capta corpos, tempo e saberes públicos para produzir uma descoberta que a privatização depois tranca e deixa fora do alcance da população."
+      },
+      {
+        "letter": "D",
+        "text": "Exige que empresas do varejo sacrifiquem parte da arrecadação para custear remédios nas policlínicas públicas."
+      }
+    ],
+    "explanation": "Recursos públicos, trabalho das pesquisadoras e corpos dos voluntários tornaram a descoberta possível. A privatização depois impediu que a população se beneficiasse dela."
+  },
+  {
+    "id": 17,
+    "topic": "Conhecimento local e capital externo",
+    "text": "Uma cooperativa agrícola tenta implementar uma tecnologia de irrigação desenvolvida por pesquisadores locais, mas descobre que a patente foi vendida a um grupo internacional. O uso agora exige o pagamento de taxas altas em dólar, inviáveis para os pequenos produtores. Esse cenário evidencia que o acesso à inovação na região é dificultado porque:",
+    "options": [
+      {
+        "letter": "A",
+        "text": "As populações do interior repudiam os avanços tecnológicos de ponta e priorizam os métodos tradicionais de plantio manual."
+      },
+      {
+        "letter": "B",
+        "text": "A carência de inteligência científica obriga os grandes conglomerados estrangeiros a refazer as pesquisas quando chegam ao território brasileiro."
+      },
+      {
+        "letter": "C",
+        "text": "O barateamento global dos insumos permite que cientistas independentes compitam livremente com as fábricas das multinacionais."
+      },
+      {
+        "letter": "D",
+        "text": "O capital financeiro externo captura o conhecimento desenvolvido localmente e restringe sua aplicação social por meio de cobranças abusivas."
+      }
+    ],
+    "explanation": "É a mesma dinâmica do caso do peptídeo: o conhecimento criado localmente é capturado por capital externo e seu uso social é limitado por cobranças inviáveis."
+  },
+  {
+    "id": 18,
+    "topic": "Quebra de patente",
+    "text": "Um hospital filantrópico pede a quebra da patente do peptídeo para fabricá-lo a preço de custo e atender pacientes graves que não podem pagar o valor de mercado. A farmacêutica aciona a justiça para impedir a produção e proteger seu monopólio. O argumento ético e social que sustenta o pedido do hospital baseia-se na ideia de que:",
+    "options": [
+      {
+        "letter": "A",
+        "text": "A indústria atua sempre de forma voluntária para cobrir integralmente as despesas dos hospitais de pesquisa do país."
+      },
+      {
+        "letter": "B",
+        "text": "As ferramentas terapêuticas modernas devem ser abandonadas nos sistemas públicos de saúde em favor dos tratamentos caseiros preventivos."
+      },
+      {
+        "letter": "C",
+        "text": "A elevação proposital do preço dos insumos farmacêuticos serve para desestimular o uso desnecessário de drogarias."
+      },
+      {
+        "letter": "D",
+        "text": "A restrição mercadológica imposta pelo poder financeiro distorce o avanço científico e transforma uma tecnologia essencial à vida em privilégio de quem pode pagar."
+      }
+    ],
+    "explanation": "O argumento do hospital é que uma tecnologia essencial à vida não deveria virar privilégio de quem pode pagar. O monopólio de mercado distorce a finalidade do avanço científico."
+  },
+  {
+    "id": 19,
+    "topic": "Projetos escolares e propriedade",
+    "text": "Estudantes de uma escola pública desenvolvem um protótipo de filtragem de água de baixo custo para comunidades agrícolas que sofrem com a seca. O projeto vence prêmios, mas, sem financiamento governamental para a produção, uma empresa estrangeira oferece comprar a ideia exigindo a transferência total dos direitos da invenção. Ao analisar as relações de poder no desenvolvimento científico, a consequência estrutural dessa transação para a região afetada é:",
+    "options": [
+      {
+        "letter": "A",
+        "text": "A transferência definitiva do controle tecnológico para a empresa externa, o que impede que a inovação seja gerida pelas necessidades da comunidade que a criou."
+      },
+      {
+        "letter": "B",
+        "text": "A venda dos direitos, que assegura o retorno de impostos internacionais para a ampliação automática da infraestrutura dos laboratórios da escola."
+      },
+      {
+        "letter": "C",
+        "text": "A apropriação do projeto pelos investidores estrangeiros, ação capaz de eliminar as desigualdades de gênero nos cargos de chefia técnica da cidade."
+      },
+      {
+        "letter": "D",
+        "text": "O afastamento das jovens inventoras originais, o que estimula a comunidade agrícola a rejeitar qualquer máquina moderna de irrigação."
+      }
+    ],
+    "explanation": "Com a transferência total dos direitos, o controle da tecnologia sai das mãos da comunidade e a inovação deixa de ser guiada pelas necessidades de quem a criou."
+  },
+  {
+    "id": 20,
+    "topic": "Destituição das criadoras",
+    "text": "A chefia do projeto saiu das mãos das pesquisadoras que descobriram a molécula e passou para um executivo do mercado financeiro imposto pelo conselho da multinacional. Nenhuma das criadoras manteve poder de decisão sobre preço, indicação ou distribuição. Essa destituição revela que:",
+    "options": [
+      {
+        "letter": "A",
+        "text": "As corporações atuam como forças mediadoras focadas em ampliar a acessibilidade dos tratamentos na rede pública."
+      },
+      {
+        "letter": "B",
+        "text": "As barreiras de classe foram derrubadas pelas descobertas biomédicas, que equalizaram o poder de decisão em todas as instâncias."
+      },
+      {
+        "letter": "C",
+        "text": "O conselho administrativo assumiu a responsabilidade legal e moral de proteger os propósitos humanitários definidos pelas acadêmicas."
+      },
+      {
+        "letter": "D",
+        "text": "O avanço tecnológico formulado por grupos com menos influência econômica é capturado pelo grande capital financeiro, que afasta as criadoras dos espaços de liderança."
+      }
+    ],
+    "explanation": "O conhecimento criado por um grupo com menos poder econômico é capturado pelo grande capital, que afasta as próprias criadoras dos espaços de decisão."
+  }
+];
+
+    function abrirApostila() {
+      eventLog.apostilaOpens++;
+      document.getElementById('apostila-overlay').classList.add('visible');
+      salvarProgresso();
+    }
+    function fecharApostila() {
+      document.getElementById('apostila-overlay').classList.remove('visible');
+    }
+    document.getElementById('apostila-overlay').addEventListener('click', function(e) {
+      if (e.target === this) fecharApostila();
+    });
+
+    function abrirEstudo() {
+      eventLog.estudoOpens++;
+      document.getElementById('estudo-overlay').classList.add('visible');
+      salvarProgresso();
+    }
+    function fecharEstudo() {
+      document.getElementById('estudo-overlay').classList.remove('visible');
+    }
+    document.getElementById('estudo-overlay').addEventListener('click', function(e) {
+      if (e.target === this) fecharEstudo();
+    });
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildSession() {
+      const qOrder = shuffle([...Array(quizData.length).keys()]);
+      return qOrder.map(origIdx => {
+        const q = quizData[origIdx];
+        const correctLetterOrig = _gab.charAt(origIdx);
+        const correctText = q.options.find(o => o.letter === correctLetterOrig).text;
+        const opts = shuffle([...q.options]);
+        const newLetters = ['A', 'B', 'C', 'D'];
+        const shuffledOpts = opts.map((o, i) => ({ letter: newLetters[i], text: o.text }));
+        const newCorrectPos = opts.findIndex(o => o.text === correctText);
+        const newCorrectLetter = newLetters[newCorrectPos];
+        return {
+          originalId: q.id, topic: q.topic, text: q.text,
+          options: shuffledOpts, correct: newCorrectLetter, explanation: q.explanation
+        };
+      });
+    }
+
+    const SAVE_KEY = 'agora-quiz-peptideo-patente-v1';
+
+    function salvarProgresso() {
+      if (!quizEmAndamento) return;
+      const save = {
+        versao: 1,
+        nome: playerNameGlobal,
+        sessionQuestions, currentIndex, correctCount, errosCount,
+        fastAnswersStreak, quizStartTime, eventLog,
+        estado: estadoAtual, respostaPendente,
+        userAnswers: userAnswers.map(a => ({
+          qPos: a.qPos, chosen: a.chosen, correct: a.correct,
+          isCorrect: a.isCorrect, isTimeout: a.isTimeout,
+          confidence: a.confidence,
+          timeTaken: a.timeTaken, tempoEfetivo: a.tempoEfetivo
+        })),
+        feedbackData: estadoAtual === 'feedback' ? {
+          chosen: userAnswers[userAnswers.length - 1]?.chosen,
+          isCorrect: userAnswers[userAnswers.length - 1]?.isCorrect,
+          isTimeout: userAnswers[userAnswers.length - 1]?.isTimeout,
+          confidence: userAnswers[userAnswers.length - 1]?.confidence
+        } : null,
+        timestamp: Date.now()
+      };
+      try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {}
+    }
+
+    function carregarProgressoSalvo() {
+      try {
+        const raw = localStorage.getItem(SAVE_KEY);
+        if (!raw) return null;
+        const data = JSON.parse(raw);
+        if (!data || data.versao !== 1) return null;
+        if (Date.now() - data.timestamp > 24 * 60 * 60 * 1000) {
+          localStorage.removeItem(SAVE_KEY); return null;
+        }
+        return data;
+      } catch (e) { return null; }
+    }
+
+    function limparProgresso() { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} }
+
+    let sessionQuestions = [];
+    let currentIndex = 0;
+    let correctCount = 0;
+    let errosCount = 0;
+    let userAnswers = [];
+    let playerNameGlobal = '';
+    let questionStartTime = 0;
+    let lockEndTime = 0;
+    let quizStartTime = 0;
+    let fastAnswersStreak = 0;
+    let readingLockInterval = null;
+    let feedbackLockInterval = null;
+    let questionTimerInterval = null;
+    let questionTimeRemaining = 30;
+    let isQuestionLocked = true;
+    let quizEmAndamento = false;
+    let estadoAtual = 'inicio';
+    let respostaPendente = null;
+
+    const READING_LOCK_SECONDS = 4;
+    const REFLECTION_LOCK_SECONDS = 5;
+    const SKIP_AVAILABLE_AFTER = 2;
+    const QUESTION_TIME_SECONDS = 30;
+
+    const CONF_LABELS = {
+      chutei:  { emoji: '🤔', titulo: 'Chutei',         desc: 'Fui no impulso' },
+      nao_sei: { emoji: '😐', titulo: 'Não sei',        desc: 'Fiquei em dúvida' },
+      acho:    { emoji: '😊', titulo: 'Acho que sim',   desc: 'Razoavelmente seguro' },
+      certeza: { emoji: '🎯', titulo: 'Tenho certeza',  desc: 'Domino o conteúdo' }
+    };
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+      else if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+    }
+
+    window.addEventListener('beforeunload', function (e) {
+      if (quizEmAndamento) {
+        salvarProgresso();
+        e.preventDefault();
+        e.returnValue = 'Você tem um quiz em andamento. Seu progresso foi salvo, mas deseja mesmo sair?';
+        return e.returnValue;
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const save = carregarProgressoSalvo();
+      if (save) {
+        const resumeCard = document.getElementById('resume-card');
+        const resumeInfo = document.getElementById('resume-info');
+        resumeInfo.innerText = `${save.nome}, você parou na questão ${save.currentIndex + 1} de ${quizData.length} — ✅ ${save.correctCount} acertos, ❌ ${save.errosCount} erros. Continuar?`;
+        resumeCard.style.display = 'block';
+        document.getElementById('player-name').value = save.nome;
+      }
+    });
+
+    function continuarQuiz() {
+      const save = carregarProgressoSalvo();
+      if (!save) { alert('Nada para continuar.'); return; }
+      playerNameGlobal = save.nome;
+      sessionQuestions = save.sessionQuestions;
+      currentIndex = save.currentIndex;
+      correctCount = save.correctCount;
+      errosCount = save.errosCount || 0;
+      fastAnswersStreak = save.fastAnswersStreak || 0;
+      quizStartTime = save.quizStartTime;
+      respostaPendente = save.respostaPendente || null;
+      Object.keys(eventLog).forEach(k => { eventLog[k] = save.eventLog[k] || 0; });
+      userAnswers = (save.userAnswers || []).map(a => ({ ...a }));
+      quizEmAndamento = true;
+
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('final-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'none';
+
+      if (save.estado === 'feedback') {
+        document.getElementById('quiz-screen').style.display = 'none';
+        document.getElementById('feedback-screen').style.display = 'block';
+        const fb = save.feedbackData;
+        if (fb) {
+          const q = sessionQuestions[currentIndex];
+          renderizarFeedback(fb.chosen, q.correct, fb.isCorrect, fb.isTimeout, fb.confidence, q);
+        } else loadQuestion();
+      } else {
+        document.getElementById('quiz-screen').style.display = 'block';
+        loadQuestion();
+      }
+    }
+
+    function descartarSave() {
+      if (!confirm('Isso vai apagar todo o progresso salvo. Tem certeza?')) return;
+      limparProgresso();
+      document.getElementById('resume-card').style.display = 'none';
+      document.getElementById('player-name').value = '';
+    }
+
+    function startQuiz() {
+      const nameInput = document.getElementById('player-name').value.trim();
+      if (!nameInput) { alert("Digite o seu nome completo para que o seu visto possa ser registrado pelo professor."); return; }
+      const saveExistente = carregarProgressoSalvo();
+      if (saveExistente) {
+        if (!confirm(`Existe um quiz em andamento de "${saveExistente.nome}". Iniciar um novo vai apagar o anterior. Continuar?`)) return;
+        limparProgresso();
+      }
+      playerNameGlobal = nameInput;
+      sessionQuestions = buildSession();
+      currentIndex = 0; correctCount = 0; errosCount = 0;
+      userAnswers = []; fastAnswersStreak = 0;
+      quizStartTime = Date.now(); quizEmAndamento = true; respostaPendente = null;
+      Object.keys(eventLog).forEach(k => eventLog[k] = 0);
+      document.getElementById('resume-card').style.display = 'none';
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('final-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'none';
+      document.getElementById('quiz-screen').style.display = 'block';
+      loadQuestion();
+    }
+
+    function atualizarContadores() {
+      document.getElementById('acertos-val').innerText = correctCount;
+      document.getElementById('erros-val').innerText = errosCount;
+    }
+
+    function formatarTexto(texto) {
+      let safe = texto
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      safe = safe.replace(/"([^"]+)"/g, '<div class="quote-block">$1</div>');
+      safe = safe.replace(/\n\n/g, '<br><br>');
+      safe = safe.replace(/\n/g, '<br>');
+      return safe;
+    }
+
+    function loadQuestion() {
+      clearInterval(readingLockInterval);
+      clearInterval(questionTimerInterval);
+      clearInterval(feedbackLockInterval);
+
+      estadoAtual = 'quiz'; respostaPendente = null;
+      const q = sessionQuestions[currentIndex];
+
+      document.getElementById('q-counter').innerText = `Questão ${currentIndex + 1} de ${sessionQuestions.length}`;
+      document.getElementById('q-topic').innerText = q.topic;
+      document.getElementById('question-text').innerHTML = formatarTexto(q.text);
+      atualizarContadores();
+
+      const progressPercent = (currentIndex / sessionQuestions.length) * 100;
+      document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+
+      ['A','B','C','D'].forEach(letter => {
+        const opt = q.options.find(o => o.letter === letter);
+        if (opt) document.getElementById(`opt-${letter}-text`).innerText = opt.text;
+      });
+
+      const timerBar = document.getElementById('question-timer-bar');
+      timerBar.className = 'question-timer-bar';
+      document.getElementById('question-timer').innerText = QUESTION_TIME_SECONDS;
+
+      isQuestionLocked = true;
+      setOptionsDisabled(true);
+
+      const lockBar = document.getElementById('reading-lock-bar');
+      lockBar.className = 'reading-lock-bar';
+
+      let lockSeconds = READING_LOCK_SECONDS;
+      lockBar.innerHTML = `<span>📖 Fase 1/2 — Leia a pergunta: <strong id="reading-countdown">${lockSeconds}</strong>s...</span>`;
+
+      questionStartTime = Date.now();
+      salvarProgresso();
+
+      readingLockInterval = setInterval(() => {
+        lockSeconds--;
+        const cd = document.getElementById('reading-countdown');
+        if (cd) cd.innerText = lockSeconds;
+
+        if (lockSeconds <= 0) {
+          clearInterval(readingLockInterval);
+          iniciarFaseReflexao(lockBar);
+        }
+      }, 1000);
+    }
+
+    function iniciarFaseReflexao(lockBar) {
+      let reflectSeconds = REFLECTION_LOCK_SECONDS;
+      lockBar.className = 'reading-lock-bar reflection';
+      lockBar.innerHTML = `
+        <span>🤔 Fase 2/2 — Reflita antes de responder: <strong id="reflect-countdown">${reflectSeconds}</strong>s...</span>
+        <button type="button" class="apostila-inline-btn" onclick="abrirApostila()">📖 Apostila</button>
+        <button type="button" class="apostila-inline-btn" onclick="abrirEstudo()" style="border-color:#00e676; color:#00e676;">📋 Caso</button>
+        <button type="button" class="skip-reflection-btn" id="skip-reflection-btn" onclick="pularReflexao()">
+          ⚡ Já refleti, pular
+        </button>
+      `;
+
+      const skipTimeout = setTimeout(() => {
+        const btn = document.getElementById('skip-reflection-btn');
+        if (btn) btn.style.display = 'inline-block';
+      }, SKIP_AVAILABLE_AFTER * 1000);
+
+      readingLockInterval = setInterval(() => {
+        reflectSeconds--;
+        const rc = document.getElementById('reflect-countdown');
+        if (rc) rc.innerText = reflectSeconds;
+
+        if (reflectSeconds <= 0) {
+          clearInterval(readingLockInterval);
+          clearTimeout(skipTimeout);
+          liberarResposta(lockBar);
+        }
+      }, 1000);
+    }
+
+    function pularReflexao() {
+      clearInterval(readingLockInterval);
+      const lockBar = document.getElementById('reading-lock-bar');
+      liberarResposta(lockBar);
+    }
+
+    function liberarResposta(lockBar) {
+      isQuestionLocked = false;
+      lockEndTime = Date.now();
+      setOptionsDisabled(false);
+      lockBar.className = 'reading-lock-bar unlocked';
+      lockBar.innerHTML = `
+        <span>✅ Pode responder. Escolha com consciência!</span>
+        <button type="button" class="apostila-inline-btn" onclick="abrirApostila()">📖 Apostila</button>
+        <button type="button" class="apostila-inline-btn" onclick="abrirEstudo()" style="border-color:#00e676; color:#00e676;">📋 Caso</button>
+      `;
+      startQuestionTimer();
+    }
+
+    function startQuestionTimer() {
+      clearInterval(questionTimerInterval);
+      questionTimeRemaining = QUESTION_TIME_SECONDS;
+      const timerBar = document.getElementById('question-timer-bar');
+      const timerDisplay = document.getElementById('question-timer');
+      timerDisplay.innerText = questionTimeRemaining;
+      timerBar.className = 'question-timer-bar';
+
+      questionTimerInterval = setInterval(() => {
+        questionTimeRemaining--;
+        timerDisplay.innerText = questionTimeRemaining;
+        if (questionTimeRemaining <= 5) timerBar.className = 'question-timer-bar urgent';
+        else if (questionTimeRemaining <= 10) timerBar.className = 'question-timer-bar warning';
+
+        if (questionTimeRemaining <= 0) {
+          clearInterval(questionTimerInterval);
+          handleAnswer(null);
+        }
+      }, 1000);
+    }
+
+    function setOptionsDisabled(disabled) {
+      ['A', 'B', 'C', 'D'].forEach(letter => {
+        const btn = document.getElementById(`btn-opt-${letter}`);
+        if (btn) btn.disabled = disabled;
+      });
+    }
+
+    function handleAnswer(chosenLetter) {
+      if (isQuestionLocked && chosenLetter !== null) return;
+      clearInterval(questionTimerInterval);
+      clearInterval(feedbackLockInterval);
+
+      if (chosenLetter === null) { finalizarResposta(null, null, true); return; }
+
+      const btn = document.getElementById(`btn-opt-${chosenLetter}`);
+      if (btn) {
+        document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selecionado'));
+        btn.classList.add('selecionado');
+      }
+      respostaPendente = chosenLetter;
+      document.getElementById('confidence-overlay').classList.add('visible');
+    }
+
+    function escolherConfianca(nivel) {
+      const chosenLetter = respostaPendente;
+      document.getElementById('confidence-overlay').classList.remove('visible');
+      if (chosenLetter === null || chosenLetter === undefined) return;
+      finalizarResposta(chosenLetter, nivel, false);
+    }
+
+    function finalizarResposta(chosenLetter, confidence, isTimeout) {
+      const answerDuration = (Date.now() - questionStartTime) / 1000;
+      const q = sessionQuestions[currentIndex];
+      const correctLetter = q.correct;
+      const isCorrect = !isTimeout && chosenLetter === correctLetter;
+
+      const lockDuration = (lockEndTime - questionStartTime) / 1000;
+      const tempoEfetivo = Math.max(0, answerDuration - lockDuration);
+
+      if (!isTimeout) {
+        if (tempoEfetivo < 3) fastAnswersStreak++;
+        else fastAnswersStreak = Math.max(0, fastAnswersStreak - 1);
+
+        if (fastAnswersStreak >= 3) {
+          estadoAtual = 'rush'; respostaPendente = null;
+          salvarProgresso(); triggerRushBlock(); return;
+        }
+      }
+
+      if (isCorrect) correctCount++; else errosCount++;
+
+      userAnswers.push({
+        qPos: currentIndex, chosen: chosenLetter, correct: correctLetter,
+        isCorrect, isTimeout, confidence,
+        timeTaken: answerDuration, tempoEfetivo
+      });
+
+      estadoAtual = 'feedback'; respostaPendente = null; salvarProgresso();
+
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'block';
+      renderizarFeedback(chosenLetter, correctLetter, isCorrect, isTimeout, confidence, q);
+    }
+
+    function renderizarFeedback(chosenLetter, correctLetter, isCorrect, isTimeout, confidence, q) {
+      const banner = document.getElementById('feedback-banner');
+      const title = document.getElementById('feedback-title');
+      const sub = document.getElementById('feedback-subtitle');
+      const confRecap = document.getElementById('feedback-confidence');
+      const expText = document.getElementById('feedback-exp-text');
+      const nextBtn = document.getElementById('next-btn');
+      const lockMsg = document.getElementById('lock-timer-msg');
+
+      clearInterval(feedbackLockInterval);
+
+      if (confidence && CONF_LABELS[confidence]) {
+        const c = CONF_LABELS[confidence];
+        confRecap.style.display = 'inline-block';
+        confRecap.innerHTML = `Você marcou: <strong>${c.emoji} ${c.titulo}</strong>`;
+      } else { confRecap.style.display = 'none'; }
+
+      if (isCorrect) {
+        banner.className = 'feedback-banner correct';
+        title.innerText = "Mandou Bem! Acertou! 🎉";
+        sub.innerText = ""; expText.innerText = q.explanation;
+        lockMsg.innerText = ""; nextBtn.disabled = false;
+        nextBtn.innerText = "Próxima Questão ➔";
+      } else if (isTimeout) {
+        banner.className = 'feedback-banner timeout';
+        title.innerText = "⏱️ Tempo Esgotado!";
+        sub.innerText = `A resposta correta era a letra (${correctLetter}).`;
+        expText.innerText = q.explanation;
+        iniciarContagemFeedback(8);
+      } else {
+        banner.className = 'feedback-banner incorrect';
+        title.innerText = "Resposta Errada! ❌";
+        sub.innerText = `Você marcou a letra (${chosenLetter}). A correta era a (${correctLetter}).`;
+        expText.innerText = q.explanation;
+        iniciarContagemFeedback(8);
+      }
+    }
+
+    function iniciarContagemFeedback(segundos) {
+      const nextBtn = document.getElementById('next-btn');
+      const lockMsg = document.getElementById('lock-timer-msg');
+      let cooldown = segundos;
+      nextBtn.disabled = true;
+      lockMsg.innerText = `⏳ Leia a explicação. Liberando em ${cooldown}s...`;
+      nextBtn.innerText = `Aguarde (${cooldown}s)`;
+
+      feedbackLockInterval = setInterval(() => {
+        cooldown--;
+        if (cooldown > 0) {
+          lockMsg.innerText = `⏳ Leia a explicação. Liberando em ${cooldown}s...`;
+          nextBtn.innerText = `Aguarde (${cooldown}s)`;
+        } else {
+          clearInterval(feedbackLockInterval);
+          lockMsg.innerText = "✅ Explicação lida. Agora você pode seguir!";
+          nextBtn.disabled = false;
+          nextBtn.innerText = "Próxima Questão ➔";
+        }
+      }, 1000);
+    }
+
+    function triggerRushBlock() {
+      fastAnswersStreak = 0;
+      clearInterval(readingLockInterval);
+      clearInterval(questionTimerInterval);
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'block';
+
+      let rushSeconds = 15;
+      const countDisplay = document.getElementById('rush-countdown-val');
+      countDisplay.innerText = rushSeconds;
+
+      const rushTimer = setInterval(() => {
+        rushSeconds--;
+        countDisplay.innerText = rushSeconds;
+        if (rushSeconds <= 0) {
+          clearInterval(rushTimer);
+          document.getElementById('rush-alert-screen').style.display = 'none';
+          document.getElementById('quiz-screen').style.display = 'block';
+          estadoAtual = 'quiz'; loadQuestion();
+        }
+      }, 1000);
+    }
+
+    function nextQuestion() {
+      clearInterval(readingLockInterval);
+      clearInterval(feedbackLockInterval);
+      clearInterval(questionTimerInterval);
+      currentIndex++;
+      document.getElementById('feedback-screen').style.display = 'none';
+      if (currentIndex < sessionQuestions.length) {
+        document.getElementById('quiz-screen').style.display = 'block';
+        estadoAtual = 'quiz'; loadQuestion();
+      } else showFinalResults();
+    }
+
+    function showFinalResults() {
+      clearInterval(readingLockInterval);
+      clearInterval(feedbackLockInterval);
+      clearInterval(questionTimerInterval);
+      quizEmAndamento = false; estadoAtual = 'final'; limparProgresso();
+
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'none';
+      document.getElementById('final-screen').style.display = 'block';
+
+      const playerName = playerNameGlobal || "Estudante";
+      document.getElementById('final-user-greeting').innerText = `Relatório individual de: ${playerName}`;
+
+      const totalTimeSec = Math.round((Date.now() - quizStartTime) / 1000);
+      const totalTimeMin = (totalTimeSec / 60).toFixed(1);
+      const totalTempoEfetivo = userAnswers.reduce((acc, a) => acc + (a.tempoEfetivo || 0), 0);
+      const avgTempoEfetivo = userAnswers.length > 0 ? Math.round(totalTempoEfetivo / userAnswers.length) : 0;
+      const accuracy = Math.round((correctCount / sessionQuestions.length) * 100);
+      const errosPct = 100 - accuracy;
+
+      document.getElementById('visto-nome').innerText = playerName;
+      document.getElementById('visto-acertos').innerText = `${correctCount} de ${sessionQuestions.length} (${accuracy}%)`;
+      document.getElementById('visto-erros').innerText = `${errosCount} de ${sessionQuestions.length} (${errosPct}%)`;
+      document.getElementById('visto-tempo-total').innerText = `${totalTimeMin} minutos (${totalTimeSec}s)`;
+      document.getElementById('visto-tempo-medio').innerText = `${avgTempoEfetivo}s efetivos por pergunta`;
+
+      const badge = document.getElementById('visto-status-badge');
+      const diag = document.getElementById('visto-diagnostico');
+      const isApproved = (accuracy >= 60) && (avgTempoEfetivo >= 5);
+
+      if (isApproved) {
+        badge.className = 'visto-badge aprovado';
+        badge.innerText = '✅ VISTO CONCEDIDO';
+        diag.innerText = 'Leitura atenta e bom aproveitamento';
+        diag.style.color = '#2e7d32';
+      } else {
+        badge.className = 'visto-badge recusado';
+        badge.innerText = '❌ NÃO VALIDADO';
+        if (accuracy < 60 && avgTempoEfetivo < 5) diag.innerText = 'Acertos abaixo de 60% e respostas muito rápidas';
+        else if (accuracy < 60) diag.innerText = 'Acertos abaixo do mínimo necessário (60%)';
+        else diag.innerText = 'Respostas muito rápidas: mostre ao professor antes de refazer';
+        diag.style.color = '#c62828';
+      }
+
+      const initials = playerName.substring(0, 3).toUpperCase().replace(/[^A-Z]/g, 'EST');
+      document.getElementById('visto-hash').innerText = `#FILO-${initials}-${accuracy}P-${totalTimeSec}S`;
+
+      renderizarRelatorioConfianca();
+
+      const reportBox = document.getElementById('security-report');
+      const suspeitos = [];
+      if (eventLog.printAttempts > 0) suspeitos.push(`🖨️ ${eventLog.printAttempts} tentativa(s) de print`);
+      if (eventLog.printCSSAttempts > 0) suspeitos.push(`📄 ${eventLog.printCSSAttempts} tentativa(s) de impressão`);
+      if (eventLog.devtoolsAttempts > 0) suspeitos.push(`🔧 ${eventLog.devtoolsAttempts} tentativa(s) de abrir DevTools`);
+      if (eventLog.viewSourceAttempts > 0) suspeitos.push(`👁️ ${eventLog.viewSourceAttempts} tentativa(s) de ver código-fonte`);
+      if (eventLog.contextMenuAttempts > 0) suspeitos.push(`🖱️ ${eventLog.contextMenuAttempts} clique(s) direito`);
+      if (eventLog.tabSwitches > 0) suspeitos.push(`🔀 ${eventLog.tabSwitches} troca(s) de aba`);
+      if (eventLog.blurEvents > 0) suspeitos.push(`💤 ${eventLog.blurEvents} perda(s) de foco`);
+
+      if (suspeitos.length === 0) {
+        reportBox.innerHTML = `<div class="security-alert">✅ <strong>Sem eventos suspeitos.</strong></div>`;
+      } else {
+        reportBox.innerHTML = `<div class="security-alert danger">⚠️ <strong>Eventos registrados:</strong><br>${suspeitos.map(s => `• ${s}`).join('<br>')}</div>`;
+      }
+
+      const reviewBox = document.getElementById('review-container');
+      reviewBox.innerHTML = '<h3 style="margin-bottom:16px; color:#ffd200;">Gabarito Explicado:</h3>';
+      userAnswers.forEach((item, idx) => {
+        const q = sessionQuestions[item.qPos];
+        const correctOptObj = q.options.find(o => o.letter === item.correct);
+        const confInfo = item.confidence ? CONF_LABELS[item.confidence] : null;
+        const div = document.createElement('div');
+        div.className = `review-item ${item.isCorrect ? '' : 'was-wrong'}`;
+        const statusTxt = item.isTimeout ? '⏱️ Não respondida' : (item.isCorrect ? '✅ Acertou' : '❌ Errou');
+        div.innerHTML = `
+          <div class="review-header">
+            <span>Questão ${idx + 1}: ${q.topic} (${Math.round(item.timeTaken)}s)</span>
+            <span>${statusTxt}</span>
+          </div>
+          <div class="review-text">${q.text}</div>
+          <div class="review-answer"><strong>Resposta Certa (${item.correct}):</strong> ${correctOptObj.text}</div>
+          ${!item.isCorrect && item.chosen ? `<div class="review-answer" style="color:#e21b3c;"><strong>Você marcou:</strong> (${item.chosen})</div>` : ''}
+          ${confInfo ? `<div class="review-conf">🎯 Confiança: <strong>${confInfo.emoji} ${confInfo.titulo}</strong></div>` : ''}
+          <div class="review-exp"><strong>Explicação:</strong> ${q.explanation}</div>
+        `;
+        reviewBox.appendChild(div);
+      });
+    }
+
+    function renderizarRelatorioConfianca() {
+      const box = document.getElementById('confidence-report');
+      const stats = { certeza: { t:0, a:0 }, acho: { t:0, a:0 }, nao_sei: { t:0, a:0 }, chutei: { t:0, a:0 } };
+      let semResposta = 0;
+
+      userAnswers.forEach(a => {
+        if (a.isTimeout) { semResposta++; return; }
+        if (!a.confidence || !stats[a.confidence]) return;
+        stats[a.confidence].t++;
+        if (a.isCorrect) stats[a.confidence].a++;
+      });
+
+      function linha(nivel) {
+        const s = stats[nivel];
+        if (s.t === 0) return '';
+        const c = CONF_LABELS[nivel];
+        const pct = Math.round((s.a / s.t) * 100);
+        const cls = pct >= 70 ? 'pct-bom' : (pct >= 40 ? 'pct-medio' : 'pct-ruim');
+        return `<div class="conf-stat-row">
+          <span class="label">${c.emoji} ${c.titulo}</span>
+          <span class="valor">${s.a}/${s.t} acertos <span class="${cls}">(${pct}%)</span></span>
+        </div>`;
+      }
+
+      let html = `<h4>🎯 Análise do Termômetro de Confiança</h4>`;
+      html += linha('certeza') + linha('acho') + linha('nao_sei') + linha('chutei');
+      if (semResposta > 0) {
+        html += `<div class="conf-stat-row"><span class="label">⏱️ Sem resposta (tempo esgotado)</span><span class="valor">${semResposta}</span></div>`;
+      }
+      box.innerHTML = html;
+    }
+
+    function toggleReview() {
+      const box = document.getElementById('review-container');
+      const aberto = box.style.display === 'block';
+      box.style.display = aberto ? 'none' : 'block';
+      if (!aberto) box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function restartQuiz() {
+      clearInterval(readingLockInterval);
+      clearInterval(feedbackLockInterval);
+      clearInterval(questionTimerInterval);
+      limparProgresso();
+      quizEmAndamento = false; estadoAtual = 'inicio'; respostaPendente = null;
+      document.getElementById('review-container').style.display = 'none';
+      document.getElementById('final-screen').style.display = 'none';
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'none';
+      document.getElementById('resume-card').style.display = 'none';
+      document.getElementById('start-screen').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
