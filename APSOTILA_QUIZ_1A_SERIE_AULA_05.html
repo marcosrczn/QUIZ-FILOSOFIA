@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz de Filosofia: Paradigma e Crise de Paradigma</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #E21B3C; --red-dark: #b8142e;
+      --blue: #1368CE; --blue-dark: #0f52a5;
+      --yellow: #B37A00; --yellow-dark: #8a5f00;
+      --green: #1B6B09; --green-dark: #145205;
+      --bg-gradient: linear-gradient(135deg, #46178F 0%, #18033d 100%);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+    input, textarea { user-select: text !important; -webkit-user-select: text !important; }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--bg-gradient);
+      color: #fff; min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 16px; overflow-x: hidden; transition: filter 0.2s ease;
+    }
+    body.tab-blurred { filter: blur(25px); pointer-events: none; }
+
+    @media print {
+      body { display: none !important; }
+      body::before { content: "⚠️ IMPRESSÃO BLOQUEADA"; display: block; font-size: 2rem; padding: 60px 20px; text-align: center; color: #E21B3C; }
+    }
+
+    .app-container {
+      width: 100%; max-width: 1050px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 24px; padding: 24px; box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,0.15); position: relative;
+    }
+
+    .top-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+    .brand-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.35rem; color: #ffd200; display: flex; align-items: center; gap: 8px; }
+    .ctrl-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+    .icon-btn {
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: #fff;
+      padding: 8px 14px; border-radius: 999px; cursor: pointer; font-size: 0.85rem;
+      font-weight: 700; transition: all 0.2s; font-family: 'Montserrat', sans-serif;
+    }
+    .icon-btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
+    .icon-btn.apostila { background: rgba(255,210,0,0.2); border-color: #ffd200; color: #ffd200; }
+    .icon-btn.apostila:hover { background: #ffd200; color: #2b0c5e; }
+
+    #start-screen { text-align: center; padding: 30px 16px; }
+
+    .hero-badge { display: inline-block; background: #ffd200; color: #381273; padding: 6px 18px; border-radius: 30px;
+      font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.85rem;
+      text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 16px; }
+
+    .anti-rush-badge, .security-badge, .confidence-badge {
+      display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem;
+      font-weight: 700; margin-bottom: 12px; font-family: 'Montserrat', sans-serif;
+    }
+    .anti-rush-badge { background: rgba(0,230,118,0.2); color: #00e676; border: 1px solid #00e676; }
+    .security-badge { background: rgba(226,27,60,0.2); color: #ff5252; border: 1px solid #ff5252; margin-left: 8px; }
+    .confidence-badge { background: rgba(255,210,0,0.2); color: #ffd200; border: 1px solid #ffd200; margin-left: 8px; }
+
+    h1.hero-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2.3rem; line-height: 1.25;
+      margin-bottom: 16px; color: #fff; text-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+
+    p.hero-desc { font-size: 1.05rem; max-width: 760px; margin: 0 auto 24px auto; line-height: 1.6; color: #e0d5f8; }
+
+    .rules-card { background: rgba(0,0,0,0.25); border-radius: 14px; padding: 16px 20px; max-width: 800px;
+      margin: 0 auto 24px auto; text-align: left; font-size: 0.95rem; line-height: 1.55; border-left: 4px solid #ffd200; }
+    .rules-card h4 { color: #ffd200; margin-bottom: 10px; font-family: 'Montserrat', sans-serif; font-size: 1.1rem; }
+    .rules-card ul { margin-left: 20px; margin-bottom: 15px; color: #e0d5f8; }
+    .rules-card li { margin-bottom: 6px; }
+    .rules-card kbd { background: #ffd200; color: #2b0c5e; padding: 2px 8px; border-radius: 6px; font-weight: 900; font-family: monospace; font-size: 0.9em; }
+
+    #resume-card { display: none; background: linear-gradient(135deg, #00c853, #00963e); border-radius: 16px;
+      padding: 20px 24px; max-width: 800px; margin: 0 auto 20px auto; text-align: left;
+      box-shadow: 0 8px 24px rgba(0,200,83,0.4); animation: popIn 0.4s ease; }
+    #resume-card h3 { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.2rem; margin-bottom: 8px; color: #fff; }
+    #resume-card p { font-size: 0.95rem; line-height: 1.5; margin-bottom: 14px; color: rgba(255,255,255,0.95); }
+    .resume-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .resume-btn { padding: 10px 22px; border-radius: 10px; border: none; font-family: 'Montserrat', sans-serif;
+      font-weight: 800; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; }
+    .resume-btn-continue { background: #fff; color: #00963e; box-shadow: 0 4px 0 rgba(0,0,0,0.15); }
+    .resume-btn-continue:hover { transform: translateY(-2px); }
+    .resume-btn-reset { background: rgba(0,0,0,0.25); color: #fff; border: 1px solid rgba(255,255,255,0.4); }
+    .resume-btn-reset:hover { background: rgba(0,0,0,0.4); }
+
+    .input-box { margin: 0 auto 20px auto; max-width: 420px; }
+    .input-box label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 0.95rem; }
+    .input-box input {
+      width: 100%; padding: 14px 20px; border-radius: 12px; border: 2px solid #ffd200;
+      font-size: 1.1rem; font-family: 'Montserrat', sans-serif; font-weight: 700;
+      text-align: center; outline: none; background: #fff; color: #222;
+    }
+
+    .start-btn {
+      background: #ffd200; color: #2b0c5e; border: none; padding: 18px 48px;
+      font-family: 'Montserrat', sans-serif; font-size: 1.25rem; font-weight: 900;
+      border-radius: 16px; cursor: pointer;
+      box-shadow: 0 6px 0 #b39200, 0 10px 20px rgba(0,0,0,0.3);
+      transition: all 0.15s ease; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .start-btn:hover { transform: translateY(-3px); box-shadow: 0 9px 0 #b39200, 0 14px 25px rgba(0,0,0,0.4); }
+
+    #quiz-screen { display: none; }
+    .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 12px; }
+    .q-badge { background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px;
+      font-weight: 700; font-size: 0.95rem; font-family: 'Montserrat', sans-serif; }
+    .q-topic { background: rgba(255,210,0,0.25); color: #ffd200; border: 1px solid #ffd200;
+      padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; font-family: 'Montserrat', sans-serif; }
+    .stats-box { display: flex; gap: 10px; font-family: 'Montserrat', sans-serif; font-weight: 700; }
+    .counter-badge {
+      padding: 6px 14px; border-radius: 20px; font-size: 0.95rem; font-weight: 900;
+      font-family: 'Montserrat', sans-serif; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .counter-badge.acertos { background: rgba(0,230,118,0.2); color: #00e676; border: 2px solid #00e676; }
+    .counter-badge.erros { background: rgba(226,27,60,0.2); color: #ff5252; border: 2px solid #ff5252; }
+
+    .progress-track { width: 100%; height: 8px; background: rgba(255,255,255,0.15); border-radius: 10px;
+      overflow: hidden; margin-bottom: 14px; }
+    .progress-fill { height: 100%; background: #ffd200; width: 0%; transition: width 0.3s ease; }
+
+    .question-timer-bar { display: flex; align-items: center; justify-content: space-between;
+      background: rgba(0,0,0,0.35); padding: 8px 18px; border-radius: 12px; margin-bottom: 10px;
+      font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.95rem;
+      color: #ffd200; border: 2px solid transparent; transition: all 0.3s ease; }
+    .question-timer-bar.warning { background: rgba(226,27,60,0.35); color: #fff; border-color: #ff5252; animation: pulse 1s infinite; }
+    .question-timer-bar.urgent { background: rgba(226,27,60,0.6); color: #fff; border-color: #fff; animation: pulse 0.5s infinite; }
+    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+    #question-timer { font-size: 1.35rem; font-weight: 900; }
+
+    .reading-lock-bar {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      background: rgba(0,0,0,0.3); padding: 10px 16px; border-radius: 12px;
+      margin-bottom: 14px; font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem; font-weight: 700; color: #ffd200;
+      transition: all 0.3s; flex-wrap: wrap;
+    }
+    .reading-lock-bar.reflection { background: rgba(255,210,0,0.15); color: #ffd200; border: 1px solid #ffd200; }
+    .reading-lock-bar.unlocked { background: rgba(0,230,118,0.2); color: #00e676; }
+
+    .skip-reflection-btn {
+      display: none;
+      background: rgba(0,0,0,0.35);
+      color: #ffd200;
+      border: 2px solid #ffd200;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      animation: popIn 0.3s ease;
+    }
+    .skip-reflection-btn:hover { background: #ffd200; color: #2b0c5e; transform: translateY(-2px); }
+
+    .apostila-inline-btn {
+      background: rgba(255,255,255,0.15);
+      color: #ffd200;
+      border: 2px dashed #ffd200;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .apostila-inline-btn:hover { background: #ffd200; color: #2b0c5e; transform: translateY(-2px); }
+
+    .question-card {
+      background: #fff;
+      color: #222;
+      border-radius: 16px;
+      padding: 24px 30px 28px 30px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      line-height: 1.7;
+      font-size: 1.1rem;
+      border-left: 8px solid #ffd200;
+    }
+
+    .question-text {
+      font-weight: 600;
+      line-height: 1.7;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .question-text .quote-block {
+      display: block;
+      background: #ede7f6;
+      border-left: 4px solid #46178F;
+      padding: 14px 18px;
+      margin: 12px 0;
+      border-radius: 8px;
+      font-style: italic;
+      font-weight: 400;
+      color: #2a2a2a;
+      line-height: 1.65;
+      text-align: justify;
+      white-space: normal;
+    }
+
+    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 768px) {
+      .options-grid { grid-template-columns: 1fr; }
+      h1.hero-title { font-size: 1.7rem; }
+      .question-card { padding: 16px 18px; font-size: 1rem; }
+    }
+
+    .option-btn {
+      border: none; border-radius: 14px; padding: 18px 20px; color: #fff;
+      font-family: 'Open Sans', sans-serif; font-size: 1.02rem; font-weight: 700;
+      line-height: 1.45; cursor: pointer; display: flex; align-items: center; gap: 14px;
+      text-align: left; transition: all 0.2s ease; box-shadow: 0 5px 0 rgba(0,0,0,0.3);
+      user-select: none; position: relative;
+    }
+    .option-btn:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.08); box-shadow: 0 8px 0 rgba(0,0,0,0.35); }
+    .option-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,0.3); }
+    .option-btn:disabled { cursor: not-allowed; filter: grayscale(0.5) opacity(0.65); transform: none !important; box-shadow: none !important; }
+    .option-btn.selecionado { outline: 4px solid #ffd200; outline-offset: 4px; }
+    .option-btn.opt-A { background: var(--red); box-shadow: 0 5px 0 var(--red-dark); }
+    .option-btn.opt-B { background: var(--blue); box-shadow: 0 5px 0 var(--blue-dark); }
+    .option-btn.opt-C { background: var(--yellow); box-shadow: 0 5px 0 var(--yellow-dark); }
+    .option-btn.opt-D { background: var(--green); box-shadow: 0 5px 0 var(--green-dark); }
+
+    .opt-icon { font-size: 1.5rem; font-weight: 900; min-width: 40px; height: 40px;
+      background: rgba(0,0,0,0.2); border-radius: 10px; display: flex; align-items: center;
+      justify-content: center; font-family: 'Montserrat', sans-serif; }
+    .opt-text { flex-grow: 1; }
+
+    #confidence-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(10, 3, 40, 0.92);
+      z-index: 1000;
+      align-items: center; justify-content: center;
+      padding: 20px;
+      animation: popIn 0.3s ease;
+    }
+    #confidence-overlay.visible { display: flex; }
+    .confidence-modal {
+      background: linear-gradient(135deg, #46178F 0%, #250756 100%);
+      border: 3px solid #ffd200;
+      border-radius: 24px;
+      padding: 36px 32px;
+      max-width: 680px; width: 100%;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.7), 0 0 80px rgba(255,210,0,0.25);
+    }
+    .confidence-modal h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900; font-size: 1.9rem;
+      color: #fff; margin-bottom: 10px;
+      text-shadow: 0 3px 12px rgba(0,0,0,0.5);
+    }
+    .confidence-modal .subtitle {
+      font-size: 1rem; color: #e0d5f8;
+      margin-bottom: 28px; line-height: 1.55;
+      max-width: 520px; margin-left: auto; margin-right: auto;
+    }
+    .confidence-modal .subtitle strong { color: #ffd200; }
+    .confidence-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 520px) { .confidence-grid { grid-template-columns: 1fr; } }
+    .confidence-btn {
+      border: 3px solid transparent; border-radius: 16px;
+      padding: 18px 16px; cursor: pointer;
+      background: rgba(255,255,255,0.08);
+      color: #fff; font-family: 'Montserrat', sans-serif;
+      font-weight: 800; font-size: 1rem;
+      display: flex; align-items: center; gap: 12px;
+      text-align: left; transition: all 0.2s ease;
+      box-shadow: 0 5px 0 rgba(0,0,0,0.3);
+    }
+    .confidence-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 0 rgba(0,0,0,0.35); border-color: #ffd200; }
+    .confidence-btn .conf-emoji { font-size: 2rem; flex-shrink: 0; }
+    .confidence-btn .conf-texto { display: flex; flex-direction: column; }
+    .confidence-btn .conf-titulo { font-size: 1.05rem; font-weight: 900; }
+    .confidence-btn .conf-desc { font-size: 0.78rem; font-weight: 500; opacity: 0.8; margin-top: 2px; }
+    .confidence-btn.conf-chutei    { background: rgba(226,27,60,0.25); }
+    .confidence-btn.conf-naosei    { background: rgba(179,122,0,0.3); }
+    .confidence-btn.conf-acho      { background: rgba(19,104,206,0.3); }
+    .confidence-btn.conf-certeza   { background: rgba(0,200,83,0.25); }
+
+    #apostila-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(10, 3, 40, 0.92);
+      z-index: 1100;
+      align-items: center; justify-content: center;
+      padding: 20px;
+      animation: popIn 0.3s ease;
+    }
+    #apostila-overlay.visible { display: flex; }
+    .apostila-modal {
+      background: #fff;
+      color: #222;
+      border-radius: 20px;
+      max-width: 900px; width: 100%;
+      max-height: 90vh;
+      display: flex; flex-direction: column;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.7);
+      overflow: hidden;
+      border: 3px solid #ffd200;
+    }
+    .apostila-header {
+      background: linear-gradient(135deg, #46178F 0%, #250756 100%);
+      padding: 18px 24px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .apostila-header h2 {
+      font-family: 'Montserrat', sans-serif;
+      color: #ffd200; font-size: 1.3rem; font-weight: 900;
+    }
+    .apostila-close-btn {
+      background: rgba(255,255,255,0.15);
+      color: #fff; border: 1px solid rgba(255,255,255,0.4);
+      padding: 8px 18px; border-radius: 999px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800; font-size: 0.85rem;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .apostila-close-btn:hover { background: #E21B3C; border-color: #E21B3C; }
+    .apostila-body {
+      padding: 24px 28px;
+      overflow-y: auto;
+      line-height: 1.7;
+      font-size: 1rem;
+      color: #333;
+      user-select: text !important;
+      -webkit-user-select: text !important;
+    }
+    .apostila-body h3 {
+      font-family: 'Montserrat', sans-serif;
+      color: #46178F;
+      font-size: 1.15rem;
+      margin-top: 22px;
+      margin-bottom: 10px;
+      border-bottom: 2px solid #ffd200;
+      padding-bottom: 6px;
+    }
+    .apostila-body h3:first-child { margin-top: 0; }
+    .apostila-body h4 {
+      font-family: 'Montserrat', sans-serif;
+      color: #381273;
+      font-size: 1rem;
+      margin-top: 16px;
+      margin-bottom: 8px;
+    }
+    .apostila-body p { margin-bottom: 12px; text-align: justify; }
+    .apostila-body ul { margin: 8px 0 14px 24px; }
+    .apostila-body li { margin-bottom: 6px; }
+    .apostila-body strong { color: #46178F; }
+
+    #rush-alert-screen { display: none; text-align: center; padding: 40px 20px;
+      background: rgba(226,27,60,0.95); border-radius: 20px; color: #fff; margin: 20px 0; animation: popIn 0.3s ease; }
+    .rush-title { font-family: 'Montserrat', sans-serif; font-size: 2.2rem; font-weight: 900; margin-bottom: 12px; }
+    .rush-desc { font-size: 1.15rem; max-width: 650px; margin: 0 auto 20px auto; line-height: 1.6; }
+    .rush-countdown { font-family: 'Montserrat', sans-serif; font-size: 3.5rem; font-weight: 900; color: #ffd200; margin-bottom: 12px; }
+
+    #feedback-screen { display: none; text-align: center; padding: 24px 16px; }
+    .feedback-banner { border-radius: 16px; padding: 20px; margin-bottom: 20px; animation: popIn 0.25s ease; }
+    .feedback-banner.correct { background: #26890c; color: #fff; }
+    .feedback-banner.incorrect { background: #e21b3c; color: #fff; }
+    .feedback-banner.timeout { background: #B37A00; color: #fff; }
+    .feedback-title { font-family: 'Montserrat', sans-serif; font-size: 2.2rem; font-weight: 900; margin-bottom: 6px; }
+    .confidence-recap {
+      display: inline-block; margin-top: 12px;
+      background: rgba(0,0,0,0.25);
+      padding: 8px 18px; border-radius: 12px;
+      font-size: 0.9rem; font-weight: 700;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+    .feedback-explanation { background: #fff; color: #222; border-radius: 14px; padding: 22px;
+      font-size: 1.1rem; line-height: 1.65; text-align: left; margin-bottom: 24px; border-left: 6px solid #381273; }
+    .feedback-explanation strong { color: #381273; font-family: 'Montserrat', sans-serif; }
+    .lock-timer-msg { margin-bottom: 16px; font-family: 'Montserrat', sans-serif;
+      font-weight: 800; font-size: 1.05rem; color: #ffd200; }
+
+    .next-btn { background: #ffd200; color: #2b0c5e; border: none; padding: 16px 44px;
+      font-family: 'Montserrat', sans-serif; font-size: 1.25rem; font-weight: 900;
+      border-radius: 14px; cursor: pointer; box-shadow: 0 6px 0 #b39200; transition: all 0.15s; }
+    .next-btn:disabled { background: #888; color: #ddd; box-shadow: none; cursor: not-allowed; }
+
+    #final-screen { display: none; text-align: center; padding: 24px 16px; }
+    .podium-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 2.4rem; color: #ffd200; margin-bottom: 10px; }
+    .user-greeting { font-size: 1.2rem; margin-bottom: 20px; }
+
+    .visto-card { background: #fff; color: #222; border-radius: 18px; padding: 24px; max-width: 620px;
+      margin: 0 auto 24px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.4); text-align: left; }
+    .visto-header { display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 2px dashed #ccc; padding-bottom: 12px; margin-bottom: 16px; }
+    .visto-header h3 { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.15rem; color: #381273; }
+    .visto-badge { padding: 6px 14px; border-radius: 20px; font-weight: 900; font-size: 0.85rem; font-family: 'Montserrat', sans-serif; }
+    .visto-badge.aprovado { background: #e8f5e9; color: #2e7d32; border: 1px solid #2e7d32; }
+    .visto-badge.recusado { background: #ffebee; color: #c62828; border: 1px solid #c62828; }
+    .visto-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.98rem; }
+    .visto-row span.label { color: #666; font-weight: 600; }
+    .visto-row span.val { font-weight: 800; color: #222; font-family: 'Montserrat', sans-serif; }
+    .visto-row span.val.acertos { color: #2e7d32; }
+    .visto-row span.val.erros { color: #c62828; }
+    .visto-code { margin-top: 14px; background: #f4f0fa; padding: 10px; border-radius: 8px;
+      text-align: center; font-family: monospace; font-weight: 900; font-size: 1.1rem;
+      color: #46178f; letter-spacing: 2px; border: 1px solid #d4c5eb; }
+
+    .confidence-report {
+      margin-top: 16px; padding: 16px;
+      background: #f4f0fa; border-radius: 12px;
+      border-left: 4px solid #46178f;
+    }
+    .confidence-report h4 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem; color: #381273;
+      margin-bottom: 10px; font-weight: 900;
+    }
+    .conf-stat-row {
+      display: flex; justify-content: space-between;
+      align-items: center; padding: 6px 0;
+      font-size: 0.9rem; border-bottom: 1px dashed #d4c5eb;
+    }
+    .conf-stat-row:last-child { border-bottom: none; }
+    .conf-stat-row .label { display: flex; align-items: center; gap: 8px; color: #444; font-weight: 600; }
+    .conf-stat-row .valor { font-family: 'Montserrat', sans-serif; font-weight: 900; color: #222; }
+    .conf-stat-row .pct-bom { color: #2e7d32; }
+    .conf-stat-row .pct-medio { color: #B37A00; }
+    .conf-stat-row .pct-ruim { color: #c62828; }
+
+    .conf-alerta {
+      margin-top: 12px; padding: 12px;
+      background: #fff3cd; border-left: 4px solid #ffa000;
+      border-radius: 8px; font-size: 0.9rem; color: #664d03;
+    }
+    .conf-alerta.bom { background: #e8f5e9; border-left-color: #2e7d32; color: #1b5e20; }
+    .conf-alerta.ruim { background: #f8d7da; border-left-color: #c62828; color: #721c24; }
+
+    .security-alert { margin-top: 14px; padding: 12px; border-radius: 10px;
+      background: #fff3cd; border-left: 4px solid #ffa000; font-size: 0.9rem; color: #664d03; }
+    .security-alert.danger { background: #f8d7da; border-left-color: #c62828; color: #721c24; }
+
+    .final-actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+    .action-btn { padding: 14px 28px; border-radius: 12px; font-family: 'Montserrat', sans-serif;
+      font-weight: 800; font-size: 1rem; cursor: pointer; border: none; transition: all 0.2s; }
+    .btn-restart { background: #ffd200; color: #2b0c5e; box-shadow: 0 4px 0 #b39200; }
+    .btn-review { background: rgba(255,255,255,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.4); }
+
+    #review-container { display: none; text-align: left; margin-top: 24px;
+      background: rgba(0,0,0,0.25); border-radius: 16px; padding: 20px;
+      max-height: 500px; overflow-y: auto; }
+    .review-item { background: #fff; color: #222; border-radius: 12px; padding: 16px;
+      margin-bottom: 14px; border-left: 6px solid #26890c; }
+    .review-item.was-wrong { border-left-color: #e21b3c; }
+    .review-header { font-weight: 800; font-family: 'Montserrat', sans-serif;
+      margin-bottom: 8px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .review-text { font-size: 0.95rem; margin-bottom: 10px; white-space: pre-line; }
+    .review-answer { font-size: 0.9rem; background: #f1f3f5; padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; }
+    .review-exp { font-size: 0.85rem; color: #555; font-style: italic; }
+    .review-conf { font-size: 0.85rem; margin-top: 6px; padding: 6px 10px;
+      background: #f4f0fa; border-radius: 6px; color: #46178f; font-weight: 700; }
+
+    @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <div class="top-controls">
+      <div class="brand-title"><span>⚡ ÁGORA DIGITAL • FILOSOFIA</span></div>
+      <div class="ctrl-btns">
+        <button class="icon-btn apostila" onclick="abrirApostila()" title="Consultar conteúdo durante o quiz">📖 Consultar Apostila</button>
+        <button class="icon-btn" onclick="toggleFullscreen()" title="Atalho: tecla F">⛶ Tela Cheia (F)</button>
+      </div>
+    </div>
+
+    <div id="start-screen">
+      <div class="hero-badge">1ª Série EM • Aula 04</div>
+      <span class="anti-rush-badge">🛡️ LEITURA CONSCIENTE</span>
+      <span class="security-badge">🔒 MONITORADO</span>
+      <span class="confidence-badge">🎯 TERMÔMETRO DE CONFIANÇA</span>
+      <h1 class="hero-title">Paradigma e Crise de Paradigma:<br>Como a Ciência Muda</h1>
+
+      <p class="hero-desc">
+        Desafio de consolidação do aprendizado! Teste seus conhecimentos sobre a filosofia de Thomas Kuhn, os conceitos de paradigma, ciência normal, anomalia, crise de paradigma, revolução científica e incomensurabilidade.
+      </p>
+
+      <div id="resume-card">
+        <h3>💾 Você tem um quiz em andamento!</h3>
+        <p id="resume-info"></p>
+        <div class="resume-actions">
+          <button class="resume-btn resume-btn-continue" onclick="continuarQuiz()">▶️ Continuar</button>
+          <button class="resume-btn resume-btn-reset" onclick="descartarSave()">🗑️ Começar do Zero</button>
+        </div>
+      </div>
+
+      <div class="rules-card">
+        <h4>📋 Estrutura da Aula:</h4>
+        <ul>
+            <li><strong>Temática:</strong> Paradigma e Crise de Paradigma.</li>
+            <li><strong>Objetos de Conhecimento:</strong> Paradigma; Crise de paradigma.</li>
+            <li><strong>Objetivo de Aprendizagem:</strong> Compreender os conceitos de paradigma e crise de paradigma e reconhecer como eles explicam a mudança do conhecimento científico ao longo do tempo.</li>
+        </ul>
+        <h4>⚙️ Como Funciona o Quiz:</h4>
+        • <strong>Fase de Leitura:</strong> 4 segundos para ler a pergunta.<br>
+        • <strong>Fase de Reflexão:</strong> 5 segundos para pensar. Se já refletiu, aparece o botão <em>"Já refliti, pular"</em> após 2 segundos.<br>
+        • <strong>📖 Consultar Apostila:</strong> a qualquer momento, use o botão no topo para reler o conteúdo.<br>
+        • <strong>🎯 Termômetro de Confiança:</strong> ao responder, você dirá o quanto está certo da sua resposta (Chutei / Não sei / Acho que sim / Tenho certeza). <em>Seja sincero — o professor analisará esse dado.</em><br>
+        • <strong>⏱️ Sem Tempo Limite:</strong> depois da liberação, você pode ler e responder com calma, sem cronômetro.<br>
+        • <strong>Se Errar, Leia a Dica:</strong> a explicação fica na tela por 8 segundos antes de liberar o avanço.<br>
+        • <strong>Anti-Chute:</strong> respostas muito rápidas ativam a trava de leitura de 15 segundos.<br>
+        • <strong>🎲 Ordem Aleatória:</strong> as perguntas e alternativas são embaralhadas a cada tentativa.<br>
+        • <strong>💾 Salvamento Automático:</strong> se você fechar ou atualizar a página sem querer, seu progresso é preservado.<br>
+        • <strong>⛶ Tela Cheia:</strong> aperte a tecla <kbd>F</kbd>.<br>
+        • <strong>Monitoramento:</strong> trocar de aba, tentar imprimir ou tirar print fica registrado.<br>
+        • <strong>Visto do Professor:</strong> mínimo de 60% de acertos e leitura consciente.
+      </div>
+
+      <div class="input-box">
+        <label for="player-name">Seu Nome Completo (Estudante):</label>
+        <input type="text" id="player-name" placeholder="Digite seu nome completo aqui..." value="">
+      </div>
+
+      <button class="start-btn" onclick="startQuiz()">Iniciar Desafio</button>
+    </div>
+
+    <div id="confidence-overlay">
+      <div class="confidence-modal">
+        <h2>🎯 Quão certo você está?</h2>
+        <p class="subtitle">
+          Seja <strong>sincero</strong> — este dado ajuda o professor a entender
+          o que você realmente aprendeu. Não há resposta errada aqui.
+        </p>
+        <div class="confidence-grid">
+          <button class="confidence-btn conf-chutei" onclick="escolherConfianca('chutei')">
+            <span class="conf-emoji">🤔</span>
+            <span class="conf-texto">
+              <span class="conf-titulo">Chutei</span>
+              <span class="conf-desc">Não tenho ideia / fui no impulso</span>
+            </span>
+          </button>
+          <button class="confidence-btn conf-naosei" onclick="escolherConfianca('nao_sei')">
+            <span class="conf-emoji">😐</span>
+            <span class="conf-texto">
+              <span class="conf-titulo">Não sei</span>
+              <span class="conf-desc">Fiquei muito em dúvida</span>
+            </span>
+          </button>
+          <button class="confidence-btn conf-acho" onclick="escolherConfianca('acho')">
+            <span class="conf-emoji">😊</span>
+            <span class="conf-texto">
+              <span class="conf-titulo">Acho que sim</span>
+              <span class="conf-desc">Estou razoavelmente seguro</span>
+            </span>
+          </button>
+          <button class="confidence-btn conf-certeza" onclick="escolherConfianca('certeza')">
+            <span class="conf-emoji">🎯</span>
+            <span class="conf-texto">
+              <span class="conf-titulo">Tenho certeza</span>
+              <span class="conf-desc">Domino totalmente o conteúdo</span>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="apostila-overlay">
+      <div class="apostila-modal">
+        <div class="apostila-header">
+          <h2>📖 Apostila — Paradigma e Crise de Paradigma</h2>
+          <button class="apostila-close-btn" onclick="fecharApostila()">✕ Fechar</button>
+        </div>
+        <div class="apostila-body" id="apostila-content">
+
+          <h3>Módulo 1: Quem foi Thomas Kuhn?</h3>
+          <p>Thomas Samuel Kuhn (1922–1996) foi físico, filósofo e historiador da ciência. Ficou conhecido principalmente pela obra <em>A Estrutura das Revoluções Científicas</em>, publicada em 1962.</p>
+          <p>Kuhn argumentou que o progresso da ciência não acontece de forma contínua e cumulativa. A ciência muda por meio de revoluções, nas quais paradigmas antigos são substituídos por novos.</p>
+          <p>Suas principais influências incluem a história da ciência, a sociologia do conhecimento e a epistemologia. As referências que fundamentam as videoaulas incluem Alan Chalmers, Alberto Oliva e o próprio Kuhn.</p>
+
+          <h3>Módulo 2: O conceito de paradigma</h3>
+          <h4>2.1 Definição</h4>
+          <p>Paradigma é o modelo explicativo ou padrão que orienta a prática científica. É o conjunto de crenças, valores, técnicas e pressupostos que uma comunidade científica compartilha em determinado período.</p>
+          <p>O conceito de paradigma foi um dos grandes avanços da metodologia científica no século XX, introduzido por Kuhn para explicar como o trabalho do cientista é orientado por pressupostos que ele nem sempre questiona.</p>
+
+          <h4>2.2 Função do paradigma</h4>
+          <p>O paradigma define o que é considerado verdadeiro, relevante e válido em uma época. Ele orienta quais perguntas vale a pena fazer, quais métodos são aceitos e como os resultados são interpretados.</p>
+          <p>Um paradigma funciona como uma lente pela qual os cientistas enxergam o mundo. Ele não é apenas um conjunto de teorias, mas também inclui valores, técnicas e exemplos de problemas resolvidos que servem de modelo para a pesquisa.</p>
+
+          <h4>2.3 Exemplos históricos</h4>
+          <ul>
+            <li><strong>Antiguidade e Idade Média – Geocentrismo:</strong> a Terra é o centro do universo.</li>
+            <li><strong>Séculos XVI e XVII – Heliocentrismo:</strong> o Sol é o centro do sistema solar.</li>
+            <li><strong>Séculos XVII a XIX – Mecanicismo:</strong> o universo funciona como uma máquina regida por leis matemáticas.</li>
+            <li><strong>Século XX – Relatividade e física quântica:</strong> tempo e espaço são relativos; a matéria tem comportamento probabilístico.</li>
+            <li><strong>Contemporaneidade – Paradigma da sustentabilidade (em construção):</strong> busca equilibrar produção, consumo e preservação ambiental.</li>
+          </ul>
+
+          <h3>Módulo 3: Ciência normal</h3>
+          <h4>3.1 O que é ciência normal</h4>
+          <p>Kuhn chama de ciência normal o período em que o paradigma vigente funciona bem e orienta a pesquisa sem grandes questionamentos. Os cientistas trabalham dentro dos limites do paradigma, resolvendo problemas que ele mesmo define como relevantes.</p>
+          <p>Na ciência normal, os cientistas tentam forçar a natureza a se encaixar no paradigma vigente. Eles não questionam os fundamentos do paradigma, apenas aplicam seus métodos e conceitos para resolver problemas específicos.</p>
+
+          <h4>3.2 Características da ciência normal</h4>
+          <ul>
+            <li>Pesquisa orientada pelo paradigma.</li>
+            <li>Resolução de problemas dentro dos limites do modelo.</li>
+            <li>Acúmulo de conhecimento sem questionar os fundamentos.</li>
+            <li>Formação de novos cientistas dentro da tradição do paradigma.</li>
+          </ul>
+
+          <h4>3.3 A ciência normal e o cotidiano</h4>
+          <p>A ciência normal pode ser comparada ao trabalho de um quebra-cabeça. O paradigma fornece a imagem da peça montada, e os cientistas trabalham para encaixar as peças que faltam. Eles não questionam se a imagem está correta, apenas tentam completá-la.</p>
+
+          <h3>Módulo 4: Anomalias e crise de paradigma</h3>
+          <h4>4.1 O que são anomalias</h4>
+          <p>Anomalias são fatos ou problemas que o paradigma vigente não consegue explicar. Elas surgem quando a natureza não se comporta como o paradigma prevê.</p>
+          <p>No início, as anomalias são ignoradas ou tratadas como exceções. Com o tempo, elas se acumulam e começam a comprometer a confiança no paradigma.</p>
+
+          <h4>4.2 Crise de paradigma</h4>
+          <p>A crise de paradigma acontece quando o modelo vigente acumula anomalias e perde credibilidade. A comunidade científica começa a questionar os fundamentos do paradigma e procura outras formas de compreender a realidade.</p>
+          <p>Durante a crise, há um período de desacordo e debate. Diferentes grupos propõem soluções distintas, e o paradigma vigente já não consegue orientar a pesquisa de forma eficaz.</p>
+
+          <h4>4.3 Exemplo: a crise do geocentrismo</h4>
+          <p>O geocentrismo explicava muitos fenômenos celestes, mas não dava conta do movimento retrógrado dos planetas. As anomalias se acumularam até que o heliocentrismo surgiu como novo paradigma.</p>
+          <p>Outro exemplo é a crise da física clássica no início do século XX. A mecânica newtoniana não conseguia explicar fenômenos em escala atômica e em velocidades próximas à da luz. A relatividade e a física quântica surgiram como novos paradigmas.</p>
+
+          <h3>Módulo 5: Revolução científica</h3>
+          <h4>5.1 O que é uma revolução científica</h4>
+          <p>A revolução científica ocorre quando um paradigma é substituído por outro. A passagem de um paradigma para outro não é um processo contínuo e cumulativo. A ciência muda paradigmaticamente, ou seja, por saltos.</p>
+          <p>A mudança de paradigma representa uma nova forma de ver o mundo. Cada paradigma é incompatível com o anterior, ou seja, não se pode compará-los diretamente.</p>
+
+          <h4>5.2 Fases de uma revolução científica</h4>
+          <ul>
+            <li>Ciência normal: o paradigma vigente funciona e orienta a pesquisa.</li>
+            <li>Acúmulo de anomalias: surgem fatos que o paradigma não explica.</li>
+            <li>Crise: a comunidade científica perde confiança no paradigma.</li>
+            <li>Revolução científica: um novo paradigma é proposto e aceito aos poucos.</li>
+            <li>Nova ciência normal: o novo paradigma se estabelece.</li>
+          </ul>
+
+          <h4>5.3 Incomensurabilidade</h4>
+          <p>Incomensurabilidade significa que paradigmas não têm uma medida comum. Cada paradigma define o que é problema, o que conta como prova, quais métodos valem e até o significado das palavras. Por isso não existe uma régua neutra para comparar os dois.</p>
+          <p>Um exemplo é a palavra "planeta". No geocentrismo, a Terra não era planeta, porque ficava fixa no centro. O Sol, a Lua e mais cinco astros eram chamados de planetas. No heliocentrismo, a Terra passa a ser planeta, o Sol vira estrela e a Lua vira satélite. A palavra é a mesma, mas nomeia coisas diferentes em cada paradigma.</p>
+          <p>Kuhn diz que a comparação é difícil, mas não impossível. É preciso aprender a linguagem do outro paradigma.</p>
+          <p>Isso ajuda a entender a aula: no paradigma consumista, sobra descartada é lixo. No paradigma da sustentabilidade, a mesma sobra pode ser resíduo reaproveitável ou recurso. A palavra muda de sentido quando o paradigma muda.</p>
+
+        </div>
+      </div>
+    </div>
+
+    <div id="rush-alert-screen">
+      <div class="rush-title">⚠️ PAUSA PARA O FOCO!</div>
+      <div class="rush-desc">
+        Estudante, o sistema detectou respostas muito rápidas. O objetivo deste desafio é exercitar a reflexão filosófica. Respire fundo, leia o texto e aguarde a liberação:
+      </div>
+      <div class="rush-countdown" id="rush-countdown-val">15</div>
+      <p style="font-size: 0.9rem; color: #ffd200;">A questão voltará automaticamente assim que o tempo zerar.</p>
+    </div>
+
+    <div id="quiz-screen">
+      <div class="quiz-header">
+        <div class="q-badge" id="q-counter">Questão 1 de 20</div>
+        <div class="q-topic" id="q-topic">Tópico</div>
+        <div class="stats-box">
+          <span class="counter-badge acertos">✅ <span id="acertos-val">0</span></span>
+          <span class="counter-badge erros">❌ <span id="erros-val">0</span></span>
+        </div>
+      </div>
+
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+
+      <div class="question-timer-bar" id="question-timer-bar" style="justify-content:center;">
+        <span>⏱️ Sem tempo limite — leia com calma e responda quando estiver pronto</span>
+      </div>
+
+      <div class="reading-lock-bar" id="reading-lock-bar"></div>
+
+      <div class="question-card"><div class="question-text" id="question-text">Texto da questão</div></div>
+
+      <div class="options-grid" id="options-grid">
+        <button class="option-btn opt-A" id="btn-opt-A" onclick="handleAnswer('A')" disabled>
+          <div class="opt-icon">▲</div><div class="opt-text" id="opt-A-text">Alternativa A</div>
+        </button>
+        <button class="option-btn opt-B" id="btn-opt-B" onclick="handleAnswer('B')" disabled>
+          <div class="opt-icon">◆</div><div class="opt-text" id="opt-B-text">Alternativa B</div>
+        </button>
+        <button class="option-btn opt-C" id="btn-opt-C" onclick="handleAnswer('C')" disabled>
+          <div class="opt-icon">●</div><div class="opt-text" id="opt-C-text">Alternativa C</div>
+        </button>
+        <button class="option-btn opt-D" id="btn-opt-D" onclick="handleAnswer('D')" disabled>
+          <div class="opt-icon">■</div><div class="opt-text" id="opt-D-text">Alternativa D</div>
+        </button>
+      </div>
+    </div>
+
+    <div id="feedback-screen">
+      <div class="feedback-banner" id="feedback-banner">
+        <div class="feedback-title" id="feedback-title">Resposta Correta!</div>
+        <div id="feedback-subtitle"></div>
+        <div id="feedback-confidence" class="confidence-recap" style="display:none;"></div>
+      </div>
+      <div class="feedback-explanation">
+        <strong>Explicação para Aprender:</strong><br>
+        <span id="feedback-exp-text">Texto explicativo</span>
+      </div>
+      <div class="lock-timer-msg" id="lock-timer-msg"></div>
+      <button class="next-btn" id="next-btn" onclick="nextQuestion()">Avançar ➔</button>
+    </div>
+
+    <div id="final-screen">
+      <div class="podium-title">🎓 Desafio Concluído!</div>
+      <div class="user-greeting" id="final-user-greeting">Estudante</div>
+
+      <div class="visto-card">
+        <div class="visto-header">
+          <h3>COMPROVANTE DO VISTO PEDAGÓGICO</h3>
+          <div class="visto-badge" id="visto-status-badge">EM ANÁLISE</div>
+        </div>
+
+        <div class="visto-row"><span class="label">Estudante:</span><span class="val" id="visto-nome">Nome</span></div>
+        <div class="visto-row"><span class="label">✅ Acertos:</span><span class="val acertos" id="visto-acertos">0 / 20 (0%)</span></div>
+        <div class="visto-row"><span class="label">❌ Erros:</span><span class="val erros" id="visto-erros">0 / 20 (0%)</span></div>
+        <div class="visto-row"><span class="label">Tempo Total:</span><span class="val" id="visto-tempo-total">0 min</span></div>
+        <div class="visto-row"><span class="label">Tempo Médio por Pergunta:</span><span class="val" id="visto-tempo-medio">0s</span></div>
+        <div class="visto-row"><span class="label">Situação da Leitura:</span><span class="val" id="visto-diagnostico">Adequada</span></div>
+
+        <div class="visto-code" id="visto-hash">#FILO-0000</div>
+
+        <div class="confidence-report" id="confidence-report"></div>
+        <div id="security-report"></div>
+      </div>
+
+      <div class="final-actions">
+        <button class="action-btn btn-restart" onclick="restartQuiz()">🔄 Tentar Novamente</button>
+        <button class="action-btn btn-review" onclick="toggleReview()">📋 Ver Gabarito Completo</button>
+      </div>
+
+      <div id="review-container"></div>
+    </div>
+
+  </div>
+
+  <script>
+    'use strict';
+
+    const eventLog = {
+      printAttempts: 0, devtoolsAttempts: 0, contextMenuAttempts: 0,
+      viewSourceAttempts: 0, saveAttempts: 0, printCSSAttempts: 0,
+      tabSwitches: 0, blurEvents: 0, apostilaOpens: 0
+    };
+
+    document.addEventListener('keydown', function (e) {
+      const k = (e.key || '').toLowerCase();
+      if (e.key === 'PrintScreen' || e.keyCode === 44) { e.preventDefault(); eventLog.printAttempts++; return false; }
+      if (e.shiftKey && e.metaKey && k === 's') { e.preventDefault(); eventLog.printAttempts++; return false; }
+      if (e.metaKey && e.shiftKey && ['3','4','5'].indexOf(e.key) !== -1) { e.preventDefault(); eventLog.printAttempts++; return false; }
+      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['i','j','c'].indexOf(k) !== -1) ||
+          (e.metaKey && e.altKey && ['i','j','c'].indexOf(k) !== -1)) { e.preventDefault(); eventLog.devtoolsAttempts++; return false; }
+      if ((e.ctrlKey || e.metaKey) && k === 'u') { e.preventDefault(); eventLog.viewSourceAttempts++; return false; }
+      if ((e.ctrlKey || e.metaKey) && k === 's') { e.preventDefault(); eventLog.saveAttempts++; return false; }
+      if ((e.ctrlKey || e.metaKey) && k === 'p') { e.preventDefault(); eventLog.printAttempts++; return false; }
+    }, true);
+
+    document.addEventListener('keydown', function (e) {
+      const tag = document.activeElement ? document.activeElement.tagName : '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if ((e.key || '').toLowerCase() === 'f') { e.preventDefault(); toggleFullscreen(); }
+      if ((e.key || '').toLowerCase() === 'escape') { fecharApostila(); }
+    });
+
+    document.addEventListener('contextmenu', function (e) { e.preventDefault(); eventLog.contextMenuAttempts++; return false; });
+    document.addEventListener('dragstart', function (e) { e.preventDefault(); return false; });
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { document.body.classList.add('tab-blurred'); eventLog.tabSwitches++; }
+      else { document.body.classList.remove('tab-blurred'); }
+    });
+    window.addEventListener('blur', function () { document.body.classList.add('tab-blurred'); eventLog.blurEvents++; });
+    window.addEventListener('focus', function () { document.body.classList.remove('tab-blurred'); });
+    window.addEventListener('beforeprint', function () { eventLog.printCSSAttempts++; });
+
+    const _gab = "BDACDABBCDAABDCDDBCA";
+
+    const quizData = [
+      {
+        "id": 1,
+        "topic": "Conceito de Paradigma",
+        "text": "Leia o trecho.\n\n\"Paradigma é o conjunto de crenças, valores e técnicas que uma comunidade científica compartilha em determinado período. Ele orienta quais perguntas vale a pena fazer, quais métodos são aceitos e como os resultados são interpretados. Sem um paradigma, a pesquisa científica perderia direção.\"\n\nDe acordo com o texto, o paradigma funciona como",
+        "options": [
+          {"letter": "A", "text": "uma verdade definitiva que nunca pode ser revista."},
+          {"letter": "B", "text": "um modelo que orienta o trabalho dos cientistas."},
+          {"letter": "C", "text": "uma opinião pessoal sem relação com a ciência."},
+          {"letter": "D", "text": "um erro que a ciência precisa corrigir."}
+        ],
+        "explanation": "O texto define paradigma como o modelo que orienta a prática científica: define perguntas, métodos aceitos e interpretação dos resultados. Não se trata de verdade absoluta nem de opinião pessoal."
+      },
+      {
+        "id": 2,
+        "topic": "Função do Paradigma",
+        "text": "Leia o trecho.\n\n\"O paradigma define o que é considerado verdadeiro e relevante em uma época. Ele funciona como uma lente pela qual os cientistas enxergam o mundo. Essa lente não é escolhida de forma consciente por cada pesquisador: ela é aprendida na formação e compartilhada pela comunidade científica.\"\n\nA comparação com uma lente serve para mostrar que o paradigma",
+        "options": [
+          {"letter": "A", "text": "impede os cientistas de ver qualquer realidade."},
+          {"letter": "B", "text": "é igual para todas as épocas e lugares."},
+          {"letter": "C", "text": "depende apenas da opinião de cada pesquisador."},
+          {"letter": "D", "text": "muda a forma como os cientistas interpretam os fatos."}
+        ],
+        "explanation": "A lente é uma metáfora. Ela não impede a visão, mas filtra e orienta o modo como os cientistas interpretam os fatos. O paradigma é aprendido e compartilhado, não é escolha individual nem é o mesmo em todas as épocas."
+      },
+      {
+        "id": 3,
+        "topic": "Geocentrismo",
+        "text": "Durante séculos, o modelo em que a Terra fica parada no centro do universo foi aceito pela comunidade científica. Nesse modelo, o Sol, a Lua e mais cinco astros giravam ao redor da Terra, que permanecia imóvel. Esse modelo é chamado de",
+        "options": [
+          {"letter": "A", "text": "geocentrismo."},
+          {"letter": "B", "text": "heliocentrismo."},
+          {"letter": "C", "text": "mecanicismo."},
+          {"letter": "D", "text": "relativismo."}
+        ],
+        "explanation": "Geocentrismo vem de 'geo' (Terra) e 'centro'. É o modelo em que a Terra fica no centro do universo. O heliocentrismo coloca o Sol no centro."
+      },
+      {
+        "id": 4,
+        "topic": "Mudança de Paradigma",
+        "text": "No século XVI, Copérnico e Galileu propuseram que o Sol estivesse no centro do sistema solar, e não a Terra. Essa mudança não foi apenas uma correção de cálculo: ela alterou a forma como os cientistas viam o lugar da Terra no universo e o próprio funcionamento do cosmos. Essa mudança representou",
+        "options": [
+          {"letter": "A", "text": "a manutenção do paradigma antigo."},
+          {"letter": "B", "text": "a aplicação do método científico moderno."},
+          {"letter": "C", "text": "a substituição de um paradigma por outro."},
+          {"letter": "D", "text": "o fim de qualquer forma de paradigma."}
+        ],
+        "explanation": "A passagem do geocentrismo para o heliocentrismo é o exemplo clássico de substituição de paradigma. Não é apenas correção de cálculo: muda a forma de ver o mundo."
+      },
+      {
+        "id": 5,
+        "topic": "Ciência Normal",
+        "text": "Kuhn observou que, na maior parte do tempo, os cientistas não questionam os fundamentos de sua área. Eles trabalham resolvendo problemas específicos dentro do modelo aceito, sem discutir as bases do conhecimento. A esse período Kuhn deu o nome de ciência normal, que é quando",
+        "options": [
+          {"letter": "A", "text": "os cientistas questionam todos os fundamentos do conhecimento."},
+          {"letter": "B", "text": "a comunidade científica abandona o paradigma em crise."},
+          {"letter": "C", "text": "vários paradigmas competem entre si sem definição."},
+          {"letter": "D", "text": "o paradigma vigente orienta a pesquisa sem grandes questionamentos."}
+        ],
+        "explanation": "Ciência normal é o período em que o paradigma vigente funciona bem e orienta a pesquisa. Os cientistas não questionam os fundamentos, apenas resolvem problemas dentro do modelo."
+      },
+      {
+        "id": 6,
+        "topic": "Ciência Normal",
+        "text": "Na ciência normal, os pesquisadores trabalham dentro dos limites do paradigma. Eles não param para discutir se o modelo está certo ou errado: apenas aplicam seus conceitos e métodos para resolver problemas que o próprio paradigma define como relevantes. Isso significa que eles",
+        "options": [
+          {"letter": "A", "text": "buscam resolver problemas definidos pelo próprio paradigma."},
+          {"letter": "B", "text": "recusam qualquer observação da natureza."},
+          {"letter": "C", "text": "mudam de modelo a cada nova descoberta."},
+          {"letter": "D", "text": "ignoram os resultados de experimentos."}
+        ],
+        "explanation": "Na ciência normal, os cientistas aceitam o paradigma e trabalham para resolver os problemas que ele define como relevantes. Eles não questionam os fundamentos nesse período."
+      },
+      {
+        "id": 7,
+        "topic": "Anomalia",
+        "text": "Um astrônomo observa que um planeta se move de forma diferente do que o modelo aceito previa. Ele repete as medições, confirma o resultado e percebe que não se trata de erro de cálculo. Esse fato que o paradigma não consegue explicar é chamado, no vocabulário de Kuhn, de",
+        "options": [
+          {"letter": "A", "text": "erro de medição."},
+          {"letter": "B", "text": "anomalia."},
+          {"letter": "C", "text": "teoria concorrente."},
+          {"letter": "D", "text": "opinião contrária."}
+        ],
+        "explanation": "Anomalia é o fato ou problema que o paradigma não consegue explicar. No exemplo, não é erro de medição, pois o resultado se confirma em várias observações."
+      },
+      {
+        "id": 8,
+        "topic": "Acúmulo de Anomalias",
+        "text": "No início, as anomalias costumam ser tratadas como exceções ou erros. Com o tempo, elas se acumulam, aparecem em vários experimentos independentes e passam a ser discutidas em congressos. Nesse momento, elas",
+        "options": [
+          {"letter": "A", "text": "fortalecem ainda mais o paradigma vigente."},
+          {"letter": "B", "text": "passam a comprometer a confiança no paradigma."},
+          {"letter": "C", "text": "desaparecem sem deixar consequências."},
+          {"letter": "D", "text": "confirmam que o paradigma é definitivo."}
+        ],
+        "explanation": "Quando as anomalias se acumulam e não podem mais ser tratadas como exceções, elas comprometem a confiança no paradigma. Isso prepara o caminho para a crise."
+      },
+      {
+        "id": 9,
+        "topic": "Crise de Paradigma",
+        "text": "Quando um paradigma acumula muitas anomalias e já não consegue explicar fenômenos importantes, a comunidade científica começa a perder confiança nele. Surgem debates, propostas divergentes e questionamentos sobre os próprios fundamentos do modelo. Essa situação é chamada de",
+        "options": [
+          {"letter": "A", "text": "ciência normal."},
+          {"letter": "B", "text": "falseamento."},
+          {"letter": "C", "text": "crise de paradigma."},
+          {"letter": "D", "text": "revolução científica."}
+        ],
+        "explanation": "A crise de paradigma ocorre quando o modelo vigente acumula anomalias e perde credibilidade. A revolução científica vem depois, quando um novo paradigma é proposto e aceito."
+      },
+      {
+        "id": 10,
+        "topic": "Debate na Crise",
+        "text": "Durante uma crise de paradigma, é comum que a comunidade científica se divida. Alguns defendem ajustes no modelo antigo, outros propõem modelos completamente novos, e não há consenso sobre qual caminho seguir. Nesse período,",
+        "options": [
+          {"letter": "A", "text": "há consenso imediato sobre o novo modelo."},
+          {"letter": "B", "text": "a comunidade científica abandona a pesquisa."},
+          {"letter": "C", "text": "o paradigma vigente se torna mais forte."},
+          {"letter": "D", "text": "diferentes grupos propõem soluções distintas."}
+        ],
+        "explanation": "Na crise, não há consenso. Diferentes grupos defendem caminhos distintos, e o paradigma vigente já não orienta a pesquisa de forma eficaz."
+      },
+      {
+        "id": 11,
+        "topic": "Anomalia",
+        "text": "O geocentrismo explicava muitos fenômenos celestes, mas não dava conta do movimento retrógrado dos planetas, que pareciam andar para trás em certos períodos. Esse problema, que o modelo vigente não conseguia resolver, é um exemplo de",
+        "options": [
+          {"letter": "A", "text": "anomalia."},
+          {"letter": "B", "text": "falseamento."},
+          {"letter": "C", "text": "paradigma."},
+          {"letter": "D", "text": "hipótese."}
+        ],
+        "explanation": "O movimento retrógrado era um fato que o geocentrismo não conseguia explicar. Esse tipo de problema é chamado de anomalia."
+      },
+      {
+        "id": 12,
+        "topic": "Crise da Física Clássica",
+        "text": "No início do século XX, a mecânica de Newton explicava bem o movimento de carros, aviões e planetas, mas não conseguia explicar o comportamento de partículas muito pequenas nem de corpos em altíssima velocidade. Isso gerou uma crise que levou ao surgimento de novas teorias. A crise da física clássica ocorreu porque a mecânica de Newton não conseguia explicar",
+        "options": [
+          {"letter": "A", "text": "fenômenos em escala atômica e em altas velocidades."},
+          {"letter": "B", "text": "o movimento de carros e aviões."},
+          {"letter": "C", "text": "a queda de objetos na superfície da Terra."},
+          {"letter": "D", "text": "as órbitas dos planetas ao redor do Sol."}
+        ],
+        "explanation": "A mecânica newtoniana funcionava bem para objetos do cotidiano, mas falhava em escala atômica e em velocidades próximas à da luz. Essas anomalias geraram a crise que levou à relatividade e à física quântica."
+      },
+      {
+        "id": 13,
+        "topic": "Revolução Científica",
+        "text": "Quando um novo paradigma é proposto e passa a ser aceito pela comunidade científica, ocorre o que Kuhn chama de revolução científica. A revolução científica, segundo Kuhn, ocorre quando",
+        "options": [
+          {"letter": "A", "text": "a ciência normal resolve todos os problemas."},
+          {"letter": "B", "text": "um paradigma é substituído por outro."},
+          {"letter": "C", "text": "os cientistas acumulam descobertas sem mudar o modelo."},
+          {"letter": "D", "text": "a comunidade científica decide não mais pesquisar."}
+        ],
+        "explanation": "Revolução científica é a substituição de um paradigma por outro. É o momento em que a comunidade científica abandona o modelo antigo e adota um novo."
+      },
+      {
+        "id": 14,
+        "topic": "Mudança Paradigmática",
+        "text": "Kuhn compara a mudança científica a uma série de terremotos, e não a uma escada em que cada degrau acrescenta um pouco ao anterior. Para ele, a passagem de um paradigma para outro",
+        "options": [
+          {"letter": "A", "text": "é um processo contínuo e cumulativo."},
+          {"letter": "B", "text": "segue as mesmas regras do paradigma anterior."},
+          {"letter": "C", "text": "depende apenas de decisões políticas."},
+          {"letter": "D", "text": "ocorre por saltos e rupturas."}
+        ],
+        "explanation": "Para Kuhn, a mudança de paradigma não é contínua nem cumulativa. Ela acontece por saltos e rupturas, como terremotos que reorganizam toda a paisagem."
+      },
+      {
+        "id": 15,
+        "topic": "Incomensurabilidade",
+        "text": "Kuhn afirma que paradigmas diferentes não têm uma medida comum. Cada um define o que é problema, o que conta como prova, quais métodos valem e até o significado das palavras. Por isso, não existe uma régua neutra para compará-los. Essa ideia é chamada de",
+        "options": [
+          {"letter": "A", "text": "ciência normal."},
+          {"letter": "B", "text": "falseamento."},
+          {"letter": "C", "text": "incomensurabilidade."},
+          {"letter": "D", "text": "revolução científica."}
+        ],
+        "explanation": "Incomensurabilidade significa 'sem medida comum'. É o conceito que descreve a impossibilidade de comparar paradigmas com uma régua neutra."
+      },
+      {
+        "id": 16,
+        "topic": "Incomensurabilidade",
+        "text": "No geocentrismo, a Terra não era planeta, porque ficava fixa no centro. O Sol, a Lua e mais cinco astros eram chamados de planetas. No heliocentrismo, a Terra passa a ser planeta, o Sol vira estrela e a Lua vira satélite. A palavra é a mesma, mas nomeia coisas diferentes. Esse exemplo serve para mostrar que",
+        "options": [
+          {"letter": "A", "text": "a palavra 'planeta' tem o mesmo sentido nos dois modelos."},
+          {"letter": "B", "text": "a linguagem científica é neutra e imutável."},
+          {"letter": "C", "text": "os dois modelos usam os mesmos critérios de prova."},
+          {"letter": "D", "text": "o significado das palavras muda conforme o paradigma."}
+        ],
+        "explanation": "A palavra 'planeta' nomeia objetos diferentes no geocentrismo e no heliocentrismo. Isso ilustra a incomensurabilidade: o significado dos termos depende do paradigma."
+      },
+      {
+        "id": 17,
+        "topic": "Ciência e Revisão",
+        "text": "Kuhn afirma que a ciência não é um conjunto de verdades absolutas, mas uma construção humana sujeita a revisões e, por vezes, a revoluções. Isso significa que",
+        "options": [
+          {"letter": "A", "text": "a ciência não produz conhecimento válido."},
+          {"letter": "B", "text": "os cientistas não precisam de métodos rigorosos."},
+          {"letter": "C", "text": "o conhecimento científico é igual à opinião comum."},
+          {"letter": "D", "text": "as teorias científicas podem ser revisadas e substituídas."}
+        ],
+        "explanation": "Dizer que a ciência é construção humana significa que as teorias podem ser revisadas e substituídas. Isso não elimina o valor do conhecimento científico nem o método rigoroso."
+      },
+      {
+        "id": 18,
+        "topic": "Fases do Trabalho Científico",
+        "text": "Uma equipe de médicos pesquisa uma doença usando um modelo que explica bem os casos típicos. Quando aparecem pacientes com sintomas diferentes, os pesquisadores tratam os casos como exceções e seguem usando o mesmo modelo. Só depois de muitos registros fora do padrão eles começam a rever as bases da pesquisa. A atitude inicial dos médicos é típica de qual fase do trabalho científico?",
+        "options": [
+          {"letter": "A", "text": "Crise de paradigma, pois os casos diferentes mostram que o modelo perdeu validade."},
+          {"letter": "B", "text": "Ciência normal, pois os casos fora do padrão são tratados como exceções."},
+          {"letter": "C", "text": "Revolução científica, pois cada exceção indica uma ruptura com o modelo."},
+          {"letter": "D", "text": "Incomensurabilidade, pois os sintomas não podem ser comparados entre si."}
+        ],
+        "explanation": "Tratar casos fora do padrão como exceções é típico da ciência normal, quando o paradigma ainda orienta a pesquisa sem grandes questionamentos. A crise só vem depois, quando as anomalias se acumulam."
+      },
+      {
+        "id": 19,
+        "topic": "Mudança Paradigmática",
+        "text": "Leia o trecho.\n\n\"Kuhn afirma que a passagem de um paradigma para outro não é um processo contínuo e cumulativo. A ciência muda por saltos, e cada paradigma é incompatível com o anterior.\"\n\nDe acordo com o texto, a mudança de paradigma",
+        "options": [
+          {"letter": "A", "text": "ocorre de forma gradual, somando descobertas ao modelo antigo."},
+          {"letter": "B", "text": "mantém os mesmos critérios de prova do paradigma anterior."},
+          {"letter": "C", "text": "acontece por ruptura, sem continuidade com o modelo anterior."},
+          {"letter": "D", "text": "depende de decisões políticas e não de pesquisa científica."}
+        ],
+        "explanation": "Se a mudança é por saltos e os paradigmas são incompatíveis, então a passagem ocorre por ruptura, sem continuidade com o modelo anterior."
+      },
+      {
+        "id": 20,
+        "topic": "Crise de Paradigma",
+        "text": "Leia o trecho.\n\n\"Durante décadas, o modelo dominante na física explicava bem os fenômenos do cotidiano, mas não dava conta de novos experimentos realizados em laboratório. No começo, os resultados foram tratados como erros. Depois de muitas confirmações independentes, a comunidade científica perdeu confiança no modelo e passou a buscar novas formas de explicar a realidade.\"\n\nO trecho descreve principalmente",
+        "options": [
+          {"letter": "A", "text": "uma crise de paradigma."},
+          {"letter": "B", "text": "o funcionamento da ciência normal."},
+          {"letter": "C", "text": "a aplicação do método científico."},
+          {"letter": "D", "text": "a separação entre ciência e filosofia."}
+        ],
+        "explanation": "O trecho descreve o acúmulo de anomalias, a perda de confiança no paradigma e a busca por novas explicações. Esse é o processo típico de uma crise de paradigma."
+      }
+    ];
+
+    function abrirApostila() {
+      eventLog.apostilaOpens++;
+      document.getElementById('apostila-overlay').classList.add('visible');
+      salvarProgresso();
+    }
+    function fecharApostila() {
+      document.getElementById('apostila-overlay').classList.remove('visible');
+    }
+    document.getElementById('apostila-overlay').addEventListener('click', function(e) {
+      if (e.target === this) fecharApostila();
+    });
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildSession() {
+      const qOrder = shuffle([...Array(quizData.length).keys()]);
+      return qOrder.map(origIdx => {
+        const q = quizData[origIdx];
+        const correctLetterOrig = _gab.charAt(origIdx);
+        const correctText = q.options.find(o => o.letter === correctLetterOrig).text;
+        const opts = shuffle([...q.options]);
+        const newLetters = ['A', 'B', 'C', 'D'];
+        const shuffledOpts = opts.map((o, i) => ({ letter: newLetters[i], text: o.text }));
+        const newCorrectPos = opts.findIndex(o => o.text === correctText);
+        const newCorrectLetter = newLetters[newCorrectPos];
+        return {
+          originalId: q.id, topic: q.topic, text: q.text,
+          options: shuffledOpts, correct: newCorrectLetter, explanation: q.explanation
+        };
+      });
+    }
+
+    const SAVE_KEY = 'agora-quiz-paradigma-v1';
+
+    function salvarProgresso() {
+      if (!quizEmAndamento) return;
+      const save = {
+        versao: 1,
+        nome: playerNameGlobal,
+        sessionQuestions, currentIndex, correctCount, errosCount,
+        fastAnswersStreak, quizStartTime, eventLog,
+        estado: estadoAtual, respostaPendente,
+        userAnswers: userAnswers.map(a => ({
+          qPos: a.qPos, chosen: a.chosen, correct: a.correct,
+          isCorrect: a.isCorrect, isTimeout: a.isTimeout,
+          confidence: a.confidence,
+          timeTaken: a.timeTaken, tempoEfetivo: a.tempoEfetivo
+        })),
+        feedbackData: estadoAtual === 'feedback' ? {
+          chosen: userAnswers[userAnswers.length - 1]?.chosen,
+          isCorrect: userAnswers[userAnswers.length - 1]?.isCorrect,
+          isTimeout: userAnswers[userAnswers.length - 1]?.isTimeout,
+          confidence: userAnswers[userAnswers.length - 1]?.confidence
+        } : null,
+        timestamp: Date.now()
+      };
+      try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (e) {}
+    }
+
+    function carregarProgressoSalvo() {
+      try {
+        const raw = localStorage.getItem(SAVE_KEY);
+        if (!raw) return null;
+        const data = JSON.parse(raw);
+        if (!data || data.versao !== 1) return null;
+        if (Date.now() - data.timestamp > 24 * 60 * 60 * 1000) {
+          localStorage.removeItem(SAVE_KEY); return null;
+        }
+        return data;
+      } catch (e) { return null; }
+    }
+
+    function limparProgresso() { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} }
+
+    let sessionQuestions = [];
+    let currentIndex = 0;
+    let correctCount = 0;
+    let errosCount = 0;
+    let userAnswers = [];
+    let playerNameGlobal = '';
+    let questionStartTime = 0;
+    let lockEndTime = 0;
+    let quizStartTime = 0;
+    let fastAnswersStreak = 0;
+    let readingLockInterval = null;
+    let feedbackLockInterval = null;
+    let questionTimerInterval = null;
+    let isQuestionLocked = true;
+    let quizEmAndamento = false;
+    let estadoAtual = 'inicio';
+    let respostaPendente = null;
+
+    const READING_LOCK_SECONDS = 4;
+    const REFLECTION_LOCK_SECONDS = 5;
+    const SKIP_AVAILABLE_AFTER = 2;
+
+    const CONF_LABELS = {
+      chutei:  { emoji: '🤔', titulo: 'Chutei',         desc: 'Fui no impulso' },
+      nao_sei: { emoji: '😐', titulo: 'Não sei',        desc: 'Fiquei em dúvida' },
+      acho:    { emoji: '😊', titulo: 'Acho que sim',   desc: 'Razoavelmente seguro' },
+      certeza: { emoji: '🎯', titulo: 'Tenho certeza',  desc: 'Domino o conteúdo' }
+    };
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+      else if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+    }
+
+    window.addEventListener('beforeunload', function (e) {
+      if (quizEmAndamento) {
+        salvarProgresso();
+        e.preventDefault();
+        e.returnValue = 'Você tem um quiz em andamento. Seu progresso foi salvo, mas deseja mesmo sair?';
+        return e.returnValue;
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const save = carregarProgressoSalvo();
+      if (save) {
+        const resumeCard = document.getElementById('resume-card');
+        const resumeInfo = document.getElementById('resume-info');
+        resumeInfo.innerText = `${save.nome}, você parou na questão ${save.currentIndex + 1} de ${quizData.length} — ✅ ${save.correctCount} acertos, ❌ ${save.errosCount} erros. Continuar?`;
+        resumeCard.style.display = 'block';
+        document.getElementById('player-name').value = save.nome;
+      }
+    });
+
+    function continuarQuiz() {
+      const save = carregarProgressoSalvo();
+      if (!save) { alert('Nada para continuar.'); return; }
+      playerNameGlobal = save.nome;
+      sessionQuestions = save.sessionQuestions;
+      currentIndex = save.currentIndex;
+      correctCount = save.correctCount;
+      errosCount = save.errosCount || 0;
+      fastAnswersStreak = save.fastAnswersStreak || 0;
+      quizStartTime = save.quizStartTime;
+      respostaPendente = save.respostaPendente || null;
+      Object.keys(eventLog).forEach(k => { eventLog[k] = save.eventLog[k] || 0; });
+      userAnswers = (save.userAnswers || []).map(a => ({ ...a }));
+      quizEmAndamento = true;
+
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('final-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'none';
+
+      if (save.estado === 'feedback') {
+        document.getElementById('quiz-screen').style.display = 'none';
+        document.getElementById('feedback-screen').style.display = 'block';
+        const fb = save.feedbackData;
+        if (fb) {
+          const q = sessionQuestions[currentIndex];
+          renderizarFeedback(fb.chosen, q.correct, fb.isCorrect, fb.isTimeout, fb.confidence, q);
+        } else loadQuestion();
+      } else {
+        document.getElementById('quiz-screen').style.display = 'block';
+        loadQuestion();
+      }
+    }
+
+    function descartarSave() {
+      if (!confirm('Isso vai apagar todo o progresso salvo. Tem certeza?')) return;
+      limparProgresso();
+      document.getElementById('resume-card').style.display = 'none';
+      document.getElementById('player-name').value = '';
+    }
+
+    function startQuiz() {
+      const nameInput = document.getElementById('player-name').value.trim();
+      if (!nameInput) { alert("Digite o seu nome completo para que o seu visto possa ser registrado pelo professor."); return; }
+      const saveExistente = carregarProgressoSalvo();
+      if (saveExistente) {
+        if (!confirm(`Existe um quiz em andamento de "${saveExistente.nome}". Iniciar um novo vai apagar o anterior. Continuar?`)) return;
+        limparProgresso();
+      }
+      playerNameGlobal = nameInput;
+      sessionQuestions = buildSession();
+      currentIndex = 0; correctCount = 0; errosCount = 0;
+      userAnswers = []; fastAnswersStreak = 0;
+      quizStartTime = Date.now(); quizEmAndamento = true; respostaPendente = null;
+      Object.keys(eventLog).forEach(k => eventLog[k] = 0);
+      document.getElementById('resume-card').style.display = 'none';
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('final-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'none';
+      document.getElementById('quiz-screen').style.display = 'block';
+      loadQuestion();
+    }
+
+    function atualizarContadores() {
+      document.getElementById('acertos-val').innerText = correctCount;
+      document.getElementById('erros-val').innerText = errosCount;
+    }
+
+    function formatarTexto(texto) {
+      let safe = texto
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      safe = safe.replace(/"([^"]+)"/g, '<div class="quote-block">$1</div>');
+      safe = safe.replace(/\n\n/g, '<br><br>');
+      safe = safe.replace(/\n/g, '<br>');
+      return safe;
+    }
+
+    function loadQuestion() {
+      clearInterval(readingLockInterval);
+      clearInterval(questionTimerInterval);
+      clearInterval(feedbackLockInterval);
+
+      estadoAtual = 'quiz'; respostaPendente = null;
+      const q = sessionQuestions[currentIndex];
+
+      document.getElementById('q-counter').innerText = `Questão ${currentIndex + 1} de ${sessionQuestions.length}`;
+      document.getElementById('q-topic').innerText = q.topic;
+      document.getElementById('question-text').innerHTML = formatarTexto(q.text);
+      atualizarContadores();
+
+      const progressPercent = (currentIndex / sessionQuestions.length) * 100;
+      document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+
+      ['A','B','C','D'].forEach(letter => {
+        const opt = q.options.find(o => o.letter === letter);
+        if (opt) document.getElementById(`opt-${letter}-text`).innerText = opt.text;
+      });
+
+      const timerBar = document.getElementById('question-timer-bar');
+      timerBar.className = 'question-timer-bar';
+
+      isQuestionLocked = true;
+      setOptionsDisabled(true);
+
+      const lockBar = document.getElementById('reading-lock-bar');
+      lockBar.className = 'reading-lock-bar';
+
+      let lockSeconds = READING_LOCK_SECONDS;
+      lockBar.innerHTML = `<span>📖 Fase 1/2 — Leia a pergunta: <strong id="reading-countdown">${lockSeconds}</strong>s...</span>`;
+
+      questionStartTime = Date.now();
+      salvarProgresso();
+
+      readingLockInterval = setInterval(() => {
+        lockSeconds--;
+        const cd = document.getElementById('reading-countdown');
+        if (cd) cd.innerText = lockSeconds;
+
+        if (lockSeconds <= 0) {
+          clearInterval(readingLockInterval);
+          iniciarFaseReflexao(lockBar);
+        }
+      }, 1000);
+    }
+
+    function iniciarFaseReflexao(lockBar) {
+      let reflectSeconds = REFLECTION_LOCK_SECONDS;
+      lockBar.className = 'reading-lock-bar reflection';
+      lockBar.innerHTML = `
+        <span>🤔 Fase 2/2 — Reflita antes de responder: <strong id="reflect-countdown">${reflectSeconds}</strong>s...</span>
+        <button type="button" class="apostila-inline-btn" onclick="abrirApostila()">📖 Consultar Apostila</button>
+        <button type="button" class="skip-reflection-btn" id="skip-reflection-btn" onclick="pularReflexao()">
+          ⚡ Já refliti, pular
+        </button>
+      `;
+
+      const skipTimeout = setTimeout(() => {
+        const btn = document.getElementById('skip-reflection-btn');
+        if (btn) btn.style.display = 'inline-block';
+      }, SKIP_AVAILABLE_AFTER * 1000);
+
+      readingLockInterval = setInterval(() => {
+        reflectSeconds--;
+        const rc = document.getElementById('reflect-countdown');
+        if (rc) rc.innerText = reflectSeconds;
+
+        if (reflectSeconds <= 0) {
+          clearInterval(readingLockInterval);
+          clearTimeout(skipTimeout);
+          liberarResposta(lockBar);
+        }
+      }, 1000);
+    }
+
+    function pularReflexao() {
+      clearInterval(readingLockInterval);
+      const lockBar = document.getElementById('reading-lock-bar');
+      liberarResposta(lockBar);
+    }
+
+    function liberarResposta(lockBar) {
+      isQuestionLocked = false;
+      lockEndTime = Date.now();
+      setOptionsDisabled(false);
+      lockBar.className = 'reading-lock-bar unlocked';
+      lockBar.innerHTML = `
+        <span>✅ Pode responder. Escolha com consciência!</span>
+        <button type="button" class="apostila-inline-btn" onclick="abrirApostila()">📖 Consultar Apostila</button>
+      `;
+      startQuestionTimer();
+    }
+
+    function startQuestionTimer() {
+      // Sem cronômetro: o estudante responde quando se sentir pronto.
+      clearInterval(questionTimerInterval);
+    }
+
+    function setOptionsDisabled(disabled) {
+      ['A', 'B', 'C', 'D'].forEach(letter => {
+        const btn = document.getElementById(`btn-opt-${letter}`);
+        if (btn) btn.disabled = disabled;
+      });
+    }
+
+    function handleAnswer(chosenLetter) {
+      if (isQuestionLocked && chosenLetter !== null) return;
+      clearInterval(questionTimerInterval);
+      clearInterval(feedbackLockInterval);
+
+      if (chosenLetter === null) { finalizarResposta(null, null, true); return; }
+
+      const btn = document.getElementById(`btn-opt-${chosenLetter}`);
+      if (btn) {
+        document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selecionado'));
+        btn.classList.add('selecionado');
+      }
+      respostaPendente = chosenLetter;
+      document.getElementById('confidence-overlay').classList.add('visible');
+    }
+
+    function escolherConfianca(nivel) {
+      const chosenLetter = respostaPendente;
+      document.getElementById('confidence-overlay').classList.remove('visible');
+      if (chosenLetter === null || chosenLetter === undefined) return;
+      finalizarResposta(chosenLetter, nivel, false);
+    }
+
+    function finalizarResposta(chosenLetter, confidence, isTimeout) {
+      const answerDuration = (Date.now() - questionStartTime) / 1000;
+      const q = sessionQuestions[currentIndex];
+      const correctLetter = q.correct;
+      const isCorrect = !isTimeout && chosenLetter === correctLetter;
+
+      const lockDuration = (lockEndTime - questionStartTime) / 1000;
+      const tempoEfetivo = Math.max(0, answerDuration - lockDuration);
+
+      if (!isTimeout) {
+        if (tempoEfetivo < 3) fastAnswersStreak++;
+        else fastAnswersStreak = Math.max(0, fastAnswersStreak - 1);
+
+        if (fastAnswersStreak >= 3) {
+          estadoAtual = 'rush'; respostaPendente = null;
+          salvarProgresso(); triggerRushBlock(); return;
+        }
+      }
+
+      if (isCorrect) correctCount++; else errosCount++;
+
+      userAnswers.push({
+        qPos: currentIndex, chosen: chosenLetter, correct: correctLetter,
+        isCorrect, isTimeout, confidence,
+        timeTaken: answerDuration, tempoEfetivo
+      });
+
+      estadoAtual = 'feedback'; respostaPendente = null; salvarProgresso();
+
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'block';
+      renderizarFeedback(chosenLetter, correctLetter, isCorrect, isTimeout, confidence, q);
+    }
+
+    function renderizarFeedback(chosenLetter, correctLetter, isCorrect, isTimeout, confidence, q) {
+      const banner = document.getElementById('feedback-banner');
+      const title = document.getElementById('feedback-title');
+      const sub = document.getElementById('feedback-subtitle');
+      const confRecap = document.getElementById('feedback-confidence');
+      const expText = document.getElementById('feedback-exp-text');
+      const nextBtn = document.getElementById('next-btn');
+      const lockMsg = document.getElementById('lock-timer-msg');
+
+      clearInterval(feedbackLockInterval);
+
+      if (confidence && CONF_LABELS[confidence]) {
+        const c = CONF_LABELS[confidence];
+        confRecap.style.display = 'inline-block';
+        confRecap.innerHTML = `Você marcou: <strong>${c.emoji} ${c.titulo}</strong>`;
+      } else { confRecap.style.display = 'none'; }
+
+      if (isCorrect) {
+        banner.className = 'feedback-banner correct';
+        title.innerText = "Mandou Bem! Acertou! 🎉";
+        sub.innerText = ""; expText.innerText = q.explanation;
+        lockMsg.innerText = ""; nextBtn.disabled = false;
+        nextBtn.innerText = "Próxima Questão ➔";
+      } else if (isTimeout) {
+        banner.className = 'feedback-banner timeout';
+        title.innerText = "⏱️ Tempo Esgotado!";
+        sub.innerText = `A resposta correta era a letra (${correctLetter}).`;
+        expText.innerText = q.explanation;
+        iniciarContagemFeedback(8);
+      } else {
+        banner.className = 'feedback-banner incorrect';
+        title.innerText = "Resposta Errada! ❌";
+        sub.innerText = `Você marcou a letra (${chosenLetter}). A correta era a (${correctLetter}).`;
+        expText.innerText = q.explanation;
+        iniciarContagemFeedback(8);
+      }
+    }
+
+    function iniciarContagemFeedback(segundos) {
+      const nextBtn = document.getElementById('next-btn');
+      const lockMsg = document.getElementById('lock-timer-msg');
+      let cooldown = segundos;
+      nextBtn.disabled = true;
+      lockMsg.innerText = `⏳ Leia a explicação. Liberando em ${cooldown}s...`;
+      nextBtn.innerText = `Aguarde (${cooldown}s)`;
+
+      feedbackLockInterval = setInterval(() => {
+        cooldown--;
+        if (cooldown > 0) {
+          lockMsg.innerText = `⏳ Leia a explicação. Liberando em ${cooldown}s...`;
+          nextBtn.innerText = `Aguarde (${cooldown}s)`;
+        } else {
+          clearInterval(feedbackLockInterval);
+          lockMsg.innerText = "✅ Explicação lida. Agora você pode seguir!";
+          nextBtn.disabled = false;
+          nextBtn.innerText = "Próxima Questão ➔";
+        }
+      }, 1000);
+    }
+
+    function triggerRushBlock() {
+      fastAnswersStreak = 0;
+      clearInterval(readingLockInterval);
+      clearInterval(questionTimerInterval);
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'block';
+
+      let rushSeconds = 15;
+      const countDisplay = document.getElementById('rush-countdown-val');
+      countDisplay.innerText = rushSeconds;
+
+      const rushTimer = setInterval(() => {
+        rushSeconds--;
+        countDisplay.innerText = rushSeconds;
+        if (rushSeconds <= 0) {
+          clearInterval(rushTimer);
+          document.getElementById('rush-alert-screen').style.display = 'none';
+          document.getElementById('quiz-screen').style.display = 'block';
+          estadoAtual = 'quiz'; loadQuestion();
+        }
+      }, 1000);
+    }
+
+    function nextQuestion() {
+      clearInterval(readingLockInterval);
+      clearInterval(feedbackLockInterval);
+      clearInterval(questionTimerInterval);
+      currentIndex++;
+      document.getElementById('feedback-screen').style.display = 'none';
+      if (currentIndex < sessionQuestions.length) {
+        document.getElementById('quiz-screen').style.display = 'block';
+        estadoAtual = 'quiz'; loadQuestion();
+      } else showFinalResults();
+    }
+
+    function showFinalResults() {
+      clearInterval(readingLockInterval);
+      clearInterval(feedbackLockInterval);
+      clearInterval(questionTimerInterval);
+      quizEmAndamento = false; estadoAtual = 'final'; limparProgresso();
+
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'none';
+      document.getElementById('final-screen').style.display = 'block';
+
+      const playerName = playerNameGlobal || "Estudante";
+      document.getElementById('final-user-greeting').innerText = `Relatório individual de: ${playerName}`;
+
+      const totalTimeSec = Math.round((Date.now() - quizStartTime) / 1000);
+      const totalTimeMin = (totalTimeSec / 60).toFixed(1);
+      const totalTempoEfetivo = userAnswers.reduce((acc, a) => acc + (a.tempoEfetivo || 0), 0);
+      const avgTempoEfetivo = userAnswers.length > 0 ? Math.round(totalTempoEfetivo / userAnswers.length) : 0;
+      const accuracy = Math.round((correctCount / sessionQuestions.length) * 100);
+      const errosPct = 100 - accuracy;
+
+      document.getElementById('visto-nome').innerText = playerName;
+      document.getElementById('visto-acertos').innerText = `${correctCount} de ${sessionQuestions.length} (${accuracy}%)`;
+      document.getElementById('visto-erros').innerText = `${errosCount} de ${sessionQuestions.length} (${errosPct}%)`;
+      document.getElementById('visto-tempo-total').innerText = `${totalTimeMin} minutos (${totalTimeSec}s)`;
+      document.getElementById('visto-tempo-medio').innerText = `${avgTempoEfetivo}s efetivos por pergunta`;
+
+      const badge = document.getElementById('visto-status-badge');
+      const diag = document.getElementById('visto-diagnostico');
+      const isApproved = (accuracy >= 60) && (avgTempoEfetivo >= 5);
+
+      if (isApproved) {
+        badge.className = 'visto-badge aprovado';
+        badge.innerText = '✅ VISTO CONCEDIDO';
+        diag.innerText = 'Leitura atenta e bom aproveitamento';
+        diag.style.color = '#2e7d32';
+      } else {
+        badge.className = 'visto-badge recusado';
+        badge.innerText = '❌ NÃO VALIDADO';
+        if (accuracy < 60 && avgTempoEfetivo < 5) diag.innerText = 'Acertos abaixo de 60% e respostas muito rápidas';
+        else if (accuracy < 60) diag.innerText = 'Acertos abaixo do mínimo necessário (60%)';
+        else diag.innerText = 'Respostas muito rápidas: mostre ao professor antes de refazer';
+        diag.style.color = '#c62828';
+      }
+
+      const initials = playerName.substring(0, 3).toUpperCase().replace(/[^A-Z]/g, 'EST');
+      document.getElementById('visto-hash').innerText = `#FILO-${initials}-${accuracy}P-${totalTimeSec}S`;
+
+      renderizarRelatorioConfianca();
+
+      const reportBox = document.getElementById('security-report');
+      const suspeitos = [];
+      if (eventLog.printAttempts > 0) suspeitos.push(`🖨️ ${eventLog.printAttempts} tentativa(s) de print`);
+      if (eventLog.printCSSAttempts > 0) suspeitos.push(`📄 ${eventLog.printCSSAttempts} tentativa(s) de impressão`);
+      if (eventLog.devtoolsAttempts > 0) suspeitos.push(`🔧 ${eventLog.devtoolsAttempts} tentativa(s) de abrir DevTools`);
+      if (eventLog.viewSourceAttempts > 0) suspeitos.push(`👁️ ${eventLog.viewSourceAttempts} tentativa(s) de ver código-fonte`);
+      if (eventLog.contextMenuAttempts > 0) suspeitos.push(`🖱️ ${eventLog.contextMenuAttempts} clique(s) direito`);
+      if (eventLog.tabSwitches > 0) suspeitos.push(`🔀 ${eventLog.tabSwitches} troca(s) de aba`);
+      if (eventLog.blurEvents > 0) suspeitos.push(`💤 ${eventLog.blurEvents} perda(s) de foco`);
+
+      if (suspeitos.length === 0) {
+        reportBox.innerHTML = `<div class="security-alert">✅ <strong>Sem eventos suspeitos.</strong></div>`;
+      } else {
+        reportBox.innerHTML = `<div class="security-alert danger">⚠️ <strong>Eventos registrados:</strong><br>${suspeitos.map(s => `• ${s}`).join('<br>')}</div>`;
+      }
+
+      const reviewBox = document.getElementById('review-container');
+      reviewBox.innerHTML = '<h3 style="margin-bottom:16px; color:#ffd200;">Gabarito Explicado:</h3>';
+      userAnswers.forEach((item, idx) => {
+        const q = sessionQuestions[item.qPos];
+        const correctOptObj = q.options.find(o => o.letter === item.correct);
+        const confInfo = item.confidence ? CONF_LABELS[item.confidence] : null;
+        const div = document.createElement('div');
+        div.className = `review-item ${item.isCorrect ? '' : 'was-wrong'}`;
+        const statusTxt = item.isTimeout ? '⏱️ Não respondida' : (item.isCorrect ? '✅ Acertou' : '❌ Errou');
+        div.innerHTML = `
+          <div class="review-header">
+            <span>Questão ${idx + 1}: ${q.topic} (${Math.round(item.timeTaken)}s)</span>
+            <span>${statusTxt}</span>
+          </div>
+          <div class="review-text">${q.text}</div>
+          <div class="review-answer"><strong>Resposta Certa (${item.correct}):</strong> ${correctOptObj.text}</div>
+          ${!item.isCorrect && item.chosen ? `<div class="review-answer" style="color:#e21b3c;"><strong>Você marcou:</strong> (${item.chosen})</div>` : ''}
+          ${confInfo ? `<div class="review-conf">🎯 Confiança: <strong>${confInfo.emoji} ${confInfo.titulo}</strong></div>` : ''}
+          <div class="review-exp"><strong>Explicação:</strong> ${q.explanation}</div>
+        `;
+        reviewBox.appendChild(div);
+      });
+    }
+
+    function renderizarRelatorioConfianca() {
+      const box = document.getElementById('confidence-report');
+      const stats = { certeza: { t:0, a:0 }, acho: { t:0, a:0 }, nao_sei: { t:0, a:0 }, chutei: { t:0, a:0 } };
+      let semResposta = 0;
+
+      userAnswers.forEach(a => {
+        if (a.isTimeout) { semResposta++; return; }
+        if (!a.confidence || !stats[a.confidence]) return;
+        stats[a.confidence].t++;
+        if (a.isCorrect) stats[a.confidence].a++;
+      });
+
+      function linha(nivel) {
+        const s = stats[nivel];
+        if (s.t === 0) return '';
+        const c = CONF_LABELS[nivel];
+        const pct = Math.round((s.a / s.t) * 100);
+        const cls = pct >= 70 ? 'pct-bom' : (pct >= 40 ? 'pct-medio' : 'pct-ruim');
+        return `<div class="conf-stat-row">
+          <span class="label">${c.emoji} ${c.titulo}</span>
+          <span class="valor">${s.a}/${s.t} acertos <span class="${cls}">(${pct}%)</span></span>
+        </div>`;
+      }
+
+      let html = `<h4>🎯 Análise do Termômetro de Confiança</h4>`;
+      html += linha('certeza') + linha('acho') + linha('nao_sei') + linha('chutei');
+      if (semResposta > 0) html += `<div class="conf-stat-row"><span class="label">⏱️ Não respondidas</span><span class="valor">${semResposta}</span></div>`;
+
+      const totalCerteza = stats.certeza.t;
+      const totalChutei = stats.chutei.t;
+      const pctCerteza = totalCerteza > 0 ? Math.round((stats.certeza.a / totalCerteza) * 100) : 0;
+
+      if (totalChutei === 0 && totalCerteza >= 5 && pctCerteza >= 70) {
+        html += `<div class="conf-alerta bom">🌟 <strong>Excelente postura metacognitiva!</strong> Você arriscou pouco e demonstrou domínio quando disse "tenho certeza". Sinal de aprendizado real.</div>`;
+      } else if (totalChutei >= 5) {
+        html += `<div class="conf-alerta ruim">⚠️ <strong>Atenção:</strong> você marcou "chutei" em ${totalChutei} respostas. Isso indica que o conteúdo precisa ser revisado — mesmo que tenha acertado algumas por sorte.</div>`;
+      } else if (totalCerteza > 0 && pctCerteza < 50) {
+        html += `<div class="conf-alerta ruim">⚠️ <strong>Alerta de confiança excessiva:</strong> você disse "tenho certeza" em ${totalCerteza} respostas, mas só acertou ${pctCerteza}% delas. O conteúdo parece mais claro do que realmente é.</div>`;
+      } else {
+        html += `<div class="conf-alerta">📊 Análise registrada. O professor vai usar esses dados para entender melhor como você está aprendendo.</div>`;
+      }
+
+      box.innerHTML = html;
+    }
+
+    function toggleReview() {
+      const box = document.getElementById('review-container');
+      box.style.display = box.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function restartQuiz() {
+      clearInterval(readingLockInterval);
+      clearInterval(feedbackLockInterval);
+      clearInterval(questionTimerInterval);
+      currentIndex = 0; correctCount = 0; errosCount = 0;
+      userAnswers = []; sessionQuestions = []; fastAnswersStreak = 0;
+      isQuestionLocked = true; quizEmAndamento = false; estadoAtual = 'inicio';
+      playerNameGlobal = ''; respostaPendente = null;
+      Object.keys(eventLog).forEach(k => eventLog[k] = 0);
+      limparProgresso();
+      document.body.classList.remove('tab-blurred');
+      document.getElementById('final-screen').style.display = 'none';
+      document.getElementById('quiz-screen').style.display = 'none';
+      document.getElementById('feedback-screen').style.display = 'none';
+      document.getElementById('rush-alert-screen').style.display = 'none';
+      document.getElementById('confidence-overlay').classList.remove('visible');
+      document.getElementById('apostila-overlay').classList.remove('visible');
+      document.getElementById('start-screen').style.display = 'block';
+      document.getElementById('resume-card').style.display = 'none';
+      document.getElementById('review-container').innerHTML = '';
+      document.getElementById('review-container').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
