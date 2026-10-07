@@ -511,7 +511,7 @@
         • <strong>Fase de Reflexão:</strong> 5 segundos para pensar. Se já refletiu, aparece o botão <em>"Já refliti, pular"</em> após 2 segundos.<br>
         • <strong>📖 Consultar Apostila:</strong> a qualquer momento, use o botão no topo para reler o conteúdo.<br>
         • <strong>🎯 Termômetro de Confiança:</strong> ao responder, você dirá o quanto está certo da sua resposta (Chutei / Não sei / Acho que sim / Tenho certeza). <em>Seja sincero — o professor analisará esse dado.</em><br>
-        • <strong>⏱️ Tempo Limite:</strong> 30 segundos para responder após a liberação.<br>
+        • <strong>⏱️ Sem Tempo Limite:</strong> depois da liberação, você pode ler e responder com calma, sem cronômetro.<br>
         • <strong>Se Errar, Leia a Dica:</strong> a explicação fica na tela por 8 segundos antes de liberar o avanço.<br>
         • <strong>Anti-Chute:</strong> respostas muito rápidas ativam a trava de leitura de 15 segundos.<br>
         • <strong>🎲 Ordem Aleatória:</strong> as perguntas e alternativas são embaralhadas a cada tentativa.<br>
@@ -674,9 +674,8 @@
 
       <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
 
-      <div class="question-timer-bar" id="question-timer-bar">
-        <span>⏱️ Tempo para responder:</span>
-        <span><strong id="question-timer">30</strong>s</span>
+      <div class="question-timer-bar" id="question-timer-bar" style="justify-content:center;">
+        <span>⏱️ Sem tempo limite — leia com calma e responda quando estiver pronto</span>
       </div>
 
       <div class="reading-lock-bar" id="reading-lock-bar"></div>
@@ -1124,7 +1123,6 @@
     let readingLockInterval = null;
     let feedbackLockInterval = null;
     let questionTimerInterval = null;
-    let questionTimeRemaining = 30;
     let isQuestionLocked = true;
     let quizEmAndamento = false;
     let estadoAtual = 'inicio';
@@ -1133,7 +1131,6 @@
     const READING_LOCK_SECONDS = 4;
     const REFLECTION_LOCK_SECONDS = 5;
     const SKIP_AVAILABLE_AFTER = 2;
-    const QUESTION_TIME_SECONDS = 30;
 
     const CONF_LABELS = {
       chutei:  { emoji: '🤔', titulo: 'Chutei',         desc: 'Fui no impulso' },
@@ -1271,7 +1268,6 @@
 
       const timerBar = document.getElementById('question-timer-bar');
       timerBar.className = 'question-timer-bar';
-      document.getElementById('question-timer').innerText = QUESTION_TIME_SECONDS;
 
       isQuestionLocked = true;
       setOptionsDisabled(true);
@@ -1345,24 +1341,8 @@
     }
 
     function startQuestionTimer() {
+      // Sem cronômetro: o estudante responde quando se sentir pronto.
       clearInterval(questionTimerInterval);
-      questionTimeRemaining = QUESTION_TIME_SECONDS;
-      const timerBar = document.getElementById('question-timer-bar');
-      const timerDisplay = document.getElementById('question-timer');
-      timerDisplay.innerText = questionTimeRemaining;
-      timerBar.className = 'question-timer-bar';
-
-      questionTimerInterval = setInterval(() => {
-        questionTimeRemaining--;
-        timerDisplay.innerText = questionTimeRemaining;
-        if (questionTimeRemaining <= 5) timerBar.className = 'question-timer-bar urgent';
-        else if (questionTimeRemaining <= 10) timerBar.className = 'question-timer-bar warning';
-
-        if (questionTimeRemaining <= 0) {
-          clearInterval(questionTimerInterval);
-          handleAnswer(null);
-        }
-      }, 1000);
     }
 
     function setOptionsDisabled(disabled) {
