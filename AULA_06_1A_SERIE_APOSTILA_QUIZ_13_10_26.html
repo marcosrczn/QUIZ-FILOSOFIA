@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Filosofia 1ª Série — Ciência e Filosofia</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--roxo:#1B3A6B;--roxo2:#0E2242;--ouro:#F5B700;--ok:#1B6B09;--erro:#C62828;--cinza:#eef2f9}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Open Sans',sans-serif;background:linear-gradient(160deg,#e7eef8,#c9d8ee);color:#222;min-height:100vh;padding:clamp(12px,2vw,32px);line-height:1.6;text-align:justify}
+body.guard-on{-webkit-user-select:none;user-select:none}
+.container{max-width:980px;margin:0 auto}
+.hero{background:linear-gradient(135deg,var(--roxo),var(--roxo2));color:#fff;border-radius:20px;padding:clamp(20px,3vw,40px);box-shadow:0 12px 40px rgba(27,58,107,.35);margin-bottom:24px;text-align:left}
+.hero-badge{display:inline-block;background:var(--ouro);color:var(--roxo2);padding:5px 16px;border-radius:999px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px}
+.hero h1{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(1.4rem,2.6vw,2.3rem);line-height:1.2;margin-bottom:10px}
+.hero h1 span{color:var(--ouro)}
+.hero p{color:#d8e2f5;margin-bottom:18px}
+.hero-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.hero-meta{grid-template-columns:1fr}}
+.hero-meta-card{background:rgba(255,255,255,.08);border:1px solid rgba(245,183,0,.28);border-radius:14px;padding:14px 16px}
+.hero-meta-card .label{font-family:'Montserrat',sans-serif;font-weight:900;font-size:.65rem;color:var(--ouro);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;display:block}
+.hero-meta-card .value{font-size:.83rem;color:#e3eaf6;line-height:1.55}
+.hero-meta-card .value strong{color:#fff;font-family:'Montserrat',sans-serif;font-weight:800}
+.support-bar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;justify-content:flex-end}
+.support-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.82rem;cursor:pointer;border:2px solid;background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.08)}
+.support-btn.apostila{color:var(--roxo);border-color:var(--roxo)}
+.support-btn.apostila:hover{background:var(--roxo);color:#fff}
+.support-btn.report{color:#B37A00;border-color:#B37A00}
+.support-btn.report:hover{background:#B37A00;color:#fff}
+.support-btn.reset{color:var(--erro);border-color:var(--erro)}
+.support-btn.reset:hover{background:var(--erro);color:#fff}
+.instructions{background:#fff8e1;border-left:5px solid var(--ouro);border-radius:12px;padding:16px 22px;margin-bottom:16px;font-size:.92rem;color:#5c4500}
+.scoreboard{background:#fff;border-radius:14px;padding:16px 22px;box-shadow:0 4px 14px rgba(0,0,0,.08);margin-bottom:22px;position:sticky;top:12px;z-index:10;border:2px solid transparent}
+.scoreboard.done{border-color:var(--ouro)}
+.score-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+.score-header .title{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--roxo);font-size:.95rem}
+.score-pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{padding:5px 12px;border-radius:999px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.76rem}
+.pill.erro{background:#ffebee;color:var(--erro);border:2px solid var(--erro)}
+.pill.total{background:var(--cinza);color:var(--roxo);border:2px solid var(--roxo)}
+.pill.pace-good{background:#e8f5e9;color:var(--ok);border:2px solid var(--ok)}
+.pill.pace-warn{background:#fff8e1;color:#8a5f00;border:2px solid #B37A00}
+.pill.pace-bad{background:#ffebee;color:var(--erro);border:2px solid var(--erro)}
+.mastery-wrapper{display:flex;align-items:center;gap:12px}
+.mastery-track{flex-grow:1;height:14px;background:#e6eef8;border-radius:999px;overflow:hidden;border:2px solid var(--roxo)}
+.mastery-fill{height:100%;background:linear-gradient(90deg,var(--roxo),var(--ouro));width:0%;transition:width .4s}
+.mastery-label{font-family:'Montserrat',sans-serif;font-weight:900;font-size:.85rem;color:var(--roxo);white-space:nowrap}
+.question-block{background:#fff;border-radius:18px;padding:clamp(18px,2.4vw,30px);box-shadow:0 6px 20px rgba(0,0,0,.08);margin-bottom:22px;border-top:5px solid var(--roxo);scroll-margin-top:90px}
+.question-block.retry{border-top-color:#B37A00}
+.q-header{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px}
+.q-number{display:inline-block;background:var(--roxo);color:#fff;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.75rem;padding:4px 12px;border-radius:999px;letter-spacing:1px}
+.q-number.retry{background:#B37A00}
+.q-concept{display:inline-block;background:#e6eef8;color:var(--roxo);font-family:'Montserrat',sans-serif;font-weight:800;font-size:.68rem;padding:4px 12px;border-radius:999px;text-transform:uppercase;letter-spacing:1px}
+.q-cycle-tag{display:inline-block;background:#fff8e1;color:#8a5f00;border:1.5px solid #B37A00;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.68rem;padding:3px 10px;border-radius:999px;text-transform:uppercase}
+.q-inline-help{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.help-btn{background:transparent;border:1.5px dashed var(--roxo);color:var(--roxo);font-family:'Montserrat',sans-serif;font-weight:800;font-size:.68rem;padding:4px 10px;border-radius:999px;cursor:pointer}
+.help-btn:hover{background:var(--roxo);color:#fff}
+.situation{background:var(--cinza);border-left:4px solid var(--roxo);border-radius:10px;padding:16px 20px;font-size:.94rem;color:#2a2a2a;line-height:1.7;margin-bottom:16px}
+.situation::before{content:"Situação-problema";display:block;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.68rem;color:var(--roxo);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:8px}
+.situation p{margin-bottom:10px}
+.situation p:last-child{margin-bottom:0}
+.q-prompt{font-weight:700;font-size:1rem;color:#1a1a1a;margin-bottom:16px;line-height:1.55}
+.lock-bar{display:flex;align-items:center;justify-content:center;gap:10px;background:#eaf0f9;border:2px dashed var(--roxo);border-radius:12px;padding:12px 16px;margin-bottom:16px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.88rem;color:var(--roxo);text-align:center;line-height:1.4}
+.lock-bar .lock-count{font-size:1rem;font-weight:900;background:var(--roxo);color:#fff;padding:3px 12px;border-radius:8px;min-width:38px;display:inline-block;text-align:center}
+.lock-bar.paused{background:#fff8e1;border-color:#B37A00;color:#8a5f00}
+.lock-bar.paused .lock-count{background:#B37A00}
+.lock-bar.unlocked{background:#e8f5e9;border:2px solid var(--ok);color:var(--ok)}
+.lock-bar.unlocked .lock-count{background:var(--ok)}
+.options{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:flex-start;gap:12px;background:#fafafa;border:2px solid #e4e4e4;border-radius:12px;padding:12px 16px;cursor:pointer;font-family:'Open Sans',sans-serif;font-size:.92rem;line-height:1.5;color:#222;text-align:justify;width:100%}
+.opt:hover:not(:disabled){border-color:var(--roxo);background:#eef2f9}
+.opt:disabled{cursor:not-allowed;opacity:.55;filter:grayscale(.5)}
+.opt .letter{font-family:'Montserrat',sans-serif;font-weight:900;font-size:.85rem;background:var(--roxo);color:#fff;width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.opt .text{flex-grow:1}
+.opt.correct{background:#e8f5e9;border-color:var(--ok);opacity:1;filter:none}
+.opt.correct .letter{background:var(--ok)}
+.opt.wrong{background:#ffebee;border-color:var(--erro);opacity:1;filter:none}
+.opt.wrong .letter{background:var(--erro)}
+.opt.dimmed{opacity:.5;filter:grayscale(.5)}
+.feedback{margin-top:16px;border-radius:12px;padding:14px 18px;font-size:.9rem;line-height:1.6;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:#e8f5e9;border-left:4px solid var(--ok);color:#1b5e20}
+.feedback.erro{background:#ffebee;border-left:4px solid var(--erro);color:#7f1d1d}
+.feedback .head{font-family:'Montserrat',sans-serif;font-weight:900;font-size:.9rem;margin-bottom:6px}
+.feedback .concept-tag{display:inline-block;background:rgba(0,0,0,.08);padding:2px 10px;border-radius:999px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.7rem;letter-spacing:.8px;margin-bottom:8px;text-transform:uppercase}
+.feedback .meta{margin-top:10px;padding-top:8px;border-top:1px dashed rgba(0,0,0,.15);font-size:.78rem;font-family:'Montserrat',sans-serif;font-weight:700;opacity:.85}
+.feedback .meta .fast{color:var(--erro)}
+.feedback .meta .good{color:var(--ok)}
+.feedback .next-inline{margin-top:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.next-btn-inline{background:var(--roxo);color:#fff;border:none;padding:10px 22px;border-radius:12px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.88rem;cursor:pointer;box-shadow:0 4px 0 var(--roxo2)}
+.next-btn-inline:hover{transform:translateY(-2px);box-shadow:0 6px 0 var(--roxo2)}
+.next-btn-inline.ouro{background:var(--ouro);color:var(--roxo2);box-shadow:0 4px 0 #b38600}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.rush-overlay{position:fixed;inset:0;background:rgba(14,34,66,.96);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+.rush-overlay.show{display:flex}
+.rush-modal{background:#fff;border-radius:20px;padding:30px clamp(20px,4vw,40px);max-width:600px;width:100%;text-align:center;border-top:6px solid var(--erro);max-height:92vh;overflow-y:auto}
+.rush-modal h3{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--erro);margin-bottom:12px}
+.rush-modal p{margin-bottom:12px;color:#444;font-size:.92rem}
+.rush-quote{background:var(--cinza);border-left:4px solid var(--roxo);padding:14px 18px;border-radius:10px;font-style:italic;color:#333;margin:16px 0;font-size:.9rem}
+.rush-quote .author{display:block;margin-top:8px;font-style:normal;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.75rem;color:var(--roxo);text-align:right}
+.rush-countdown{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(2.2rem,4vw,3.2rem);color:var(--roxo);margin:8px 0 12px}
+.rush-status{display:inline-block;background:#ffebee;color:var(--erro);font-family:'Montserrat',sans-serif;font-weight:800;font-size:.8rem;padding:6px 14px;border-radius:999px;margin-bottom:14px}
+.apostila-overlay{display:none;position:fixed;inset:0;background:rgba(6,16,36,.92);z-index:8000;align-items:center;justify-content:center;padding:clamp(10px,2vw,24px)}
+.apostila-overlay.show{display:flex}
+.apostila-modal{background:#fff;border-radius:20px;max-width:min(94vw,900px);width:100%;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;border:3px solid var(--ouro)}
+.apostila-modal.report-modal{border-color:#B37A00;max-width:min(94vw,780px)}
+.apostila-header{background:linear-gradient(135deg,var(--roxo),var(--roxo2));padding:14px clamp(16px,2vw,24px);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.apostila-modal.report-modal .apostila-header{background:linear-gradient(135deg,#B37A00,#8a5f00)}
+.apostila-header h2{font-family:'Montserrat',sans-serif;color:var(--ouro);font-size:1.15rem;font-weight:900}
+.apostila-close{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4);padding:6px 16px;border-radius:999px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.78rem;cursor:pointer}
+.apostila-close:hover{background:var(--erro);border-color:var(--erro)}
+.apostila-body{padding:clamp(16px,2vw,28px);overflow-y:auto;line-height:1.7;font-size:.98rem;color:#333}
+.apostila-body h3{font-family:'Montserrat',sans-serif;color:var(--roxo);font-size:1.1rem;margin-top:22px;margin-bottom:10px;border-bottom:2px solid var(--ouro);padding-bottom:6px}
+.apostila-body h3:first-child{margin-top:0}
+.apostila-body h4{font-family:'Montserrat',sans-serif;color:var(--roxo);font-size:.95rem;margin-top:14px;margin-bottom:6px}
+.apostila-body p{margin-bottom:12px}
+.apostila-body strong{color:var(--roxo)}
+.apostila-body ul{margin:8px 0 12px 22px}
+.apostila-body li{margin-bottom:5px}
+.resume-overlay{display:none;position:fixed;inset:0;background:rgba(6,16,36,.94);z-index:9500;align-items:center;justify-content:center;padding:20px}
+.resume-overlay.show{display:flex}
+.resume-modal{background:#fff;border-radius:22px;padding:clamp(24px,4vw,40px);max-width:640px;width:100%;border-top:8px solid var(--ouro);text-align:center;max-height:92vh;overflow-y:auto}
+.resume-modal h2{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--roxo);margin-bottom:10px}
+.resume-modal p{font-size:.95rem;color:#444;margin-bottom:16px}
+.resume-info-box{background:var(--cinza);border-radius:12px;padding:14px 18px;margin:16px 0 20px;text-align:left;border-left:4px solid var(--roxo)}
+.resume-info-row{display:flex;justify-content:space-between;gap:10px;padding:5px 0;font-size:.88rem;border-bottom:1px dashed #c9d8ee}
+.resume-info-row:last-child{border-bottom:none}
+.resume-info-row .lbl{color:#555}
+.resume-info-row .val{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--roxo)}
+.resume-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.resume-btn{padding:12px 26px;border-radius:12px;border:none;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.92rem;cursor:pointer}
+.resume-btn.primary{background:var(--roxo);color:#fff;box-shadow:0 4px 0 var(--roxo2)}
+.resume-btn.secondary{background:#eee;color:#444;box-shadow:0 4px 0 #ccc}
+.final-box{display:none;background:linear-gradient(135deg,var(--roxo),var(--roxo2));color:#fff;border-radius:20px;padding:32px 28px;text-align:center;margin-top:12px}
+.final-box.show{display:block}
+.final-box h2{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--ouro);margin-bottom:8px}
+.final-box .score-big{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(2.2rem,3.6rem,3.6rem);margin:12px 0}
+.final-box>p{color:#d8e2f5;margin-bottom:18px}
+.reset-btn{background:var(--ouro);color:var(--roxo2);border:none;padding:12px 28px;border-radius:12px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.95rem;cursor:pointer;box-shadow:0 4px 0 #b38600}
+.footer{text-align:center;color:#5a6f92;font-family:'Montserrat',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:1.2px;padding:20px 0 6px;text-transform:uppercase}
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.menu-btn{width:44px;height:44px;border-radius:12px;border:2px solid var(--roxo);background:#fff;cursor:pointer;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:0}
+.menu-btn span{display:block;width:22px;height:3px;border-radius:2px;background:var(--roxo)}
+.menu-btn:hover{background:var(--roxo)}
+.menu-btn:hover span{background:#fff}
+.guard-chip{display:none;padding:7px 14px;border-radius:999px;background:#fff8e1;border:2px solid #B37A00;color:#8a5f00;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.74rem}
+body.guard-off .guard-chip{display:inline-block}
+.tmenu-overlay{position:fixed;inset:0;background:rgba(6,16,36,.55);z-index:10000;display:none;align-items:flex-start;justify-content:flex-start;padding:clamp(12px,2vw,32px)}
+.tmenu-overlay.show{display:flex}
+.tmenu{background:#fff;border-radius:16px;padding:20px 22px;width:min(380px,100%);text-align:left}
+.tmenu h3{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--roxo);font-size:1rem;margin-bottom:4px}
+.tmenu p{font-size:.84rem;color:#555;margin-bottom:12px}
+.tmenu input[type=password]{width:100%;padding:11px 14px;border:2px solid #c9d8ee;border-radius:10px;font-size:1rem;margin-bottom:10px}
+.tmenu .tbtn{display:block;width:100%;padding:11px 14px;border-radius:10px;border:2px solid var(--roxo);background:var(--roxo);color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.84rem;cursor:pointer;margin-bottom:8px}
+.tmenu .tbtn.sec{background:#fff;color:var(--roxo)}
+.tmenu .tbtn.warn{background:#B37A00;border-color:#B37A00}
+.tmenu .tbtn.ok{background:var(--ok);border-color:var(--ok)}
+.tmenu .tmsg{font-size:.8rem;color:var(--erro);min-height:1.2em;margin-bottom:6px;font-weight:700}
+.tmenu .tstatus{padding:10px 14px;border-radius:10px;font-size:.84rem;font-weight:700;margin-bottom:12px}
+.tmenu .tstatus.on{background:#e8f5e9;color:var(--ok)}
+.tmenu .tstatus.off{background:#fff8e1;color:#8a5f00}
+.tmenu .tnote{font-size:.74rem;color:#777;margin-top:4px}
+.report-section{margin-bottom:18px;padding-bottom:14px;border-bottom:2px dashed #e3ecf6}
+.report-section:last-child{border-bottom:none}
+.report-section h4{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--roxo);font-size:.88rem;text-transform:uppercase;margin-bottom:8px}
+.report-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed #e0e0e0;font-size:.92rem;gap:12px;flex-wrap:wrap}
+.report-row:last-child{border-bottom:none}
+.report-row .label{color:#555;flex:1;min-width:180px}
+.report-row .value{font-family:'Montserrat',sans-serif;font-weight:900}
+.report-row .value.ok{color:var(--ok)}
+.report-row .value.warn{color:#8a5f00}
+.report-row .value.bad{color:var(--erro)}
+.report-diagnosis{margin-top:14px;padding:12px 16px;border-radius:10px;font-size:.88rem;line-height:1.55}
+.report-diagnosis.ok{background:#e8f5e9;color:#1b5e20;border-left:4px solid var(--ok)}
+.report-diagnosis.warn{background:#fff8e1;color:#8a5f00;border-left:4px solid #B37A00}
+.report-diagnosis.bad{background:#ffebee;color:#7f1d1d;border-left:4px solid var(--erro)}
+@media(max-width:480px){body,.situation p,.opt .text,.q-prompt,.feedback{text-align:left}.q-concept{display:block;margin-left:0;margin-top:8px}.q-inline-help{margin-left:0;width:100%}.support-bar{justify-content:stretch}.support-btn{flex:1;justify-content:center}.score-header{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body class="guard-on">
+<div class="container">
+  <div class="topbar">
+    <button class="menu-btn" type="button" onclick="abrirMenuProf()"><span></span><span></span><span></span></button>
+    <span class="guard-chip">Modo professor: proteções desativadas</span>
+  </div>
+
+  <header class="hero">
+    <span class="hero-badge">Filosofia · 1ª Série EM · Aprofundamento</span>
+    <h1>Ciência e Filosofia <span>1ª Série</span></h1>
+    <p>Uma história de separação e encontro: do mito ao logos, o método científico, técnica e tecnologia, paradigmas, a produção social da ciência e a questão da neutralidade científica.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-card"><span class="label">Habilidades</span><span class="value"><strong>EM13CNT301</strong> <strong>EM13CNT302</strong></span></div>
+      <div class="hero-meta-card"><span class="label">Objetos de Conhecimento</span><span class="value">Ciência e filosofia; método científico; técnica, tecnologia e ciência; paradigmas; produção social da ciência; neutralidade científica.</span></div>
+      <div class="hero-meta-card"><span class="label">Objetivo</span><span class="value">Compreender a relação histórica entre ciência e filosofia e refletir criticamente sobre a produção social e a suposta neutralidade da ciência.</span></div>
+    </div>
+  </header>
+
+  <div class="support-bar">
+    <button class="support-btn apostila" type="button" onclick="abrirApostila()">📖 Abrir Apostila</button>
+    <button class="support-btn report" type="button" onclick="abrirRelatorio()">📊 Ver relatório</button>
+    <button class="support-btn reset" type="button" onclick="confirmarReset()">🔄 Reiniciar</button>
+  </div>
+
+  <div class="instructions"><strong>Como funciona:</strong> leia a situação-problema com atenção, aguarde o cronômetro liberar as alternativas, escolha a resposta e receba o retorno explicativo. Você precisa dominar todas as 30 questões — as que errar voltam em ciclos seguintes.</div>
+
+  <div class="scoreboard" id="scoreboard">
+    <div class="score-header">
+      <span class="title">🎯 Seu progresso</span>
+      <div class="score-pills">
+        <span class="pill erro">❌ Erros: <span id="erro-count">0</span></span>
+        <span class="pill total">🔄 Ciclo <span id="cycle-count">1</span></span>
+        <span class="pill pace-good" id="pace-pill">🧠 Iniciando…</span>
+      </div>
+    </div>
+    <div class="mastery-wrapper">
+      <div class="mastery-track"><div class="mastery-fill" id="mastery-fill"></div></div>
+      <span class="mastery-label" id="mastery-label">0 / 30</span>
+    </div>
+  </div>
+
+  <main id="questions-container"></main>
+
+  <section class="final-box" id="final-box">
+    <h2>🎓 Atividade Concluída!</h2>
+    <p>Confira abaixo o seu resultado:</p>
+    <div class="score-big" id="final-score">0 / 30</div>
+    <p id="final-message"></p>
+    <button class="reset-btn" type="button" onclick="abrirRelatorio()" style="margin-bottom:12px;">📊 Ver relatório completo</button><br>
+    <button class="reset-btn" type="button" onclick="confirmarReset()">🔄 Refazer Atividade</button>
+  </section>
+
+  <div class="footer">⚡ ÁGORA DIGITAL · FILOSOFIA · 1ª SÉRIE EM</div>
+</div>
+
+<!-- APOSTILA (conteúdo integral do .txt) -->
+<div class="apostila-overlay" id="apostila-overlay">
+  <div class="apostila-modal">
+    <div class="apostila-header"><h2>📖 Apostila — Ciência e Filosofia</h2><button class="apostila-close" type="button" onclick="fecharApostila()">✕ Fechar</button></div>
+    <div class="apostila-body">
+      <h3>Capítulo 1 – Ciência e Filosofia: uma história de separação e encontro</h3>
+
+      <h4>1.1 Do mito ao logos: o nascimento grego</h4>
+      <p>Durante milhares de anos, as sociedades humanas explicaram o mundo por meio de mitos: narrativas sagradas que atribuíam a origem das coisas a deuses, heróis e forças sobrenaturais. Na Mesopotâmia, no Egito, na Índia e na China antiga, havia mitos sofisticados sobre a criação do mundo, o movimento dos astros e a origem da vida.</p>
+      <p>Foi na Grécia Antiga, por volta do século VI a.C., que surgiu uma novidade radical: alguns pensadores começaram a buscar explicações racionais para os fenômenos naturais, sem recorrer aos deuses. Essa passagem do <em>mythos</em> (mito) para o <em>logos</em> (razão, discurso racional) é considerada o marco inicial tanto da filosofia quanto da ciência.</p>
+      <p>Os primeiros filósofos, chamados pré-socráticos, perguntavam-se: qual é a origem de todas as coisas? E respondiam com elementos naturais, não com divindades:</p>
+      <ul>
+        <li>Tales de Mileto (c. 624–546 a.C.) dizia que tudo vinha da água.</li>
+        <li>Anaximandro falava de uma substância indefinida, o <em>ápeiron</em>.</li>
+        <li>Heráclito afirmava que tudo flui e nada permanece igual.</li>
+        <li>Demócrito propôs que a matéria era formada por pequenas partículas indivisíveis: os átomos.</li>
+      </ul>
+      <p>Observe: Demócrito falou de átomos mais de 2.000 anos antes de a física moderna confirmar essa ideia. Isso mostra como a filosofia antiga lançou perguntas que a ciência só conseguiria responder muitos séculos depois.</p>
+      <p><strong>Curiosidade:</strong> A palavra "átomo" vem do grego <em>átomos</em>, que significa "que não pode ser dividido". Hoje sabemos que o átomo pode ser dividido em partículas ainda menores (prótons, nêutrons, elétrons), mas o nome ficou.</p>
+      <p>Com Sócrates (470–399 a.C.), Platão (427–347 a.C.) e Aristóteles (384–322 a.C.), a filosofia ganhou contornos ainda mais amplos. Aristóteles, por exemplo, escreveu sobre física, biologia, lógica, ética, política e metafísica. Ele foi, ao mesmo tempo, filósofo e cientista — porque naquela época não havia separação entre essas áreas.</p>
+
+      <h4>1.2 A ciência antiga e medieval</h4>
+      <p>Depois dos gregos, o conhecimento científico continuou se desenvolvendo, mas em ritmo diferente. Durante a Idade Média europeia (séculos V a XV), a filosofia e a ciência ficaram muito ligadas à religião cristã. Pensadores como Santo Agostinho e São Tomás de Aquino buscaram harmonizar a fé cristã com a razão grega, especialmente com Aristóteles.</p>
+      <p>Nesse período, o mundo islâmico desempenhou um papel fundamental. Enquanto boa parte da Europa vivia um período de menor produção científica, sábios muçulmanos como Al-Khwarizmi (matemático), Avicena (médico e filósofo) e Averróis (filósofo) preservaram, traduziram e ampliaram o conhecimento grego. Sem eles, muitas obras de Aristóteles e de outros pensadores teriam se perdido.</p>
+      <p>Foi nesse contexto que surgiram as primeiras universidades europeias (Bolonha, Paris, Oxford), nas quais a filosofia e a ciência ainda eram estudadas juntas, dentro da chamada filosofia natural.</p>
+
+      <h4>1.3 A Revolução Científica do século XVII</h4>
+      <p>O grande divisor de águas aconteceu no século XVII, com a chamada Revolução Científica. Nesse período, uma série de pensadores começou a propor uma nova forma de investigar a natureza, baseada em observação, experimentação e matemática.</p>
+      <p>Alguns nomes centrais:</p>
+      <ul>
+        <li><strong>Nicolau Copérnico (1473–1543)</strong> — Propôs que a Terra gira em torno do Sol (heliocentrismo), contrariando o modelo geocêntrico aceito por séculos.</li>
+        <li><strong>Galileu Galilei (1564–1642)</strong> — Usou o telescópio para observar as luas de Júpiter e as fases de Vênus, confirmando o heliocentrismo. Defendeu que a natureza é escrita em linguagem matemática.</li>
+        <li><strong>Francis Bacon (1561–1626)</strong> — Propôs o método indutivo e a experimentação como base do conhecimento científico.</li>
+        <li><strong>René Descartes (1596–1650)</strong> — Defendeu o método dedutivo, partindo de princípios claros e evidentes. Criou a geometria analítica.</li>
+        <li><strong>Isaac Newton (1643–1727)</strong> — Formulou as leis do movimento e da gravitação universal, unificando céu e Terra em uma mesma física.</li>
+      </ul>
+      <p>Com a Revolução Científica, a ciência passou a se separar definitivamente da filosofia. A partir de então, a ciência se tornou uma atividade com objeto, método e linguagem próprios, enquanto a filosofia continuou a se ocupar das grandes questões sobre o conhecimento, a ética, a política e a existência.</p>
+      <p><strong>Atenção:</strong> essa separação não significa que a filosofia deixou de ter relação com a ciência. Pelo contrário: a filosofia da ciência, que veremos no Capítulo 8, é justamente o campo que investiga os fundamentos, os métodos e os limites da própria ciência.</p>
+
+      <h4>1.4 Filosofia e ciência hoje: papéis diferentes, diálogo necessário</h4>
+      <p>Podemos resumir assim as diferenças e complementaridades:</p>
+      <ul>
+        <li><strong>Ciência:</strong> busca explicar <em>como</em> os fenômenos acontecem; usa observação, experimentação e matemática; produz teorias testáveis e revisáveis. Exemplo: "como a gravidade funciona?"</li>
+        <li><strong>Filosofia:</strong> busca compreender <em>por que</em> e <em>para quê</em> as coisas existem; usa argumentação, análise conceitual e reflexão crítica; formula perguntas fundamentais e examina pressupostos. Exemplo: "o que é o tempo? o que é a causalidade?"</li>
+      </ul>
+      <p>Ambas são indispensáveis. A ciência nos dá ferramentas para agir no mundo; a filosofia nos ajuda a decidir se, quando e como devemos usá-las. Sem a filosofia, a ciência corre o risco de se tornar uma técnica cega; sem a ciência, a filosofia corre o risco de se afastar da realidade concreta.</p>
+      <p><strong>Para refletir:</strong> quando você usa o celular, está usando ciência e técnica. Mas as perguntas sobre se devemos usar o celular o tempo todo, quem lucra com o nosso tempo de tela e como isso afeta a nossa saúde mental são perguntas que exigem filosofia, sociologia, psicologia e ética.</p>
+
+      <h3>Capítulo 2 – Método: o caminho da ciência</h3>
+
+      <h4>2.1 Bacon, Descartes e os dois caminhos do conhecimento</h4>
+      <p>No século XVII, dois filósofos propuseram caminhos diferentes para se chegar ao conhecimento verdadeiro. Esses dois caminhos até hoje influenciam a ciência.</p>
+      <p><strong>Francis Bacon (1561–1626)</strong> defendia o método indutivo: partir da observação de casos particulares para chegar a leis gerais. Para ele, o cientista deveria acumular dados, fazer experimentos e só depois formular conclusões. Bacon também alertava contra os "ídolos" — preconceitos e hábitos mentais que distorcem nossa visão da realidade.</p>
+      <p><strong>René Descartes (1596–1650)</strong> defendia o método dedutivo: partir de princípios evidentes e verdadeiros, e daí deduzir outras verdades por meio da razão. Seu famoso "penso, logo existo" é um exemplo dessa busca por um ponto de partida absolutamente certo.</p>
+      <p>Na prática, a ciência moderna combina os dois: observação e experimentação (Bacon) + raciocínio lógico e matemático (Descartes).</p>
+
+      <h4>2.2 As etapas do método científico</h4>
+      <p>Não existe uma "receita de bolo" única da ciência, mas o método científico costuma seguir etapas como:</p>
+      <ul>
+        <li>Observação de um fenômeno ou problema.</li>
+        <li>Formulação de uma pergunta clara e precisa.</li>
+        <li>Levantamento de hipóteses — possíveis respostas a serem testadas.</li>
+        <li>Experimentação controlada, com variáveis bem definidas.</li>
+        <li>Análise dos resultados, com uso de estatística e comparação.</li>
+        <li>Conclusão: a hipótese foi corroborada, refutada ou precisa ser reformulada.</li>
+        <li>Divulgação dos resultados para a comunidade científica, permitindo que outros repitam o experimento.</li>
+      </ul>
+      <p><strong>Curiosidade histórica:</strong> o médico húngaro Ignaz Semmelweis (1818–1865) observou que a mortalidade de mulheres no parto diminuía drasticamente quando os médicos lavavam as mãos antes de atendê-las. Ele não sabia explicar por que isso funcionava (a teoria dos germes ainda não existia), mas os dados eram claros. A comunidade médica da época rejeitou sua proposta. Semmelweis morreu antes de ver suas ideias aceitas — hoje é considerado um dos precursores da higiene hospitalar.</p>
+
+      <h4>2.3 Falseabilidade: o critério de Popper</h4>
+      <p>O filósofo austríaco Karl Popper (1902–1994) propôs um critério para distinguir ciência de pseudociência: a falseabilidade (ou refutabilidade).</p>
+      <p>Segundo Popper, uma teoria só é científica se puder, em princípio, ser refutada por um experimento ou observação. Ou seja, ela precisa fazer previsões que possam ser testadas e, eventualmente, contrariadas pelos fatos.</p>
+      <p>Exemplos:</p>
+      <ul>
+        <li><strong>Falseável:</strong> "todos os metais se expandem quando aquecidos". Basta encontrar um metal que não se expande para refutar a teoria.</li>
+        <li><strong>Não falseável:</strong> "o destino de cada pessoa foi escrito pelas estrelas". Não há experimento possível que prove o contrário, porque qualquer resultado pode ser interpretado como "parte do destino".</li>
+      </ul>
+      <p>Para Popper, a ciência não busca provar que uma teoria é verdadeira, mas sim tentar refutá-la. As teorias que sobrevivem aos testes são as mais confiáveis — mas nunca definitivamente verdadeiras.</p>
+      <p><strong>Importante:</strong> isso não significa que a ciência seja "relativa" ou que "tudo vale". Significa que o conhecimento científico é provisório: ele vale enquanto não for refutado por novas evidências.</p>
+
+      <h4>2.4 Verificação, replicação e o problema da indução</h4>
+      <p>A verificação é o processo de testar uma hipótese por meio de experimentos e observações. Mas há um problema filosófico profundo aqui, apontado pelo filósofo escocês David Hume (1711–1776): o problema da indução.</p>
+      <p>Hume observou que não importa quantas vezes o sol nasceu no passado — isso não prova logicamente que ele nascerá amanhã. A indução (generalizar a partir de casos observados) não tem garantia lógica absoluta. Ela funciona na prática, mas não é uma certeza matemática.</p>
+      <p>Por isso, a ciência se apoia também na replicação: um resultado só é considerado confiável quando outros pesquisadores, em outros laboratórios, conseguem obter o mesmo resultado. A chamada crise de replicação na psicologia e na medicina, nas últimas décadas, mostrou que muitos estudos famosos não puderam ser reproduzidos — o que levou a uma revisão de práticas científicas.</p>
+
+      <h3>Capítulo 3 – Ciência e Técnica: do artesanato à inteligência artificial</h3>
+
+      <h4>3.1 Técnica, tecnologia e ciência: diferenças e relações</h4>
+      <p>É comum confundir técnica, tecnologia e ciência. Vamos diferenciar:</p>
+      <ul>
+        <li><strong>Técnica:</strong> conjunto de procedimentos e habilidades para realizar algo. Um artesão que faz cerâmica, um pescador que constrói uma rede, uma cozinheira que prepara um prato — todos usam técnicas.</li>
+        <li><strong>Tecnologia:</strong> aplicação organizada e sistemática do conhecimento para criar ferramentas, máquinas, sistemas e processos. Envolve não só saber fazer, mas entender por que funciona.</li>
+        <li><strong>Ciência:</strong> busca compreender os fenômenos naturais e sociais por meio de métodos rigorosos, produzindo teorias e leis.</li>
+      </ul>
+      <p>A relação entre elas não é linear. Muitas vezes, a técnica vem antes da ciência: o ser humano dominou o fogo, a agricultura e a metalurgia muito antes de entender a química da combustão, da fotossíntese ou da oxidação. Outras vezes, a ciência possibilita novas técnicas: a descoberta da eletricidade levou à criação de motores, lâmpadas e computadores.</p>
+
+      <h4>3.2 As três revoluções industriais</h4>
+      <p>A história da técnica e da tecnologia pode ser dividida em grandes momentos:</p>
+      <ul>
+        <li><strong>1ª Revolução Industrial (séc. XVIII–XIX):</strong> Máquina a vapor, carvão, fábricas têxteis, ferrovias. Exemplos: teares mecânicos, locomotivas, navios a vapor.</li>
+        <li><strong>2ª Revolução Industrial (final do séc. XIX–XX):</strong> Eletricidade, petróleo, produção em linha de montagem, telecomunicações. Exemplos: lâmpada elétrica, automóvel, telefone, rádio.</li>
+        <li><strong>3ª Revolução Industrial (década de 1970 em diante):</strong> Informática, microeletrônica, internet, automação. Exemplos: computadores pessoais, internet, celulares, robôs industriais.</li>
+      </ul>
+      <p>Muitos estudiosos falam hoje de uma <strong>4ª Revolução Industrial</strong>, marcada pela inteligência artificial, pela internet das coisas, pela biotecnologia e pela impressão 3D. Essa nova etapa traz enormes promessas (medicina personalizada, energia limpa, cidades inteligentes) e também enormes desafios (desemprego tecnológico, vigilância em massa, desigualdade digital).</p>
+
+      <h4>3.3 Informática, cidadania digital e os dilemas atuais</h4>
+      <p>Hoje, a tecnologia digital está em praticamente todos os aspectos da vida: comunicação, trabalho, educação, saúde, lazer, política. Ser cidadão digital significa usar essas ferramentas de forma ética, crítica e responsável.</p>
+      <p>Alguns temas importantes:</p>
+      <ul>
+        <li><strong>Privacidade:</strong> nossos dados são coletados por empresas e governos. Quem tem acesso a eles? Como são usados?</li>
+        <li><strong>Desinformação:</strong> notícias falsas se espalham rapidamente nas redes sociais, muitas vezes com aparência de ciência.</li>
+        <li><strong>Dependência tecnológica:</strong> o uso excessivo de telas afeta a atenção, o sono e a saúde mental.</li>
+        <li><strong>Desigualdade digital:</strong> nem todos têm acesso à internet de qualidade e a dispositivos adequados.</li>
+        <li><strong>Inteligência artificial:</strong> algoritmos decidem o que vemos, o que compramos e até quem é contratado. Como garantir que sejam justos?</li>
+      </ul>
+      <p><strong>Conexão com o currículo:</strong> a importância de problematizar hábitos de consumo e descarte de resíduos em metrópoles, áreas urbanas e rurais. A tecnologia pode ajudar na sustentabilidade (energia solar, reciclagem inteligente), mas também pode estimular o consumismo desenfreado (obsolescência programada, publicidade personalizada).</p>
+
+      <h3>Capítulo 4 – Paradigma e Crise de Paradigma</h3>
+
+      <h4>4.1 O que é um paradigma científico</h4>
+      <p>O termo paradigma foi popularizado pelo físico e filósofo Thomas Kuhn (1922–1996), em seu livro <em>A Estrutura das Revoluções Científicas</em> (1962). Para Kuhn, um paradigma é um conjunto de crenças, valores, técnicas e exemplos compartilhados por uma comunidade científica em determinado período.</p>
+      <p>O paradigma define:</p>
+      <ul>
+        <li>Quais problemas são considerados importantes.</li>
+        <li>Quais métodos são aceitos como válidos.</li>
+        <li>Quais soluções são consideradas satisfatórias.</li>
+        <li>O que conta como "evidência" e o que é descartado.</li>
+      </ul>
+      <p>Enquanto um paradigma está em vigor, a ciência funciona dentro dele. Kuhn chama isso de <strong>ciência normal</strong>: os cientistas resolvem quebra-cabeças dentro do quadro teórico aceito.</p>
+
+      <h4>4.2 Ciência normal e revolução científica</h4>
+      <p>Com o tempo, porém, surgem <strong>anomalias</strong>: resultados que não se encaixam no paradigma vigente. No início, os cientistas tentam ajustar a teoria para acomodar as anomalias. Se elas se acumulam e resistem a todas as tentativas de solução, instala-se uma <strong>crise de paradigma</strong>.</p>
+      <p>Quando a crise se aprofunda, pode ocorrer uma <strong>revolução científica</strong>: um novo paradigma substitui o antigo. Não é uma simples correção — é uma mudança profunda na forma de ver o mundo.</p>
+
+      <h4>4.3 Exemplos históricos</h4>
+      <ul>
+        <li><strong>Geocentrismo → Heliocentrismo:</strong> anomalias (movimentos estranhos dos planetas, observações de Galileu com o telescópio) levaram Copérnico, Kepler e Galileu ao novo paradigma heliocêntrico.</li>
+        <li><strong>Física newtoniana → Relatividade e Mecânica Quântica:</strong> experimentos com a velocidade da luz e radiação do corpo negro levaram Einstein, Bohr, Heisenberg e Schrödinger a um novo paradigma.</li>
+        <li><strong>Geração espontânea → Teoria microbiana:</strong> experimentos de Redi e Pasteur mostraram que seres vivos vêm de outros seres vivos.</li>
+        <li><strong>Fixismo das espécies → Evolução por seleção natural:</strong> fósseis e observações de Darwin nas Ilhas Galápagos levaram à teoria da evolução (Darwin e Wallace).</li>
+      </ul>
+
+      <h4>4.4 Paradigmas em crise no século XXI</h4>
+      <p>Hoje, alguns paradigmas científicos e sociais estão sendo questionados:</p>
+      <ul>
+        <li><strong>Paradigma energético:</strong> a dependência de combustíveis fósseis está sendo substituída, aos poucos, por energias renováveis.</li>
+        <li><strong>Paradigma econômico:</strong> o crescimento infinito em um planeta finito é questionado por economistas ecológicos.</li>
+        <li><strong>Paradigma da saúde:</strong> o modelo biomédico centrado na doença dá lugar a abordagens mais integrais, que consideram fatores sociais, ambientais e psicológicos.</li>
+        <li><strong>Paradigma da inteligência:</strong> a inteligência artificial está nos obrigando a repensar o que significa "ser inteligente", "criar" e "decidir".</li>
+        <li><strong>Paradigma da informação:</strong> a era das fake news e da pós-verdade questiona a confiança na ciência e nas instituições.</li>
+      </ul>
+      <p><strong>Para refletir:</strong> será que vivemos hoje uma crise de paradigma? Em caso afirmativo, qual paradigma está em crise e o que pode substituí-lo? Como cidadão, qual é o seu papel nesse processo?</p>
+
+      <h3>Capítulo 5 – A Ciência como Produção Social</h3>
+
+      <h4>5.1 O mito do gênio solitário</h4>
+      <p>Quando pensamos em cientistas famosos, logo imaginamos figuras isoladas: Einstein escrevendo fórmulas sozinho, Newton sob a macieira, Darwin em sua viagem no Beagle. Essa imagem é atraente, mas esconde uma verdade fundamental: a ciência é uma produção coletiva e social.</p>
+      <p>Nenhum cientista trabalha isolado. Ele depende de:</p>
+      <ul>
+        <li>Uma comunidade de pesquisadores que discute, critica e valida seus resultados.</li>
+        <li>Instituições (universidades, institutos, laboratórios) que oferecem infraestrutura e financiamento.</li>
+        <li>Governos e agências de fomento que definem prioridades de pesquisa.</li>
+        <li>Empresas que investem em pesquisa e desenvolvimento (P&amp;D).</li>
+        <li>Uma sociedade que valoriza (ou não) o conhecimento científico.</li>
+      </ul>
+      <p>Além disso, a ciência é feita por pessoas com histórias, valores, culturas e interesses. Isso não invalida o conhecimento científico — mas mostra que ele não nasce em um vácuo.</p>
+
+      <h4>5.2 Quem financia a ciência</h4>
+      <p>A pesquisa científica custa caro. Equipamentos, laboratórios, salários, viagens, publicações — tudo isso exige recursos. Por isso, a pergunta "quem financia?" é central.</p>
+      <ul>
+        <li><strong>Governos:</strong> no Brasil, o CNPq, a CAPES e as fundações estaduais (como FAPESP, FAPERJ) financiam grande parte da pesquisa acadêmica.</li>
+        <li><strong>Universidades:</strong> mantêm laboratórios e grupos de pesquisa.</li>
+        <li><strong>Empresas privadas:</strong> investem em P&amp;D para desenvolver produtos e patentes.</li>
+        <li><strong>Organizações internacionais:</strong> OMS, UNESCO, Banco Mundial financiam pesquisas em saúde, educação e meio ambiente.</li>
+        <li><strong>Filantropia:</strong> fundações como a Bill &amp; Melinda Gates financiam pesquisas em saúde global.</li>
+      </ul>
+      <p>O financiamento influencia as prioridades: temas com mais recursos atraem mais pesquisadores. Doenças que afetam populações pobres, por exemplo, recebem menos investimento do que doenças que afetam populações ricas — um fenômeno conhecido como "doenças negligenciadas".</p>
+
+      <h4>5.3 Interesses econômicos, políticos e culturais</h4>
+      <p>A ciência não está separada dos conflitos sociais. Ela é atravessada por interesses:</p>
+      <ul>
+        <li><strong>Econômicos:</strong> indústrias farmacêuticas, de energia, de tecnologia, de agronegócio e de tabaco já foram acusadas de influenciar pesquisas em seu favor.</li>
+        <li><strong>Políticos:</strong> governos podem priorizar ou censurar pesquisas dependendo de sua orientação ideológica.</li>
+        <li><strong>Culturais:</strong> tabus religiosos e morais podem dificultar pesquisas com células-tronco, sexualidade, drogas e outros temas.</li>
+        <li><strong>Geopolíticos:</strong> a corrida espacial, a corrida nuclear e a corrida da inteligência artificial mostram como a ciência é instrumento de poder entre nações.</li>
+      </ul>
+      <p><strong>Importante:</strong> reconhecer esses interesses não significa dizer que a ciência é "falsa" ou "manipulada". Significa que precisamos ser críticos, exigir transparência e cobrar ética dos envolvidos.</p>
+
+      <h4>5.4 A ciência brasileira e seus desafios</h4>
+      <p>O Brasil tem uma tradição científica importante: Oswaldo Cruz (saúde pública), Carlos Chagas (doença de Chagas), César Lattes (física de partículas), Bertha Lutz (biologia e feminismo), Milton Santos (geografia), entre muitos outros.</p>
+      <p>Ainda assim, a ciência brasileira enfrenta desafios:</p>
+      <ul>
+        <li><strong>Falta de investimento contínuo:</strong> cortes orçamentários afetam bolsas e laboratórios.</li>
+        <li><strong>Fuga de cérebros:</strong> muitos pesquisadores emigraram em busca de melhores condições.</li>
+        <li><strong>Desigualdade regional:</strong> a produção científica concentra-se no Sudeste e no Sul.</li>
+        <li><strong>Baixa valorização social:</strong> a ciência ainda é pouco presente no debate público brasileiro.</li>
+      </ul>
+      <p><strong>Importante:</strong> Debater o papel da indústria cultural e das culturas de massa no estímulo ao consumismo. Como a ciência e a tecnologia são usadas para criar necessidades artificiais de consumo? Como isso impacta o meio ambiente e a sociedade?</p>
+
+      <h3>Capítulo 6 – Neutralidade Científica: mito ou realidade?</h3>
+
+      <h4>6.1 O que seria uma ciência neutra</h4>
+      <p>A ideia de neutralidade científica afirma que a ciência deveria ser imparcial, livre de valores, ideologias e interesses. O cientista, nessa visão, seria um observador objetivo, que descreve os fatos "como eles são", sem se deixar influenciar por opiniões pessoais.</p>
+      <p>Essa ideia tem raízes no século XIX, quando se acreditava que a ciência era a forma mais pura de conhecimento, capaz de substituir a religião e a filosofia na busca da verdade.</p>
+
+      <h4>6.2 Valores, financiamento e escolhas</h4>
+      <p>Na prática, a neutralidade absoluta é impossível. Vejamos por quê:</p>
+      <ul>
+        <li><strong>Escolha do tema:</strong> por que se pesquisa mais o câncer do que a malária? Por que se investe mais em armas do que em saneamento básico? Essas escolhas refletem valores e prioridades sociais.</li>
+        <li><strong>Financiamento:</strong> quem paga a pesquisa pode influenciar o desenho do estudo, a seleção de dados e a divulgação dos resultados.</li>
+        <li><strong>Interpretação:</strong> os dados não falam sozinhos. Eles precisam ser interpretados, e toda interpretação envolve pressupostos.</li>
+        <li><strong>Aplicação:</strong> o mesmo conhecimento pode ser usado para o bem ou para o mal. A física nuclear gerou tanto usinas de energia quanto bombas atômicas.</li>
+      </ul>
+
+      <h4>6.3 Estudos de caso</h4>
+      <ul>
+        <li><strong>Caso 1 – Indústria do tabaco:</strong> durante décadas, empresas de cigarro financiaram pesquisas para minimizar os riscos do fumo. Documentos internos revelados em processos judiciais mostraram que elas sabiam dos perigos, mas escondiam os dados.</li>
+        <li><strong>Caso 2 – Agrotóxicos:</strong> estudos sobre os efeitos de agrotóxicos na saúde humana e no meio ambiente frequentemente são financiados tanto por órgãos públicos quanto por empresas do setor. Isso exige transparência e revisão por pares.</li>
+        <li><strong>Caso 3 – Mudanças climáticas:</strong> por décadas, empresas de petróleo financiaram pesquisas para gerar dúvidas sobre o aquecimento global, mesmo sabendo da sua realidade. Isso atrasou políticas ambientais importantes.</li>
+        <li><strong>Caso 4 – Vacinas:</strong> a ciência mostrou a eficácia e a segurança das vacinas, mas interesses econômicos e políticos, além de desinformação, geraram movimentos antivacina que afetam a saúde pública mundial.</li>
+      </ul>
+
+      <h4>6.4 Objetividade não é o mesmo que neutralidade</h4>
+      <p>É importante não confundir os conceitos:</p>
+      <ul>
+        <li><strong>Neutralidade:</strong> ausência total de valores e interesses. Isso é impossível para seres humanos.</li>
+        <li><strong>Objetividade:</strong> compromisso com métodos rigorosos, transparência, revisão por pares e disposição para corrigir erros. Isso é possível e desejável.</li>
+      </ul>
+      <p>A ciência não é neutra, mas pode e deve ser objetiva. Ela busca minimizar vieses por meio de procedimentos coletivos de verificação, crítica e replicação.</p>
+      <p><strong>Para refletir:</strong> se a ciência não é neutra, como podemos confiar nela? A resposta está na transparência, na crítica pública e na pluralidade de perspectivas. Quanto mais abertas e diversas forem as comunidades científicas, mais robusto tende a ser o conhecimento produzido.</p>
+    </div>
+  </div>
+</div>
+
+<!-- RELATÓRIO -->
+<div class="apostila-overlay" id="report-overlay">
+  <div class="apostila-modal report-modal">
+    <div class="apostila-header"><h2>📊 Relatório de Desempenho</h2><button class="apostila-close" type="button" onclick="fecharRelatorio()">✕ Fechar</button></div>
+    <div class="apostila-body" id="report-body" style="padding:20px 24px;"></div>
+  </div>
+</div>
+
+<!-- RESUME -->
+<div class="resume-overlay" id="resume-overlay">
+  <div class="resume-modal">
+    <span style="font-size:2.5rem;display:block;margin-bottom:8px;">💾</span>
+    <h2>Você tem uma atividade em andamento!</h2>
+    <p>Identificamos uma sessão anterior salva neste navegador. Você pode continuar de onde parou.</p>
+    <div class="resume-info-box" id="resume-info-box"></div>
+    <div class="resume-actions">
+      <button class="resume-btn primary" type="button" onclick="continuarSessao()">▶️ Continuar</button>
+      <button class="resume-btn secondary" type="button" onclick="comecarDoZero()">🗑️ Começar do zero</button>
+    </div>
+  </div>
+</div>
+
+<!-- RUSH -->
+<div class="rush-overlay" id="rush-overlay">
+  <div class="rush-modal">
+    <span class="rush-status">⚠️ Ritmo apressado detectado</span>
+    <h3>Pausa reflexiva obrigatória</h3>
+    <p>Você respondeu as últimas questões em menos de <strong>4 segundos</strong> cada uma. A filosofia exige tempo de leitura e reflexão. Leia com calma antes de continuar:</p>
+    <div class="rush-quote">"A ciência não é neutra, mas pode e deve ser objetiva. Ela busca minimizar vieses por meio de procedimentos coletivos de verificação, crítica e replicação."<span class="author">— Apostila, Cap. 6</span></div>
+    <div class="rush-countdown" id="rush-countdown">20</div>
+    <button class="reset-btn" id="rush-continue-btn" type="button" onclick="fecharRush()" disabled>⏳ Aguarde… (20s)</button>
+  </div>
+</div>
+
+<!-- MENU PROF -->
+<div class="tmenu-overlay" id="tmenu-overlay">
+  <div class="tmenu">
+    <div id="tmenu-login">
+      <h3>🔐 Menu do professor</h3>
+      <p>Digite a senha para gerenciar as proteções.</p>
+      <input type="password" id="tmenu-pass" placeholder="Senha" autocomplete="off">
+      <div class="tmsg" id="tmenu-msg"></div>
+      <button class="tbtn" type="button" onclick="entrarMenuProf()">Entrar</button>
+      <button class="tbtn sec" type="button" onclick="fecharMenuProf()">Cancelar</button>
+    </div>
+    <div id="tmenu-panel" style="display:none;">
+      <h3>🛠️ Menu do professor</h3>
+      <div class="tstatus on" id="tmenu-status">🔒 Anti-burla: ATIVOS</div>
+      <button class="tbtn warn" type="button" id="tmenu-toggle" onclick="alternarGuard()">Desativar anti-burla</button>
+      <button class="tbtn sec" type="button" onclick="abrirRelatorioDoProfessor()">📊 Relatório do estudante</button>
+      <button class="tbtn sec" type="button" onclick="fecharMenuProf()">Fechar</button>
+      <p class="tnote">Com as proteções desativadas: sem bloqueio de cópia/impressão, sem cadeado de leitura nem pausa reflexiva; a alternativa correta é mostrada após um erro. Reative antes de publicar.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+/* ===== ANTI-BURLA (não dispara blur no zoom) ===== */
+var GUARD = true, teacherAuth = false;
+var PASS_HASH = '28jrgeq28s5';
+function hashSenha(str){
+  var h1=0xdeadbeef,h2=0x41c6ce57;
+  for(var i=0;i<str.length;i++){var c=str.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677);}
+  h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);
+  h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
+  return (4294967296*(2097151&h2)+(h1>>>0)).toString(36);
+}
+
+var devtoolsAttempts=0, contextMenuAttempts=0, copyAttempts=0, tabSwitches=0;
+function regDev(){if(GUARD)devtoolsAttempts++}
+function regCtx(){if(GUARD)contextMenuAttempts++}
+function regCopy(){if(GUARD)copyAttempts++}
+
+document.addEventListener('contextmenu',function(e){if(!GUARD)return;regCtx();e.preventDefault();return false},false);
+document.addEventListener('keydown',function(e){
+  if(!GUARD)return;
+  var k=(e.key||'').toLowerCase(), code=e.keyCode||e.which;
+  if(e.key==='PrintScreen'||code===44){e.preventDefault();return false}
+  if(e.key==='F12'){regDev();e.preventDefault();return false}
+  if((e.ctrlKey||e.metaKey)&&e.shiftKey&&['i','j','c'].indexOf(k)!==-1){regDev();e.preventDefault();return false}
+  if((e.ctrlKey||e.metaKey)&&k==='u'){regDev();e.preventDefault();return false}
+  if((e.ctrlKey||e.metaKey)&&k==='s'){regDev();e.preventDefault();return false}
+  if((e.ctrlKey||e.metaKey)&&k==='p'){e.preventDefault();return false}
+  if((e.ctrlKey||e.metaKey)&&k==='a'){var t=document.activeElement?document.activeElement.tagName:'';if(t!=='INPUT'&&t!=='TEXTAREA'){regCopy();e.preventDefault();return false}}
+  if(e.metaKey&&e.shiftKey&&['3','4','5'].indexOf(e.key)!==-1){e.preventDefault();return false}
+},true);
+document.addEventListener('dragstart',function(e){if(!GUARD)return;e.preventDefault();return false});
+document.addEventListener('copy',function(e){if(!GUARD)return;var t=document.activeElement?document.activeElement.tagName:'';if(t!=='INPUT'&&t!=='TEXTAREA'){regCopy();e.preventDefault();return false}});
+document.addEventListener('cut',function(e){if(!GUARD)return;var t=document.activeElement?document.activeElement.tagName:'';if(t!=='INPUT'&&t!=='TEXTAREA'){regCopy();e.preventDefault();return false}});
+window.addEventListener('beforeprint',function(e){if(!GUARD)return;e.preventDefault();return false});
+
+/* Detecção de DevTools SEM disparar no zoom */
+(function detectDevTools(){
+  setInterval(function(){
+    if(!GUARD) return;
+    try {
+      var wDiff = window.outerWidth - window.innerWidth;
+      var hDiff = window.outerHeight - window.innerHeight;
+      var isDetached = window.outerWidth > 400 && (wDiff > 300 || hDiff > 300);
+      if(isDetached){ regDev(); }
+    } catch(e){}
+  }, 2000);
+})();
+
+/* ===== 30 QUESTÕES ===== */
+var Q = [
+{c:"Ciência e Filosofia",s:"Do mito ao logos",si:"<p>Durante milhares de anos, as sociedades humanas explicaram a origem do mundo por meio de mitos: narrativas sagradas que atribuíam tudo a deuses e forças sobrenaturais. Por volta do século VI a.C., na Grécia Antiga, alguns pensadores começaram a buscar explicações racionais para esses mesmos fenômenos, sem recorrer a divindades. Esse movimento é considerado o marco inicial tanto da filosofia quanto da ciência.</p>",p:"O texto descreve um processo histórico fundamental. Esse processo é conhecido como:",o:["a transição do pensamento mítico para o pensamento racional, marcada pela busca de explicações naturais para os fenômenos.","a consolidação das narrativas religiosas como forma privilegiada de explicar a origem do universo e da vida.","a substituição definitiva da filosofia pela ciência experimental como única forma válida de conhecimento.","a preservação das tradições mitológicas orientais como base para o desenvolvimento do pensamento grego.","a separação entre razão e fé, que ocorreu de forma imediata e sem conflitos no mundo antigo."],x:0,e:"A passagem do mythos (mito) para o logos (razão) é o marco inicial da filosofia e da ciência."},
+{c:"Ciência e Filosofia",s:"Pré-socráticos",si:"<p>Tales de Mileto afirmava que tudo vinha da água. Anaximandro falava de uma substância indefinida, o ápeiron. Heráclito dizia que tudo flui. Demócrito propôs que a matéria era formada por pequenas partículas indivisíveis: os átomos. Esses pensadores ficaram conhecidos como pré-socráticos.</p>",p:"A importância histórica desses filósofos para o desenvolvimento do conhecimento científico reside no fato de que eles:",o:["formularam teorias que foram imediatamente comprovadas pela experimentação moderna, como a existência dos átomos.","buscaram explicar a origem e a constituição do mundo a partir de elementos naturais, sem recorrer a explicações sobrenaturais.","estabeleceram os fundamentos do método científico experimental, com base em observações sistemáticas e reproduzíveis.","rejeitaram completamente qualquer forma de especulação racional, priorizando apenas os sentidos e a experiência direta.","defenderam a ideia de que o conhecimento verdadeiro só pode ser obtido por meio da revelação divina e da fé."],x:1,e:"Os pré-socráticos buscaram explicações naturais, sem recorrer ao sobrenatural, marcando a passagem do mito para o logos."},
+{c:"Ciência e Filosofia",s:"Aristóteles e a unidade do saber",si:"<p>Aristóteles escreveu sobre física, biologia, lógica, ética, política e metafísica. Ele foi, ao mesmo tempo, filósofo e cientista. Na Antiguidade, não havia separação entre essas áreas. Já no século XVII, com a Revolução Científica, a ciência passou a se constituir como atividade com objeto, método e linguagem próprios.</p>",p:"A diferença entre a situação descrita na Antiguidade e a que se consolidou na modernidade indica que:",o:["a filosofia deixou de existir como campo autônomo do saber a partir do século XVII, sendo absorvida pela ciência.","a ciência moderna rejeitou completamente as contribuições da filosofia antiga, considerando-as irrelevantes para o progresso.","a separação entre filosofia e ciência foi um processo histórico, não significando que a filosofia perdeu relevância para a ciência.","o conhecimento científico antigo era superior ao moderno porque integrava diferentes áreas do saber de forma harmoniosa.","a Revolução Científica representou o fim definitivo das grandes questões filosóficas sobre o conhecimento e a ética."],x:2,e:"A separação foi histórica. A filosofia da ciência investiga fundamentos, métodos e limites da própria ciência."},
+{c:"Ciência e Filosofia",s:"Idade Média e mundo islâmico",si:"<p>Durante a Idade Média europeia, a filosofia e a ciência ficaram muito ligadas à religião cristã. Pensadores como Santo Agostinho e São Tomás de Aquino buscaram harmonizar a fé cristã com a razão grega. Nesse período, o mundo islâmico desempenhou papel fundamental, com sábios como Al-Khwarizmi, Avicena e Averróis, que preservaram, traduziram e ampliaram o conhecimento grego.</p>",p:"Com base no texto, é correto afirmar que:",o:["a Igreja Cristã impediu totalmente o desenvolvimento científico durante a Idade Média, tornando esse período completamente estéril.","o mundo islâmico foi responsável por destruir as obras gregas que poderiam comprometer a fé cristã medieval.","a preservação e ampliação do conhecimento grego pelos sábios muçulmanos foi essencial para o desenvolvimento posterior da ciência.","as universidades medievais surgiram para substituir a filosofia natural por um ensino exclusivamente teológico e religioso.","a harmonia entre fé e razão proposta por Santo Agostinho e São Tomás de Aquino foi rejeitada pelo mundo islâmico."],x:2,e:"Sem os sábios muçulmanos, muitas obras de Aristóteles teriam se perdido."},
+{c:"Ciência e Filosofia",s:"Revolução Científica",si:"<p>Com a Revolução Científica do século XVII, pensadores como Copérnico, Galileu, Bacon, Descartes e Newton propuseram uma nova forma de investigar a natureza, baseada em observação, experimentação e matemática. A partir de então, a ciência se tornou uma atividade com objeto, método e linguagem próprios.</p>",p:"Considerando o contexto apresentado, a principal consequência da Revolução Científica para a relação entre ciência e filosofia foi:",o:["a subordinação definitiva da ciência aos dogmas religiosos, que passaram a controlar todas as pesquisas naturais.","a separação gradual entre ciência e filosofia, com a ciência assumindo métodos próprios e a filosofia mantendo questões mais amplas.","a eliminação completa da filosofia do cenário intelectual europeu, substituída integralmente pelo método experimental.","a fusão entre ciência e filosofia em um único campo do saber, sem distinção de métodos ou objetos de estudo.","a rejeição dos métodos matemáticos pela ciência nascente, que passou a se basear exclusivamente na observação empírica."],x:1,e:"A ciência se separou da filosofia, assumindo método próprio; a filosofia manteve as grandes questões."},
+{c:"Ciência e Filosofia",s:"Filosofia e ciência hoje",si:"<p>A ciência busca explicar como os fenômenos acontecem, usando observação, experimentação e matemática, produzindo teorias testáveis e revisáveis. A filosofia busca compreender por que e para quê as coisas existem, usando argumentação, análise conceitual e reflexão crítica.</p>",p:"De acordo com o texto, a relação entre ciência e filosofia na atualidade caracteriza-se por:",o:["uma hierarquia em que a ciência ocupa o lugar superior por produzir conhecimento verificável e útil para a sociedade.","uma oposição irreconciliável, pois a filosofia trata de questões subjetivas enquanto a ciência lida apenas com fatos objetivos.","uma complementaridade necessária, pois ambas são indispensáveis para agir no mundo e refletir sobre o uso desse conhecimento.","uma subordinação da filosofia à ciência, já que esta última fornece os dados que a reflexão filosófica apenas organiza.","uma independência total, pois cada área possui seu próprio objeto e método, sem qualquer ponto de contato ou diálogo."],x:2,e:"Sem filosofia, a ciência vira técnica cega; sem ciência, a filosofia se afasta da realidade concreta."},
+{c:"Método científico",s:"Bacon e Descartes",si:"<p>Francis Bacon defendia o método indutivo: partir da observação de casos particulares para chegar a leis gerais. René Descartes defendia o método dedutivo: partir de princípios evidentes e verdadeiros para deduzir outras verdades por meio da razão. Na prática, a ciência moderna combina os dois.</p>",p:"A combinação dos métodos indutivo e dedutivo na ciência contemporânea pode ser exemplificada por:",o:["um cientista que apenas observa fenômenos sem formular hipóteses ou buscar princípios gerais que os expliquem.","um pesquisador que coleta dados experimentais e, simultaneamente, utiliza raciocínio lógico-matemático para interpretá-los.","um filósofo que rejeita completamente a experimentação em favor da pura especulação racional sobre a natureza.","um técnico que aplica procedimentos padronizados sem compreender os fundamentos teóricos que os sustentam.","um estudante que memoriza leis científicas sem relacioná-las com observações ou experimentos concretos."],x:1,e:"Observação + raciocínio lógico-matemático: Bacon + Descartes."},
+{c:"Método científico",s:"Etapas do método científico",si:"<p>O método científico costuma seguir etapas como: observação de um fenômeno, formulação de uma pergunta clara, levantamento de hipóteses, experimentação controlada, análise dos resultados, conclusão e divulgação dos resultados para a comunidade científica.</p>",p:"A etapa de divulgação dos resultados é fundamental porque:",o:["permite que os cientistas obtenham patentes e lucros com suas descobertas antes que outros pesquisadores as conheçam.","garante que a hipótese inicial seja sempre confirmada, independentemente dos resultados obtidos durante a pesquisa.","possibilita que outros pesquisadores repitam o experimento, validem os resultados e ampliem o conhecimento coletivo.","impede que a comunidade científica tenha acesso aos dados brutos, preservando o sigilo industrial da pesquisa.","substitui a necessidade de experimentação controlada, pois a publicação torna a teoria automaticamente verdadeira."],x:2,e:"A divulgação permite replicação e ampliação do conhecimento coletivo."},
+{c:"Método científico",s:"Caso Semmelweis",si:"<p>O médico húngaro Ignaz Semmelweis observou que a mortalidade de mulheres no parto diminuía quando os médicos lavavam as mãos. Ele não sabia explicar por que isso funcionava (a teoria dos germes ainda não existia). A comunidade médica da época rejeitou sua proposta.</p>",p:"A resistência à proposta de Semmelweis ilustra que:",o:["a ciência sempre aceita imediatamente as descobertas baseadas em dados, independentemente de explicações teóricas.","os dados empíricos, por si sós, nem sempre são suficientes para convencer a comunidade científica sem uma teoria que os explique.","a higiene hospitalar era uma prática amplamente aceita no século XIX, mas Semmelweis não soube divulgar seus resultados.","a teoria dos germes já era conhecida pelos médicos da época, que rejeitaram Semmelweis por razões pessoais.","a observação clínica não tem valor científico quando não é acompanhada de experimentação controlada em laboratório."],x:1,e:"Dados claros sem teoria aceitável não bastam para convencer a comunidade científica."},
+{c:"Método científico",s:"Falseabilidade (Popper)",si:"<p>Karl Popper propôs que uma teoria só é científica se puder, em princípio, ser refutada por um experimento ou observação. A ciência não busca provar teorias verdadeiras, mas tentar refutá-las.</p>",p:"De acordo com o critério de falseabilidade de Popper, é considerada científica a seguinte afirmação:",o:["\"O destino de cada pessoa foi escrito pelas estrelas e não pode ser alterado por nenhuma ação humana.\"","\"Todos os metais se expandem quando aquecidos, podendo essa previsão ser testada e eventualmente contrariada.\"","\"Existe uma força invisível que age sobre todas as coisas, mas que nunca pode ser detectada por instrumento algum.\"","\"Os sonhos são mensagens do inconsciente que só podem ser interpretadas por especialistas autorizados.\"","\"A natureza possui uma harmonia secreta que se revela apenas aos que têm fé verdadeira em sua sabedoria.\""],x:1,e:"A previsão sobre metais é testável e, portanto, falseável."},
+{c:"Método científico",s:"Problema da indução (Hume)",si:"<p>David Hume observou que não importa quantas vezes o sol nasceu no passado — isso não prova logicamente que ele nascerá amanhã. A indução não tem garantia lógica absoluta.</p>",p:"O problema da indução, apontado por Hume, implica que:",o:["o conhecimento científico é impossível, pois nunca podemos ter certeza de nada que não seja demonstrado logicamente.","as generalizações científicas funcionam na prática, mas não possuem garantia lógica absoluta, sendo sempre provisórias.","a ciência deve abandonar completamente a observação e basear-se apenas em deduções matemáticas rigorosas.","os experimentos científicos são inúteis porque nunca podem confirmar nenhuma hipótese formulada pelos pesquisadores.","a indução é um método infalível, pois se baseia na repetição de observações que garantem a verdade das leis naturais."],x:1,e:"O conhecimento científico é provisório: vale enquanto não for refutado."},
+{c:"Método científico",s:"Replicação",si:"<p>A crise de replicação na psicologia e na medicina mostrou que muitos estudos famosos não puderam ser reproduzidos, o que levou a uma revisão de práticas científicas.</p>",p:"A importância da replicação para a ciência está no fato de que ela:",o:["permite que um único pesquisador imponha suas conclusões à comunidade científica sem necessidade de verificação externa.","garante que os resultados obtidos em um laboratório sejam automaticamente válidos para todas as áreas do conhecimento.","possibilita que outros pesquisadores obtenham os mesmos resultados, aumentando a confiabilidade das descobertas.","elimina a necessidade de revisão por pares, pois a repetição do experimento já é suficiente para validar a teoria.","substitui a análise estatística dos dados, tornando desnecessária a comparação entre diferentes estudos."],x:2,e:"Replicação aumenta a confiabilidade das descobertas."},
+{c:"Ciência e Técnica",s:"Técnica, tecnologia e ciência",si:"<p>Técnica é o conjunto de procedimentos e habilidades para realizar algo. Tecnologia é a aplicação organizada do conhecimento para criar ferramentas e sistemas. Ciência busca compreender os fenômenos naturais e sociais por meio de métodos rigorosos.</p>",p:"Um artesão que produz cerâmica utilizando técnicas transmitidas por gerações, sem necessariamente compreender os processos químicos envolvidos, ilustra que:",o:["a técnica sempre depende do conhecimento científico prévio para ser desenvolvida e aperfeiçoada.","a técnica pode existir independentemente da ciência, antecedendo muitas vezes a compreensão teórica dos processos.","a tecnologia é superior à técnica porque envolve obrigatoriamente o entendimento dos princípios científicos.","a ciência é a única forma válida de conhecimento, sendo a técnica uma atividade inferior e sem valor prático.","o artesão domina a ciência dos materiais, mesmo sem ter estudado formalmente química ou física."],x:1,e:"A técnica pode anteceder a ciência — o fogo, a agricultura e a metalurgia surgiram antes da química."},
+{c:"Ciência e Técnica",s:"Revoluções industriais",si:"<p>A 1ª Revolução Industrial (máquina a vapor, carvão, ferrovias), a 2ª (eletricidade, petróleo, linha de montagem) e a 3ª (informática, internet, automação). Muitos falam hoje de uma 4ª Revolução Industrial, marcada pela inteligência artificial e pela internet das coisas.</p>",p:"A passagem da 3ª para a 4ª Revolução Industrial caracteriza-se principalmente por:",o:["substituição da eletricidade por combustíveis fósseis como principal fonte de energia da indústria.","retorno aos métodos artesanais de produção, com valorização do trabalho manual e da customização.","integração de tecnologias digitais avançadas, como inteligência artificial e internet das coisas, nos processos produtivos.","abandono completo da automação industrial em favor da contratação massiva de mão de obra humana.","redução do uso de computadores na indústria, que passam a ser utilizados apenas para lazer e comunicação."],x:2,e:"A 4ª Revolução Industrial integra IA, IoT, biotecnologia e impressão 3D."},
+{c:"Ciência e Técnica",s:"Desigualdade digital",si:"<p>Hoje, a tecnologia digital está em praticamente todos os aspectos da vida. Ser cidadão digital significa usar essas ferramentas de forma ética, crítica e responsável. Entre os temas importantes estão a privacidade, a desinformação, a dependência tecnológica, a desigualdade digital e a inteligência artificial.</p>",p:"A situação de pessoas que não têm acesso à internet de qualidade e a dispositivos adequados, ficando excluídas de serviços e oportunidades digitais, está relacionada ao conceito de:",o:["obsolescência programada, que força os usuários a comprar novos dispositivos periodicamente.","desigualdade digital, que se refere à disparidade no acesso e uso das tecnologias de informação.","dependência tecnológica, que descreve o uso excessivo e prejudicial de telas e redes sociais.","vigilância em massa, que consiste na coleta indiscriminada de dados pessoais por empresas e governos.","desinformação, que se refere à propagação de notícias falsas com aparência de conteúdo científico."],x:1,e:"Desigualdade digital é a disparidade no acesso e uso das TICs."},
+{c:"Ciência e Técnica",s:"Desinformação",si:"<p>Notícias falsas se espalham rapidamente nas redes sociais, muitas vezes com aparência de ciência. Esse fenômeno está relacionado à chamada pós-verdade, em que crenças pessoais e emoções têm mais peso do que fatos objetivos.</p>",p:"Para enfrentar o problema da desinformação científica, uma ação adequada seria:",o:["aceitar como verdadeiras apenas as informações que confirmem as crenças pessoais de cada indivíduo.","proibir completamente o acesso às redes sociais, considerando que toda informação compartilhada nelas é falsa.","desenvolver o pensamento crítico, verificar fontes e buscar informações em veículos confiáveis e revisados por pares.","confiar exclusivamente em influenciadores digitais, que têm mais proximidade com o público do que cientistas.","ignorar completamente qualquer informação científica, já que a ciência é sempre provisória e pode estar errada."],x:2,e:"Pensamento crítico + verificação de fontes + revisão por pares."},
+{c:"Ciência e Técnica",s:"IA e ética",si:"<p>Algoritmos de inteligência artificial decidem o que vemos, o que compramos e até quem é contratado. Essa realidade levanta questões éticas sobre justiça, transparência e responsabilidade no uso dessas tecnologias.</p>",p:"A principal questão ética levantada pelo uso de algoritmos em decisões que afetam a vida das pessoas é:",o:["a impossibilidade técnica de desenvolver sistemas de inteligência artificial que funcionem corretamente.","o risco de que decisões automatizadas reproduzam preconceitos e sejam injustas sem que haja transparência.","a necessidade de substituir completamente os humanos por máquinas em todas as decisões importantes.","a certeza de que os algoritmos são sempre mais justos e imparciais do que os seres humanos.","a exigência de que todos os cidadãos aprendam a programar para não serem excluídos do mercado."],x:1,e:"Algoritmos podem perpetuar vieses existentes na sociedade."},
+{c:"Paradigmas",s:"Ciência normal (Kuhn)",si:"<p>Thomas Kuhn popularizou o termo paradigma: conjunto de crenças, valores, técnicas e exemplos compartilhados por uma comunidade científica em determinado período. O paradigma define quais problemas são importantes, quais métodos são válidos e o que conta como evidência.</p>",p:"De acordo com Kuhn, durante o período de ciência normal, os cientistas:",o:["questionam constantemente os fundamentos do paradigma vigente, buscando substituí-lo por outro mais adequado.","resolvem quebra-cabeças dentro do quadro teórico aceito, sem questionar os pressupostos fundamentais do paradigma.","rejeitam qualquer anomalia como irrelevante, ignorando completamente os dados que não se encaixam na teoria.","trabalham de forma isolada, sem comunicação com a comunidade científica, para evitar influências externas.","dedicam-se exclusivamente a refutar o paradigma dominante, preparando o terreno para uma revolução científica."],x:1,e:"Ciência normal = resolver quebra-cabeças dentro do paradigma vigente."},
+{c:"Paradigmas",s:"Revolução científica",si:"<p>Com o tempo, surgem anomalias que não se encaixam no paradigma vigente. Quando elas se acumulam e resistem a todas as tentativas de solução, instala-se uma crise de paradigma. Quando a crise se aprofunda, pode ocorrer uma revolução científica.</p>",p:"A passagem do geocentrismo para o heliocentrismo, descrita por Kuhn, é um exemplo de:",o:["ciência normal, pois Copérnico apenas corrigiu pequenos erros do modelo anterior sem alterar seus fundamentos.","revolução científica, pois houve substituição de um paradigma por outro, alterando a forma de ver o mundo.","anomalia irrelevante, pois o modelo geocêntrico continuou sendo aceito pela maioria dos cientistas por séculos.","crise econômica, pois a mudança de paradigma foi motivada exclusivamente por interesses comerciais da época.","retrocesso científico, pois o heliocentrismo foi posteriormente refutado pela ciência contemporânea."],x:1,e:"Houve substituição de paradigma — revolução científica."},
+{c:"Paradigmas",s:"Exemplos históricos",si:"<p>Exemplos: do geocentrismo ao heliocentrismo; da física newtoniana à relatividade e mecânica quântica; da geração espontânea à teoria microbiana; do fixismo das espécies à evolução por seleção natural.</p>",p:"Com base nesses exemplos, é correto afirmar que as revoluções científicas:",o:["ocorrem de forma súbita e sem resistência, sendo aceitas imediatamente por toda a comunidade científica.","são motivadas exclusivamente por fatores econômicos, sem relação com anomalias empíricas ou teóricas.","envolvem a substituição de um paradigma por outro quando as anomalias se tornam insustentáveis.","preservam integralmente as teorias anteriores, que continuam válidas em todos os seus aspectos originais.","são eventos raros que ocorreram apenas na astronomia, sem paralelo em outras áreas do conhecimento."],x:2,e:"Revoluções científicas substituem paradigmas quando anomalias se acumulam."},
+{c:"Paradigmas",s:"Crises do séc. XXI",si:"<p>Hoje, alguns paradigmas científicos e sociais estão sendo questionados: o energético (combustíveis fósseis), o econômico (crescimento infinito em planeta finito), o da saúde (modelo biomédico centrado na doença), o da inteligência (IA) e o da informação (fake news e pós-verdade).</p>",p:"A situação descrita no texto indica que:",o:["a ciência atingiu um estágio final de conhecimento completo, não havendo mais paradigmas a serem questionados.","vivemos um período de estabilidade paradigmática, em que as teorias vigentes não enfrentam anomalias significativas.","podem estar em curso crises de paradigma em diferentes áreas, exigindo novas formas de compreender o mundo.","os paradigmas científicos são permanentes e imutáveis, não sofrendo influência de mudanças sociais ou tecnológicas.","apenas a física e a biologia enfrentam crises de paradigma, enquanto as demais áreas permanecem estáveis."],x:2,e:"Crises paradigmáticas em várias áreas exigem novas formas de compreender o mundo."},
+{c:"Ciência como produção social",s:"Gênio solitário",si:"<p>Quando pensamos em cientistas famosos, imaginamos figuras isoladas: Einstein escrevendo fórmulas sozinho, Newton sob a macieira, Darwin em sua viagem no Beagle. Essa imagem esconde uma verdade: a ciência é uma produção coletiva e social.</p>",p:"A ideia de que a ciência é uma produção coletiva implica que:",o:["os cientistas trabalham isoladamente, sem necessidade de comunicação ou validação por outros pesquisadores.","o conhecimento científico depende exclusivamente do gênio individual de pesquisadores excepcionais.","a produção científica envolve comunidades, instituições, financiamento e uma sociedade que a valoriza.","as descobertas científicas são feitas por acaso, sem relação com investimentos ou políticas de pesquisa.","a ciência é uma atividade puramente teórica, sem conexão com fatores sociais, econômicos ou políticos."],x:2,e:"Ciência envolve comunidade, instituições, financiamento e sociedade."},
+{c:"Ciência como produção social",s:"Financiamento e prioridades",si:"<p>A pesquisa científica custa caro. Governos, universidades, empresas privadas, organizações internacionais e filantropia financiam a ciência. O financiamento influencia as prioridades: temas com mais recursos atraem mais pesquisadores.</p>",p:"A existência de \"doenças negligenciadas\", que recebem menos investimento do que doenças que afetam populações ricas, evidencia que:",o:["a ciência é completamente neutra e imune a influências econômicas ou políticas na definição de prioridades.","as escolhas sobre o que pesquisar refletem valores e prioridades sociais, não apenas critérios técnicos.","os cientistas são incapazes de pesquisar doenças que afetam populações pobres por falta de conhecimento técnico.","o financiamento privado é sempre mais ético e eficiente do que o financiamento público em pesquisa científica.","a saúde pública é a única área em que o financiamento influencia as prioridades de pesquisa no mundo."],x:1,e:"Prioridades de pesquisa refletem valores sociais, não só critérios técnicos."},
+{c:"Ciência como produção social",s:"Interesses e transparência",si:"<p>A ciência não está separada dos conflitos sociais. Ela é atravessada por interesses econômicos, políticos, culturais e geopolíticos. Indústrias farmacêuticas, de energia, de tecnologia e de tabaco já foram acusadas de influenciar pesquisas em seu favor.</p>",p:"Reconhecer que a ciência é atravessada por interesses sociais significa que:",o:["a ciência é falsa e manipulada, não merecendo confiança da sociedade em nenhuma circunstância.","os cientistas são todos corruptos e sempre agem em benefício próprio, ignorando a verdade.","é preciso ser crítico, exigir transparência e cobrar ética dos envolvidos na produção científica.","a ciência deve ser abandonada como forma de conhecimento, dando lugar apenas à filosofia e à religião.","os interesses econômicos e políticos não afetam a pesquisa científica, que permanece pura e imparcial."],x:2,e:"Reconhecer interesses = ser crítico, exigir transparência e ética."},
+{c:"Ciência como produção social",s:"Fuga de cérebros",si:"<p>O Brasil tem uma tradição científica importante, com nomes como Oswaldo Cruz, Carlos Chagas, César Lattes, Bertha Lutz e Milton Santos. Ainda assim, enfrenta desafios como falta de investimento contínuo, fuga de cérebros, desigualdade regional e baixa valorização social.</p>",p:"A \"fuga de cérebros\" mencionada no texto refere-se a:",o:["emigração de pesquisadores brasileiros para outros países em busca de melhores condições de trabalho e financiamento.","aumento do número de cientistas brasileiros que abandonam a pesquisa para trabalhar em áreas não científicas.","redução da produção científica nacional em decorrência de políticas de incentivo à importação de tecnologia.","concentração de pesquisadores nas regiões Sudeste e Sul, em detrimento das demais regiões do país.","diminuição do interesse dos jovens brasileiros por carreiras científicas em razão da baixa remuneração."],x:0,e:"Fuga de cérebros = emigração de pesquisadores."},
+{c:"Ciência como produção social",s:"Consumismo",si:"<p>Debater o papel da indústria cultural e das culturas de massa no estímulo ao consumismo envolve analisar como a ciência e a tecnologia são usadas para criar necessidades artificiais de consumo e como isso impacta o meio ambiente e a sociedade.</p>",p:"Uma consequência socioambiental do consumismo estimulado pela indústria cultural é:",o:["a redução do descarte de resíduos, pois os produtos se tornam mais duráveis e reparáveis.","o aumento da obsolescência programada, que acelera o descarte e a exploração de recursos naturais.","a diminuição da publicidade personalizada, que deixa de influenciar as escolhas dos consumidores.","a eliminação da desigualdade digital, pois todos passam a ter acesso igualitário às tecnologias.","a valorização de práticas sustentáveis, que se tornam mais lucrativas do que o consumismo desenfreado."],x:1,e:"Obsolescência programada acelera descarte e exploração de recursos."},
+{c:"Neutralidade científica",s:"Neutralidade absoluta",si:"<p>A ideia de neutralidade científica afirma que a ciência deveria ser imparcial, livre de valores, ideologias e interesses. O cientista seria um observador objetivo, que descreve os fatos \"como eles são\".</p>",p:"A crítica contemporânea a essa concepção de neutralidade absoluta sustenta que:",o:["a ciência é totalmente subjetiva e não produz conhecimento confiável sobre o mundo natural.","os cientistas conseguem, sim, eliminar completamente seus valores e interesses durante a pesquisa.","escolhas sobre o que pesquisar, como financiar e como interpretar dados envolvem valores e pressupostos.","a neutralidade científica é possível apenas nas ciências exatas, não se aplicando às ciências humanas.","a objetividade científica é incompatível com a existência de métodos rigorosos de verificação."],x:2,e:"Escolhas científicas envolvem valores e pressupostos."},
+{c:"Neutralidade científica",s:"Aplicação do conhecimento",si:"<p>Na prática, a neutralidade absoluta é impossível porque a escolha do tema, o financiamento, a interpretação dos dados e a aplicação do conhecimento envolvem valores e interesses. O mesmo conhecimento pode ser usado para o bem ou para o mal.</p>",p:"Um exemplo que ilustra a impossibilidade da neutralidade absoluta na ciência é:",o:["a descoberta da penicilina, que foi usada exclusivamente para salvar vidas, sem qualquer uso controverso.","a física nuclear, que gerou tanto usinas de energia quanto bombas atômicas, mostrando que o conhecimento pode ter diferentes aplicações.","a teoria da gravitação universal, que não teve qualquer impacto social ou econômico desde sua formulação.","a tabela periódica dos elementos, que não sofreu influência de interesses econômicos ou políticos em seu desenvolvimento.","a matemática pura, que se desenvolve independentemente de qualquer contexto social, econômico ou político."],x:1,e:"Física nuclear: usinas e bombas — o mesmo conhecimento, aplicações opostas."},
+{c:"Neutralidade científica",s:"Interesses e distorção",si:"<p>Durante décadas, empresas de cigarro financiaram pesquisas para minimizar os riscos do fumo. Documentos internos revelaram que elas sabiam dos perigos, mas escondiam os dados. Casos semelhantes ocorreram com a indústria do petróleo e as mudanças climáticas.</p>",p:"Esses casos demonstram que:",o:["a ciência é sempre confiável, independentemente de quem a financia, pois os métodos garantem a verdade.","o financiamento privado não influencia os resultados das pesquisas, que seguem critérios puramente técnicos.","interesses econômicos podem distorcer a produção e a divulgação do conhecimento científico, exigindo transparência.","as empresas privadas são as únicas responsáveis por fraudes científicas, estando os governos livres dessas práticas.","a revisão por pares é suficiente para eliminar todos os vieses introduzidos por financiadores interessados."],x:2,e:"Interesses econômicos podem distorcer a ciência — exigir transparência."},
+{c:"Neutralidade científica",s:"Objetividade x neutralidade",si:"<p>É importante não confundir neutralidade com objetividade. Neutralidade seria a ausência total de valores e interesses, o que é impossível para seres humanos. Objetividade é o compromisso com métodos rigorosos, transparência, revisão por pares e disposição para corrigir erros.</p>",p:"De acordo com o texto, a ciência:",o:["é neutra e objetiva, pois os cientistas conseguem eliminar completamente seus valores e interesses.","não é neutra, mas pode e deve ser objetiva, buscando minimizar vieses por meio de procedimentos coletivos.","é subjetiva e não confiável, pois a ausência de neutralidade invalida todo o conhecimento produzido.","não pode ser objetiva, pois a objetividade exige a eliminação total de valores, o que é impossível.","é neutra, mas não objetiva, pois os cientistas não seguem métodos rigorosos de verificação."],x:1,e:"A ciência não é neutra, mas pode e deve ser objetiva."}
+];
+
+/* ===== CONFIG E ESTADO ===== */
+var CONFIG={MIN_LOCK:8,MAX_LOCK:16,WPS:15,FAST:4,FAST_STREAK:2,RUSH:20,MAX_ATT:300};
+var SAVE_KEY='agora-filo-ciencia-v1s-v2';
+var LET=['A','B','C','D','E'];
+var state=null, lockTimer=null, rushTimer=null;
+
+function novoEstado(){
+  var ordem=shuffle(Q.map(function(_,i){return i}));
+  return{v:2,sid:Date.now(),queue:ordem,pos:0,disp:null,qid:null,mastered:[],att:{},tot:0,ok:0,err:0,firstTry:0,ciclo:1,start:Date.now(),tempos:{},ap:0,fs:0,rushN:0,estado:'quiz',fb:null,lockR:0,saved:Date.now()};
+}
+function salvar(){if(!state)return;state.saved=Date.now();try{localStorage.setItem(SAVE_KEY,JSON.stringify(state))}catch(e){}}
+function carregar(){try{var r=localStorage.getItem(SAVE_KEY);if(!r)return null;var s=JSON.parse(r);if(!s||s.v!==2||!Array.isArray(s.queue)||typeof s.pos!=='number'){localStorage.removeItem(SAVE_KEY);return null}return s}catch(e){return null}}
+function limpar(){try{localStorage.removeItem(SAVE_KEY)}catch(e){}}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+function fmt(s){return s<60?s+'s':Math.floor(s/60)+'min '+(s%60)+'s'}
+function lockSec(sit,pr){var t=(sit+' '+pr).replace(/<[^>]+>/g,' ');var w=t.trim().split(/\s+/).length;return Math.min(CONFIG.MAX_LOCK,Math.max(CONFIG.MIN_LOCK,Math.round(w/CONFIG.WPS)))}
+function shuffleOpts(qi){var q=Q[qi];var idx=q.o.map(function(t,i){return{t:t,c:i===q.x}});var sh=shuffle(idx);var nc=-1;for(var i=0;i<sh.length;i++){if(sh[i].c){nc=i;break}}return{o:sh.map(function(x){return x.t}),c:nc}}
+
+/* ===== OVERLAYS ===== */
+function abrirApostila(){if(state){state.ap++;salvar()}document.getElementById('apostila-overlay').classList.add('show');document.body.style.overflow='hidden'}
+function fecharApostila(){document.getElementById('apostila-overlay').classList.remove('show');document.body.style.overflow=''}
+function abrirRelatorio(){if(!state)return;document.getElementById('report-overlay').classList.add('show');document.body.style.overflow='hidden';renderRel()}
+function fecharRelatorio(){document.getElementById('report-overlay').classList.remove('show');document.body.style.overflow=''}
+document.getElementById('apostila-overlay').addEventListener('click',function(e){if(e.target===this)fecharApostila()});
+document.getElementById('report-overlay').addEventListener('click',function(e){if(e.target===this)fecharRelatorio()});
+
+/* ===== MENU PROF ===== */
+function abrirMenuProf(){document.getElementById('tmenu-login').style.display=teacherAuth?'none':'block';document.getElementById('tmenu-panel').style.display=teacherAuth?'block':'none';document.getElementById('tmenu-msg').textContent='';document.getElementById('tmenu-pass').value='';atualMenu();document.getElementById('tmenu-overlay').classList.add('show')}
+function fecharMenuProf(){document.getElementById('tmenu-overlay').classList.remove('show')}
+function entrarMenuProf(){var v=document.getElementById('tmenu-pass').value.trim();if(hashSenha(v)===PASS_HASH){teacherAuth=true;abrirMenuProf()}else{document.getElementById('tmenu-msg').textContent='Senha incorreta.';document.getElementById('tmenu-pass').value=''}}
+function atualMenu(){var st=document.getElementById('tmenu-status'),bt=document.getElementById('tmenu-toggle');if(GUARD){st.className='tstatus on';st.textContent='🔒 Anti-burla: ATIVOS';bt.className='tbtn warn';bt.textContent='Desativar anti-burla'}else{st.className='tstatus off';st.textContent='🛠️ Anti-burla: DESATIVADOS';bt.className='tbtn ok';bt.textContent='Reativar anti-burla'}}
+function alternarGuard(){if(!teacherAuth)return;GUARD=!GUARD;document.body.classList.toggle('guard-on',GUARD);document.body.classList.toggle('guard-off',!GUARD);if(!GUARD){document.body.style.filter='';document.body.style.pointerEvents='';if(rushTimer){clearInterval(rushTimer);rushTimer=null}fecharRush();if(lockTimer&&state&&state.estado==='quiz'){clearInterval(lockTimer);lockTimer=null;state.lockR=0;unlockQ()}}atualMenu()}
+function abrirRelatorioDoProfessor(){if(!teacherAuth)return;fecharMenuProf();abrirRelatorio()}
+document.getElementById('tmenu-overlay').addEventListener('click',function(e){if(e.target===this)fecharMenuProf()});
+document.getElementById('tmenu-pass').addEventListener('keydown',function(e){if(e.key==='Enter')entrarMenuProf()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){fecharApostila();fecharRelatorio();fecharMenuProf();fecharRush()}});
+
+/* ===== RELATÓRIO ===== */
+function renderRel(){
+  var b=document.getElementById('report-body');
+  if(!state){b.innerHTML='<p>Nenhuma sessão ativa.</p>';return}
+  var m=state.mastered.length,T=Q.length,pct=Math.round(m/T*100);
+  var tTot=Math.round((Date.now()-state.start)/1000);
+  var ini=new Date(state.start).toLocaleString('pt-BR');
+  var allA=[];Object.keys(state.tempos).forEach(function(k){state.tempos[k].forEach(function(x){allA.push(x)})});
+  var avg=allA.length?Math.round(allA.reduce(function(a,t){return a+t.e},0)/allA.length):0;
+  var fast=allA.length?Math.min.apply(null,allA.map(function(t){return t.e})):0;
+  var rush=allA.filter(function(t){return t.r}).length;
+  var rushPct=allA.length?Math.round(rush/allA.length*100):0;
+  var isF=state.estado==='final';
+  var dev=devtoolsAttempts+contextMenuAttempts+copyAttempts;
+  var susp=(devtoolsAttempts>0?1:0)+(contextMenuAttempts>0?1:0)+(copyAttempts>0?1:0);
+  var limpo=susp===0&&rush===0&&state.rushN===0;
+  var dC,dM;
+  if(rushPct===0&&state.rushN===0){dC='ok';dM='<strong>Leitura consciente.</strong> Ritmo adequado.'}
+  else if(rushPct<40&&state.rushN<=1){dC='warn';dM='<strong>Ritmo irregular.</strong> Algumas respostas rápidas demais.'}
+  else{dC='bad';dM='<strong>Leitura apressada.</strong> Muitas respostas sem tempo mínimo.'}
+  b.innerHTML=
+    '<div style="margin-bottom:14px;padding:10px 14px;border-radius:10px;text-align:center;background:'+(isF?'#e8f5e9':'#fff8e1')+';color:'+(isF?'#1b5e20':'#8a5f00')+';font-weight:800;font-size:.82rem">'+(isF?'Atividade concluída':'Atividade em andamento')+'</div>'+
+    '<div class="report-section"><h4>Desempenho</h4>'+
+    '<div class="report-row"><span class="label">Questões dominadas</span><span class="value '+(m===T?'ok':'')+'">'+m+' de '+T+' ('+pct+'%)</span></div>'+
+    '<div class="report-row"><span class="label">Total de tentativas</span><span class="value">'+(state.tot||0)+'</span></div>'+
+    '<div class="report-row"><span class="label">Acertos / Erros</span><span class="value">'+(state.ok||0)+' / '+(state.err||0)+'</span></div>'+
+    '<div class="report-row"><span class="label">Acertos na 1ª tentativa</span><span class="value">'+(state.firstTry||0)+'</span></div>'+
+    '<div class="report-row"><span class="label">Ciclos completados</span><span class="value">'+state.ciclo+'</span></div></div>'+
+    '<div class="report-section"><h4>Tempo e ritmo</h4>'+
+    '<div class="report-row"><span class="label">Tempo total</span><span class="value">'+fmt(tTot)+'</span></div>'+
+    '<div class="report-row"><span class="label">Início</span><span class="value">'+ini+'</span></div>'+
+    '<div class="report-row"><span class="label">Tempo médio</span><span class="value">'+avg+'s</span></div>'+
+    '<div class="report-row"><span class="label">Mais rápida</span><span class="value">'+fast+'s</span></div>'+
+    '<div class="report-row"><span class="label">Respostas apressadas (&lt;4s)</span><span class="value '+(rush>0?'warn':'ok')+'">'+rush+' de '+allA.length+' ('+rushPct+'%)</span></div>'+
+    '<div class="report-row"><span class="label">Pausas reflexivas</span><span class="value '+(state.rushN===0?'ok':(state.rushN===1?'warn':'bad'))+'">'+state.rushN+'</span></div></div>'+
+    '<div class="report-section"><h4>Consultas</h4>'+
+    '<div class="report-row"><span class="label">Apostila aberta</span><span class="value">'+state.ap+' vez(es)</span></div></div>'+
+    '<div class="report-section"><h4>Anti-burla</h4>'+
+    '<div class="report-row"><span class="label">DevTools</span><span class="value '+(devtoolsAttempts===0?'ok':'bad')+'">'+devtoolsAttempts+'</span></div>'+
+    '<div class="report-row"><span class="label">Menu de contexto</span><span class="value '+(contextMenuAttempts===0?'ok':'bad')+'">'+contextMenuAttempts+'</span></div>'+
+    '<div class="report-row"><span class="label">Cópia / seleção</span><span class="value '+(copyAttempts===0?'ok':'bad')+'">'+copyAttempts+'</span></div>'+
+    '<div class="report-row"><span class="label">Troca de aba</span><span class="value '+(tabSwitches>0?'warn':'ok')+'">'+tabSwitches+'</span></div>'+
+    '<div class="report-row" style="border-bottom:none"><span class="label"><strong>Total suspeitos</strong></span><span class="value '+(dev===0?'ok':'bad')+'"><strong>'+dev+'</strong></span></div></div>'+
+    '<div class="report-section"><h4>Síntese</h4><div class="report-diagnosis '+dC+'">'+dM+'</div>'+
+    (limpo?'<div class="report-diagnosis ok" style="margin-top:10px"><strong>Sessão exemplar.</strong></div>':'')+'</div>';
+}
+
+/* ===== PERGUNTAS ===== */
+function renderQ(){
+  if(lockTimer){clearInterval(lockTimer);lockTimer=null}
+  if(!state)return;
+  if(state.pos>=state.queue.length){fimCiclo();return}
+  state.estado='quiz';
+  state.qid=state.queue[state.pos];
+  state.disp=shuffleOpts(state.qid);
+  var q=Q[state.qid];
+  var retry=(state.att[state.qid]||0)>0;
+  var c=document.getElementById('questions-container');
+  var optsHtml='';
+  for(var i=0;i<state.disp.o.length;i++){
+    optsHtml+='<button class="opt" data-i="'+i+'" disabled><span class="letter">'+LET[i]+'</span><span class="text">'+esc(state.disp.o[i])+'</span></button>';
+  }
+  c.innerHTML=
+    '<article class="question-block '+(retry?'retry':'')+'" id="current-q">'+
+    '<div class="q-header"><span class="q-number '+(retry?'retry':'')+'">QUESTÃO '+(state.pos+1)+' / '+state.queue.length+'</span>'+
+    '<span class="q-concept">'+esc(q.c)+'</span>'+
+    (retry?'<span class="q-cycle-tag">Retomada · Ciclo '+state.ciclo+'</span>':'')+
+    '<div class="q-inline-help"><button class="help-btn" type="button" onclick="abrirApostila()">📖 Apostila</button></div></div>'+
+    '<div class="situation">'+q.si+'</div>'+
+    '<p class="q-prompt">'+esc(q.p)+'</p>'+
+    '<div class="lock-bar" id="lock-bar"><span class="lock-count" id="lock-count">🔒</span><span id="lock-text">Leia com atenção para liberar as alternativas…</span></div>'+
+    '<div class="options" id="options">'+optsHtml+'</div>'+
+    '<div class="feedback" id="feedback"></div></article>';
+  var btns=c.querySelectorAll('.opt');
+  for(var j=0;j<btns.length;j++){
+    btns[j].addEventListener('click',function(){if(this.disabled)return;responder(parseInt(this.dataset.i,10))});
+  }
+  if(state.estado==='feedback'&&state.fb&&state.fb.qid===state.qid){
+    var fb=state.fb;
+    var o=c.querySelectorAll('#options .opt');
+    for(var k=0;k<o.length;k++){o[k].disabled=true;if(k===fb.ch){o[k].classList.add(fb.correct?'correct':'wrong')}else{o[k].classList.add('dimmed')}}
+    var lb=document.getElementById('lock-bar');lb.classList.add('unlocked');
+    document.getElementById('lock-count').textContent='✓';
+    document.getElementById('lock-text').textContent='Leitura concluída.';
+    renderFb(fb);atualPlacar();atualRitmo();window.scrollTo({top:0,behavior:'smooth'});return;
+  }
+  if(!GUARD){state.lockR=0;unlockQ();document.getElementById('lock-text').textContent='Modo professor — liberado.';atualPlacar();window.scrollTo({top:0,behavior:'smooth'});return;
+  }
+  var lb2=document.getElementById('lock-bar'),cnt=document.getElementById('lock-count'),tx=document.getElementById('lock-text');
+  var total=lockSec(q.si,q.p);
+  var rem=total;cnt.textContent=rem;state.lockR=rem;salvar();
+  lockTimer=setInterval(function(){
+    if(!GUARD)return;
+    if(document.hidden){lb2.classList.add('paused');tx.textContent='⏸️ Aba em segundo plano — pausado.';return}
+    lb2.classList.remove('paused');tx.textContent='Leia com atenção para liberar as alternativas…';
+    rem--;state.lockR=rem;cnt.textContent=rem;
+    if(rem<=0){clearInterval(lockTimer);lockTimer=null;state.lockR=0;unlockQ()}
+  },1000);
+  atualPlacar();window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function unlockQ(){
+  var lb=document.getElementById('lock-bar');if(!lb)return;
+  lb.classList.remove('paused');lb.classList.add('unlocked');
+  document.getElementById('lock-count').textContent='✓';
+  document.getElementById('lock-text').textContent='Leitura concluída — escolha com atenção.';
+  var o=document.querySelectorAll('#options .opt');
+  for(var i=0;i<o.length;i++)o[i].disabled=false;
+  state.effStart=Date.now();salvar();
+}
+
+function responder(idx){
+  if(state.estado!=='quiz')return;
+  if(lockTimer){clearInterval(lockTimer);lockTimer=null}
+  var q=Q[state.qid], d=state.disp;
+  var correct=idx===d.c;
+  var ms=state.effStart?(Date.now()-state.effStart):0;
+  var sec=Math.round(ms/1000);
+  var rushed=GUARD&&sec<CONFIG.FAST;
+  if(!state.tempos[state.qid])state.tempos[state.qid]=[];
+  state.tempos[state.qid].push({c:state.ciclo,e:sec,r:rushed,ok:correct});
+  state.att[state.qid]=(state.att[state.qid]||0)+1;
+  state.tot=(state.tot||0)+1;
+  if(correct){state.ok++;if(state.mastered.indexOf(state.qid)===-1)state.mastered.push(state.qid);if(state.ciclo===1&&state.att[state.qid]===1)state.firstTry++}
+  else{state.err++}
+  if(rushed)state.fs++;else state.fs=0;
+  state.fb={qid:state.qid,ch:idx,correct:correct,e:sec,r:rushed};
+  state.estado='feedback';
+  salvar();
+  var o=document.querySelectorAll('#options .opt');
+  for(var i=0;i<o.length;i++){
+    o[i].disabled=true;
+    if(i===idx)o[i].classList.add(correct?'correct':'wrong');
+    else if(!GUARD&&!correct&&i===d.c)o[i].classList.add('correct');
+    else o[i].classList.add('dimmed');
+  }
+  atualPlacar();atualRitmo();renderFb(state.fb);
+  if(GUARD&&state.fs>=CONFIG.FAST_STREAK)setTimeout(triggerRush,600);
+}
+
+function renderFb(fb){
+  var q=Q[fb.qid];
+  var box=document.getElementById('feedback');
+  box.className='feedback show '+(fb.correct?'ok':'erro');
+  var pace=fb.r?'<span class="fast">⚡ Resposta em '+fb.e+'s — ritmo apressado.</span>':'<span class="good">🧠 Resposta em '+fb.e+'s — ritmo consciente.</span>';
+  var last=state.pos>=state.queue.length-1;
+  var lbl=last?(state.mastered.length>=Q.length?'Finalizar ➔':'Continuar ➔'):'Próxima questão ➔';
+  if(fb.correct){
+    box.innerHTML='<span class="concept-tag">📚 '+esc(q.s)+'</span><div class="head">✅ Muito bem! Você dominou esta questão.</div><div>'+esc(q.e)+'</div><div class="meta">'+pace+'</div><div class="next-inline" style="justify-content:flex-end"><button class="next-btn-inline" id="next-btn-inline" onclick="avancar()">'+lbl+'</button></div>';
+  }else{
+    box.innerHTML='<div class="head">❌ Não foi desta vez.</div><div>Releia a apostila com atenção e pense novamente antes de responder.</div>'+(!GUARD&&state.disp?'<div style="margin-top:8px;padding:8px 12px;background:#fff8e1;border-radius:8px"><strong>Modo professor:</strong> alternativa correta = '+LET[state.disp.c]+'. '+esc(q.e)+'</div>':'')+'<div class="meta">'+pace+'</div><div class="next-inline"><button class="next-btn-inline ouro" type="button" onclick="abrirApostila()">📖 Releia a apostila</button><button class="next-btn-inline" id="next-btn-inline" onclick="avancar()">Continuar ➔</button></div>';
+  }
+}
+
+function avancar(){if(lockTimer){clearInterval(lockTimer);lockTimer=null}state.fb=null;state.pos++;salvar();renderQ()}
+
+function fimCiclo(){
+  var m=state.mastered.length;
+  if(m>=Q.length||state.tot>=CONFIG.MAX_ATT){finalizar();return}
+  var rest=state.queue.filter(function(x){return state.mastered.indexOf(x)===-1});
+  if(rest.length===0){finalizar();return}
+  state.queue=shuffle(rest);state.pos=0;state.ciclo++;salvar();renderQ();
+}
+
+function finalizar(){if(lockTimer){clearInterval(lockTimer);lockTimer=null}state.estado='final';salvar();finalizarUI()}
+function finalizarUI(){
+  document.getElementById('questions-container').innerHTML='';
+  document.getElementById('final-box').classList.add('show');
+  document.getElementById('scoreboard').classList.add('done');
+  var m=state.mastered.length,T=Q.length;
+  document.getElementById('final-score').textContent=m+' / '+T;
+  document.getElementById('final-message').textContent=m===T?'Excelente! Você dominou todo o conteúdo.':'Você dominou '+m+' de '+T+' questões. Converse com o professor antes de encerrar.';
+}
+
+function atualPlacar(){
+  if(!state)return;
+  document.getElementById('erro-count').textContent=state.err||0;
+  document.getElementById('cycle-count').textContent=state.ciclo||1;
+  var pct=Math.min(100,Math.round(state.mastered.length/Q.length*100));
+  document.getElementById('mastery-fill').style.width=pct+'%';
+  document.getElementById('mastery-label').textContent=state.mastered.length+' / '+Q.length;
+}
+
+function atualRitmo(){
+  var all=[];Object.keys(state.tempos).forEach(function(k){state.tempos[k].forEach(function(x){all.push(x)})});
+  if(!all.length)return;
+  var r=all.filter(function(x){return x.r}).length;
+  var p=all.length?r/all.length*100:0;
+  var pill=document.getElementById('pace-pill');
+  if(p===0){pill.className='pill pace-good';pill.textContent='🧠 Leitura consciente'}
+  else if(p<40){pill.className='pill pace-warn';pill.textContent='⚠️ Ritmo apressado'}
+  else{pill.className='pill pace-bad';pill.textContent='🚨 Leitura suspeita'}
+}
+
+function triggerRush(){
+  state.rushN++;state.fs=0;salvar();
+  var ov=document.getElementById('rush-overlay');
+  var cnt=document.getElementById('rush-countdown');
+  var btn=document.getElementById('rush-continue-btn');
+  var rem=CONFIG.RUSH;cnt.textContent=rem;btn.disabled=true;btn.textContent='⏳ Aguarde… ('+rem+'s)';
+  ov.classList.add('show');document.body.style.overflow='hidden';
+  rushTimer=setInterval(function(){
+    rem--;cnt.textContent=rem;btn.textContent='⏳ Aguarde… ('+rem+'s)';
+    if(rem<=0){clearInterval(rushTimer);rushTimer=null;btn.disabled=false;btn.textContent='✅ Continuar a atividade'}
+  },1000);
+}
+function fecharRush(){document.getElementById('rush-overlay').classList.remove('show');document.body.style.overflow=''}
+
+function confirmarReset(){
+  if(!state)return;
+  if(!confirm('Reiniciar a atividade? Todo o progresso será perdido.'))return;
+  limpar();
+  if(lockTimer){clearInterval(lockTimer);lockTimer=null}
+  if(rushTimer){clearInterval(rushTimer);rushTimer=null}
+  devtoolsAttempts=0;contextMenuAttempts=0;copyAttempts=0;tabSwitches=0;
+  state=novoEstado();salvar();
+  document.getElementById('questions-container').innerHTML='';
+  document.getElementById('final-box').classList.remove('show');
+  document.getElementById('scoreboard').classList.remove('done');
+  renderQ();
+}
+
+/* ===== RESUME ===== */
+function showResume(saved){
+  var b=document.getElementById('resume-info-box');
+  var m=(saved.mastered||[]).length;
+  var ini=new Date(saved.start).toLocaleString('pt-BR');
+  b.innerHTML='<div class="resume-info-row"><span class="lbl">📌 Dominadas</span><span class="val">'+m+' / '+Q.length+'</span></div>'+
+    '<div class="resume-info-row"><span class="lbl">🔄 Ciclo</span><span class="val">'+saved.ciclo+'</span></div>'+
+    '<div class="resume-info-row"><span class="lbl">✏️ Tentativas</span><span class="val">'+(saved.tot||0)+'</span></div>'+
+    '<div class="resume-info-row"><span class="lbl">✅ Acertos</span><span class="val">'+(saved.ok||0)+'</span></div>'+
+    '<div class="resume-info-row"><span class="lbl">❌ Erros</span><span class="val">'+(saved.err||0)+'</span></div>'+
+    '<div class="resume-info-row"><span class="lbl">🕒 Início</span><span class="val">'+ini+'</span></div>';
+  document.getElementById('resume-overlay').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function continuarSessao(){
+  var s=carregar();if(!s){document.getElementById('resume-overlay').classList.remove('show');document.body.style.overflow='';return}
+  state=s;
+  document.getElementById('resume-overlay').classList.remove('show');
+  document.body.style.overflow='';
+  if(state.estado==='final'){finalizarUI()}else{renderQ()}
+}
+function comecarDoZero(){
+  if(!confirm('Isso vai apagar todo o progresso salvo. Tem certeza?'))return;
+  limpar();state=novoEstado();salvar();
+  document.getElementById('resume-overlay').classList.remove('show');
+  document.body.style.overflow='';
+  document.getElementById('questions-container').innerHTML='';
+  document.getElementById('final-box').classList.remove('show');
+  renderQ();
+}
+
+/* ===== SAVE + TAB SWITCH ===== */
+window.addEventListener('beforeunload',function(){if(state&&state.estado!=='final')salvar()});
+document.addEventListener('visibilitychange',function(){if(state&&state.estado!=='final'){salvar();if(document.hidden&&GUARD)tabSwitches++}});
+
+/* ===== INIT ===== */
+document.addEventListener('DOMContentLoaded',function(){
+  var s=carregar();
+  if(s&&(s.pos>0||s.ciclo>1||Object.keys(s.att||{}).length>0)){showResume(s)}
+  else{state=novoEstado();salvar();renderQ()}
+});
+</script>
+</body>
+</html>
