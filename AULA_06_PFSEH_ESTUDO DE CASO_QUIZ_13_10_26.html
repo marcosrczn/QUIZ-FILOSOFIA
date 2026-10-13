@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Percurso Filosófico sobre a Evolução Humana — Estudo de Caso: Aplicativo Cuidar+</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1B3A5F;
+  --navy-dark:#0E2340;
+  --navy-soft:#2D5580;
+  --amber:#E8A33D;
+  --amber-dark:#A86F00;
+  --terra:#C75B39;
+  --success:#2D6A4F;
+  --error:#B71C1C;
+  --paper:#F2EEE6;
+  --card:#FFFFFF;
+  --ink:#1A2430;
+  --muted:#5C6B7A;
+  --line:#E2DCCF;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Source Sans 3',system-ui,sans-serif;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(232,163,61,.12), transparent 45%),
+    radial-gradient(circle at 85% 100%, rgba(27,58,95,.10), transparent 45%),
+    var(--paper);
+  color:var(--ink);
+  min-height:100vh;
+  padding:clamp(12px,2vw,28px);
+  line-height:1.65;
+  text-align:justify;
+  -webkit-font-smoothing:antialiased;
+}
+body.guard-on{-webkit-user-select:none;user-select:none}
+.container{max-width:1040px;margin:0 auto}
+
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.menu-btn{
+  width:46px;height:46px;border-radius:14px;border:2px solid var(--navy);
+  background:#fff;cursor:pointer;display:inline-flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px;padding:0;
+  transition:.18s;box-shadow:0 3px 0 var(--navy)
+}
+.menu-btn span{display:block;width:22px;height:3px;border-radius:2px;background:var(--navy);transition:.18s}
+.menu-btn:hover{background:var(--navy);transform:translateY(-1px)}
+.menu-btn:hover span{background:#fff}
+.guard-chip{display:none;padding:8px 16px;border-radius:999px;background:#FFF4DC;border:2px solid var(--amber-dark);color:var(--amber-dark);font-family:'Montserrat';font-weight:800;font-size:.74rem;letter-spacing:.5px}
+body.guard-off .guard-chip{display:inline-block}
+
+.hero{
+  position:relative;
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy-dark) 100%);
+  color:#fff;border-radius:24px;
+  padding:clamp(24px,3.5vw,44px);
+  box-shadow:0 18px 48px rgba(14,35,64,.32);
+  margin-bottom:24px;overflow:hidden;
+  text-align:left;
+}
+.hero::before{
+  content:"";position:absolute;top:-40%;right:-10%;
+  width:340px;height:340px;border-radius:50%;
+  background:radial-gradient(circle, rgba(232,163,61,.35) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero::after{
+  content:"";position:absolute;bottom:-60%;left:-10%;
+  width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle, rgba(199,91,57,.22) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero-badge{
+  position:relative;z-index:1;
+  display:inline-block;background:var(--amber);color:var(--navy-dark);
+  padding:6px 16px;border-radius:999px;
+  font-family:'Montserrat';font-weight:900;font-size:.72rem;
+  letter-spacing:1.6px;text-transform:uppercase;margin-bottom:16px;
+}
+.hero h1{
+  position:relative;z-index:1;
+  font-family:'Montserrat';font-weight:900;
+  font-size:clamp(1.5rem,3.2vw,2.6rem);
+  line-height:1.15;margin-bottom:12px;letter-spacing:-.5px;
+}
+.hero h1 span{color:var(--amber)}
+.hero .lede{
+  position:relative;z-index:1;
+  color:#D5E0EC;margin-bottom:22px;font-size:1rem;max-width:70ch;
+}
+.hero-meta{
+  position:relative;z-index:1;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+}
+@media(max-width:820px){.hero-meta{grid-template-columns:1fr}}
+.hero-meta-card{
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(232,163,61,.30);
+  border-radius:14px;padding:14px 16px;
+  backdrop-filter:blur(6px);
+}
+.hero-meta-card .label{
+  font-family:'Montserrat';font-weight:900;font-size:.62rem;
+  color:var(--amber);letter-spacing:1.8px;text-transform:uppercase;
+  display:block;margin-bottom:8px;
+}
+.hero-meta-card .value{font-size:.83rem;color:#E3EBF3;line-height:1.55}
+.hero-meta-card .value strong{color:#fff;font-family:'Montserrat';font-weight:800}
+
+.support-bar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;justify-content:flex-end}
+.support-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 20px;border-radius:999px;
+  font-family:'Montserrat';font-weight:800;font-size:.82rem;
+  cursor:pointer;border:2px solid;background:#fff;
+  box-shadow:0 3px 0 rgba(0,0,0,.08);
+  transition:.15s;
+}
+.support-btn:hover{transform:translateY(-1px);box-shadow:0 5px 0 rgba(0,0,0,.12)}
+.support-btn.case{color:var(--navy);border-color:var(--navy)}
+.support-btn.case:hover{background:var(--navy);color:#fff}
+.support-btn.pdf{color:var(--navy-soft);border-color:var(--navy-soft)}
+.support-btn.pdf:hover{background:var(--navy-soft);color:#fff}
+.support-btn.report{color:var(--amber-dark);border-color:var(--amber-dark)}
+.support-btn.report:hover{background:var(--amber-dark);color:#fff}
+.support-btn.reset{color:var(--error);border-color:var(--error)}
+.support-btn.reset:hover{background:var(--error);color:#fff}
+
+.instructions{
+  background:#FFF6E0;border-left:5px solid var(--amber);
+  border-radius:12px;padding:16px 22px;margin-bottom:18px;
+  font-size:.92rem;color:#5C4400;
+}
+.instructions strong{color:var(--navy)}
+
+.scoreboard{
+  background:#fff;border-radius:16px;padding:18px 22px;
+  box-shadow:0 6px 22px rgba(0,0,0,.06);
+  margin-bottom:22px;position:sticky;top:12px;z-index:10;
+  border:2px solid transparent;transition:.2s;
+}
+.scoreboard.done{border-color:var(--amber);box-shadow:0 6px 22px rgba(232,163,61,.22)}
+.score-header{
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:10px;margin-bottom:12px;
+}
+.score-header .title{
+  font-family:'Montserrat';font-weight:900;color:var(--navy);font-size:.95rem;
+  letter-spacing:.3px;
+}
+.score-pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{
+  padding:5px 13px;border-radius:999px;
+  font-family:'Montserrat';font-weight:900;font-size:.75rem;
+  letter-spacing:.3px;
+}
+.pill.erro{background:#FDE8E8;color:var(--error);border:2px solid var(--error)}
+.pill.total{background:#EDF1F6;color:var(--navy);border:2px solid var(--navy)}
+.pill.pace-good{background:#E4F2E8;color:var(--success);border:2px solid var(--success)}
+.pill.pace-warn{background:#FFF4DC;color:var(--amber-dark);border:2px solid var(--amber-dark)}
+.pill.pace-bad{background:#FDE8E8;color:var(--error);border:2px solid var(--error)}
+.mastery-wrapper{display:flex;align-items:center;gap:14px}
+.mastery-track{
+  flex-grow:1;height:14px;background:#ECE6D9;border-radius:999px;
+  overflow:hidden;border:2px solid var(--navy);
+}
+.mastery-fill{
+  height:100%;background:linear-gradient(90deg,var(--navy),var(--amber));
+  width:0%;transition:width .45s cubic-bezier(.4,0,.2,1);
+}
+.mastery-label{
+  font-family:'Montserrat';font-weight:900;font-size:.88rem;
+  color:var(--navy);white-space:nowrap;
+}
+
+.question-block{
+  background:#fff;border-radius:20px;
+  padding:clamp(20px,2.6vw,32px);
+  box-shadow:0 8px 28px rgba(0,0,0,.07);
+  margin-bottom:22px;border-top:5px solid var(--navy);
+  scroll-margin-top:100px;
+  animation:fadeUp .35s ease;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.question-block.retry{border-top-color:var(--amber-dark)}
+.q-header{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:14px}
+.q-number{
+  display:inline-block;background:var(--navy);color:#fff;
+  font-family:'Montserrat';font-weight:900;font-size:.72rem;
+  padding:5px 13px;border-radius:999px;letter-spacing:1.2px;
+}
+.q-number.retry{background:var(--amber-dark)}
+.q-concept{
+  display:inline-block;background:#EDF1F6;color:var(--navy);
+  font-family:'Montserrat';font-weight:800;font-size:.66rem;
+  padding:5px 13px;border-radius:999px;text-transform:uppercase;letter-spacing:1.1px;
+}
+.q-cycle-tag{
+  display:inline-block;background:#FFF4DC;color:var(--amber-dark);
+  border:1.5px solid var(--amber-dark);
+  font-family:'Montserrat';font-weight:800;font-size:.66rem;
+  padding:4px 11px;border-radius:999px;text-transform:uppercase;
+}
+.q-inline-help{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.help-btn{
+  background:transparent;border:1.5px dashed var(--navy);color:var(--navy);
+  font-family:'Montserrat';font-weight:800;font-size:.68rem;
+  padding:5px 11px;border-radius:999px;cursor:pointer;transition:.15s;
+}
+.help-btn:hover{background:var(--navy);color:#fff;border-style:solid}
+
+.situation{
+  background:linear-gradient(180deg,#F8F4EC,#F4EEE2);
+  border-left:4px solid var(--navy);
+  border-radius:0 12px 12px 0;
+  padding:18px 22px;font-size:.95rem;color:#2A2F36;
+  line-height:1.72;margin-bottom:18px;
+}
+.situation::before{
+  content:"Situação-problema";
+  display:block;font-family:'Montserrat';font-weight:900;
+  font-size:.66rem;color:var(--navy);letter-spacing:1.4px;
+  text-transform:uppercase;margin-bottom:10px;
+}
+.situation p{margin-bottom:10px}
+.situation p:last-child{margin-bottom:0}
+.q-prompt{
+  font-weight:700;font-size:1.02rem;color:#141A22;
+  margin-bottom:18px;line-height:1.55;
+}
+
+.lock-bar{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  background:#EFF3F7;border:2px dashed var(--navy);
+  border-radius:12px;padding:14px 18px;margin-bottom:18px;
+  font-family:'Montserrat';font-weight:800;font-size:.86rem;
+  color:var(--navy);text-align:center;line-height:1.4;
+}
+.lock-bar .lock-count{
+  font-size:1.05rem;font-weight:900;background:var(--navy);color:#fff;
+  padding:3px 13px;border-radius:8px;min-width:42px;display:inline-block;text-align:center;
+}
+.lock-bar.paused{background:#FFF4DC;border-color:var(--amber-dark);color:var(--amber-dark)}
+.lock-bar.paused .lock-count{background:var(--amber-dark)}
+.lock-bar.unlocked{background:#E4F2E8;border:2px solid var(--success);color:var(--success)}
+.lock-bar.unlocked .lock-count{background:var(--success)}
+
+.options{display:flex;flex-direction:column;gap:11px}
+.opt{
+  display:flex;align-items:flex-start;gap:14px;
+  background:#FAFAF7;border:2px solid #E6E1D6;
+  border-radius:14px;padding:14px 18px;
+  cursor:pointer;font-family:'Source Sans 3',sans-serif;
+  font-size:.94rem;line-height:1.55;color:#1F262F;text-align:justify;
+  width:100%;transition:.15s;
+}
+.opt:hover:not(:disabled){
+  border-color:var(--navy);background:#F0F4F9;
+  transform:translateX(2px);
+}
+.opt:disabled{cursor:not-allowed;opacity:.6;filter:grayscale(.4)}
+.opt .letter{
+  font-family:'Montserrat';font-weight:900;font-size:.86rem;
+  background:var(--navy);color:#fff;
+  width:30px;height:30px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px;
+}
+.opt .text{flex-grow:1}
+.opt.correct{background:#E4F2E8;border-color:var(--success);opacity:1;filter:none;transform:none}
+.opt.correct .letter{background:var(--success)}
+.opt.wrong{background:#FDE8E8;border-color:var(--error);opacity:1;filter:none;transform:none}
+.opt.wrong .letter{background:var(--error)}
+.opt.dimmed{opacity:.45;filter:grayscale(.5)}
+
+.feedback{
+  margin-top:18px;border-radius:14px;padding:16px 20px;
+  font-size:.92rem;line-height:1.6;display:none;
+  animation:fadeUp .3s ease;
+}
+.feedback.show{display:block}
+.feedback.ok{background:#E4F2E8;border-left:4px solid var(--success);color:#1B4A34}
+.feedback.erro{background:#FDE8E8;border-left:4px solid var(--error);color:#5C1818}
+.feedback .head{
+  font-family:'Montserrat';font-weight:900;font-size:.92rem;
+  margin-bottom:8px;
+}
+.feedback .concept-tag{
+  display:inline-block;background:rgba(0,0,0,.08);
+  padding:3px 11px;border-radius:999px;
+  font-family:'Montserrat';font-weight:800;font-size:.68rem;
+  letter-spacing:1px;margin-bottom:10px;text-transform:uppercase;
+}
+.feedback .meta{
+  margin-top:12px;padding-top:10px;
+  border-top:1px dashed rgba(0,0,0,.15);
+  font-size:.78rem;font-family:'Montserrat';font-weight:700;opacity:.9;
+}
+.feedback .meta .fast{color:var(--error)}
+.feedback .meta .good{color:var(--success)}
+.feedback .next-inline{
+  margin-top:16px;display:flex;justify-content:space-between;
+  gap:10px;flex-wrap:wrap;align-items:center;
+}
+.next-btn-inline{
+  background:var(--navy);color:#fff;border:none;
+  padding:12px 24px;border-radius:12px;
+  font-family:'Montserrat';font-weight:900;font-size:.88rem;
+  cursor:pointer;box-shadow:0 4px 0 var(--navy-dark);
+  transition:.12s;letter-spacing:.3px;
+}
+.next-btn-inline:hover{transform:translateY(-2px);box-shadow:0 6px 0 var(--navy-dark)}
+.next-btn-inline.ouro{background:var(--amber);color:var(--navy-dark);box-shadow:0 4px 0 var(--amber-dark)}
+.next-btn-inline.ouro:hover{box-shadow:0 6px 0 var(--amber-dark)}
+
+.final-box{
+  display:none;
+  background:linear-gradient(135deg,var(--navy),var(--navy-dark));
+  color:#fff;border-radius:22px;padding:36px 30px;
+  text-align:center;margin-top:12px;
+  box-shadow:0 18px 48px rgba(14,35,64,.32);
+}
+.final-box.show{display:block}
+.final-box h2{
+  font-family:'Montserrat';font-weight:900;color:var(--amber);
+  margin-bottom:10px;font-size:1.4rem;
+}
+.final-box .score-big{
+  font-family:'Montserrat';font-weight:900;
+  font-size:clamp(2.4rem,4rem,3.8rem);margin:14px 0;
+  letter-spacing:-2px;
+}
+.final-box>p{color:#D5E0EC;margin-bottom:20px;font-size:1rem}
+.reset-btn{
+  background:var(--amber);color:var(--navy-dark);border:none;
+  padding:13px 30px;border-radius:12px;
+  font-family:'Montserrat';font-weight:900;font-size:.95rem;
+  cursor:pointer;box-shadow:0 4px 0 var(--amber-dark);
+  transition:.12s;margin:4px;
+}
+.reset-btn:hover{transform:translateY(-2px);box-shadow:0 6px 0 var(--amber-dark)}
+
+.footer{
+  text-align:center;color:var(--muted);
+  font-family:'Montserrat';font-weight:700;font-size:.7rem;
+  letter-spacing:1.4px;padding:24px 0 8px;text-transform:uppercase;
+}
+
+.overlay-modal{
+  position:fixed;inset:0;background:rgba(10,20,35,.92);
+  z-index:8000;display:none;align-items:center;justify-content:center;
+  padding:clamp(10px,2vw,24px);
+}
+.overlay-modal.show{display:flex}
+.modal-box{
+  background:#fff;border-radius:22px;
+  max-width:min(94vw,920px);width:100%;max-height:92vh;
+  display:flex;flex-direction:column;overflow:hidden;
+  border:3px solid var(--amber);
+}
+.modal-box.report-modal{border-color:var(--amber-dark);max-width:min(94vw,780px)}
+.modal-box.gabarito-modal{border-color:var(--success);max-width:min(96vw,980px)}
+.modal-box.case-modal{border-color:var(--terra);max-width:min(96vw,880px)}
+.modal-header{
+  background:linear-gradient(135deg,var(--navy),var(--navy-dark));
+  padding:16px clamp(18px,2vw,26px);
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:10px;
+}
+.modal-box.report-modal .modal-header{background:linear-gradient(135deg,var(--amber-dark),#7A4E00)}
+.modal-box.gabarito-modal .modal-header{background:linear-gradient(135deg,var(--success),#1B4A34)}
+.modal-box.case-modal .modal-header{background:linear-gradient(135deg,var(--terra),#8E3D22)}
+.modal-header h2{
+  font-family:'Montserrat';color:var(--amber);
+  font-size:1.1rem;font-weight:900;letter-spacing:.3px;
+}
+.modal-header-actions{display:flex;gap:8px;flex-wrap:wrap}
+.modal-close{
+  background:rgba(255,255,255,.15);color:#fff;
+  border:1px solid rgba(255,255,255,.4);
+  padding:7px 16px;border-radius:999px;
+  font-family:'Montserrat';font-weight:800;font-size:.78rem;
+  cursor:pointer;transition:.15s;
+}
+.modal-close:hover{background:var(--error);border-color:var(--error)}
+.modal-download{
+  background:var(--amber);color:var(--navy-dark);
+  border:1px solid var(--amber);padding:7px 16px;border-radius:999px;
+  font-family:'Montserrat';font-weight:800;font-size:.78rem;
+  cursor:pointer;transition:.15s;
+}
+.modal-download:hover{background:#B37A00;color:#fff;border-color:#B37A00}
+.modal-body{
+  padding:clamp(18px,2.4vw,30px);overflow-y:auto;
+  line-height:1.7;font-size:.97rem;color:#2A3340;
+}
+.modal-body h3{
+  font-family:'Montserrat';color:var(--navy);font-size:1.05rem;
+  margin-top:22px;margin-bottom:10px;
+  padding-bottom:6px;border-bottom:2px solid var(--amber);
+}
+.modal-body h3:first-child{margin-top:0}
+.modal-body h4{
+  font-family:'Montserrat';color:var(--navy-soft);font-size:.95rem;
+  margin:16px 0 6px;
+}
+.modal-body p{margin-bottom:12px}
+.modal-body strong{color:var(--navy)}
+.modal-body ul{margin:8px 0 14px 22px}
+.modal-body li{margin:6px 0}
+.modal-body blockquote{
+  border-left:4px solid var(--navy);padding:12px 20px;
+  margin:14px 0;font-style:italic;background:#F4F0E8;
+  border-radius:0 8px 8px 0;color:#2A3340;
+}
+
+.resume-overlay{
+  position:fixed;inset:0;background:rgba(10,20,35,.94);
+  z-index:9500;display:none;align-items:center;justify-content:center;
+  padding:20px;
+}
+.resume-overlay.show{display:flex}
+.resume-modal{
+  background:#fff;border-radius:22px;
+  padding:clamp(26px,4vw,42px);max-width:640px;width:100%;
+  border-top:8px solid var(--amber);text-align:center;
+  max-height:92vh;overflow-y:auto;
+}
+.resume-modal h2{
+  font-family:'Montserrat';font-weight:900;color:var(--navy);
+  margin-bottom:10px;font-size:1.3rem;
+}
+.resume-modal>p{font-size:.95rem;color:#444;margin-bottom:16px}
+.resume-info-box{
+  background:#F4F0E8;border-radius:14px;
+  padding:16px 20px;margin:18px 0 22px;text-align:left;
+  border-left:4px solid var(--navy);
+}
+.resume-info-row{
+  display:flex;justify-content:space-between;gap:10px;
+  padding:6px 0;font-size:.88rem;
+  border-bottom:1px dashed #DFD5C2;
+}
+.resume-info-row:last-child{border-bottom:none}
+.resume-info-row .lbl{color:#555}
+.resume-info-row .val{font-family:'Montserrat';font-weight:900;color:var(--navy)}
+.resume-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.resume-btn{
+  padding:13px 28px;border-radius:12px;border:none;
+  font-family:'Montserrat';font-weight:900;font-size:.92rem;cursor:pointer;
+  transition:.12s;
+}
+.resume-btn.primary{background:var(--navy);color:#fff;box-shadow:0 4px 0 var(--navy-dark)}
+.resume-btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 0 var(--navy-dark)}
+.resume-btn.secondary{background:#E8E2D6;color:#444;box-shadow:0 4px 0 #C7BFAC}
+.resume-btn.secondary:hover{transform:translateY(-2px);box-shadow:0 6px 0 #C7BFAC}
+
+.rush-overlay{
+  position:fixed;inset:0;background:rgba(14,35,64,.97);
+  z-index:9999;display:none;align-items:center;justify-content:center;
+  padding:20px;overflow-y:auto;
+}
+.rush-overlay.show{display:flex}
+.rush-modal{
+  background:#fff;border-radius:22px;
+  padding:32px clamp(22px,4vw,42px);max-width:620px;width:100%;
+  text-align:center;border-top:6px solid var(--error);
+  max-height:92vh;overflow-y:auto;
+}
+.rush-modal h3{
+  font-family:'Montserrat';font-weight:900;color:var(--error);
+  margin-bottom:12px;font-size:1.2rem;
+}
+.rush-modal p{margin-bottom:12px;color:#444;font-size:.93rem}
+.rush-quote{
+  background:#F4F0E8;border-left:4px solid var(--navy);
+  padding:16px 20px;border-radius:0 10px 10px 0;
+  font-style:italic;color:#2A3340;margin:18px 0;font-size:.92rem;
+}
+.rush-quote .author{
+  display:block;margin-top:10px;font-style:normal;
+  font-family:'Montserrat';font-weight:900;font-size:.75rem;
+  color:var(--navy);text-align:right;
+}
+.rush-countdown{
+  font-family:'Montserrat';font-weight:900;
+  font-size:clamp(2.4rem,4.5vw,3.4rem);color:var(--navy);
+  margin:10px 0 14px;letter-spacing:-2px;
+}
+.rush-status{
+  display:inline-block;background:#FDE8E8;color:var(--error);
+  font-family:'Montserrat';font-weight:800;font-size:.8rem;
+  padding:7px 16px;border-radius:999px;margin-bottom:16px;
+}
+
+.tmenu-overlay{
+  position:fixed;inset:0;background:rgba(14,35,64,.60);
+  z-index:10000;display:none;align-items:flex-start;justify-content:flex-start;
+  padding:clamp(14px,2vw,32px);
+}
+.tmenu-overlay.show{display:flex}
+.tmenu{
+  background:#fff;border-radius:18px;
+  padding:24px 26px;width:min(400px,100%);text-align:left;
+  box-shadow:0 20px 60px rgba(0,0,0,.35);
+}
+.tmenu h3{
+  font-family:'Montserrat';font-weight:900;color:var(--navy);
+  font-size:1.05rem;margin-bottom:6px;
+}
+.tmenu p{font-size:.85rem;color:#555;margin-bottom:14px}
+.tmenu input[type=password]{
+  width:100%;padding:12px 14px;border:2px solid #E0D8C8;
+  border-radius:10px;font-size:1rem;margin-bottom:10px;
+  outline:none;transition:.15s;
+}
+.tmenu input[type=password]:focus{border-color:var(--navy)}
+.tmenu .tbtn{
+  display:block;width:100%;padding:12px 14px;
+  border-radius:10px;border:2px solid var(--navy);
+  background:var(--navy);color:#fff;
+  font-family:'Montserrat';font-weight:800;font-size:.84rem;
+  cursor:pointer;margin-bottom:8px;transition:.15s;
+}
+.tmenu .tbtn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(27,58,95,.25)}
+.tmenu .tbtn.sec{background:#fff;color:var(--navy)}
+.tmenu .tbtn.warn{background:var(--amber-dark);border-color:var(--amber-dark)}
+.tmenu .tbtn.ok{background:var(--success);border-color:var(--success)}
+.tmenu .tbtn.gab{background:var(--success);border-color:var(--success)}
+.tmenu .tmsg{font-size:.8rem;color:var(--error);min-height:1.2em;margin-bottom:8px;font-weight:700}
+.tmenu .tstatus{padding:11px 14px;border-radius:10px;font-size:.85rem;font-weight:700;margin-bottom:14px}
+.tmenu .tstatus.on{background:#E4F2E8;color:var(--success)}
+.tmenu .tstatus.off{background:#FFF4DC;color:var(--amber-dark)}
+.tmenu .tnote{font-size:.74rem;color:#777;margin-top:8px;line-height:1.5}
+
+.report-section{margin-bottom:20px;padding-bottom:16px;border-bottom:2px dashed #EDE5D4}
+.report-section:last-child{border-bottom:none}
+.report-section h4{
+  font-family:'Montserrat';font-weight:900;color:var(--navy);
+  font-size:.85rem;text-transform:uppercase;margin-bottom:10px;
+  letter-spacing:1px;
+}
+.report-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:9px 0;border-bottom:1px dashed #E6E0D2;
+  font-size:.92rem;gap:12px;flex-wrap:wrap;
+}
+.report-row:last-child{border-bottom:none}
+.report-row .label{color:#555;flex:1;min-width:180px}
+.report-row .value{font-family:'Montserrat';font-weight:900}
+.report-row .value.ok{color:var(--success)}
+.report-row .value.warn{color:var(--amber-dark)}
+.report-row .value.bad{color:var(--error)}
+.report-diagnosis{
+  margin-top:16px;padding:14px 18px;border-radius:12px;
+  font-size:.9rem;line-height:1.6;
+}
+.report-diagnosis.ok{background:#E4F2E8;color:#1B4A34;border-left:4px solid var(--success)}
+.report-diagnosis.warn{background:#FFF4DC;color:#7A4E00;border-left:4px solid var(--amber-dark)}
+.report-diagnosis.bad{background:#FDE8E8;color:#5C1818;border-left:4px solid var(--error)}
+
+.gab-toolbar{
+  display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+  margin-bottom:16px;padding:12px 16px;background:#E4F2E8;
+  border-radius:12px;border-left:4px solid var(--success);
+}
+.gab-toolbar label{
+  font-family:'Montserrat';font-weight:800;font-size:.78rem;color:var(--success);
+}
+.gab-toolbar input{
+  padding:8px 13px;border:2px solid #BFD9C5;border-radius:9px;
+  font-size:.88rem;flex:1;min-width:160px;outline:none;transition:.15s;
+}
+.gab-toolbar input:focus{border-color:var(--success)}
+.gab-toolbar .count{
+  font-family:'Montserrat';font-weight:900;color:var(--success);font-size:.82rem;
+}
+.gab-stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;padding:14px 18px;background:#F4F0E8;border-radius:12px}
+.gab-stats .stat{flex:1;min-width:100px;text-align:center}
+.gab-stats .stat .num{
+  font-family:'Montserrat';font-weight:900;font-size:1.5rem;
+  color:var(--navy);display:block;line-height:1.1;
+}
+.gab-stats .stat .lbl{
+  font-family:'Montserrat';font-weight:700;font-size:.66rem;
+  color:var(--muted);text-transform:uppercase;letter-spacing:.8px;
+}
+.gab-card{
+  border:2px solid #E6E0D2;border-radius:14px;
+  padding:18px 20px;margin-bottom:14px;background:#fff;
+}
+.gab-card-head{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;flex-wrap:wrap;margin-bottom:12px;
+}
+.gab-num{
+  font-family:'Montserrat';font-weight:900;color:var(--navy);
+  font-size:.85rem;background:#EDF1F6;padding:5px 13px;border-radius:999px;
+}
+.gab-tags{display:flex;gap:6px;flex-wrap:wrap}
+.gab-tag{
+  font-family:'Montserrat';font-weight:800;font-size:.65rem;
+  padding:4px 11px;border-radius:999px;
+  text-transform:uppercase;letter-spacing:.6px;
+}
+.gab-tag.cat{background:#EDF1F6;color:var(--navy)}
+.gab-tag.sub{background:#FFF4DC;color:var(--amber-dark);border:1px solid var(--amber-dark)}
+.gab-answer{
+  display:inline-block;background:var(--success);color:#fff;
+  font-family:'Montserrat';font-weight:900;font-size:.78rem;
+  padding:5px 15px;border-radius:999px;margin-bottom:12px;
+}
+.gab-situation{
+  background:#F8F4EC;border-left:4px solid var(--navy);
+  border-radius:0 10px 10px 0;padding:14px 18px;
+  font-size:.86rem;color:#2A3340;line-height:1.65;margin-bottom:12px;
+}
+.gab-situation::before{
+  content:"Situação-problema";display:block;
+  font-family:'Montserrat';font-weight:900;font-size:.62rem;
+  color:var(--navy);letter-spacing:1.3px;text-transform:uppercase;
+  margin-bottom:6px;
+}
+.gab-q-text{
+  font-weight:700;font-size:.92rem;color:#141A22;
+  margin-bottom:12px;line-height:1.55;
+}
+.gab-opt{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:9px 13px;border-radius:9px;margin-bottom:6px;
+  font-size:.88rem;line-height:1.5;
+  border:1.5px solid transparent;background:#FAFAF7;text-align:justify;
+}
+.gab-opt .letter{
+  font-family:'Montserrat';font-weight:900;font-size:.78rem;
+  width:26px;height:26px;border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;background:#CFC7B5;color:#fff;margin-top:1px;
+}
+.gab-opt.right{background:#E4F2E8;border-color:var(--success)}
+.gab-opt.right .letter{background:var(--success)}
+.gab-opt.right::after{
+  content:"✓ correta";
+  font-family:'Montserrat';font-weight:900;font-size:.65rem;
+  color:var(--success);margin-left:auto;align-self:center;
+  white-space:nowrap;padding-left:10px;
+}
+.gab-expl{
+  background:#EDF6EE;border-left:3px solid var(--success);
+  padding:12px 16px;border-radius:0 10px 10px 0;
+  font-size:.85rem;color:#1B4A34;margin-top:10px;line-height:1.55;
+}
+.gab-expl strong{
+  color:var(--success);font-family:'Montserrat';font-weight:900;
+  font-size:.7rem;letter-spacing:.7px;text-transform:uppercase;
+  display:block;margin-bottom:5px;
+}
+.gab-empty{text-align:center;padding:40px 20px;color:#999;font-size:.95rem}
+
+.pdf-header{
+  font-family:'Source Sans 3',sans-serif;
+  color:#000;
+  margin-bottom:20px;
+  padding-bottom:16px;
+  border-bottom:3px double #000;
+}
+.pdf-header-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:14px;
+  font-size:10pt;
+}
+.pdf-header-rede{
+  font-family:'Montserrat',sans-serif;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:1.2px;
+  font-size:11pt;
+  color:#000;
+}
+.pdf-header-data{font-size:9pt;color:#333}
+.pdf-titulo{
+  font-family:'Montserrat',sans-serif;
+  font-weight:900;
+  font-size:20pt;
+  line-height:1.15;
+  margin:0 0 4px 0;
+  color:#000;
+  letter-spacing:-.5px;
+}
+.pdf-subtitulo{
+  font-size:11pt;
+  font-style:italic;
+  color:#333;
+  margin:0 0 18px 0;
+}
+.pdf-meta{
+  width:100%;
+  border-collapse:collapse;
+  margin-bottom:14px;
+  font-size:9.5pt;
+}
+.pdf-meta th,
+.pdf-meta td{
+  border:1px solid #666;
+  padding:7px 10px;
+  text-align:left;
+  vertical-align:top;
+}
+.pdf-meta th{
+  background:#e8e8e8;
+  font-family:'Montserrat',sans-serif;
+  font-weight:800;
+  width:28%;
+  font-size:9pt;
+  text-transform:uppercase;
+  letter-spacing:.4px;
+}
+.pdf-meta td{background:#fff;line-height:1.45}
+.pdf-instrucoes{
+  background:#f2f2f2;
+  border-left:4px solid #000;
+  padding:10px 14px;
+  font-size:9.5pt;
+  line-height:1.5;
+  margin-bottom:18px;
+  page-break-inside:avoid;
+}
+.pdf-instrucoes strong{
+  font-family:'Montserrat',sans-serif;
+  font-weight:900;
+}
+.pdf-secao-titulo{
+  font-family:'Montserrat',sans-serif;
+  font-weight:900;
+  font-size:13pt;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:#000;
+  padding-bottom:4px;
+  margin:6px 0 14px 0;
+  border-bottom:2px solid #000;
+  page-break-after:avoid;
+}
+
+@media print{
+  @page{size:A4 portrait;margin:1cm}
+  html,body{background:#fff !important;margin:0;padding:0}
+  body.print-pdf *{visibility:hidden !important}
+  body.print-pdf #pdf-source,
+  body.print-pdf #pdf-source *{visibility:visible !important}
+  body.print-pdf #pdf-source{
+    position:absolute;left:0;top:0;width:100%;
+    background:#fff;color:#000;padding:1cm 1.2cm;margin:0;display:block;
+    font-family:'Source Sans 3',sans-serif;
+  }
+  body.print-pdf #pdf-source h1,
+  body.print-pdf #pdf-source h2,
+  body.print-pdf #pdf-source h3,
+  body.print-pdf #pdf-source h4,
+  body.print-pdf #pdf-source .pdf-titulo,
+  body.print-pdf #pdf-source .pdf-secao-titulo{color:#000 !important}
+  body.print-pdf #pdf-source h3{
+    border-bottom:1px solid #000 !important;
+    page-break-after:avoid;
+  }
+  body.print-pdf #pdf-source strong{color:#000 !important}
+  body.print-pdf #pdf-source blockquote{
+    border-left:3px solid #000 !important;
+    background:#f2f2f2 !important;
+    color:#000 !important;
+    page-break-inside:avoid;
+  }
+  body.print-pdf #pdf-source .pdf-header,
+  body.print-pdf #pdf-source .pdf-meta,
+  body.print-pdf #pdf-source .pdf-instrucoes{page-break-inside:avoid}
+  body.print-pdf #pdf-source p,
+  body.print-pdf #pdf-source li{orphans:3;widows:3}
+  body.print-pdf #pdf-source .viewpoint{
+    background:#f4f4f4 !important;
+    border-left:3px solid #000 !important;
+    page-break-inside:avoid;
+  }
+  body.print-pdf #pdf-source .viewpoint strong{color:#000 !important}
+}
+#pdf-source{display:none}
+
+@media(max-width:520px){
+  body,.situation p,.opt .text,.q-prompt,.feedback{text-align:left}
+  .q-concept{display:block;margin-left:0;margin-top:8px}
+  .q-inline-help{margin-left:0;width:100%}
+  .support-bar{justify-content:stretch}
+  .support-btn{flex:1;justify-content:center;font-size:.78rem;padding:10px 12px}
+  .score-header{flex-direction:column;align-items:flex-start}
+  .hero-meta-card{padding:12px 14px}
+  .mastery-wrapper{flex-direction:column;align-items:stretch;gap:8px}
+  .mastery-label{text-align:center}
+}
+</style>
+</head>
+<body class="guard-on">
+<div class="container">
+
+  <div class="topbar">
+    <button class="menu-btn" type="button" onclick="abrirMenuProf()" aria-label="Menu do professor"><span></span><span></span><span></span></button>
+    <span class="guard-chip">Modo professor: proteções desativadas</span>
+  </div>
+
+  <header class="hero">
+    <span class="hero-badge">Percurso Filosófico sobre a Evolução Humana · 3ª Série EM</span>
+    <h1>Estudo de Caso: <span>Aplicativo Cuidar+</span></h1>
+    <p class="lede">Uma situação-problema sobre tecnologia, cuidado de idosos, valores humanos e econômicos, para treinar a construção de argumentação e a análise de pontos de vista.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-card">
+        <span class="label">Habilidade Foco</span>
+        <span class="value"><strong>EMIFCHSA03</strong> — Selecionar e sistematizar informações em fontes confiáveis, identificando pontos de vista e posicionando-se com argumentação.</span>
+      </div>
+      <div class="hero-meta-card">
+        <span class="label">Objetos de Conhecimento</span>
+        <span class="value">Valores humanos; valores econômicos; cuidado e desenvolvimento; análise de pontos de vista; construção de argumentação.</span>
+      </div>
+      <div class="hero-meta-card">
+        <span class="label">Objetivo</span>
+        <span class="value">Analisar criticamente um caso concreto de tecnologia aplicada ao cuidado, identificando tensões entre eficiência, lucro, dignidade e afeto.</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="support-bar">
+    <button class="support-btn case" type="button" onclick="abrirCaso()">📁 Ler estudo de caso</button>
+    <button class="support-btn pdf" type="button" onclick="baixarPDF()">📄 Baixar em PDF</button>
+    <button class="support-btn report" type="button" onclick="abrirRelatorio()">📊 Ver relatório</button>
+    <button class="support-btn reset" type="button" onclick="confirmarReset()">🔄 Reiniciar</button>
+  </div>
+
+  <div class="instructions">
+    <strong>Como funciona:</strong> leia o estudo de caso com atenção, aguarde o cronômetro liberar as alternativas, escolha a resposta e leia o retorno explicativo. Você precisa dominar todas as <strong>15 questões</strong> — as que errar voltam em ciclos seguintes. Você pode reabrir o estudo de caso a qualquer momento pelo botão <em>“Ler estudo de caso”</em> ou pelo botão dentro de cada questão.
+  </div>
+
+  <div class="scoreboard" id="scoreboard">
+    <div class="score-header">
+      <span class="title">🎯 Seu progresso</span>
+      <div class="score-pills">
+        <span class="pill erro">❌ Erros: <span id="erro-count">0</span></span>
+        <span class="pill total">🔄 Ciclo <span id="cycle-count">1</span></span>
+        <span class="pill pace-good" id="pace-pill">🧠 Iniciando…</span>
+      </div>
+    </div>
+    <div class="mastery-wrapper">
+      <div class="mastery-track"><div class="mastery-fill" id="mastery-fill"></div></div>
+      <span class="mastery-label" id="mastery-label">0 / 15</span>
+    </div>
+  </div>
+
+  <main id="questions-container"></main>
+
+  <section class="final-box" id="final-box">
+    <h2>🎓 Atividade Concluída!</h2>
+    <p>Confira abaixo o seu resultado:</p>
+    <div class="score-big" id="final-score">0 / 15</div>
+    <p id="final-message"></p>
+    <button class="reset-btn" type="button" onclick="abrirRelatorio()">📊 Ver relatório completo</button>
+    <button class="reset-btn" type="button" onclick="confirmarReset()">🔄 Refazer Atividade</button>
+  </section>
+
+  <div class="footer">⚡ PERCURSO FILOSÓFICO SOBRE A EVOLUÇÃO HUMANA · 3ª SÉRIE EM</div>
+</div>
+
+<div id="pdf-source"></div>
+
+<div class="overlay-modal" id="caso-overlay">
+  <div class="modal-box case-modal">
+    <div class="modal-header">
+      <h2>📁 Estudo de Caso — Aplicativo Cuidar+</h2>
+      <div class="modal-header-actions">
+        <button class="modal-download" type="button" onclick="baixarPDF()">📄 Baixar em PDF</button>
+        <button class="modal-close" type="button" onclick="fecharCaso()">✕ Fechar</button>
+      </div>
+    </div>
+    <div class="modal-body" id="caso-body"></div>
+  </div>
+</div>
+
+<div class="overlay-modal" id="report-overlay">
+  <div class="modal-box report-modal">
+    <div class="modal-header">
+      <h2>📊 Relatório de Desempenho</h2>
+      <button class="modal-close" type="button" onclick="fecharRelatorio()">✕ Fechar</button>
+    </div>
+    <div class="modal-body" id="report-body" style="padding:22px 26px;"></div>
+  </div>
+</div>
+
+<div class="overlay-modal" id="gabarito-overlay">
+  <div class="modal-box gabarito-modal">
+    <div class="modal-header">
+      <h2>📝 Gabarito Completo — Conferir Questões</h2>
+      <button class="modal-close" type="button" onclick="fecharGabarito()">✕ Fechar</button>
+    </div>
+    <div class="modal-body" id="gabarito-body" style="padding:22px 26px;"></div>
+  </div>
+</div>
+
+<div class="resume-overlay" id="resume-overlay">
+  <div class="resume-modal">
+    <span style="font-size:2.6rem;display:block;margin-bottom:8px;">💾</span>
+    <h2>Você tem uma atividade em andamento!</h2>
+    <p>Identificamos uma sessão anterior salva neste navegador. Você pode continuar de onde parou.</p>
+    <div class="resume-info-box" id="resume-info-box"></div>
+    <div class="resume-actions">
+      <button class="resume-btn primary" type="button" onclick="continuarSessao()">▶️ Continuar</button>
+      <button class="resume-btn secondary" type="button" onclick="comecarDoZero()">🗑️ Começar do zero</button>
+    </div>
+  </div>
+</div>
+
+<div class="rush-overlay" id="rush-overlay">
+  <div class="rush-modal">
+    <span class="rush-status">⚠️ Ritmo apressado detectado</span>
+    <h3>Pausa reflexiva obrigatória</h3>
+    <p>Você respondeu as últimas questões em menos de <strong>4 segundos</strong> cada uma. A análise ética e argumentativa exige tempo de leitura e de pensamento. Leia com calma antes de continuar:</p>
+    <div class="rush-quote">"A tecnologia não é boa nem ruim por si só. O problema está na forma como ela é usada e nas escolhas que a sociedade faz."<span class="author">— Estudo de caso, Cuidar+</span></div>
+    <div class="rush-countdown" id="rush-countdown">20</div>
+    <button class="reset-btn" id="rush-continue-btn" type="button" onclick="fecharRush()" disabled>⏳ Aguarde… (20s)</button>
+  </div>
+</div>
+
+<div class="tmenu-overlay" id="tmenu-overlay">
+  <div class="tmenu">
+    <div id="tmenu-login">
+      <h3>🔐 Menu do professor</h3>
+      <p>Digite a senha para gerenciar as proteções e visualizar o gabarito.</p>
+      <input type="password" id="tmenu-pass" placeholder="Senha" autocomplete="off">
+      <div class="tmsg" id="tmenu-msg"></div>
+      <button class="tbtn" type="button" onclick="entrarMenuProf()">Entrar</button>
+      <button class="tbtn sec" type="button" onclick="fecharMenuProf()">Cancelar</button>
+    </div>
+    <div id="tmenu-panel" style="display:none;">
+      <h3>🛠️ Menu do professor</h3>
+      <div class="tstatus on" id="tmenu-status">🔒 Anti-burla: ATIVOS</div>
+      <button class="tbtn gab" type="button" onclick="abrirGabaritoDoProfessor()">📝 Conferir questões (gabarito)</button>
+      <button class="tbtn sec" type="button" onclick="abrirRelatorioDoProfessor()">📊 Relatório do estudante</button>
+      <button class="tbtn sec" type="button" onclick="abrirCasoDoProfessor()">📁 Reabrir estudo de caso</button>
+      <button class="tbtn warn" type="button" id="tmenu-toggle" onclick="alternarGuard()">Desativar anti-burla</button>
+      <button class="tbtn sec" type="button" onclick="fecharMenuProf()">Fechar</button>
+      <p class="tnote">Com as proteções desativadas: sem bloqueio de cópia/impressão, sem cadeado de leitura nem pausa reflexiva; a alternativa correta é mostrada após um erro. Reative antes de publicar.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+/* =====================================================================
+   ESTUDO DE CASO — TEXTO FORNECIDO PELO PROFESSOR
+   ===================================================================== */
+var CASO_HTML = `
+<p><strong>A prefeitura de Santa Rita</strong>, uma cidade de médio porte, decidiu terceirizar o acompanhamento de idosos que moram sozinhos. Em vez de contratar mais agentes de saúde e assistentes sociais, o município fechou um contrato com a empresa <strong>TecVida</strong>. A TecVida instalou sensores e um aplicativo nos celulares de cinco mil idosos. O sistema avisa quando alguém cai, lembra o horário dos remédios e registra a rotina da casa, como a frequência com que a pessoa vai ao banheiro ou dorme.</p>
+
+<p>O argumento da prefeitura é <strong>financeiro</strong>. O contrato com a TecVida custa metade do valor que seria gasto com a contratação de servidores públicos. Além disso, o número de internações por quedas caiu 40% no primeiro ano. A empresa, por sua vez, lucra de duas formas. Recebe o pagamento do município e vende os dados de saúde dos idosos para planos de saúde privados, que usam essas informações para ajustar o valor das mensalidades.</p>
+
+<p>Para fazer o sistema funcionar, a TecVida contrata cuidadores como microempreendedores individuais. Eles recebem por visita realizada, e um algoritmo define o tempo que podem passar em cada casa: no máximo <strong>15 minutos</strong>. O aplicativo monitora o trajeto e o horário de entrada e saída de cada cuidador. Se o profissional demora mais do que o previsto para conversar com o idoso, o sistema desconta o valor da visita ou o bloqueia de receber novos chamados naquela semana.</p>
+
+<p>O resultado é que muitos idosos relatam <strong>solidão</strong>. Eles contam que os cuidadores chegam, verificam a pressão, olham o celular e vão embora. Os filhos, por sua vez, pararam de visitar os pais nos fins de semana. Eles confiam no aplicativo e acreditam que o sistema resolve qualquer emergência.</p>
+
+<h3>Pontos de vista em jogo</h3>
+
+<div class="viewpoint"><strong>A prefeitura</strong> defende que o sistema salvou vidas e reduziu custos. A secretaria de saúde afirma que a tecnologia trouxe eficiência para uma área que sempre teve filas de espera.</div>
+
+<div class="viewpoint"><strong>A TecVida</strong> argumenta que a inovação tem um preço. Para a empresa, os dados ajudam a prever doenças e o lucro é a recompensa pelo desenvolvimento de um serviço que o poder público não consegue oferecer sozinho.</div>
+
+<div class="viewpoint"><strong>Os cuidadores</strong> reclamam das metas abusivas. Eles dizem que não têm tempo de ouvir os idosos ou de ajudar em tarefas simples, como preparar uma refeição. O trabalho de cuidar virou uma linha de produção.</div>
+
+<div class="viewpoint"><strong>Os idosos e familiares</strong> questionam a falta de privacidade e o abandono. Para eles, o cuidado não pode ser medido por sensores e notificações. A dignidade da pessoa idosa está sendo trocada por um relatório de dados.</div>
+`;
+
+/* =====================================================================
+   CABEÇALHO DO PDF (só aparece na impressão)
+   ===================================================================== */
+var PDF_HEADER_HTML = `
+<div class="pdf-header">
+  <div class="pdf-header-top">
+    <span class="pdf-header-rede">Percurso Filosófico sobre a Evolução Humana</span>
+    <span class="pdf-header-data">Gerado em <span id="pdf-data-geracao"></span></span>
+  </div>
+  <h1 class="pdf-titulo">Estudo de Caso: Aplicativo Cuidar+</h1>
+  <p class="pdf-subtitulo">A terceirização do cuidado de idosos por meio de aplicativos</p>
+
+  <table class="pdf-meta">
+    <tr>
+      <th>Percurso</th>
+      <td>Percurso Filosófico sobre a Evolução Humana &middot; Filosofia &middot; 3ª Série do Ensino Médio &middot; Aprofundamento</td>
+    </tr>
+    <tr>
+      <th>Habilidade foco</th>
+      <td><strong>EMIFCHSA03</strong> — Selecionar e sistematizar, com base em estudos e/ou pesquisas em fontes confiáveis, informações sobre temas e processos de natureza histórica, social, econômica, filosófica, política e/ou cultural, identificando os diversos pontos de vista e posicionando-se mediante argumentação, com o cuidado de citar as fontes dos recursos utilizados na pesquisa e buscando apresentar conclusões com o uso de diferentes mídias.</td>
+    </tr>
+    <tr>
+      <th>Objetos de conhecimento</th>
+      <td>Valores humanos; Valores econômicos; Cuidado e desenvolvimento; Construção da argumentação e análise de pontos de vista.</td>
+    </tr>
+    <tr>
+      <th>Objetivo de aprendizagem</th>
+      <td>Analisar criticamente um caso concreto de aplicação de tecnologia ao cuidado de idosos, identificando pontos de vista em disputa, distinguindo valores humanos de valores econômicos e posicionando-se com argumentação fundamentada.</td>
+    </tr>
+    <tr>
+      <th>Metodologia</th>
+      <td>Estudo de caso com 15 questões objetivas contextualizadas, em estilo situação-problema. Leitura prévia do caso, resposta com cronômetro de leitura, feedback explicativo e retomada das questões erradas em ciclos até o domínio completo.</td>
+    </tr>
+  </table>
+
+  <div class="pdf-instrucoes">
+    <strong>Instruções ao estudante:</strong> leia o estudo de caso com atenção. Em seguida, responda às 15 questões objetivas. Cada questão exige identificação do ponto de vista apresentado, distinção entre valores humanos e econômicos, ou análise da relação de causa e efeito do caso. As questões erradas retornam em ciclos seguintes até que você as domine.
+  </div>
+</div>
+<div class="pdf-secao-titulo">Estudo de caso</div>
+`;
+
+/* =====================================================================
+   15 QUESTÕES — GABARITO REDISTRIBUÍDO (A=4, B=4, C=3, D=4)
+   ===================================================================== */
+var Q = [
+{c:"Análise de pontos de vista",s:"Tecnologia e cuidado",
+ si:"<p>Uma reportagem de TV apresentou o caso de Santa Rita como exemplo de inovação no serviço público. Mostrou uma idosa de 82 anos que caiu no banheiro, foi socorrida em quatro minutos e sobreviveu. A prefeitura comemora os números: 40% menos internações por quedas, R$ 3 milhões economizados por ano e cinco mil idosos monitorados. No mesmo programa, um médico geriatra afirmou que o sistema é excelente para emergências, mas que a rede pública continua sem qualquer programa de prevenção de quedas — fisioterapia, adaptação de banheiros, revisão de medicação. O telespectador recebe dois discursos: um celebra o socorro rápido, o outro aponta que a queda em si nunca foi enfrentada.</p>",
+ p:"Qual alternativa apresenta uma leitura que reconhece os dois lados do debate sem cair em simplificação?",
+ o:["O sistema é inútil porque não impede a queda, e a prefeitura deveria substituí-lo integralmente por agentes de saúde presenciais e fisioterapeutas domiciliares.","O sistema é a solução definitiva para o cuidado de idosos, pois o socorro rápido elimina praticamente todos os riscos que uma pessoa idosa corre dentro de casa.","O sistema tem valor reconhecido no socorro, mas não substitui a prevenção; os dois discursos apontam para problemas diferentes que podem ser tratados em conjunto.","O sistema é prejudicial porque desvia recursos que deveriam ir para a prevenção, e nenhum ganho emergencial justifica a adoção de tecnologia na saúde pública."],
+ x:2,e:"Reconhecer os dois lados significa aceitar que o socorro rápido tem valor real, mas não esgota a questão. Prevenção e emergência tratam de problemas distintos e podem coexistir."},
+
+{c:"Valores humanos",s:"Privacidade e dignidade",
+ si:"<p>No contrato entre a prefeitura de Santa Rita e a TecVida, uma cláusula permite que a empresa compartilhe dados agregados de saúde dos idosos com operadoras de planos privados. A justificativa da empresa é técnica: com esses dados, os planos calculam melhor o risco e oferecem preços mais justos para idosos saudáveis. Uma advogada do Ministério Público, no entanto, observou que o idoso assinou apenas um termo autorizando o monitoramento domiciliar. Ele não foi informado sobre a venda dos dados, nem pôde escolher entre receber o serviço com ou sem compartilhamento. Familiares começaram a receber cobranças maiores nos planos e descobriram que a informação tinha sido repassada.</p>",
+ p:"O núcleo do problema ético levantado pela advogada está em:",
+ o:["A ausência de consentimento informado e específico, que impede o idoso de decidir sobre o uso dos próprios dados de saúde.","O preço das mensalidades, que deveria ser regulado pelo Estado e não calculado por empresas privadas que atuam em parceria com o município.","A qualidade técnica dos planos de saúde, que não deveriam ajustar mensalidades com base em dados fornecidos por uma empresa de tecnologia.","O valor do contrato firmado entre a prefeitura e a TecVida, que deveria ter passado por licitação pública antes de ser assinado."],
+ x:0,e:"O problema central é o consentimento: o idoso autorizou o monitoramento, mas não a venda de dados. Sem informação e escolha, a dignidade e a autonomia ficam comprometidas."},
+
+{c:"Valores econômicos",s:"Eficiência e cuidado",
+ si:"<p>A TecVida publicou um relatório interno mostrando que o tempo médio de visita domiciliar caiu de 45 minutos (modelo anterior, com servidores concursados) para 15 minutos (modelo atual, com cuidadores contratados por visita). No mesmo relatório, a empresa afirma que o número de idosos atendidos por dia quase triplicou. Um sindicato de trabalhadores apresentou outro dado: no modelo atual, 70% dos cuidadores pediram desligamento nos primeiros seis meses, citando cansaço emocional e impossibilidade de criar vínculo com os pacientes. A prefeitura defende o modelo como mais produtivo.</p>",
+ p:"A leitura mais adequada dos dois conjuntos de dados é que:",
+ o:["O modelo atual é superior porque atende mais pessoas por dia, e a rotatividade dos cuidadores decorre de fatores externos à organização do trabalho.","O modelo anterior era melhor porque permitia vínculos duradouros, mesmo que atendesse menos idosos e custasse mais aos cofres públicos.","Os dois modelos são equivalentes, pois tanto a cobertura quanto o vínculo são critérios subjetivos que não permitem comparação objetiva.","O modelo atual ganha em cobertura, mas perde em vínculo e estabilidade; produtividade numérica não é o mesmo que qualidade do cuidado."],
+ x:3,e:"Os dados apontam duas dimensões diferentes: cobertura (a favor do modelo atual) e vínculo/estabilidade (a favor do anterior). Eficiência numérica não esgota a avaliação."},
+
+{c:"Causa e efeito",s:"Redução de internações",
+ si:"<p>A secretaria de saúde de Santa Rita divulgou uma nota afirmando que 'o aplicativo Cuidar+ reduziu em 40% as internações por quedas no primeiro ano'. Um epidemiologista da universidade local pediu os dados brutos e fez uma observação: no mesmo período, o município inaugurou duas academias da terceira idade, ampliou o programa de fisioterapia domiciliar e aposentou um lote de ônibus antigos que causavam quedas em passageiros idosos. O epidemiologista concluiu que atribuir a redução exclusivamente ao aplicativo é um erro metodológico.</p>",
+ p:"A crítica do epidemiologista se sustenta porque:",
+ o:["A redução de internações por quedas comprova que o aplicativo é eficaz, mas outros fatores precisam ser desconsiderados para que a conclusão seja válida.","Vários fatores agiram ao mesmo tempo, e atribuir a queda das internações apenas ao aplicativo ignora outras intervenções que também podem ter contribuído.","O aplicativo só tem efeito se for combinado com outras políticas, o que significa que a nota da secretaria está tecnicamente correta em sua formulação atual.","A redução de 40% é pequena demais para ser considerada relevante, e o município deveria esperar mais tempo antes de divulgar qualquer conclusão."],
+ x:1,e:"Relação de causa e efeito exige isolar variáveis. Quando vários fatores atuam juntos, atribuir o resultado a um só é conclusão apressada."},
+
+{c:"Argumentação",s:"Prioridades orçamentárias",
+ si:"<p>Em uma audiência pública, o secretário de saúde apresentou os números do contrato com a TecVida: R$ 4 milhões por ano, contra R$ 8 milhões que seriam gastos com servidores efetivos. O dinheiro economizado, disse, foi aplicado em vacinação infantil e pronto-socorro. Uma moradora, mãe de uma cuidadora demitida no modelo anterior, respondeu: 'A economia é real, mas o serviço foi transformado em linha de produção. Minha filha cuidava de oito idosos; hoje cada cuidador da TecVida atende vinte, em quinze minutos. Isso não é cuidar, é despachar'. O secretário insistiu no argumento financeiro.</p>",
+ p:"O argumento central do secretário se sustenta em:",
+ o:["Valores econômicos, pois compara custos, mede economia e mostra a realocação dos recursos para outras áreas do orçamento público.","Valores humanos, pois menciona indiretamente a saúde das crianças vacinadas e o atendimento de urgência como beneficiários da economia realizada.","Valores tecnológicos, pois defende que a inovação aplicada ao cuidado de idosos deve prevalecer sobre modelos tradicionais de contratação.","Valores jurídicos, pois o contrato com a TecVida segue a legislação de terceirização e dispensa a necessidade de concurso público."],
+ x:0,e:"O argumento do secretário é estritamente econômico: custo, economia e realocação orçamentária. Não se ancora em valores humanos diretos."},
+
+{c:"Consequências não intencionais",s:"Solidão e tecnologia",
+ si:"<p>Uma pesquisa feita com 500 idosos monitorados pela TecVida revelou um dado inesperado. Entre os entrevistados, 68% relataram se sentir 'mais sozinhos do que antes' do aplicativo. O estudo cruzou esse dado com a frequência de visitas familiares: nos lares monitorados, a média de visitas dos filhos caiu de duas para menos de uma por mês. Uma socióloga comentou: 'A tecnologia não foi desenhada para afastar as famílias, mas a confiança no socorro automático criou uma sensação de dever cumprido. Os filhos deixaram de sentir que precisam ir'.</p>",
+ p:"A análise da socióloga destaca um tipo de efeito que pode ser descrito como:",
+ o:["Efeito colateral do monitoramento, em que a presença da tecnologia aumenta a frequência de quedas porque reduz a atenção dos idosos em seus próprios movimentos.","Falha técnica do aplicativo, que deveria incluir lembretes automáticos para que os filhos visitassem os pais com regularidade mínima.","Estratégia comercial da empresa, que lucra mais quando as famílias se afastam e precisam contratar serviços adicionais de acompanhamento.","Consequência não intencional, em que a confiança no sistema produz um afastamento familiar que ninguém havia planejado ou desejado."],
+ x:3,e:"Consequência não intencional: o sistema foi desenhado para socorrer emergências, mas acabou produzindo afastamento familiar como efeito indireto."},
+
+{c:"Valores econômicos",s:"Inovação e lucro",
+ si:"<p>Em uma entrevista, o CEO da TecVida afirmou: 'Investimos R$ 12 milhões em pesquisa para criar o Cuidar+. Se o poder público não tem verba nem tecnologia para atender idosos, alguém precisa fazer. Nós fazemos, e cobramos por isso. A venda de dados agregados para operadoras de saúde financia parte da operação e permite que o município pague menos. Se não houvesse lucro, o sistema não existiria'. Um ouvinte enviou uma pergunta: 'Mas o senhor está lucrando com dados de pessoas que nunca escolheram compartilhá-los'.</p>",
+ p:"O que está em jogo nesse trecho é a tensão entre:",
+ o:["Legalidade do contrato e ilegalidade da venda de dados, pois a legislação brasileira proíbe qualquer comercialização de informações de saúde.","Lógica da inovação com retorno financeiro e direito do usuário de decidir sobre seus próprios dados, mesmo quando o serviço é público.","Modernização tecnológica e resistência de setores tradicionais, pois o setor público historicamente rejeita qualquer tipo de inovação em seus serviços.","Eficiência administrativa e burocracia estatal, pois a empresa privada é sempre mais rápida e mais barata do que a gestão pública direta."],
+ x:1,e:"O trecho expõe a tensão entre inovação com lucro (defesa da empresa) e autonomia do usuário sobre os próprios dados (questionamento do ouvinte)."},
+
+{c:"Cuidado e desenvolvimento",s:"Tempo e afeto",
+ si:"<p>Uma reportagem acompanhou o dia de uma cuidadora da TecVida. Às 7h, ela recebeu a lista de 22 idosos a visitar. O aplicativo calculou 13 minutos por casa, mais deslocamento. Em uma das visitas, uma idosa de 79 anos pediu que ela ficasse mais cinco minutos para terminar de contar uma história sobre o neto. A cuidadora olhou o celular, viu o alerta em vermelho, pediu desculpas e saiu. No fim do dia, o aplicativo registrou 'visita concluída' e a empresa marcou a cuidadora como 'produtiva'. À noite, a filha da idosa recebeu uma notificação no aplicativo: 'Tudo certo com sua mãe'. Ela não ligou.</p>",
+ p:"O episódio ilustra que o conflito do caso não está apenas entre empresa e usuário, mas entre:",
+ o:["Cuidadores experientes e cuidadores novatos, pois a diferença de formação produz formas distintas de lidar com o tempo disponível para cada visita.","Idosos que gostam de conversar e idosos silenciosos, pois cada perfil exige um tipo diferente de cuidador, o que complica o planejamento.","Tempo produtivo medido pelo algoritmo e tempo necessário ao vínculo humano, dimensão que não cabe em métricas de minutos por atendimento.","Famílias que moram perto e famílias que moram longe, pois a distância geográfica é o principal fator que impede visitas presenciais regulares."],
+ x:2,e:"O episódio mostra que o algoritmo mede minutos, mas não mede vínculo. O tempo produtivo e o tempo do afeto são dimensões incompatíveis no modelo atual."},
+
+{c:"Argumentação",s:"Eficiência x cuidado",
+ si:"<p>Em um debate na câmara municipal, um vereador defendeu o contrato com a TecVida com o argumento de que 'eficiência é fazer mais com menos'. Uma vereadora respondeu: 'Eficiência é uma palavra bonita, mas precisamos definir eficiência para quê. Um sistema pode ser extremamente eficiente em registrar dados e, ao mesmo tempo, ser péssimo em oferecer companhia a uma pessoa que passa o dia sozinha. A pergunta não é se é eficiente, é eficiente para o quê'. O plenário ficou dividido.</p>",
+ p:"A fala da vereadora desloca o debate ao propor que:",
+ o:["A eficiência administrativa é uma ilusão, pois nenhum sistema público consegue medir de forma objetiva o que produz como resultado real.","A ineficiência do sistema é inevitável, pois qualquer política pública que envolva tecnologia acaba gerando mais problemas do que soluções.","O debate sobre eficiência é secundário, pois o que realmente importa em políticas públicas é a intenção declarada de quem as propõe.","A própria definição de eficiência depende do objetivo escolhido; medir minutos por visita é diferente de medir bem-estar produzido."],
+ x:3,e:"A vereadora não nega a eficiência: pergunta eficiência para quê. O critério de avaliação depende do fim que se escolhe medir."},
+
+{c:"Ética e tecnologia",s:"Monitorar x vigiar",
+ si:"<p>A TecVida instalou sensores que registram abertura da geladeira, uso do banheiro, horário de dormir e deslocamento dentro de casa. Em uma reunião com moradores, um representante da empresa explicou que os dados são usados para 'identificar padrões que indiquem risco'. Uma moradora de 74 anos respondeu: 'Eu entendo o sensor de queda. Mas por que a empresa precisa saber quantas vezes eu abro a geladeira? Se eu como menos num dia porque não estou com fome, alguém vai me ligar? E se eu não quiser que liguem?'. A empresa não respondeu à pergunta.</p>",
+ p:"A pergunta da moradora expõe um problema ético que se refere a:",
+ o:["Limite entre monitoramento com finalidade de cuidado e vigilância sem consentimento claro sobre o que é registrado e como os dados são usados.","Falha técnica dos sensores, que registram informações sem relação direta com quedas e por isso deveriam ser retirados do sistema atual.","Falta de informação dos técnicos da empresa, que não souberam responder a uma pergunta simples sobre o funcionamento dos sensores instalados.","Excesso de confiança dos idosos, que deveriam aceitar passivamente as decisões técnicas tomadas por especialistas em saúde e tecnologia."],
+ x:0,e:"O problema é o limite ético: monitorar com finalidade e consentimento é diferente de vigiar sem que o usuário saiba o que é registrado e para quê."},
+
+{c:"Argumentação",s:"Prioridades políticas",
+ si:"<p>Em uma reunião de bairro, dois moradores discutiram o contrato da prefeitura com a TecVida. O primeiro disse: 'Deveríamos contratar mais cuidadores presenciais, com salário fixo e tempo suficiente para cada visita. O idoso merece atenção de verdade'. O segundo respondeu: 'Isso é romântico, mas o orçamento não permite. Temos 5 mil idosos e verba para 500. O aplicativo é o que dá para fazer com o dinheiro que existe'. Uma terceira moradora sugeriu que talvez o problema não seja escolher entre um ou outro, mas discutir por que o orçamento da saúde é o que é.</p>",
+ p:"A fala da terceira moradora desloca o debate para um nível diferente, que consiste em:",
+ o:["Propor um modelo híbrido de cuidado, combinando visita presencial para idosos com maior risco de queda e monitoramento por aplicativo para os demais.","Questionar o próprio orçamento, ou seja, perguntar por que os recursos disponíveis são limitados antes de decidir como distribuí-los.","Defender que a prefeitura contrate mais servidores públicos por meio de concurso, mesmo que isso signifique aumentar impostos no município.","Sugerir que os idosos paguem parte do custo do monitoramento, reduzindo a pressão sobre o orçamento e ampliando o número de vagas."],
+ x:1,e:"A terceira moradora não escolhe entre as duas propostas: pergunta pelo orçamento. Desloca o debate para a origem dos recursos, não para sua destinação."},
+
+{c:"Valores econômicos",s:"Produtividade",
+ si:"<p>Em uma planilha interna da TecVida, o cálculo é direto: cada visita rende R$ 45 ao cuidador. O aplicativo define 15 minutos por atendimento. Se o cuidador ultrapassa o tempo previsto, o sistema desconta R$ 3 por minuto excedido. Um cuidador conta que, em média, perde R$ 20 por dia porque idosos costumam pedir para conversar mais. Outro diz que aprendeu a 'cronometrar a conversa' e a conduzir a visita em silêncio para não perder dinheiro. A empresa afirma que o modelo é justo porque garante previsibilidade ao serviço.</p>",
+ p:"A lógica econômica que organiza esse modelo pode ser descrita como:",
+ o:["Remuneração por hora trabalhada, com metas de tempo que garantem ao cuidador uma renda estável ao fim do mês, independentemente do número de atendimentos.","Remuneração por avaliação de desempenho, com bônus para cuidadores que recebem boas notas dos idosos e dos familiares ao final de cada mês de trabalho.","Remuneração por tarefa concluída, com penalidade por tempo excedido, o que transfere ao cuidador o custo de conversas e vínculos que não cabem no algoritmo.","Remuneração por vínculo empregatício, com salário fixo e carteira assinada, garantindo ao cuidador os direitos previstos na legislação trabalhista brasileira."],
+ x:2,e:"O modelo paga por tarefa e desconta por tempo excedido. Isso empurra o cuidador a encurtar conversas, transferindo a ele o custo do vínculo humano."},
+
+{c:"Argumentação",s:"Critérios de sucesso",
+ si:"<p>Um jornalista questionou a secretária de saúde: 'Se o aplicativo não impede a queda, por que a senhora considera o sistema bem-sucedido?'. A secretária respondeu: 'Nunca prometemos impedir quedas. Prometemos reduzir danos. Antes, um idoso caído podia ficar horas no chão. Hoje, o tempo médio de socorro é de sete minutos. Isso significa menos fraturas graves, menos desidratação, menos mortes evitáveis. A queda continua acontecendo, sim. Mas o desfecho é outro'. O jornalista anotou a resposta e perguntou ainda: 'E quem paga a conta da solidão?'.</p>",
+ p:"A última pergunta do jornalista aponta para uma limitação do argumento da secretária, que está em:",
+ o:["A escolha do critério de sucesso, que mede o desfecho da queda, mas deixa fora da avaliação as dimensões de vínculo e convivência.","A ausência de dados estatísticos sobre o tempo médio de socorro antes e depois do contrato, o que compromete a validade da resposta apresentada.","A falta de recursos humanos treinados para operar o sistema, o que obriga a prefeitura a depender de uma empresa privada para o atendimento.","O excesso de confiança no SAMU, que não tem estrutura para responder em sete minutos em todas as regiões do município atendido."],
+ x:0,e:"O critério de sucesso é 'desfecho da queda', que deixa fora dimensões como vínculo e convivência. Aquilo que não é medido não entra na avaliação."},
+
+{c:"Valores humanos",s:"Autonomia",
+ si:"<p>Um grupo de idosos organizou uma associação para discutir o aplicativo. As reivindicações são três: (1) saber exatamente quais dados são coletados; (2) saber com quem são compartilhados; (3) poder recusar o monitoramento sem perder o atendimento básico da prefeitura. A secretaria de saúde respondeu que a recusa implicaria perda do serviço, pois o sistema funciona em bloco. A associação respondeu com um documento de uma página, citando a Lei Geral de Proteção de Dados e o Estatuto do Idoso.</p>",
+ p:"A reivindicação da associação está centrada em um valor que pode ser descrito como:",
+ o:["Solidariedade, pois os idosos se organizaram coletivamente para exigir melhorias no serviço público de saúde oferecido pelo município.","Eficiência, pois os idosos querem que o sistema funcione melhor e mais rápido, evitando atrasos no socorro em casos de emergência.","Transparência, pois os idosos querem que a empresa divulgue relatórios anuais sobre como os dados coletados foram efetivamente utilizados.","Autonomia, pois os idosos querem decidir sobre o uso dos próprios dados e o próprio cuidado, sem perder o acesso a direitos já garantidos."],
+ x:3,e:"A reivindicação é por autonomia: decidir sobre os próprios dados e sobre receber ou não monitoramento, sem perder direitos. Solidariedade e transparência são meios, não o valor central."},
+
+{c:"Ética e responsabilidade",s:"Responsabilidade compartilhada",
+ si:"<p>Após uma reportagem sobre a solidão dos idosos monitorados, a TecVida divulgou nota afirmando que 'apenas fornece a tecnologia contratada pela prefeitura; as políticas de cuidado são responsabilidade do poder público'. A prefeitura respondeu que 'a empresa define o modelo de pagamento e o tempo de visita, o que afeta diretamente a qualidade do serviço'. O Ministério Público abriu inquérito para apurar responsabilidades. Um jurista comentou que, em casos assim, a tendência é atribuir responsabilidade a todos os agentes que participam da cadeia, incluindo a própria administração pública.</p>",
+ p:"A posição do jurista sugere que a responsabilidade pelo cuidado inadequado dos idosos:",
+ o:["Recai exclusivamente sobre a empresa, pois foi ela quem desenhou o modelo de pagamento e o tempo de visita que produzem a solidão relatada pelos idosos.","É compartilhada entre empresa, prefeitura e sociedade, pois cada agente participou de decisões que, somadas, produziram o resultado hoje observado.","Recai exclusivamente sobre a prefeitura, pois foi ela quem contratou o serviço sem exigir cláusulas de proteção à dignidade dos idosos monitorados.","É de difícil atribuição, pois envolve escolhas públicas que não podem ser juridicamente imputadas a nenhum dos agentes envolvidos no contrato firmado."],
+ x:1,e:"Responsabilidade compartilhada: a empresa projeta o modelo, a prefeitura contrata e fiscaliza, e a sociedade escolhe o que aceita como cuidado."}
+];
+
+/* =====================================================================
+   CONFIG E ESTADO
+   ===================================================================== */
+var CONFIG={MIN_LOCK:8,MAX_LOCK:16,WPS:15,FAST:4,FAST_STREAK:2,RUSH:20,MAX_ATT:300};
+var SAVE_KEY='agora-filo-cuidar-v4';
+var LET=['A','B','C','D'];
+var state=null, lockTimer=null, rushTimer=null;
+
+function novoEstado(){
+  var ordem=shuffle(Q.map(function(_,i){return i}));
+  return{v:4,sid:Date.now(),queue:ordem,pos:0,disp:null,qid:null,mastered:[],att:{},tot:0,ok:0,err:0,firstTry:0,ciclo:1,start:Date.now(),tempos:{},ap:0,fs:0,rushN:0,estado:'quiz',fb:null,lockR:0,saved:Date.now()};
+}
+function salvar(){if(!state)return;state.saved=Date.now();try{localStorage.setItem(SAVE_KEY,JSON.stringify(state))}catch(e){}}
+function carregar(){try{var r=localStorage.getItem(SAVE_KEY);if(!r)return null;var s=JSON.parse(r);if(!s||s.v!==4||!Array.isArray(s.queue)||typeof s.pos!=='number'){localStorage.removeItem(SAVE_KEY);return null}return s}catch(e){return null}}
+function limpar(){try{localStorage.removeItem(SAVE_KEY)}catch(e){}}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+function fmt(s){return s<60?s+'s':Math.floor(s/60)+'min '+(s%60)+'s'}
+function lockSec(sit,pr){var t=(sit+' '+pr).replace(/<[^>]+>/g,' ');var w=t.trim().split(/\s+/).length;return Math.min(CONFIG.MAX_LOCK,Math.max(CONFIG.MIN_LOCK,Math.round(w/CONFIG.WPS)))}
+function shuffleOpts(qi){var q=Q[qi];var idx=q.o.map(function(t,i){return{t:t,c:i===q.x}});var sh=shuffle(idx);var nc=-1;for(var i=0;i<sh.length;i++){if(sh[i].c){nc=i;break}}return{o:sh.map(function(x){return x.t}),c:nc}}
+
+var GUARD=true,teacherAuth=false,allowPrint=false;
+var PASS_HASH='28jrgeq28s5';
+function hashSenha(str){
+  var h1=0xdeadbeef,h2=0x41c6ce57;
+  for(var i=0;i<str.length;i++){var c=str.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677);}
+  h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);
+  h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
+  return (4294967296*(2097151&h2)+(h1>>>0)).toString(36);
+}
+var devtoolsAttempts=0,contextMenuAttempts=0,copyAttempts=0,tabSwitches=0;
+function regDev(){if(GUARD)devtoolsAttempts++}
+function regCtx(){if(GUARD)contextMenuAttempts++}
+function regCopy(){if(GUARD)copyAttempts++}
+
+document.addEventListener('contextmenu',function(e){if(!GUARD)return;regCtx();e.preventDefault();return false},false);
+document.addEventListener('keydown',function(e){
+  if(!GUARD)return;
+  var k=(e.key||'').toLowerCase(),code=e.keyCode||e.which;
+  if(e.key==='PrintScreen'||code===44){e.preventDefault();return false}
+  if(e.key==='F12'){regDev();e.preventDefault();return false}
+  if((e.ctrlKey||e.metaKey)&&e.shiftKey&&['i','j','c'].indexOf(k)!==-1){regDev();e.preventDefault();return false}
+  if((e.ctrlKey||e.metaKey)&&k==='u'){regDev();e.preventDefault();return false}
+  if((e.ctrlKey||e.metaKey)&&k==='s'){regDev();e.preventDefault();return false}
+  if((e.ctrlKey||e.metaKey)&&k==='p'){if(!allowPrint){e.preventDefault();return false}}
+  if((e.ctrlKey||e.metaKey)&&k==='a'){var t=document.activeElement?document.activeElement.tagName:'';if(t!=='INPUT'&&t!=='TEXTAREA'){regCopy();e.preventDefault();return false}}
+},true);
+document.addEventListener('dragstart',function(e){if(!GUARD)return;e.preventDefault();return false});
+document.addEventListener('copy',function(e){if(!GUARD)return;var t=document.activeElement?document.activeElement.tagName:'';if(t!=='INPUT'&&t!=='TEXTAREA'){regCopy();e.preventDefault();return false}});
+document.addEventListener('cut',function(e){if(!GUARD)return;var t=document.activeElement?document.activeElement.tagName:'';if(t!=='INPUT'&&t!=='TEXTAREA'){regCopy();e.preventDefault();return false}});
+window.addEventListener('beforeprint',function(e){if(!GUARD||allowPrint)return;e.preventDefault();return false});
+
+(function detectDevTools(){
+  setInterval(function(){
+    if(!GUARD)return;
+    try{
+      var wDiff=window.outerWidth-window.innerWidth;
+      var hDiff=window.outerHeight-window.innerHeight;
+      if(window.outerWidth>400&&(wDiff>300||hDiff>300)){regDev()}
+    }catch(e){}
+  },2000);
+})();
+
+function renderCaso(){
+  document.getElementById('caso-body').innerHTML=CASO_HTML;
+  var d=new Date();
+  var dataStr=d.toLocaleDateString('pt-BR')+' às '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  var pdf=PDF_HEADER_HTML+CASO_HTML;
+  pdf=pdf.replace('<span id="pdf-data-geracao"></span>',dataStr);
+  document.getElementById('pdf-source').innerHTML=pdf;
+}
+function abrirCaso(){if(state){state.ap++;salvar()}document.getElementById('caso-overlay').classList.add('show');document.body.style.overflow='hidden'}
+function fecharCaso(){document.getElementById('caso-overlay').classList.remove('show');document.body.style.overflow=''}
+function abrirRelatorio(){if(!state)return;document.getElementById('report-overlay').classList.add('show');document.body.style.overflow='hidden';renderRel()}
+function fecharRelatorio(){document.getElementById('report-overlay').classList.remove('show');document.body.style.overflow=''}
+function abrirGabarito(){document.getElementById('gabarito-overlay').classList.add('show');document.body.style.overflow='hidden';renderGabarito()}
+function fecharGabarito(){document.getElementById('gabarito-overlay').classList.remove('show');document.body.style.overflow=''}
+document.getElementById('caso-overlay').addEventListener('click',function(e){if(e.target===this)fecharCaso()});
+document.getElementById('report-overlay').addEventListener('click',function(e){if(e.target===this)fecharRelatorio()});
+document.getElementById('gabarito-overlay').addEventListener('click',function(e){if(e.target===this)fecharGabarito()});
+
+function baixarPDF(){
+  var src=document.getElementById('pdf-source');
+  if(!src.innerHTML.trim())renderCaso();
+  allowPrint=true;
+  document.body.classList.add('print-pdf');
+  document.getElementById('caso-overlay').classList.remove('show');
+  setTimeout(function(){
+    try{window.print()}catch(err){console.error(err)}
+    setTimeout(function(){document.body.classList.remove('print-pdf');allowPrint=false},1200);
+  },150);
+}
+window.addEventListener('afterprint',function(){document.body.classList.remove('print-pdf');allowPrint=false});
+
+var gabFiltro='';
+function renderGabarito(){
+  var b=document.getElementById('gabarito-body');
+  var filtro=gabFiltro.toLowerCase().trim();
+  var itens=Q.map(function(q,i){return{q:q,i:i}});
+  if(filtro){
+    itens=itens.filter(function(it){
+      var siTxt=(it.q.si||'').replace(/<[^>]+>/g,' ');
+      return it.q.c.toLowerCase().indexOf(filtro)!==-1
+          || it.q.s.toLowerCase().indexOf(filtro)!==-1
+          || it.q.p.toLowerCase().indexOf(filtro)!==-1
+          || siTxt.toLowerCase().indexOf(filtro)!==-1
+          || it.q.e.toLowerCase().indexOf(filtro)!==-1;
+    });
+  }
+  var stats='<div class="gab-stats">'+
+    '<div class="stat"><span class="num">'+Q.length+'</span><span class="lbl">Total</span></div>'+
+    '<div class="stat"><span class="num">'+itens.length+'</span><span class="lbl">Exibidas</span></div>'+
+    '<div class="stat"><span class="num">'+[0,1,2,3].filter(function(n){return Q.some(function(q){return q.x===n})}).length+'</span><span class="lbl">Alternativas</span></div>'+
+    '</div>';
+  var toolbar='<div class="gab-toolbar">'+
+    '<label for="gab-busca">🔎 Filtrar:</label>'+
+    '<input id="gab-busca" type="text" placeholder="Categoria, sub-tema, enunciado ou justificativa..." value="'+esc(gabFiltro)+'" oninput="gabFiltro=this.value;renderGabarito();var e=document.getElementById(\'gab-busca\');if(e){e.focus();e.setSelectionRange(e.value.length,e.value.length);}">'+
+    '<span class="count">'+itens.length+' / '+Q.length+'</span>'+
+    '</div>';
+  var html=stats+toolbar;
+  if(itens.length===0){
+    html+='<div class="gab-empty">Nenhuma questão encontrada com esse filtro.</div>';
+  }else{
+    itens.forEach(function(it){
+      var q=it.q,n=it.i+1,resp=q.x;
+      html+='<div class="gab-card">';
+      html+='<div class="gab-card-head">';
+      html+='<span class="gab-num">Questão '+n+'</span>';
+      html+='<div class="gab-tags">';
+      html+='<span class="gab-tag cat">'+esc(q.c)+'</span>';
+      html+='<span class="gab-tag sub">'+esc(q.s)+'</span>';
+      html+='</div></div>';
+      html+='<div class="gab-answer">✅ Alternativa correta: '+LET[resp]+'</div>';
+      if(q.si){html+='<div class="gab-situation">'+q.si+'</div>'}
+      html+='<div class="gab-q-text">'+esc(q.p)+'</div>';
+      q.o.forEach(function(opt,k){
+        var cls=(k===resp)?'gab-opt right':'gab-opt';
+        html+='<div class="'+cls+'"><span class="letter">'+LET[k]+'</span><span class="text">'+esc(opt)+'</span></div>';
+      });
+      html+='<div class="gab-expl"><strong>Justificativa</strong>'+esc(q.e)+'</div>';
+      html+='</div>';
+    });
+  }
+  b.innerHTML=html;
+}
+
+function abrirMenuProf(){
+  document.getElementById('tmenu-login').style.display=teacherAuth?'none':'block';
+  document.getElementById('tmenu-panel').style.display=teacherAuth?'block':'none';
+  document.getElementById('tmenu-msg').textContent='';
+  document.getElementById('tmenu-pass').value='';
+  atualMenu();
+  document.getElementById('tmenu-overlay').classList.add('show');
+}
+function fecharMenuProf(){document.getElementById('tmenu-overlay').classList.remove('show')}
+function entrarMenuProf(){
+  var v=document.getElementById('tmenu-pass').value.trim();
+  if(hashSenha(v)===PASS_HASH){teacherAuth=true;abrirMenuProf()}
+  else{document.getElementById('tmenu-msg').textContent='Senha incorreta.';document.getElementById('tmenu-pass').value=''}
+}
+function atualMenu(){
+  var st=document.getElementById('tmenu-status'),bt=document.getElementById('tmenu-toggle');
+  if(GUARD){st.className='tstatus on';st.textContent='🔒 Anti-burla: ATIVOS';bt.className='tbtn warn';bt.textContent='Desativar anti-burla'}
+  else{st.className='tstatus off';st.textContent='🛠️ Anti-burla: DESATIVADOS';bt.className='tbtn ok';bt.textContent='Reativar anti-burla'}
+}
+function alternarGuard(){
+  if(!teacherAuth)return;
+  GUARD=!GUARD;
+  document.body.classList.toggle('guard-on',GUARD);
+  document.body.classList.toggle('guard-off',!GUARD);
+  if(!GUARD){
+    if(rushTimer){clearInterval(rushTimer);rushTimer=null}fecharRush();
+    if(lockTimer&&state&&state.estado==='quiz'){clearInterval(lockTimer);lockTimer=null;state.lockR=0;unlockQ()}
+  }
+  atualMenu();
+}
+function abrirRelatorioDoProfessor(){if(!teacherAuth)return;fecharMenuProf();abrirRelatorio()}
+function abrirGabaritoDoProfessor(){if(!teacherAuth)return;gabFiltro='';fecharMenuProf();abrirGabarito()}
+function abrirCasoDoProfessor(){if(!teacherAuth)return;fecharMenuProf();abrirCaso()}
+document.getElementById('tmenu-overlay').addEventListener('click',function(e){if(e.target===this)fecharMenuProf()});
+document.getElementById('tmenu-pass').addEventListener('keydown',function(e){if(e.key==='Enter')entrarMenuProf()});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){fecharCaso();fecharRelatorio();fecharGabarito();fecharMenuProf();fecharRush()}
+});
+
+function renderRel(){
+  var b=document.getElementById('report-body');
+  if(!state){b.innerHTML='<p>Nenhuma sessão ativa.</p>';return}
+  var m=state.mastered.length,T=Q.length,pct=Math.round(m/T*100);
+  var tTot=Math.round((Date.now()-state.start)/1000);
+  var ini=new Date(state.start).toLocaleString('pt-BR');
+  var allA=[];Object.keys(state.tempos).forEach(function(k){state.tempos[k].forEach(function(x){allA.push(x)})});
+  var avg=allA.length?Math.round(allA.reduce(function(a,t){return a+t.e},0)/allA.length):0;
+  var fast=allA.length?Math.min.apply(null,allA.map(function(t){return t.e})):0;
+  var rush=allA.filter(function(t){return t.r}).length;
+  var rushPct=allA.length?Math.round(rush/allA.length*100):0;
+  var isF=state.estado==='final';
+  var dev=devtoolsAttempts+contextMenuAttempts+copyAttempts;
+  var susp=(devtoolsAttempts>0?1:0)+(contextMenuAttempts>0?1:0)+(copyAttempts>0?1:0);
+  var limpo=susp===0&&rush===0&&state.rushN===0;
+  var dC,dM;
+  if(rushPct===0&&state.rushN===0){dC='ok';dM='<strong>Leitura consciente.</strong> Ritmo adequado.'}
+  else if(rushPct<40&&state.rushN<=1){dC='warn';dM='<strong>Ritmo irregular.</strong> Algumas respostas rápidas demais.'}
+  else{dC='bad';dM='<strong>Leitura apressada.</strong> Muitas respostas sem tempo mínimo.'}
+  b.innerHTML=
+    '<div style="margin-bottom:16px;padding:12px 16px;border-radius:12px;text-align:center;background:'+(isF?'#E4F2E8':'#FFF4DC')+';color:'+(isF?'#1B4A34':'#7A4E00')+';font-weight:800;font-size:.85rem">'+(isF?'Atividade concluída':'Atividade em andamento')+'</div>'+
+    '<div class="report-section"><h4>Desempenho</h4>'+
+    '<div class="report-row"><span class="label">Questões dominadas</span><span class="value '+(m===T?'ok':'')+'">'+m+' de '+T+' ('+pct+'%)</span></div>'+
+    '<div class="report-row"><span class="label">Total de tentativas</span><span class="value">'+(state.tot||0)+'</span></div>'+
+    '<div class="report-row"><span class="label">Acertos / Erros</span><span class="value">'+(state.ok||0)+' / '+(state.err||0)+'</span></div>'+
+    '<div class="report-row"><span class="label">Acertos na 1ª tentativa</span><span class="value">'+(state.firstTry||0)+'</span></div>'+
+    '<div class="report-row"><span class="label">Ciclos completados</span><span class="value">'+state.ciclo+'</span></div></div>'+
+    '<div class="report-section"><h4>Tempo e ritmo</h4>'+
+    '<div class="report-row"><span class="label">Tempo total</span><span class="value">'+fmt(tTot)+'</span></div>'+
+    '<div class="report-row"><span class="label">Início</span><span class="value">'+ini+'</span></div>'+
+    '<div class="report-row"><span class="label">Tempo médio</span><span class="value">'+avg+'s</span></div>'+
+    '<div class="report-row"><span class="label">Mais rápida</span><span class="value">'+fast+'s</span></div>'+
+    '<div class="report-row"><span class="label">Respostas apressadas (&lt;4s)</span><span class="value '+(rush>0?'warn':'ok')+'">'+rush+' de '+allA.length+' ('+rushPct+'%)</span></div>'+
+    '<div class="report-row"><span class="label">Pausas reflexivas</span><span class="value '+(state.rushN===0?'ok':(state.rushN===1?'warn':'bad'))+'">'+state.rushN+'</span></div></div>'+
+    '<div class="report-section"><h4>Consultas</h4>'+
+    '<div class="report-row"><span class="label">Estudo de caso aberto</span><span class="value">'+state.ap+' vez(es)</span></div></div>'+
+    '<div class="report-section"><h4>Anti-burla</h4>'+
+    '<div class="report-row"><span class="label">DevTools</span><span class="value '+(devtoolsAttempts===0?'ok':'bad')+'">'+devtoolsAttempts+'</span></div>'+
+    '<div class="report-row"><span class="label">Menu de contexto</span><span class="value '+(contextMenuAttempts===0?'ok':'bad')+'">'+contextMenuAttempts+'</span></div>'+
+    '<div class="report-row"><span class="label">Cópia / seleção</span><span class="value '+(copyAttempts===0?'ok':'bad')+'">'+copyAttempts+'</span></div>'+
+    '<div class="report-row"><span class="label">Troca de aba</span><span class="value '+(tabSwitches>0?'warn':'ok')+'">'+tabSwitches+'</span></div>'+
+    '<div class="report-row" style="border-bottom:none"><span class="label"><strong>Total suspeitos</strong></span><span class="value '+(dev===0?'ok':'bad')+'"><strong>'+dev+'</strong></span></div></div>'+
+    '<div class="report-section"><h4>Síntese</h4><div class="report-diagnosis '+dC+'">'+dM+'</div>'+
+    (limpo?'<div class="report-diagnosis ok" style="margin-top:10px"><strong>Sessão exemplar.</strong></div>':'')+'</div>';
+}
+
+function renderQ(){
+  if(lockTimer){clearInterval(lockTimer);lockTimer=null}
+  if(!state)return;
+  if(state.pos>=state.queue.length){fimCiclo();return}
+  state.estado='quiz';
+  state.qid=state.queue[state.pos];
+  state.disp=shuffleOpts(state.qid);
+  var q=Q[state.qid];
+  var retry=(state.att[state.qid]||0)>0;
+  var c=document.getElementById('questions-container');
+  var optsHtml='';
+  for(var i=0;i<state.disp.o.length;i++){
+    optsHtml+='<button class="opt" data-i="'+i+'" disabled><span class="letter">'+LET[i]+'</span><span class="text">'+esc(state.disp.o[i])+'</span></button>';
+  }
+  c.innerHTML=
+    '<article class="question-block '+(retry?'retry':'')+'" id="current-q">'+
+    '<div class="q-header">'+
+    '<span class="q-number '+(retry?'retry':'')+'">QUESTÃO '+(state.pos+1)+' / '+state.queue.length+'</span>'+
+    '<span class="q-concept">'+esc(q.c)+'</span>'+
+    (retry?'<span class="q-cycle-tag">Retomada · Ciclo '+state.ciclo+'</span>':'')+
+    '<div class="q-inline-help"><button class="help-btn" type="button" onclick="abrirCaso()">📁 Estudo de caso</button></div>'+
+    '</div>'+
+    '<div class="situation">'+q.si+'</div>'+
+    '<p class="q-prompt">'+esc(q.p)+'</p>'+
+    '<div class="lock-bar" id="lock-bar"><span class="lock-count" id="lock-count">🔒</span><span id="lock-text">Leia com atenção para liberar as alternativas…</span></div>'+
+    '<div class="options" id="options">'+optsHtml+'</div>'+
+    '<div class="feedback" id="feedback"></div></article>';
+  var btns=c.querySelectorAll('.opt');
+  for(var j=0;j<btns.length;j++){
+    btns[j].addEventListener('click',function(){if(this.disabled)return;responder(parseInt(this.dataset.i,10))});
+  }
+  if(state.estado==='feedback'&&state.fb&&state.fb.qid===state.qid){
+    var fb=state.fb;
+    var o=c.querySelectorAll('#options .opt');
+    for(var k=0;k<o.length;k++){o[k].disabled=true;if(k===fb.ch){o[k].classList.add(fb.correct?'correct':'wrong')}else{o[k].classList.add('dimmed')}}
+    var lb=document.getElementById('lock-bar');lb.classList.add('unlocked');
+    document.getElementById('lock-count').textContent='✓';
+    document.getElementById('lock-text').textContent='Leitura concluída.';
+    renderFb(fb);atualPlacar();atualRitmo();window.scrollTo({top:0,behavior:'smooth'});return;
+  }
+  if(!GUARD){
+    state.lockR=0;unlockQ();
+    document.getElementById('lock-text').textContent='Modo professor — liberado.';
+    atualPlacar();window.scrollTo({top:0,behavior:'smooth'});return;
+  }
+  var lb2=document.getElementById('lock-bar'),cnt=document.getElementById('lock-count'),tx=document.getElementById('lock-text');
+  var total=lockSec(q.si,q.p);
+  var rem=total;cnt.textContent=rem;state.lockR=rem;salvar();
+  lockTimer=setInterval(function(){
+    if(!GUARD)return;
+    if(document.hidden){lb2.classList.add('paused');tx.textContent='⏸️ Aba em segundo plano — pausado.';return}
+    lb2.classList.remove('paused');tx.textContent='Leia com atenção para liberar as alternativas…';
+    rem--;state.lockR=rem;cnt.textContent=rem;
+    if(rem<=0){clearInterval(lockTimer);lockTimer=null;state.lockR=0;unlockQ()}
+  },1000);
+  atualPlacar();window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function unlockQ(){
+  var lb=document.getElementById('lock-bar');if(!lb)return;
+  lb.classList.remove('paused');lb.classList.add('unlocked');
+  document.getElementById('lock-count').textContent='✓';
+  document.getElementById('lock-text').textContent='Leitura concluída — escolha com atenção.';
+  var o=document.querySelectorAll('#options .opt');
+  for(var i=0;i<o.length;i++)o[i].disabled=false;
+  state.effStart=Date.now();salvar();
+}
+
+function responder(idx){
+  if(state.estado!=='quiz')return;
+  if(lockTimer){clearInterval(lockTimer);lockTimer=null}
+  var q=Q[state.qid],d=state.disp;
+  var correct=idx===d.c;
+  var ms=state.effStart?(Date.now()-state.effStart):0;
+  var sec=Math.round(ms/1000);
+  var rushed=GUARD&&sec<CONFIG.FAST;
+  if(!state.tempos[state.qid])state.tempos[state.qid]=[];
+  state.tempos[state.qid].push({c:state.ciclo,e:sec,r:rushed,ok:correct});
+  state.att[state.qid]=(state.att[state.qid]||0)+1;
+  state.tot=(state.tot||0)+1;
+  if(correct){state.ok++;if(state.mastered.indexOf(state.qid)===-1)state.mastered.push(state.qid);if(state.ciclo===1&&state.att[state.qid]===1)state.firstTry++}
+  else{state.err++}
+  if(rushed)state.fs++;else state.fs=0;
+  state.fb={qid:state.qid,ch:idx,correct:correct,e:sec,r:rushed};
+  state.estado='feedback';
+  salvar();
+  var o=document.querySelectorAll('#options .opt');
+  for(var i=0;i<o.length;i++){
+    o[i].disabled=true;
+    if(i===idx)o[i].classList.add(correct?'correct':'wrong');
+    else if(!GUARD&&!correct&&i===d.c)o[i].classList.add('correct');
+    else o[i].classList.add('dimmed');
+  }
+  atualPlacar();atualRitmo();renderFb(state.fb);
+  if(GUARD&&state.fs>=CONFIG.FAST_STREAK)setTimeout(triggerRush,600);
+}
+
+function renderFb(fb){
+  var q=Q[fb.qid];
+  var box=document.getElementById('feedback');
+  box.className='feedback show '+(fb.correct?'ok':'erro');
+  var pace=fb.r?'<span class="fast">⚡ Resposta em '+fb.e+'s — ritmo apressado.</span>':'<span class="good">🧠 Resposta em '+fb.e+'s — ritmo consciente.</span>';
+  var last=state.pos>=state.queue.length-1;
+  var lbl=last?(state.mastered.length>=Q.length?'Finalizar ➔':'Continuar ➔'):'Próxima questão ➔';
+  if(fb.correct){
+    box.innerHTML='<span class="concept-tag">📚 '+esc(q.s)+'</span><div class="head">✅ Muito bem! Você dominou esta questão.</div><div>'+esc(q.e)+'</div><div class="meta">'+pace+'</div><div class="next-inline" style="justify-content:flex-end"><button class="next-btn-inline" id="next-btn-inline" onclick="avancar()">'+lbl+'</button></div>';
+  }else{
+    box.innerHTML='<div class="head">❌ Não foi desta vez.</div><div>Releia o estudo de caso com atenção e pense novamente antes de responder.</div>'+(!GUARD&&state.disp?'<div style="margin-top:10px;padding:10px 14px;background:#FFF4DC;border-radius:10px"><strong>Modo professor:</strong> alternativa correta = '+LET[state.disp.c]+'. '+esc(q.e)+'</div>':'')+'<div class="meta">'+pace+'</div><div class="next-inline"><button class="next-btn-inline ouro" type="button" onclick="abrirCaso()">📁 Releia o caso</button><button class="next-btn-inline" id="next-btn-inline" onclick="avancar()">Continuar ➔</button></div>';
+  }
+}
+
+function avancar(){if(lockTimer){clearInterval(lockTimer);lockTimer=null}state.fb=null;state.pos++;salvar();renderQ()}
+
+function fimCiclo(){
+  var m=state.mastered.length;
+  if(m>=Q.length||state.tot>=CONFIG.MAX_ATT){finalizar();return}
+  var rest=state.queue.filter(function(x){return state.mastered.indexOf(x)===-1});
+  if(rest.length===0){finalizar();return}
+  state.queue=shuffle(rest);state.pos=0;state.ciclo++;salvar();renderQ();
+}
+
+function finalizar(){if(lockTimer){clearInterval(lockTimer);lockTimer=null}state.estado='final';salvar();finalizarUI()}
+function finalizarUI(){
+  document.getElementById('questions-container').innerHTML='';
+  document.getElementById('final-box').classList.add('show');
+  document.getElementById('scoreboard').classList.add('done');
+  var m=state.mastered.length,T=Q.length;
+  document.getElementById('final-score').textContent=m+' / '+T;
+  document.getElementById('final-message').textContent=m===T?'Excelente! Você dominou todo o conteúdo.':'Você dominou '+m+' de '+T+' questões. Converse com o professor antes de encerrar.';
+}
+
+function atualPlacar(){
+  if(!state)return;
+  document.getElementById('erro-count').textContent=state.err||0;
+  document.getElementById('cycle-count').textContent=state.ciclo||1;
+  var pct=Math.min(100,Math.round(state.mastered.length/Q.length*100));
+  document.getElementById('mastery-fill').style.width=pct+'%';
+  document.getElementById('mastery-label').textContent=state.mastered.length+' / '+Q.length;
+}
+
+function atualRitmo(){
+  var all=[];Object.keys(state.tempos).forEach(function(k){state.tempos[k].forEach(function(x){all.push(x)})});
+  if(!all.length)return;
+  var r=all.filter(function(x){return x.r}).length;
+  var p=all.length?r/all.length*100:0;
+  var pill=document.getElementById('pace-pill');
+  if(p===0){pill.className='pill pace-good';pill.textContent='🧠 Leitura consciente'}
+  else if(p<40){pill.className='pill pace-warn';pill.textContent='⚠️ Ritmo apressado'}
+  else{pill.className='pill pace-bad';pill.textContent='🚨 Leitura suspeita'}
+}
+
+function triggerRush(){
+  state.rushN++;state.fs=0;salvar();
+  var ov=document.getElementById('rush-overlay');
+  var cnt=document.getElementById('rush-countdown');
+  var btn=document.getElementById('rush-continue-btn');
+  var rem=CONFIG.RUSH;cnt.textContent=rem;btn.disabled=true;btn.textContent='⏳ Aguarde… ('+rem+'s)';
+  ov.classList.add('show');document.body.style.overflow='hidden';
+  rushTimer=setInterval(function(){
+    rem--;cnt.textContent=rem;btn.textContent='⏳ Aguarde… ('+rem+'s)';
+    if(rem<=0){clearInterval(rushTimer);rushTimer=null;btn.disabled=false;btn.textContent='✅ Continuar a atividade'}
+  },1000);
+}
+function fecharRush(){document.getElementById('rush-overlay').classList.remove('show');document.body.style.overflow=''}
+
+function confirmarReset(){
+  if(!state)return;
+  if(!confirm('Reiniciar a atividade? Todo o progresso será perdido.'))return;
+  limpar();
+  if(lockTimer){clearInterval(lockTimer);lockTimer=null}
+  if(rushTimer){clearInterval(rushTimer);rushTimer=null}
+  devtoolsAttempts=0;contextMenuAttempts=0;copyAttempts=0;tabSwitches=0;
+  state=novoEstado();salvar();
+  document.getElementById('questions-container').innerHTML='';
+  document.getElementById('final-box').classList.remove('show');
+  document.getElementById('scoreboard').classList.remove('done');
+  renderQ();
+}
+
+function showResume(saved){
+  var b=document.getElementById('resume-info-box');
+  var m=(saved.mastered||[]).length;
+  var ini=new Date(saved.start).toLocaleString('pt-BR');
+  b.innerHTML='<div class="resume-info-row"><span class="lbl">📌 Dominadas</span><span class="val">'+m+' / '+Q.length+'</span></div>'+
+    '<div class="resume-info-row"><span class="lbl">🔄 Ciclo</span><span class="val">'+saved.ciclo+'</span></div>'+
+    '<div class="resume-info-row"><span class="lbl">✏️ Tentativas</span><span class="val">'+(saved.tot||0)+'</span></div>'+
+    '<div class="resume-info-row"><span class="lbl">✅ Acertos</span><span class="val">'+(saved.ok||0)+'</span></div>'+
+    '<div class="resume-info-row"><span class="lbl">❌ Erros</span><span class="val">'+(saved.err||0)+'</span></div>'+
+    '<div class="resume-info-row"><span class="lbl">🕒 Início</span><span class="val">'+ini+'</span></div>';
+  document.getElementById('resume-overlay').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function continuarSessao(){
+  var s=carregar();
+  if(!s){document.getElementById('resume-overlay').classList.remove('show');document.body.style.overflow='';return}
+  state=s;
+  document.getElementById('resume-overlay').classList.remove('show');
+  document.body.style.overflow='';
+  if(state.estado==='final')finalizarUI();
+  else renderQ();
+}
+function comecarDoZero(){
+  if(!confirm('Isso vai apagar todo o progresso salvo. Tem certeza?'))return;
+  limpar();state=novoEstado();salvar();
+  document.getElementById('resume-overlay').classList.remove('show');
+  document.body.style.overflow='';
+  document.getElementById('questions-container').innerHTML='';
+  document.getElementById('final-box').classList.remove('show');
+  renderQ();
+}
+
+window.addEventListener('beforeunload',function(){if(state&&state.estado!=='final')salvar()});
+document.addEventListener('visibilitychange',function(){
+  if(state&&state.estado!=='final'){salvar();if(document.hidden&&GUARD)tabSwitches++}
+});
+
+document.addEventListener('DOMContentLoaded',function(){
+  renderCaso();
+  var s=carregar();
+  if(s&&(s.pos>0||s.ciclo>1||Object.keys(s.att||{}).length>0)){showResume(s)}
+  else{state=novoEstado();salvar();renderQ()}
+});
+</script>
+</body>
+</html>
