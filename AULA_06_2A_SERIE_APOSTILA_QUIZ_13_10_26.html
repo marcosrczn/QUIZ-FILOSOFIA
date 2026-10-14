@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Filosofia 2ª Série — Gênero, Sexualidade e Feminismos Plurais</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--roxo:#6B1B4E;--roxo2:#3D0E2C;--ouro:#E8B04B;--ok:#1B6B09;--erro:#C62828;--cinza:#f7eef4}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Open Sans',sans-serif;background:linear-gradient(160deg,#f4e6ee,#e0c9d8);color:#222;min-height:100vh;padding:clamp(12px,2vw,32px);line-height:1.6;text-align:justify}
+body.guard-on{-webkit-user-select:none;user-select:none}
+.container{max-width:980px;margin:0 auto}
+.hero{background:linear-gradient(135deg,var(--roxo),var(--roxo2));color:#fff;border-radius:20px;padding:clamp(20px,3vw,40px);box-shadow:0 12px 40px rgba(107,27,78,.35);margin-bottom:24px;text-align:left}
+.hero-badge{display:inline-block;background:var(--ouro);color:var(--roxo2);padding:5px 16px;border-radius:999px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px}
+.hero h1{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(1.4rem,2.6vw,2.3rem);line-height:1.2;margin-bottom:10px}
+.hero h1 span{color:var(--ouro)}
+.hero p{color:#f2dbe6;margin-bottom:18px}
+.hero-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.hero-meta{grid-template-columns:1fr}}
+.hero-meta-card{background:rgba(255,255,255,.08);border:1px solid rgba(232,176,75,.28);border-radius:14px;padding:14px 16px}
+.hero-meta-card .label{font-family:'Montserrat',sans-serif;font-weight:900;font-size:.65rem;color:var(--ouro);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;display:block}
+.hero-meta-card .value{font-size:.83rem;color:#f5e3ec;line-height:1.55}
+.hero-meta-card .value strong{color:#fff;font-family:'Montserrat',sans-serif;font-weight:800}
+.support-bar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;justify-content:flex-end}
+.support-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.82rem;cursor:pointer;border:2px solid;background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.08)}
+.support-btn.apostila{color:var(--roxo);border-color:var(--roxo)}
+.support-btn.apostila:hover{background:var(--roxo);color:#fff}
+.support-btn.pdf{color:#1B3A6B;border-color:#1B3A6B}
+.support-btn.pdf:hover{background:#1B3A6B;color:#fff}
+.support-btn.report{color:#B37A00;border-color:#B37A00}
+.support-btn.report:hover{background:#B37A00;color:#fff}
+.support-btn.reset{color:var(--erro);border-color:var(--erro)}
+.support-btn.reset:hover{background:var(--erro);color:#fff}
+.instructions{background:#fff8e1;border-left:5px solid var(--ouro);border-radius:12px;padding:16px 22px;margin-bottom:16px;font-size:.92rem;color:#5c4500}
+.scoreboard{background:#fff;border-radius:14px;padding:16px 22px;box-shadow:0 4px 14px rgba(0,0,0,.08);margin-bottom:22px;position:sticky;top:12px;z-index:10;border:2px solid transparent}
+.scoreboard.done{border-color:var(--ouro)}
+.score-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+.score-header .title{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--roxo);font-size:.95rem}
+.score-pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{padding:5px 12px;border-radius:999px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.76rem}
+.pill.erro{background:#ffebee;color:var(--erro);border:2px solid var(--erro)}
+.pill.total{background:var(--cinza);color:var(--roxo);border:2px solid var(--roxo)}
+.pill.pace-good{background:#e8f5e9;color:var(--ok);border:2px solid var(--ok)}
+.pill.pace-warn{background:#fff8e1;color:#8a5f00;border:2px solid #B37A00}
+.pill.pace-bad{background:#ffebee;color:var(--erro);border:2px solid var(--erro)}
+.mastery-wrapper{display:flex;align-items:center;gap:12px}
+.mastery-track{flex-grow:1;height:14px;background:#f0e2ea;border-radius:999px;overflow:hidden;border:2px solid var(--roxo)}
+.mastery-fill{height:100%;background:linear-gradient(90deg,var(--roxo),var(--ouro));width:0%;transition:width .4s}
+.mastery-label{font-family:'Montserrat',sans-serif;font-weight:900;font-size:.85rem;color:var(--roxo);white-space:nowrap}
+.question-block{background:#fff;border-radius:18px;padding:clamp(18px,2.4vw,30px);box-shadow:0 6px 20px rgba(0,0,0,.08);margin-bottom:22px;border-top:5px solid var(--roxo);scroll-margin-top:90px}
+.question-block.retry{border-top-color:#B37A00}
+.q-header{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px}
+.q-number{display:inline-block;background:var(--roxo);color:#fff;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.75rem;padding:4px 12px;border-radius:999px;letter-spacing:1px}
+.q-number.retry{background:#B37A00}
+.q-concept{display:inline-block;background:#f0e2ea;color:var(--roxo);font-family:'Montserrat',sans-serif;font-weight:800;font-size:.68rem;padding:4px 12px;border-radius:999px;text-transform:uppercase;letter-spacing:1px}
+.q-cycle-tag{display:inline-block;background:#fff8e1;color:#8a5f00;border:1.5px solid #B37A00;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.68rem;padding:3px 10px;border-radius:999px;text-transform:uppercase}
+.q-inline-help{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.help-btn{background:transparent;border:1.5px dashed var(--roxo);color:var(--roxo);font-family:'Montserrat',sans-serif;font-weight:800;font-size:.68rem;padding:4px 10px;border-radius:999px;cursor:pointer}
+.help-btn:hover{background:var(--roxo);color:#fff}
+.situation{background:var(--cinza);border-left:4px solid var(--roxo);border-radius:10px;padding:16px 20px;font-size:.94rem;color:#2a2a2a;line-height:1.7;margin-bottom:16px}
+.situation::before{content:"Situação-problema";display:block;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.68rem;color:var(--roxo);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:8px}
+.situation p{margin-bottom:10px}
+.situation p:last-child{margin-bottom:0}
+.q-prompt{font-weight:700;font-size:1rem;color:#1a1a1a;margin-bottom:16px;line-height:1.55}
+.lock-bar{display:flex;align-items:center;justify-content:center;gap:10px;background:#f5e8f0;border:2px dashed var(--roxo);border-radius:12px;padding:12px 16px;margin-bottom:16px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.88rem;color:var(--roxo);text-align:center;line-height:1.4}
+.lock-bar .lock-count{font-size:1rem;font-weight:900;background:var(--roxo);color:#fff;padding:3px 12px;border-radius:8px;min-width:38px;display:inline-block;text-align:center}
+.lock-bar.paused{background:#fff8e1;border-color:#B37A00;color:#8a5f00}
+.lock-bar.paused .lock-count{background:#B37A00}
+.lock-bar.unlocked{background:#e8f5e9;border:2px solid var(--ok);color:var(--ok)}
+.lock-bar.unlocked .lock-count{background:var(--ok)}
+.options{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:flex-start;gap:12px;background:#fafafa;border:2px solid #e4e4e4;border-radius:12px;padding:12px 16px;cursor:pointer;font-family:'Open Sans',sans-serif;font-size:.92rem;line-height:1.5;color:#222;text-align:justify;width:100%}
+.opt:hover:not(:disabled){border-color:var(--roxo);background:#f5e8f0}
+.opt:disabled{cursor:not-allowed;opacity:.55;filter:grayscale(.5)}
+.opt .letter{font-family:'Montserrat',sans-serif;font-weight:900;font-size:.85rem;background:var(--roxo);color:#fff;width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.opt .text{flex-grow:1}
+.opt.correct{background:#e8f5e9;border-color:var(--ok);opacity:1;filter:none}
+.opt.correct .letter{background:var(--ok)}
+.opt.wrong{background:#ffebee;border-color:var(--erro);opacity:1;filter:none}
+.opt.wrong .letter{background:var(--erro)}
+.opt.dimmed{opacity:.5;filter:grayscale(.5)}
+.feedback{margin-top:16px;border-radius:12px;padding:14px 18px;font-size:.9rem;line-height:1.6;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:#e8f5e9;border-left:4px solid var(--ok);color:#1b5e20}
+.feedback.erro{background:#ffebee;border-left:4px solid var(--erro);color:#7f1d1d}
+.feedback .head{font-family:'Montserrat',sans-serif;font-weight:900;font-size:.9rem;margin-bottom:6px}
+.feedback .concept-tag{display:inline-block;background:rgba(0,0,0,.08);padding:2px 10px;border-radius:999px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.7rem;letter-spacing:.8px;margin-bottom:8px;text-transform:uppercase}
+.feedback .meta{margin-top:10px;padding-top:8px;border-top:1px dashed rgba(0,0,0,.15);font-size:.78rem;font-family:'Montserrat',sans-serif;font-weight:700;opacity:.85}
+.feedback .meta .fast{color:var(--erro)}
+.feedback .meta .good{color:var(--ok)}
+.feedback .next-inline{margin-top:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.next-btn-inline{background:var(--roxo);color:#fff;border:none;padding:10px 22px;border-radius:12px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.88rem;cursor:pointer;box-shadow:0 4px 0 var(--roxo2)}
+.next-btn-inline:hover{transform:translateY(-2px);box-shadow:0 6px 0 var(--roxo2)}
+.next-btn-inline.ouro{background:var(--ouro);color:var(--roxo2);box-shadow:0 4px 0 #b38600}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.rush-overlay{position:fixed;inset:0;background:rgba(61,14,44,.96);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+.rush-overlay.show{display:flex}
+.rush-modal{background:#fff;border-radius:20px;padding:30px clamp(20px,4vw,40px);max-width:600px;width:100%;text-align:center;border-top:6px solid var(--erro);max-height:92vh;overflow-y:auto}
+.rush-modal h3{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--erro);margin-bottom:12px}
+.rush-modal p{margin-bottom:12px;color:#444;font-size:.92rem}
+.rush-quote{background:var(--cinza);border-left:4px solid var(--roxo);padding:14px 18px;border-radius:10px;font-style:italic;color:#333;margin:16px 0;font-size:.9rem}
+.rush-quote .author{display:block;margin-top:8px;font-style:normal;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.75rem;color:var(--roxo);text-align:right}
+.rush-countdown{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(2.2rem,4vw,3.2rem);color:var(--roxo);margin:8px 0 12px}
+.rush-status{display:inline-block;background:#ffebee;color:var(--erro);font-family:'Montserrat',sans-serif;font-weight:800;font-size:.8rem;padding:6px 14px;border-radius:999px;margin-bottom:14px}
+.apostila-overlay{display:none;position:fixed;inset:0;background:rgba(20,5,15,.92);z-index:8000;align-items:center;justify-content:center;padding:clamp(10px,2vw,24px)}
+.apostila-overlay.show{display:flex}
+.apostila-modal{background:#fff;border-radius:20px;max-width:min(94vw,900px);width:100%;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;border:3px solid var(--ouro)}
+.apostila-modal.report-modal{border-color:#B37A00;max-width:min(94vw,780px)}
+.apostila-modal.gabarito-modal{border-color:#1B6B09;max-width:min(96vw,960px)}
+.apostila-header{background:linear-gradient(135deg,var(--roxo),var(--roxo2));padding:14px clamp(16px,2vw,24px);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.apostila-modal.report-modal .apostila-header{background:linear-gradient(135deg,#B37A00,#8a5f00)}
+.apostila-modal.gabarito-modal .apostila-header{background:linear-gradient(135deg,#1B6B09,#0E3D05)}
+.apostila-header h2{font-family:'Montserrat',sans-serif;color:var(--ouro);font-size:1.15rem;font-weight:900}
+.apostila-header-actions{display:flex;gap:8px;flex-wrap:wrap}
+.apostila-close{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4);padding:6px 16px;border-radius:999px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.78rem;cursor:pointer}
+.apostila-close:hover{background:var(--erro);border-color:var(--erro)}
+.apostila-download{background:var(--ouro);color:var(--roxo2);border:1px solid var(--ouro);padding:6px 16px;border-radius:999px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.78rem;cursor:pointer}
+.apostila-download:hover{background:#b38600;border-color:#b38600;color:#fff}
+.apostila-body{padding:clamp(16px,2vw,28px);overflow-y:auto;line-height:1.7;font-size:.98rem;color:#333}
+.apostila-body h3{font-family:'Montserrat',sans-serif;color:var(--roxo);font-size:1.1rem;margin-top:22px;margin-bottom:10px;border-bottom:2px solid var(--ouro);padding-bottom:6px}
+.apostila-body h3:first-child{margin-top:0}
+.apostila-body h4{font-family:'Montserrat',sans-serif;color:var(--roxo);font-size:.95rem;margin-top:14px;margin-bottom:6px}
+.apostila-body p{margin-bottom:12px}
+.apostila-body strong{color:var(--roxo)}
+.apostila-body ul{margin:8px 0 12px 22px}
+.apostila-body li{margin-bottom:5px}
+.apostila-body blockquote{border-left:4px solid var(--roxo);padding:10px 18px;margin:14px 0;font-style:italic;background:#f9f0f5;border-radius:0 8px 8px 0}
+.apostila-body table{border-collapse:collapse;width:100%;margin:14px 0;font-size:.9rem}
+.apostila-body th,.apostila-body td{border:1px solid #c9a8bb;padding:8px 10px;text-align:left;vertical-align:top}
+.apostila-body th{background:#f0e2ea;color:var(--roxo)}
+.apostila-body .callout{background:#f9f0f5;border-left:4px solid var(--roxo);padding:12px 16px;border-radius:0 8px 8px 0;margin:12px 0}
+.apostila-body .curiosidade{background:#eaf5ea;border-left:4px solid var(--ok);padding:12px 16px;border-radius:0 8px 8px 0;margin:12px 0}
+.apostila-body .importante{background:#fff4f4;border-left:4px solid var(--erro);padding:12px 16px;border-radius:0 8px 8px 0;margin:12px 0}
+.apostila-body dl{margin:12px 0}
+.apostila-body dt{font-weight:700;color:var(--roxo);margin-top:10px}
+.apostila-body dd{margin:3px 0 0 18px}
+
+/* ====== GABARITO ====== */
+.gab-toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px;padding:10px 14px;background:#f0f7f0;border-radius:10px;border-left:4px solid var(--ok)}
+.gab-toolbar label{font-family:'Montserrat',sans-serif;font-weight:800;font-size:.78rem;color:var(--ok)}
+.gab-toolbar input{padding:7px 12px;border:2px solid #c9ddc9;border-radius:8px;font-size:.88rem;flex:1;min-width:160px;outline:none}
+.gab-toolbar input:focus{border-color:var(--ok)}
+.gab-toolbar .count{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--ok);font-size:.82rem}
+.gab-card{border:2px solid #e4e4e4;border-radius:12px;padding:16px 18px;margin-bottom:14px;background:#fff}
+.gab-card.correct-highlight{border-color:var(--ok);background:#f6fbf6}
+.gab-card-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.gab-num{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--roxo);font-size:.85rem;background:#f0e2ea;padding:4px 12px;border-radius:999px}
+.gab-tags{display:flex;gap:6px;flex-wrap:wrap}
+.gab-tag{font-family:'Montserrat',sans-serif;font-weight:800;font-size:.65rem;padding:3px 10px;border-radius:999px;text-transform:uppercase;letter-spacing:.6px}
+.gab-tag.cat{background:#f0e2ea;color:var(--roxo)}
+.gab-tag.sub{background:#fff8e1;color:#8a5f00;border:1px solid #B37A00}
+.gab-answer{display:inline-block;background:var(--ok);color:#fff;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.78rem;padding:4px 14px;border-radius:999px;margin-bottom:10px}
+.gab-q-text{font-weight:700;font-size:.92rem;color:#1a1a1a;margin-bottom:10px;line-height:1.5}
+.gab-situation{background:#f7eef4;border-left:4px solid var(--roxo);border-radius:0 8px 8px 0;padding:12px 16px;font-size:.86rem;color:#2a2a2a;line-height:1.65;margin-bottom:10px;text-align:justify}
+.gab-situation::before{content:"Situação-problema";display:block;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.62rem;color:var(--roxo);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:6px}
+.gab-situation p{margin-bottom:8px}
+.gab-situation p:last-child{margin-bottom:0}
+.gab-opt{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;border-radius:8px;margin-bottom:6px;font-size:.88rem;line-height:1.5;border:1.5px solid transparent;background:#fafafa;text-align:justify}
+.gab-opt .letter{font-family:'Montserrat',sans-serif;font-weight:900;font-size:.78rem;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#d8c2cd;color:#fff;margin-top:1px}
+.gab-opt.right{background:#e8f5e9;border-color:var(--ok)}
+.gab-opt.right .letter{background:var(--ok)}
+.gab-opt.right::after{content:"✓ correta";font-family:'Montserrat',sans-serif;font-weight:900;font-size:.65rem;color:var(--ok);margin-left:auto;align-self:center;white-space:nowrap;padding-left:10px}
+.gab-expl{background:#f0f7f0;border-left:3px solid var(--ok);padding:10px 14px;border-radius:0 8px 8px 0;font-size:.84rem;color:#1b5e20;margin-top:8px;line-height:1.55}
+.gab-expl strong{color:var(--ok);font-family:'Montserrat',sans-serif;font-weight:900;font-size:.72rem;letter-spacing:.6px;text-transform:uppercase;display:block;margin-bottom:4px}
+.gab-empty{text-align:center;padding:30px 20px;color:#888;font-size:.92rem}
+.gab-stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;padding:12px 16px;background:#f0e2ea;border-radius:10px}
+.gab-stats .stat{flex:1;min-width:100px;text-align:center}
+.gab-stats .stat .num{font-family:'Montserrat',sans-serif;font-weight:900;font-size:1.4rem;color:var(--roxo);display:block;line-height:1.1}
+.gab-stats .stat .lbl{font-family:'Montserrat',sans-serif;font-weight:700;font-size:.68rem;color:#7a4a63;text-transform:uppercase;letter-spacing:.6px}
+
+.resume-overlay{display:none;position:fixed;inset:0;background:rgba(20,5,15,.94);z-index:9500;align-items:center;justify-content:center;padding:20px}
+.resume-overlay.show{display:flex}
+.resume-modal{background:#fff;border-radius:22px;padding:clamp(24px,4vw,40px);max-width:640px;width:100%;border-top:8px solid var(--ouro);text-align:center;max-height:92vh;overflow-y:auto}
+.resume-modal h2{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--roxo);margin-bottom:10px}
+.resume-modal p{font-size:.95rem;color:#444;margin-bottom:16px}
+.resume-info-box{background:var(--cinza);border-radius:12px;padding:14px 18px;margin:16px 0 20px;text-align:left;border-left:4px solid var(--roxo)}
+.resume-info-row{display:flex;justify-content:space-between;gap:10px;padding:5px 0;font-size:.88rem;border-bottom:1px dashed #e0c9d8}
+.resume-info-row:last-child{border-bottom:none}
+.resume-info-row .lbl{color:#555}
+.resume-info-row .val{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--roxo)}
+.resume-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.resume-btn{padding:12px 26px;border-radius:12px;border:none;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.92rem;cursor:pointer}
+.resume-btn.primary{background:var(--roxo);color:#fff;box-shadow:0 4px 0 var(--roxo2)}
+.resume-btn.secondary{background:#eee;color:#444;box-shadow:0 4px 0 #ccc}
+.final-box{display:none;background:linear-gradient(135deg,var(--roxo),var(--roxo2));color:#fff;border-radius:20px;padding:32px 28px;text-align:center;margin-top:12px}
+.final-box.show{display:block}
+.final-box h2{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--ouro);margin-bottom:8px}
+.final-box .score-big{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(2.2rem,3.6rem,3.6rem);margin:12px 0}
+.final-box>p{color:#f2dbe6;margin-bottom:18px}
+.reset-btn{background:var(--ouro);color:var(--roxo2);border:none;padding:12px 28px;border-radius:12px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:.95rem;cursor:pointer;box-shadow:0 4px 0 #b38600}
+.footer{text-align:center;color:#7a4a63;font-family:'Montserrat',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:1.2px;padding:20px 0 6px;text-transform:uppercase}
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.menu-btn{width:44px;height:44px;border-radius:12px;border:2px solid var(--roxo);background:#fff;cursor:pointer;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:0}
+.menu-btn span{display:block;width:22px;height:3px;border-radius:2px;background:var(--roxo)}
+.menu-btn:hover{background:var(--roxo)}
+.menu-btn:hover span{background:#fff}
+.guard-chip{display:none;padding:7px 14px;border-radius:999px;background:#fff8e1;border:2px solid #B37A00;color:#8a5f00;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.74rem}
+body.guard-off .guard-chip{display:inline-block}
+.tmenu-overlay{position:fixed;inset:0;background:rgba(20,5,15,.55);z-index:10000;display:none;align-items:flex-start;justify-content:flex-start;padding:clamp(12px,2vw,32px)}
+.tmenu-overlay.show{display:flex}
+.tmenu{background:#fff;border-radius:16px;padding:20px 22px;width:min(380px,100%);text-align:left}
+.tmenu h3{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--roxo);font-size:1rem;margin-bottom:4px}
+.tmenu p{font-size:.84rem;color:#555;margin-bottom:12px}
+.tmenu input[type=password]{width:100%;padding:11px 14px;border:2px solid #e0c9d8;border-radius:10px;font-size:1rem;margin-bottom:10px}
+.tmenu .tbtn{display:block;width:100%;padding:11px 14px;border-radius:10px;border:2px solid var(--roxo);background:var(--roxo);color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.84rem;cursor:pointer;margin-bottom:8px}
+.tmenu .tbtn.sec{background:#fff;color:var(--roxo)}
+.tmenu .tbtn.warn{background:#B37A00;border-color:#B37A00}
+.tmenu .tbtn.ok{background:var(--ok);border-color:var(--ok)}
+.tmenu .tbtn.gab{background:#1B6B09;border-color:#1B6B09}
+.tmenu .tmsg{font-size:.8rem;color:var(--erro);min-height:1.2em;margin-bottom:6px;font-weight:700}
+.tmenu .tstatus{padding:10px 14px;border-radius:10px;font-size:.84rem;font-weight:700;margin-bottom:12px}
+.tmenu .tstatus.on{background:#e8f5e9;color:var(--ok)}
+.tmenu .tstatus.off{background:#fff8e1;color:#8a5f00}
+.tmenu .tnote{font-size:.74rem;color:#777;margin-top:4px}
+.report-section{margin-bottom:18px;padding-bottom:14px;border-bottom:2px dashed #f0e2ea}
+.report-section:last-child{border-bottom:none}
+.report-section h4{font-family:'Montserrat',sans-serif;font-weight:900;color:var(--roxo);font-size:.88rem;text-transform:uppercase;margin-bottom:8px}
+.report-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed #e0e0e0;font-size:.92rem;gap:12px;flex-wrap:wrap}
+.report-row:last-child{border-bottom:none}
+.report-row .label{color:#555;flex:1;min-width:180px}
+.report-row .value{font-family:'Montserrat',sans-serif;font-weight:900}
+.report-row .value.ok{color:var(--ok)}
+.report-row .value.warn{color:#8a5f00}
+.report-row .value.bad{color:var(--erro)}
+.report-diagnosis{margin-top:14px;padding:12px 16px;border-radius:10px;font-size:.88rem;line-height:1.55}
+.report-diagnosis.ok{background:#e8f5e9;color:#1b5e20;border-left:4px solid var(--ok)}
+.report-diagnosis.warn{background:#fff8e1;color:#8a5f00;border-left:4px solid #B37A00}
+.report-diagnosis.bad{background:#ffebee;color:#7f1d1d;border-left:4px solid var(--erro)}
+
+@media print {
+  @page { size: A4 portrait; margin: 1cm 1cm 1cm 1cm; }
+  html, body { background:#fff !important; margin:0 !important; padding:0 !important; }
+  body.print-pdf * { visibility: hidden !important; }
+  body.print-pdf #pdf-source,
+  body.print-pdf #pdf-source * { visibility: visible !important; }
+  body.print-pdf #pdf-source { position:absolute !important; left:0 !important; top:0 !important; width:100% !important; background:#fff !important; color:#000 !important; padding:0 !important; margin:0 !important; display:block !important; }
+  body.print-pdf #pdf-source h3 { color:#000 !important; border-bottom:1px solid #000 !important; page-break-after:avoid; break-after:avoid; }
+  body.print-pdf #pdf-source h4 { color:#000 !important; page-break-after:avoid; break-after:avoid; }
+  body.print-pdf #pdf-source strong { color:#000 !important; }
+  body.print-pdf #pdf-source blockquote { border-left:3px solid #000 !important; background:#f2f2f2 !important; color:#000 !important; page-break-inside:avoid; }
+  body.print-pdf #pdf-source table { page-break-inside:avoid; }
+  body.print-pdf #pdf-source tr { page-break-inside:avoid; }
+  body.print-pdf #pdf-source .callout,
+  body.print-pdf #pdf-source .curiosidade,
+  body.print-pdf #pdf-source .importante { page-break-inside:avoid; background:#f2f2f2 !important; border-left:3px solid #000 !important; color:#000 !important; }
+  body.print-pdf #pdf-source p,
+  body.print-pdf #pdf-source li { orphans:3; widows:3; }
+}
+
+#pdf-source { display: none; }
+
+@media(max-width:480px){body,.situation p,.opt .text,.q-prompt,.feedback{text-align:left}.q-concept{display:block;margin-left:0;margin-top:8px}.q-inline-help{margin-left:0;width:100%}.support-bar{justify-content:stretch}.support-btn{flex:1;justify-content:center}.score-header{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body class="guard-on">
+<div class="container">
+  <div class="topbar">
+    <button class="menu-btn" type="button" onclick="abrirMenuProf()"><span></span><span></span><span></span></button>
+    <span class="guard-chip">Modo professor: proteções desativadas</span>
+  </div>
+
+  <header class="hero">
+    <span class="hero-badge">Filosofia · 2ª Série EM · Aprofundamento</span>
+    <h1>Gênero, Sexualidade e <span>Feminismos Plurais</span></h1>
+    <p>Desnaturalização dos papéis sociais, filósofas e a questão feminina, correntes feministas, violência de gênero e interseccionalidade.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-card"><span class="label">Habilidades</span><span class="value"><strong>EM13CHS202</strong> · <strong>EM13CHS205</strong> · <strong>EM13CHS502</strong> · <strong>EM13CHS503</strong> · <strong>EM13CO22</strong></span></div>
+      <div class="hero-meta-card"><span class="label">Objetos de Conhecimento</span><span class="value">Gênero; sexualidade; desnaturalização dos papéis sociais; filósofas e a questão feminina; feminismos plurais; violência de gênero; interseccionalidade.</span></div>
+      <div class="hero-meta-card"><span class="label">Objetivo</span><span class="value">Compreender gênero e sexualidade como construções sociais e refletir criticamente sobre desigualdades, violências e os feminismos plurais.</span></div>
+    </div>
+  </header>
+
+  <div class="support-bar">
+    <button class="support-btn apostila" type="button" onclick="abrirApostila()">📖 Abrir Apostila</button>
+    <button class="support-btn pdf" type="button" onclick="baixarPDF()">📄 Baixar Apostila (PDF)</button>
+    <button class="support-btn report" type="button" onclick="abrirRelatorio()">📊 Ver relatório</button>
+    <button class="support-btn reset" type="button" onclick="confirmarReset()">🔄 Reiniciar</button>
+  </div>
+
+  <div class="instructions"><strong>Como funciona:</strong> leia a situação-problema com atenção, aguarde o cronômetro liberar as alternativas, escolha a resposta e receba o retorno explicativo. Você precisa dominar todas as 30 questões — as que errar voltam em ciclos seguintes.</div>
+
+  <div class="scoreboard" id="scoreboard">
+    <div class="score-header">
+      <span class="title">🎯 Seu progresso</span>
+      <div class="score-pills">
+        <span class="pill erro">❌ Erros: <span id="erro-count">0</span></span>
+        <span class="pill total">🔄 Ciclo <span id="cycle-count">1</span></span>
+        <span class="pill pace-good" id="pace-pill">🧠 Iniciando…</span>
+      </div>
+    </div>
+    <div class="mastery-wrapper">
+      <div class="mastery-track"><div class="mastery-fill" id="mastery-fill"></div></div>
+      <span class="mastery-label" id="mastery-label">0 / 30</span>
+    </div>
+  </div>
+
+  <main id="questions-container"></main>
+
+  <section class="final-box" id="final-box">
+    <h2>🎓 Atividade Concluída!</h2>
+    <p>Confira abaixo o seu resultado:</p>
+    <div class="score-big" id="final-score">0 / 30</div>
+    <p id="final-message"></p>
+    <button class="reset-btn" type="button" onclick="abrirRelatorio()" style="margin-bottom:12px;">📊 Ver relatório completo</button><br>
+    <button class="reset-btn" type="button" onclick="confirmarReset()">🔄 Refazer Atividade</button>
+  </section>
+
+  <div class="footer">⚡ ÁGORA DIGITAL · FILOSOFIA · 2ª SÉRIE EM</div>
+</div>
+
+<!-- FONTE DO PDF -->
+<div id="pdf-source"></div>
+
+<!-- APOSTILA -->
+<div class="apostila-overlay" id="apostila-overlay">
+  <div class="apostila-modal">
+    <div class="apostila-header">
+      <h2>📖 Apostila — Gênero, Sexualidade e Feminismos Plurais</h2>
+      <div class="apostila-header-actions">
+        <button class="apostila-download" type="button" onclick="baixarPDF()">📄 Baixar em PDF</button>
+        <button class="apostila-close" type="button" onclick="fecharApostila()">✕ Fechar</button>
+      </div>
+    </div>
+    <div class="apostila-body" id="apostila-body-target"></div>
+  </div>
+</div>
+
+<!-- RELATÓRIO -->
+<div class="apostila-overlay" id="report-overlay">
+  <div class="apostila-modal report-modal">
+    <div class="apostila-header"><h2>📊 Relatório de Desempenho</h2><button class="apostila-close" type="button" onclick="fecharRelatorio()">✕ Fechar</button></div>
+    <div class="apostila-body" id="report-body" style="padding:20px 24px;"></div>
+  </div>
+</div>
+
+<!-- GABARITO / CONFERIR QUESTÕES -->
+<div class="apostila-overlay" id="gabarito-overlay">
+  <div class="apostila-modal gabarito-modal">
+    <div class="apostila-header">
+      <h2>📝 Conferir Questões — Gabarito Completo</h2>
+      <div class="apostila-header-actions">
+        <button class="apostila-close" type="button" onclick="fecharGabarito()">✕ Fechar</button>
+      </div>
+    </div>
+    <div class="apostila-body" id="gabarito-body" style="padding:20px 24px;"></div>
+  </div>
+</div>
+
+<!-- RESUME -->
+<div class="resume-overlay" id="resume-overlay">
+  <div class="resume-modal">
+    <span style="font-size:2.5rem;display:block;margin-bottom:8px;">💾</span>
+    <h2>Você tem uma atividade em andamento!</h2>
+    <p>Identificamos uma sessão anterior salva neste navegador. Você pode continuar de onde parou.</p>
+    <div class="resume-info-box" id="resume-info-box"></div>
+    <div class="resume-actions">
+      <button class="resume-btn primary" type="button" onclick="continuarSessao()">▶️ Continuar</button>
+      <button class="resume-btn secondary" type="button" onclick="comecarDoZero()">🗑️ Começar do zero</button>
+    </div>
+  </div>
+</div>
+
+<!-- RUSH -->
+<div class="rush-overlay" id="rush-overlay">
+  <div class="rush-modal">
+    <span class="rush-status">⚠️ Ritmo apressado detectado</span>
+    <h3>Pausa reflexiva obrigatória</h3>
+    <p>Você respondeu as últimas questões em menos de <strong>4 segundos</strong> cada uma. A reflexão sobre gênero e sociedade exige tempo de leitura e de pensamento. Leia com calma antes de continuar:</p>
+    <div class="rush-quote">"Desnaturalizar é perceber que aquilo que parece natural é, na verdade, resultado de uma construção histórica e cultural."<span class="author">— Apostila, Cap. 1</span></div>
+    <div class="rush-countdown" id="rush-countdown">20</div>
+    <button class="reset-btn" id="rush-continue-btn" type="button" onclick="fecharRush()" disabled>⏳ Aguarde… (20s)</button>
+  </div>
+</div>
+
+<!-- MENU PROF -->
+<div class="tmenu-overlay" id="tmenu-overlay">
+  <div class="tmenu">
+    <div id="tmenu-login">
+      <h3>🔐 Menu do professor</h3>
+      <p>Digite a senha para gerenciar as proteções.</p>
+      <input type="password" id="tmenu-pass" placeholder="Senha" autocomplete="off">
+      <div class="tmsg" id="tmenu-msg"></div>
+      <button class="tbtn" type="button" onclick="entrarMenuProf()">Entrar</button>
+      <button class="tbtn sec" type="button" onclick="fecharMenuProf()">Cancelar</button>
+    </div>
+    <div id="tmenu-panel" style="display:none;">
+      <h3>🛠️ Menu do professor</h3>
+      <div class="tstatus on" id="tmenu-status">🔒 Anti-burla: ATIVOS</div>
+      <button class="tbtn gab" type="button" onclick="abrirGabaritoDoProfessor()">📝 Conferir questões (gabarito)</button>
+      <button class="tbtn sec" type="button" onclick="abrirRelatorioDoProfessor()">📊 Relatório do estudante</button>
+      <button class="tbtn warn" type="button" id="tmenu-toggle" onclick="alternarGuard()">Desativar anti-burla</button>
+      <button class="tbtn sec" type="button" onclick="fecharMenuProf()">Fechar</button>
+      <p class="tnote">Com as proteções desativadas: sem bloqueio de cópia/impressão, sem cadeado de leitura nem pausa reflexiva; a alternativa correta é mostrada após um erro. Reative antes de publicar.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+/* ===== CONTEÚDO DA APOSTILA ===== */
+var APOSTILA_HTML = `
+<h3>Apresentação: por que falar de gênero na escola?</h3>
+<p>Você já deve ter ouvido frases como "isso é coisa de menina", "homem não chora" ou "lugar de mulher é na cozinha". Elas parecem pequenas, quase inofensivas. Mas repetidas todos os dias, em casa, na escola, na televisão e na internet, elas vão moldando o que a gente pensa sobre homens, mulheres e todas as pessoas.</p>
+<p>Falar de gênero na escola não é doutrinar ninguém. É dar ferramentas para que você entenda de onde vêm essas ideias, por que elas mudam de país para país e de época para época, e como elas afetam a vida real: o salário que sua mãe recebe, o medo que sua amiga sente ao voltar sozinha para casa, a pressão que seu colega sofre para "se comportar como homem".</p>
+<p>A filosofia entra aqui porque ela ajuda a fazer as perguntas que quase ninguém faz: por que as coisas são como são? Elas sempre foram assim? Poderiam ser diferentes? Essas perguntas incomodam, e é justamente por isso que valem a pena.</p>
+<p>Esta apostila tem três eixos principais. O primeiro é entender gênero, sexualidade e os papéis que a sociedade impõe a cada pessoa. O segundo é conhecer filósofas que pensaram a condição feminina e mudaram a forma como entendemos o assunto. O terceiro é discutir os feminismos plurais, mostrando que não existe um feminismo único, mas várias formas de lutar por igualdade.</p>
+<p>Não tenha medo de discordar. Pensar criticamente é exatamente o que se espera de você.</p>
+
+<h3>Capítulo 1 – Gênero, sexualidade e a desnaturalização dos papéis sociais</h3>
+<p>Antes de discutir feminismo ou violência de gênero, precisamos acertar o vocabulário. Muita confusão nasce do uso impreciso de palavras. Vamos por partes.</p>
+
+<h4>1.1 Sexo biológico, gênero e sexualidade: três coisas diferentes</h4>
+<p>A primeira confusão que precisamos desfazer é achar que sexo, gênero e sexualidade são a mesma coisa. Não são. Cada um desses termos aponta para uma dimensão diferente da experiência humana.</p>
+<table>
+<tr><th>Conceito</th><th>O que é</th><th>Exemplos</th></tr>
+<tr><td><strong>Sexo biológico</strong></td><td>Conjunto de características físicas e biológicas: cromossomos, hormônios, órgãos reprodutivos, genitália.</td><td>Masculino, feminino, intersexo (quando a pessoa nasce com variações que não se encaixam perfeitamente nas duas categorias).</td></tr>
+<tr><td><strong>Gênero</strong></td><td>Construção social e cultural do que significa "ser homem" ou "ser mulher" em cada sociedade e época. É aprendido por meio da educação, da família, da escola, da mídia.</td><td>Roupas consideradas "de menino" ou "de menina", comportamentos esperados, profissões tidas como masculinas ou femininas.</td></tr>
+<tr><td><strong>Sexualidade</strong></td><td>Forma como cada pessoa sente atração afetiva e/ou sexual por outras. Envolve desejo, afeto, identidade e prática.</td><td>Heterossexual, homossexual, bissexual, assexual, pansexual, entre outras.</td></tr>
+</table>
+<p>Um exemplo ajuda a fixar. Na Escócia, homens usam kilt, uma saia tradicional, e ninguém acha estranho. Em outros lugares, isso seria visto como roupa de mulher. Ou seja, o que é considerado "masculino" ou "feminino" muda conforme a cultura e o tempo. A biologia é uma coisa, o significado social que damos a ela é outra.</p>
+<div class="curiosidade"><strong>Curiosidade:</strong> em algumas culturas indígenas brasileiras, existem pessoas que não se encaixam na divisão ocidental entre "homem" e "mulher". Isso mostra que a forma como pensamos gênero não é universal. É uma construção histórica e cultural que varia de povo para povo.</div>
+
+<h4>1.2 Desnaturalizar: o que parece natural é construído</h4>
+<p>Desde pequenos, a gente escuta:</p>
+<ul>
+<li>"Menino não chora."</li>
+<li>"Menina brinca de boneca."</li>
+<li>"Isso é coisa de menino."</li>
+<li>"Mulher dirige mal."</li>
+<li>"Homem não presta atenção em detalhes."</li>
+</ul>
+<p>Essas frases parecem inofensivas, mas naturalizam diferenças que foram construídas socialmente. Naturalizar é tratar como natural aquilo que, na verdade, foi inventado pela cultura. Desnaturalizar é fazer a pergunta que quase ninguém faz: quem disse que é assim? Desde quando? Por quê?</p>
+<p>A filosofia tem uma ferramenta para isso, que vem desde os gregos antigos: a atitude de estranhar o familiar. Em vez de aceitar o mundo como ele se apresenta, o filósofo pergunta pelas origens e pelos fundamentos. Aplicada ao gênero, essa atitude revela que muitas coisas que parecem "da natureza" são, na verdade, convenções sociais que podem ser questionadas e transformadas.</p>
+<div class="callout"><strong>Para refletir:</strong> pense em três coisas que você já ouviu dizer que "homem faz" e "mulher faz". De onde você acha que vêm essas ideias? Elas sempre existiram? Existem sociedades em que isso é diferente? Converse com pessoas mais velhas e veja como as expectativas mudaram (ou não) nas últimas décadas.</div>
+
+<h4>1.3 Papéis sexuais e hierarquias de gênero</h4>
+<p>Chamamos de <strong>papéis sexuais</strong> o conjunto de comportamentos e funções que a sociedade espera de cada pessoa por causa do seu gênero. Historicamente, esses papéis foram distribuídos de forma desigual:</p>
+<ul>
+<li>Homens ficaram associados ao espaço público, ao trabalho remunerado, à política, à força física e à racionalidade.</li>
+<li>Mulheres ficaram associadas ao espaço privado, ao cuidado da casa e dos filhos, à sensibilidade e à emoção.</li>
+</ul>
+<p>Essa divisão não é natural. Ela foi construída ao longo de séculos e serviu para justificar a exclusão das mulheres de direitos básicos, como votar, estudar, trabalhar fora, herdar bens ou escolher com quem se casar.</p>
+<p>A diferença entre homens e mulheres virou desigualdade quando os primeiros passaram a ter mais poder, mais voz e mais direitos que as segundas. É isso que chamamos de <strong>hierarquia de gênero</strong>: uma escala em que um grupo é colocado acima do outro.</p>
+<p>Além disso, existem outras hierarquias que se cruzam com o gênero:</p>
+<ul>
+<li><strong>Raça:</strong> mulheres negras sofrem opressões diferentes das mulheres brancas, porque o racismo se soma ao machismo.</li>
+<li><strong>Classe:</strong> mulheres pobres têm menos acesso a direitos, a educação e a oportunidades de trabalho.</li>
+<li><strong>Idade:</strong> jovens e idosos são tratados de forma estereotipada, às vezes como se não tivessem nada a contribuir.</li>
+<li><strong>Sexualidade:</strong> pessoas LGBTQIA+ enfrentam discriminação específica, que se soma às demais opressões.</li>
+</ul>
+
+<h4>1.4 Patriarcado e machismo: como o poder se organiza</h4>
+<p>O <strong>patriarcado</strong> é um sistema social em que o poder está concentrado nas mãos dos homens. Ele não é uma invenção de um indivíduo nem uma conspiração, mas uma estrutura que atravessa a história, a economia, a política, a religião e a cultura. O patriarcado se manifesta de várias formas:</p>
+<ul>
+<li>Na família, quando o pai é visto como autoridade máxima.</li>
+<li>No trabalho, quando mulheres recebem menos pelo mesmo cargo.</li>
+<li>Na política, quando mulheres são minoria nos parlamentos e nos cargos de decisão.</li>
+<li>Na cultura, quando filmes, livros e novelas reproduzem estereótipos de gênero.</li>
+<li>Na linguagem, quando expressões do dia a dia tratam o feminino como inferior.</li>
+</ul>
+<p>O <strong>machismo</strong> é a ideologia que sustenta o patriarcado. É o conjunto de crenças que afirma a superioridade dos homens e naturaliza a subordinação das mulheres. O machismo não é só um comportamento individual, é uma estrutura que organiza a sociedade.</p>
+<p>O patriarcado também cobra dos homens. Ele exige que sejam fortes, que não demonstrem sentimentos, que sejam provedores, que nunca recuem. Essas cobranças, muitas vezes, geram violência, sofrimento e suicídio. Homens que não se encaixam no modelo são ridicularizados e excluídos.</p>
+
+<h4>1.5 Violência de gênero: formas, causas e combate</h4>
+<p>Violência de gênero é qualquer ato que cause dano físico, psicológico, sexual ou patrimonial a alguém por causa do seu gênero. Ela não é um problema individual, mas um fenômeno social com raízes históricas. Aparece de várias formas:</p>
+<ul>
+<li><strong>Física:</strong> agressões, empurrões, socos, queimaduras, estrangulamento.</li>
+<li><strong>Psicológica:</strong> humilhação, ameaças, chantagem, controle, isolamento, gaslighting (quando a pessoa é levada a duvidar da própria memória e sanidade).</li>
+<li><strong>Sexual:</strong> assédio, estupro, coerção, exposição não consentida, violência dentro do casamento.</li>
+<li><strong>Simbólica:</strong> piadas, apelidos, estereótipos, piadas de mau gosto, que inferiorizam e naturalizam a violência.</li>
+<li><strong>Doméstica:</strong> violência dentro de casa, geralmente contra mulheres, crianças e idosos.</li>
+<li><strong>Patrimonial:</strong> controle do dinheiro, destruição de bens, impedir o trabalho ou o estudo.</li>
+<li><strong>Institucional:</strong> quando o Estado ou instituições falham em proteger a vítima ou a tratam mal.</li>
+</ul>
+<p>No Brasil, a <strong>Lei Maria da Penha</strong>, de 2006, é um marco no combate à violência doméstica. A <strong>Lei do Feminicídio</strong>, de 2015, tipificou o assassinato de mulheres por razões de gênero como crime hediondo. A <strong>Lei Carolina Dieckmann</strong>, de 2012, trata de crimes cibernéticos, incluindo a exposição não consentida de imagens íntimas. Ainda assim, os números continuam alarmantes. O combate exige políticas públicas, educação, mudança cultural e apoio às vítimas.</p>
+<div class="importante"><strong>Importante:</strong> se você presencia ou sofre violência de gênero, procure ajuda. No Brasil, o Disque 180 é a Central de Atendimento à Mulher, funciona 24 horas e é gratuito. Também é possível denunciar em delegacias especializadas ou pelo aplicativo "Direitos Humanos Brasil".</div>
+
+<h4>Habilidades trabalhadas neste capítulo</h4>
+<ul>
+<li><strong>EM13CHS502:</strong> analisar situações da vida cotidiana, estilos de vida, valores e condutas, desnaturalizando formas de desigualdade, preconceito, intolerância e discriminação, e identificar ações que promovam os Direitos Humanos, a solidariedade e o respeito às diferenças.</li>
+<li><strong>EM13CHS503:</strong> identificar diversas formas de violência (física, simbólica, psicológica etc.), suas principais vítimas, suas causas sociais, psicológicas e afetivas, seus significados e usos políticos, sociais e culturais, discutindo e avaliando mecanismos para combatê-las com base em argumentos éticos.</li>
+</ul>
+
+<h3>Capítulo 2 – Filósofas e a questão feminina</h3>
+<p>Ao longo da história, muitas mulheres pensaram e escreveram sobre a condição feminina. Mas, como o conhecimento foi dominado por homens, muitas foram apagadas, esquecidas ou tiveram suas ideias atribuídas a outros. Vamos conhecer algumas das principais pensadoras que questionaram o lugar da mulher na sociedade, com atenção para o contexto em que viveram e para as teses que defenderam.</p>
+
+<h4>2.1 Simone de Beauvoir (1908–1986): a mulher como "o outro"</h4>
+<p>Simone de Beauvoir foi uma filósofa francesa ligada ao existencialismo, corrente filosófica que coloca a existência concreta de cada pessoa no centro da reflexão. Ela viveu em um ambiente intelectual intenso, conviveu com Jean-Paul Sartre e escreveu romances, ensaios, memórias e textos políticos. Sua obra mais famosa é <em>O Segundo Sexo</em>, publicada em 1949, em dois volumes.</p>
+<p>A tese central de Beauvoir é que a mulher foi historicamente construída como "o outro" em relação ao homem. Na filosofia e na cultura ocidental, o homem era tratado como o sujeito universal, o padrão, o neutro. A mulher era o desvio, o particular, o diferente. Ela não era vista como um ser humano completo, mas como alguém definido em relação ao homem: mãe, esposa, filha, amante.</p>
+<p>É nesse contexto que aparece a frase mais famosa de Beauvoir:</p>
+<blockquote>"Não se nasce mulher, torna-se mulher."</blockquote>
+<p>O que ela quis dizer? Que não existe uma "essência feminina" natural, dada pela biologia. A mulher é construída pela sociedade, pela educação, pela cultura, pelas expectativas que recaem sobre ela desde o nascimento. Ser mulher não é um destino biológico, é uma construção histórica. Essa ideia é revolucionária porque desmonta a justificativa mais comum para a desigualdade: a de que as mulheres são "naturalmente" diferentes e, por isso, devem ocupar lugares diferentes.</p>
+<p><strong>Conceito-chave:</strong> alteridade. A mulher vista como "o outro", o diferente, o inferior, em relação a um sujeito masculino que se coloca como universal.</p>
+<p>Beauvoir também analisou como a dependência econômica, a maternidade obrigatória e a exclusão do espaço público mantinham as mulheres em situação de subordinação. Ela defendeu a autonomia, o trabalho e a liberdade como caminhos para a emancipação.</p>
+
+<h4>2.2 Angela Davis (1944–): raça, classe e gênero entrelaçados</h4>
+<p>Angela Davis é uma filósofa, professora e ativista norte-americana ligada ao movimento negro, ao Partido dos Panteras Negras e ao feminismo. Ela nasceu no Alabama, em uma região marcada pela segregação racial, e viveu na pele a violência do racismo desde criança. Foi presa e julgada nos anos 1970, em um caso que mobilizou o mundo, e depois absolvida.</p>
+<p>A tese central de Davis é que não dá para separar gênero de raça e classe. As opressões não funcionam como caixinhas independentes: elas se cruzam e se reforçam. Uma mulher negra e pobre não sofre "só" machismo, "só" racismo ou "só" preconceito de classe. Ela sofre os três ao mesmo tempo, de forma combinada. Um feminismo que ignore isso acaba falando apenas das mulheres brancas e ricas.</p>
+<p>Em <em>Mulheres, Raça e Classe</em>, de 1981, Davis mostra como o movimento sufragista norte-americano excluiu as mulheres negras, como o trabalho doméstico foi desvalorizado por ser feito majoritariamente por mulheres negras, e como o sistema prisional reproduz desigualdades raciais e de gênero.</p>
+<p><strong>Conceito-chave:</strong> interseccionalidade. A ideia de que as opressões se cruzam e se potencializam. O termo foi cunhado por Kimberlé Crenshaw, mas Davis já trabalhava com essa perspectiva antes.</p>
+<p>Davis também é uma crítica do sistema prisional e defensora da justiça social, da educação pública e dos direitos das mulheres. Sua obra influencia até hoje os movimentos feministas, negros e antirracistas em todo o mundo.</p>
+
+<h4>2.3 Djamila Ribeiro (1980–): lugar de fala e silenciamento</h4>
+<p>Djamila Ribeiro é uma filósofa, escritora e ativista brasileira, uma das principais vozes do feminismo negro no país. Nascida em Santos, ela se formou em filosofia pela Universidade Federal de São Paulo e se tornou uma referência nos debates sobre raça, gênero e direitos humanos.</p>
+<p>Sua tese central gira em torno do conceito de <strong>lugar de fala</strong>. A ideia não é que só quem vive uma opressão pode falar sobre ela, mas que a voz de quem vive tem um peso diferente e não pode ser ignorada. Historicamente, as mulheres negras foram silenciadas, tiveram suas experiências desqualificadas e foram tratadas como objeto de estudo, não como sujeitos que produzem conhecimento.</p>
+<p>Em <em>O que é lugar de fala?</em>, de 2017, Djamila mostra como o conhecimento acadêmico e os meios de comunicação costumam dar espaço para homens brancos falarem sobre tudo, enquanto mulheres negras precisam lutar para serem ouvidas. Em <em>Quem tem medo do feminismo negro?</em>, de 2018, ela reúne textos que discutem racismo, machismo, representatividade e violência.</p>
+<p><strong>Conceito-chave:</strong> lugar de fala. Quem fala, de onde fala e por que isso importa. Não se trata de proibir ninguém de falar, mas de reconhecer que algumas vozes foram historicamente apagadas e precisam ser ouvidas.</p>
+<p>Djamila também discute como o feminismo precisa incluir as pautas das mulheres negras, indígenas, periféricas e LGBTQIA+, sob pena de reproduzir as mesmas exclusões que critica.</p>
+
+<h4>2.4 Judith Butler (1956–): gênero como performance</h4>
+<p>Judith Butler é uma filósofa norte-americana, professora da Universidade da Califórnia em Berkeley, uma das principais teóricas do gênero no mundo. Sua obra mais influente é <em>Problemas de Gênero</em>, de 1990, que inaugurou uma nova forma de pensar a identidade.</p>
+<p>A tese central de Butler é que o gênero é <strong>performático</strong>. Isso não significa que a pessoa escolhe livremente seu gênero como quem escolhe uma roupa. Significa que o gênero é produzido por atos repetidos, por gestos, comportamentos e formas de falar que se repetem ao longo do tempo e criam a ilusão de uma essência natural. Não há um "eu" anterior ao gênero: o gênero é aquilo que fazemos, não aquilo que somos.</p>
+<p>Butler também critica a ideia de que existem apenas duas categorias de gênero (masculino e feminino) e defende que a heterossexualidade não é a única forma legítima de desejo. Sua obra é fundamental para os estudos de gênero, para o movimento LGBTQIA+ e para as discussões sobre identidade e diferença.</p>
+<p><strong>Conceito-chave:</strong> performatividade de gênero. O gênero é construído por atos repetidos, não por uma essência anterior.</p>
+
+<h4>2.5 Lélia Gonzalez (1935–1994): amefricanidade e resistência</h4>
+<p>Lélia Gonzalez foi uma filósofa, antropóloga, professora e ativista brasileira, uma das primeiras intelectuais a discutir a intersecção entre raça, classe e gênero no Brasil. Nascida em Belo Horizonte, ela se mudou para o Rio de Janeiro e se tornou uma das principais vozes do movimento negro e do feminismo negro no país.</p>
+<p>Lélia criticou tanto o feminismo branco, que ignorava as pautas das mulheres negras, quanto o machismo do movimento negro, que tratava as mulheres como coadjuvantes. Sua tese central é que a experiência das mulheres negras na América Latina é específica e não pode ser entendida apenas com categorias importadas dos Estados Unidos ou da Europa.</p>
+<p>Para dar conta dessa especificidade, ela criou o conceito de <strong>amefricanidade</strong>. A ideia é reconhecer que a América Latina tem uma história própria, marcada pela colonização, pela escravidão e pela mistura de culturas africanas, indígenas e europeias. A experiência das mulheres negras latino-americanas é diferente da experiência das mulheres negras norte-americanas e das mulheres brancas latino-americanas.</p>
+<p>Lélia também discutiu a violência policial, o racismo estrutural e a invisibilidade das mulheres negras na academia e na política. Sua obra só foi devidamente reconhecida depois de sua morte, mas hoje é referência obrigatória nos estudos de gênero e raça no Brasil.</p>
+<p><strong>Conceito-chave:</strong> amefricanidade. A experiência das mulheres negras na América Latina, marcada pela colonização, pela escravidão e pela resistência.</p>
+<div class="callout"><strong>Para refletir:</strong> por que você acha que essas pensadoras são pouco estudadas nas escolas? O que isso revela sobre quem decide o que conta como "filosofia importante"? Se você pudesse incluir uma delas no currículo obrigatório, qual seria e por quê?</div>
+
+<h4>Habilidades trabalhadas neste capítulo</h4>
+<ul>
+<li><strong>EM13CHS202:</strong> analisar e avaliar os impactos das tecnologias na estruturação e nas dinâmicas de grupos, povos e sociedades contemporâneos, incluindo fluxos populacionais, financeiros, de mercadorias, de informações, de valores éticos e culturais, e suas interferências nas decisões políticas, sociais, ambientais, econômicas e culturais.</li>
+<li><strong>EM13CHS205:</strong> analisar a produção de diferentes territorialidades em suas dimensões culturais, econômicas, ambientais, políticas e sociais, no Brasil e no mundo contemporâneo, com destaque para as culturas juvenis.</li>
+</ul>
+
+<h3>Capítulo 3 – Feminismos plurais</h3>
+
+<h4>3.1 O que é feminismo e o que ele não é</h4>
+<p>Feminismo não é o contrário de machismo. Machismo é a ideia de que homens são superiores às mulheres. Feminismo é o movimento que luta pela igualdade de direitos entre todos os gêneros. São coisas diferentes, e confundir as duas é um erro comum.</p>
+<p>Existem muitas formas de ser feminista, porque as mulheres vivem realidades diferentes. Uma mulher branca e rica enfrenta desafios distintos de uma mulher negra e pobre, que por sua vez enfrenta desafios diferentes de uma mulher trans ou de uma mulher indígena. Por isso falamos em <strong>feminismos plurais</strong>, no plural.</p>
+<p>E o que o feminismo não é:</p>
+<ul>
+<li>Não é odiar homens. O feminismo critica o machismo, não os homens individualmente.</li>
+<li>Não é querer que mulheres sejam superiores. A luta é por igualdade, não por inversão de hierarquias.</li>
+<li>Não é só para mulheres brancas, ricas e heterossexuais. Um feminismo que exclui não é feminismo.</li>
+<li>Não é um movimento único e homogêneo. Há divergências, debates e disputas internas.</li>
+</ul>
+
+<h4>3.2 Correntes do feminismo</h4>
+<p>Ao longo da história, o feminismo se organizou em diferentes correntes, cada uma com ênfases e estratégias próprias. Conhecer essas correntes ajuda a entender os debates atuais.</p>
+<table>
+<tr><th>Corrente</th><th>Ideia central</th><th>Foco principal</th></tr>
+<tr><td><strong>Feminismo liberal</strong></td><td>Busca igualdade de oportunidades dentro do sistema: mais mulheres na política, salários iguais, acesso à educação e ao trabalho.</td><td>Reformas legais e institucionais.</td></tr>
+<tr><td><strong>Feminismo radical</strong></td><td>Questiona as raízes da opressão, como o patriarcado e a família tradicional. Defende mudanças estruturais profundas.</td><td>Transformação das estruturas sociais.</td></tr>
+<tr><td><strong>Feminismo negro</strong></td><td>Coloca as mulheres negras no centro, mostrando que raça e gênero não se separam.</td><td>Interseccionalidade entre raça e gênero.</td></tr>
+<tr><td><strong>Feminismo interseccional</strong></td><td>Considera que gênero, raça, classe, sexualidade e outras identidades se cruzam e se potencializam.</td><td>Articulação de múltiplas opressões.</td></tr>
+<tr><td><strong>Feminismo transinclusivo</strong></td><td>Inclui mulheres trans e pessoas não-binárias na luta. Critica o feminismo que define "mulher" apenas pela biologia.</td><td>Inclusão de todas as identidades de gênero.</td></tr>
+<tr><td><strong>Feminismo decolonial</strong></td><td>Critica o feminismo ocidental e valoriza saberes e lutas do Sul Global. Questiona a universalização da experiência europeia.</td><td>Perspectiva latino-americana e anticolonial.</td></tr>
+</table>
+
+<h4>3.3 O feminismo no Brasil</h4>
+<p>No Brasil, o feminismo ganhou força a partir dos anos 1970, mas já havia lutas antes. O movimento sufragista, que conquistou o direito ao voto feminino em 1932, foi uma das primeiras grandes mobilizações. Bertha Lutz, bióloga e feminista, foi uma das líderes desse movimento.</p>
+<p>Nos anos 1970 e 1980, o feminismo brasileiro se organizou em torno de pautas como creches, saúde da mulher, violência doméstica e direitos trabalhistas. Nos anos 1990 e 2000, ganhou força a pauta da violência de gênero, com a Lei Maria da Penha e a Lei do Feminicídio.</p>
+<p>Hoje, o feminismo brasileiro é diverso: tem pauta negra, indígena, LGBTQIA+, periférica, sindical, acadêmica. Existem coletivos, ONGs, partidos, movimentos sociais e uma presença forte nas redes sociais. O filme <em>As Sufragistas</em>, de 2015, mostra a luta das mulheres pelo direito ao voto no Reino Unido, e ajuda a entender que direitos que hoje parecem óbvios foram conquistados com muita luta.</p>
+
+<h4>3.4 Interseccionalidade: quando as opressões se cruzam</h4>
+<p>A palavra <strong>interseccionalidade</strong> foi cunhada pela jurista e pensadora Kimberlé Crenshaw, nos anos 1980, nos Estados Unidos. A ideia é simples: as opressões não acontecem separadas. Uma mulher negra e pobre não sofre "só" machismo, "só" racismo ou "só" preconceito de classe. Ela sofre os três ao mesmo tempo, de forma combinada, e essa combinação produz uma experiência específica que não é a soma das partes.</p>
+<p>Um exemplo ajuda. Uma mulher branca e rica pode sofrer machismo no trabalho, mas tem recursos para contratar uma advogada, se mudar de casa, denunciar. Uma mulher negra e pobre que sofre machismo, racismo e pobreza tem muito menos recursos para se defender. A opressão dela é mais intensa e mais difícil de romper.</p>
+<p>Entender isso é importante para não criar um feminismo que só serve para mulheres brancas e ricas. Um feminismo plural precisa incluir todas as mulheres e reconhecer que a experiência de cada uma é diferente.</p>
+
+<h4>Habilidades trabalhadas neste capítulo</h4>
+<ul>
+<li><strong>EM13CHS502:</strong> desnaturalizar desigualdades e promover Direitos Humanos, a solidariedade e o respeito às diferenças e às liberdades individuais.</li>
+<li><strong>EM13CHS503:</strong> identificar violências e combatê-las com base em argumentos éticos.</li>
+<li><strong>EM13CO22:</strong> produzir e publicar conteúdo como textos, imagens, áudios, vídeos e suas associações, bem como ferramentas para sua integração, organização e apresentação, utilizando diferentes mídias digitais.</li>
+</ul>
+
+<h3>Capítulo 4 – Temas transversais: idade, espiritualidade e felicidade líquida</h3>
+<p>A discussão sobre gênero se conecta a outros temas que também fazem parte do currículo do 3º trimestre. Vamos ver alguns deles, porque eles ajudam a entender o contexto em que vivemos.</p>
+
+<h4>4.1 Idade, experiência e sabedoria</h4>
+<p>Existe uma ideia comum de que sabedoria é acúmulo de anos. Mas será que é só isso? A filósofa Simone de Beauvoir, em <em>A Velhice</em>, de 1970, mostra que o idoso é tratado muitas vezes como "o outro", alguém que incomoda, que já não produz, que é descartável. Isso se chama <strong>idadismo</strong>: preconceito por idade.</p>
+<p>Desconstruir esse preconceito exige reconhecer que a sabedoria é "experiência pensada e refletida", não apenas tempo vivido. Jovens também podem ser sábios, e idosos também podem aprender coisas novas. A sociedade que valoriza apenas a juventude e a produtividade perde a riqueza da memória e da experiência acumulada.</p>
+<p>No Brasil, o Estatuto do Idoso, de 2003, garante direitos às pessoas com mais de 60 anos, mas o preconceito ainda é grande. Campanhas de conscientização e políticas públicas são importantes para combater o idadismo.</p>
+
+<h4>4.2 Espiritualidade secularizada</h4>
+<p>Vivemos um tempo em que muitas pessoas buscam sentido fora das religiões tradicionais: em práticas de meditação, terapias, astrologia, coaches, comunidades online. Isso se chama <strong>espiritualidade secularizada</strong>. É uma forma de buscar transcendência sem necessariamente passar por uma igreja ou religião organizada.</p>
+<p>O filósofo Zygmunt Bauman chamou isso de "religião líquida": crenças que se adaptam ao gosto e à conveniência de cada um, sem compromisso duradouro. A espiritualidade vira um produto de consumo, que pode ser trocado quando não serve mais.</p>
+<p>Isso não significa que a busca espiritual seja ruim. Significa que precisamos pensar criticamente sobre como ela se organiza na sociedade contemporânea, e como pode ser usada tanto para o bem (autoconhecimento, cuidado com a saúde mental) quanto para o mal (manipulação, charlatanismo, exploração).</p>
+
+<h4>4.3 A felicidade líquida, em cápsulas e química</h4>
+<p>Bauman também falou da <strong>felicidade líquida</strong>: aquela que escorre pelos dedos, que dura pouco, que depende de consumo constante. Hoje, busca-se felicidade em cápsulas (remédios, suplementos), em aplicativos de meditação, em compras online, em likes em redes sociais. É uma felicidade imediata, mas frágil.</p>
+<p>Isso se conecta diretamente com os temas de gênero: a pressão sobre meninas para serem bonitas e magras, sobre meninos para serem fortes e bem-sucedidos, gera ansiedade, depressão e uso abusivo de substâncias. A busca por uma felicidade perfeita e permanente é uma armadilha, porque a vida é feita de altos e baixos.</p>
+<p>O filósofo Nietzsche falava do <em>amor fati</em>: amar o destino, aceitar a vida como ela é, com dor e alegria. Foucault, por sua vez, analisava como os discursos sobre prazer e saúde produzem formas de controle. Essas ferramentas conceituais ajudam a entender o contexto do uso e abuso de drogas, e a explorar o "mundo da vida" dos usuários, considerando os múltiplos sentidos que eles atribuem às suas experiências.</p>
+<div class="callout"><strong>Conexão com EM13CHS202:</strong> analisar os impactos das tecnologias na estruturação e nas dinâmicas de grupos, povos e sociedades contemporâneos, incluindo fluxos de informações, valores éticos e culturais. As redes sociais, por exemplo, criam novas formas de sociabilidade, mas também intensificam a comparação, a ansiedade e a solidão.</div>
+
+<h4>Habilidades trabalhadas neste capítulo</h4>
+<ul>
+<li><strong>EM13CHS202:</strong> analisar os impactos das tecnologias e das dinâmicas sociais na estruturação de grupos e sociedades.</li>
+<li><strong>EM13CHS205:</strong> analisar a produção de diferentes territorialidades, com destaque para as culturas juvenis.</li>
+</ul>
+
+<h3>Glossário</h3>
+<dl>
+<dt>Alteridade</dt><dd>Condição de ser o "outro", de ser visto como diferente em relação a um sujeito que se coloca como universal. Beauvoir usou o conceito para analisar a posição da mulher na sociedade patriarcal.</dd>
+<dt>Amefricanidade</dt><dd>Conceito de Lélia Gonzalez para pensar a experiência das mulheres negras na América Latina, articulando raça, classe e gênero a partir da história de colonização e resistência.</dd>
+<dt>Desnaturalizar</dt><dd>Perceber que aquilo que parece natural é, na verdade, resultado de uma construção histórica e cultural. É uma atitude filosófica de estranhar o familiar.</dd>
+<dt>Feminismo</dt><dd>Movimento que luta pela igualdade de direitos entre todos os gêneros. Não é o contrário de machismo.</dd>
+<dt>Gênero</dt><dd>Construção social e cultural do que significa "ser homem" ou "ser mulher" em cada sociedade e época. É aprendido, não nasce com a pessoa.</dd>
+<dt>Heterossexualidade compulsória</dt><dd>Ideia de que a heterossexualidade é a única forma legítima de desejo e organização social. Conceito discutido por Judith Butler e outras autoras.</dd>
+<dt>Idadismo</dt><dd>Preconceito por idade, especialmente contra pessoas mais velhas. Também chamado de etarismo.</dd>
+<dt>Interseccionalidade</dt><dd>Ideia de que as opressões (gênero, raça, classe, sexualidade etc.) se cruzam e se potencializam. Conceito cunhado por Kimberlé Crenshaw.</dd>
+<dt>Lugar de fala</dt><dd>Conceito que discute quem tem autoridade para falar sobre uma experiência de opressão. Não significa que só quem vive a opressão pode falar dela, mas que a voz de quem vive tem um peso diferente e não pode ser ignorada.</dd>
+<dt>Machismo</dt><dd>Ideia de que homens são superiores às mulheres. É uma ideologia que sustenta o patriarcado.</dd>
+<dt>Patriarcado</dt><dd>Sistema social em que o poder está concentrado nas mãos dos homens. Atravessa a família, a economia, a política, a religião e a cultura.</dd>
+<dt>Performatividade de gênero</dt><dd>Conceito de Judith Butler: o gênero não é uma essência, mas algo que fazemos por meio de atos repetidos que criam a ilusão de uma identidade natural.</dd>
+<dt>Sexualidade</dt><dd>Forma como cada pessoa sente atração afetiva e/ou sexual por outras. Envolve desejo, afeto, identidade e prática.</dd>
+<dt>Sexo biológico</dt><dd>Características físicas e biológicas: cromossomos, hormônios, órgãos reprodutivos. Classificado como masculino, feminino ou intersexo.</dd>
+<dt>Violência de gênero</dt><dd>Qualquer ato que cause dano físico, psicológico, sexual ou patrimonial a alguém por causa do seu gênero.</dd>
+</dl>
+
+<h3>Sugestões de materiais</h3>
+<h4>Filmes e séries</h4>
+<ul>
+<li><strong>Diário de um Adolescente</strong> (2018) – questões de identidade, sexualidade e juventude.</li>
+<li><strong>As Sufragistas</strong> (2015) – luta das mulheres pelo direito ao voto no Reino Unido.</li>
+<li><strong>Orgulho e Esperança</strong> (2014) – movimento operário e resistência.</li>
+<li><strong>Meninos Não Choram</strong> (1999) – identidade de gênero, violência e intolerância.</li>
+<li><strong>Estrelas Além do Tempo</strong> (2016) – mulheres negras na NASA e a luta contra o racismo e o machismo.</li>
+<li><strong>Que Horas Ela Volta?</strong> (2015) – classe, gênero e relações de trabalho no Brasil.</li>
+<li><strong>O Óleo de Lorenzo</strong> (1992) – bioética, pesquisa científica e o papel da família.</li>
+</ul>
+<h4>Livros</h4>
+<ul>
+<li><em>O Segundo Sexo</em> – Simone de Beauvoir.</li>
+<li><em>Quem tem medo do feminismo negro?</em> – Djamila Ribeiro.</li>
+<li><em>Problemas de Gênero</em> – Judith Butler.</li>
+<li><em>Mulheres, Raça e Classe</em> – Angela Davis.</li>
+<li><em>Por um Feminismo Afro-Latino-Americano</em> – Lélia Gonzalez.</li>
+<li><em>O que é lugar de fala?</em> – Djamila Ribeiro.</li>
+<li><em>A Velhice</em> – Simone de Beauvoir.</li>
+<li><em>Modernidade Líquida</em> – Zygmunt Bauman.</li>
+</ul>
+<h4>YouTube</h4>
+<ul>
+<li><strong>Tese Onze</strong> – debates sobre feminismo, gênero e política.</li>
+<li><strong>Nunca Te Pedi Nada</strong> – feminismo e cultura.</li>
+<li><strong>Afrocientista</strong> – feminismo negro e interseccionalidade.</li>
+<li><strong>Quebrando o Tabu</strong> – temas sociais e direitos humanos.</li>
+<li><strong>Ciência Todo Dia</strong> – divulgação científica em linguagem acessível.</li>
+</ul>
+
+<h3>Considerações finais</h3>
+<p>Estudar gênero, sexualidade e feminismos é estudar a sociedade em que vivemos. Muitas coisas que parecem naturais são construções que podem ser questionadas e transformadas.</p>
+<p>Vimos que:</p>
+<ul>
+<li>Sexo biológico, gênero e sexualidade são coisas diferentes, e confundi-los gera erros e preconceitos.</li>
+<li>Desnaturalizar é perceber que o que parece natural é construído historicamente.</li>
+<li>O patriarcado organiza o poder de forma desigual entre os gêneros, e afeta tanto mulheres quanto homens.</li>
+<li>A violência de gênero tem várias formas, e combatê-la é responsabilidade de todos.</li>
+<li>Filósofas como Beauvoir, Davis, Ribeiro, Butler e Gonzalez nos ajudam a pensar o mundo de forma mais crítica, cada uma a partir de sua perspectiva.</li>
+<li>Existem feminismos plurais, e a interseccionalidade é uma ferramenta importante para entender as opressões combinadas.</li>
+<li>Temas como idade, espiritualidade e felicidade líquida se conectam com as discussões de gênero e ajudam a entender o contexto em que vivemos.</li>
+</ul>
+<p>Você não precisa concordar com tudo o que leu. Mas espero que esta apostila ajude você a pensar criticamente sobre o mundo e sobre o seu lugar nele. A luta por igualdade não é só das mulheres: é de todas as pessoas que querem uma sociedade mais justa.</p>
+<p><strong>Bons estudos!</strong></p>
+`;
+
+/* ===== ANTI-BURLA ===== */
+var GUARD = true, teacherAuth = false, allowPrint = false;
+var PASS_HASH = '28jrgeq28s5';
+function hashSenha(str){
+  var h1=0xdeadbeef,h2=0x41c6ce57;
+  for(var i=0;i<str.length;i++){var c=str.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677);}
+  h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);
+  h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
+  return (4294967296*(2097151&h2)+(h1>>>0)).toString(36);
+}
+
+var devtoolsAttempts=0, contextMenuAttempts=0, copyAttempts=0, tabSwitches=0;
+function regDev(){if(GUARD)devtoolsAttempts++}
+function regCtx(){if(GUARD)contextMenuAttempts++}
+function regCopy(){if(GUARD)copyAttempts++}
+
+document.addEventListener('contextmenu',function(e){if(!GUARD)return;regCtx();e.preventDefault();return false},false);
+document.addEventListener('keydown',function(e){
+  if(!GUARD)return;
+  var k=(e.key||'').toLowerCase(), code=e.keyCode||e.which;
+  if(e.key==='PrintScreen'||code===44){e.preventDefault();return false}
+  if(e.key==='F12'){regDev();e.preventDefault();return false}
+  if((e.ctrlKey||e.metaKey)&&e.shiftKey&&['i','j','c'].indexOf(k)!==-1){regDev();e.preventDefault();return false}
+  if((e.ctrlKey||e.metaKey)&&k==='u'){regDev();e.preventDefault();return false}
+  if((e.ctrlKey||e.metaKey)&&k==='s'){regDev();e.preventDefault();return false}
+  if((e.ctrlKey||e.metaKey)&&k==='p'){if(!allowPrint){e.preventDefault();return false}}
+  if((e.ctrlKey||e.metaKey)&&k==='a'){var t=document.activeElement?document.activeElement.tagName:'';if(t!=='INPUT'&&t!=='TEXTAREA'){regCopy();e.preventDefault();return false}}
+  if(e.metaKey&&e.shiftKey&&['3','4','5'].indexOf(e.key)!==-1){e.preventDefault();return false}
+},true);
+document.addEventListener('dragstart',function(e){if(!GUARD)return;e.preventDefault();return false});
+document.addEventListener('copy',function(e){if(!GUARD)return;var t=document.activeElement?document.activeElement.tagName:'';if(t!=='INPUT'&&t!=='TEXTAREA'){regCopy();e.preventDefault();return false}});
+document.addEventListener('cut',function(e){if(!GUARD)return;var t=document.activeElement?document.activeElement.tagName:'';if(t!=='INPUT'&&t!=='TEXTAREA'){regCopy();e.preventDefault();return false}});
+window.addEventListener('beforeprint',function(e){if(!GUARD||allowPrint)return;e.preventDefault();return false});
+
+(function detectDevTools(){
+  setInterval(function(){
+    if(!GUARD) return;
+    try {
+      var wDiff = window.outerWidth - window.innerWidth;
+      var hDiff = window.outerHeight - window.innerHeight;
+      var isDetached = window.outerWidth > 400 && (wDiff > 300 || hDiff > 300);
+      if(isDetached){ regDev(); }
+    } catch(e){}
+  }, 2000);
+})();
+
+/* ===== 30 QUESTÕES ===== */
+var Q = [
+{c:"Gênero e sexualidade",s:"Papéis sociais",si:"<p>Em uma escola, uma professora propôs uma atividade em que meninos e meninas deveriam escolher profissões para representar em uma feira de carreiras. Ao final, observou que as meninas escolheram, em sua maioria, enfermagem, pedagogia e moda, enquanto os meninos optaram por engenharia, futebol e tecnologia.</p>",p:"A situação descrita evidencia um fenômeno que pode ser explicado pelo conceito de:",o:["sexo biológico, que determina naturalmente as aptidões de cada pessoa.","gênero, que é uma construção social aprendida ao longo da vida.","sexualidade, que define a atração afetiva entre as pessoas.","idadismo, que estabelece hierarquias entre diferentes faixas etárias."],x:1,e:"Gênero é a construção social do que significa 'ser homem' ou 'ser mulher' — aprendido, não natural."},
+{c:"Gênero e sexualidade",s:"Desnaturalização",si:"<p>'Menino não chora', 'menina brinca de boneca', 'isso é coisa de menino'. Essas frases são repetidas com frequência em diversos ambientes sociais e acabam sendo incorporadas pelas crianças como verdades naturais. Um professor de filosofia propôs aos estudantes que investigassem a origem dessas afirmações.</p>",p:"A atitude proposta pelo professor corresponde a:",o:["desnaturalizar as diferenças, percebendo-as como construções históricas.","naturalizar os comportamentos, aceitando-os como próprios da natureza humana.","reforçar os papéis tradicionais, garantindo a ordem social nas escolas.","ignorar as diferenças de gênero, tratando todos os alunos da mesma forma."],x:0,e:"Desnaturalizar é perceber que o que parece natural é construção histórica e cultural."},
+{c:"Desigualdade de gênero",s:"Patriarcado",si:"<p>Em uma reportagem sobre o mercado de trabalho, foi apresentado um gráfico mostrando que, no Brasil, as mulheres recebem, em média, cerca de 20% menos que os homens para exercer as mesmas funções. A reportagem também mostrou que as mulheres ocupam minoria dos cargos de direção nas grandes empresas.</p>",p:"A situação apresentada pode ser relacionada ao conceito de:",o:["alteridade, que trata do reconhecimento das diferenças culturais.","interseccionalidade, que analisa o cruzamento entre raça e classe.","performatividade, que discute a repetição de atos de gênero.","patriarcado, que organiza o poder de forma desigual entre os gêneros."],x:3,e:"Patriarcado é o sistema que concentra poder nas mãos dos homens."},
+{c:"Violência de gênero",s:"Lei Maria da Penha",si:"<p>A Lei Maria da Penha, de 2006, é considerada um marco no combate à violência doméstica no Brasil. A lei prevê medidas protetivas, tipifica formas de violência e cria mecanismos de apoio às vítimas. Ainda assim, os índices de violência contra a mulher continuam elevados no país.</p>",p:"A persistência desses índices indica que:",o:["a violência de gênero é um problema individual, sem relação com a cultura.","as leis brasileiras são ineficazes e devem ser revogadas pelo Congresso.","o problema se restringe às classes mais pobres, que não conhecem a lei.","a mudança cultural é tão importante quanto a existência de leis específicas."],x:3,e:"Leis são essenciais, mas a mudança cultural é indispensável."},
+{c:"Estereótipos de gênero",s:"Publicidade",si:"<p>Uma campanha publicitária de uma marca de roupas infantis foi criticada nas redes sociais por apresentar meninas vestidas de rosa, brincando de boneca, e meninos vestidos de azul, jogando bola. A marca respondeu dizendo que apenas retratava 'o que acontece na vida real'.</p>",p:"A crítica à campanha se justifica porque:",o:["as cores rosa e azul não têm nenhum significado cultural no Brasil.","a publicidade reproduz estereótipos que limitam as possibilidades das crianças.","as crianças não devem ser expostas em campanhas publicitárias de roupas.","as marcas de roupas não têm responsabilidade sobre os valores que transmitem."],x:1,e:"A publicidade reforça estereótipos que limitam o potencial das crianças."},
+{c:"Sexualidade",s:"Diversidade",si:"<p>Em uma discussão na sala de aula, um estudante afirmou: 'Cada um faz o que quiser, mas não é natural que dois homens ou duas mulheres se relacionem'. A professora então propôs uma reflexão sobre o conceito de sexualidade.</p>",p:"A reflexão adequada ao conceito de sexualidade mostraria que:",o:["a sexualidade é definida pela biologia e não admite variações culturais.","a sexualidade se expressa de formas diversas, variando entre culturas e épocas.","a sexualidade é uma escolha consciente que pode ser modificada com tratamento.","a sexualidade é determinada exclusivamente pela família em que se nasceu."],x:1,e:"A sexualidade se expressa de formas diversas, variando entre culturas e épocas."},
+{c:"História do conhecimento",s:"Exclusão das mulheres",si:"<p>Um jornal publicou uma matéria sobre a presença feminina na filosofia, destacando que, durante séculos, as mulheres foram excluídas das universidades e do debate público. Como consequência, muitas pensadoras foram esquecidas ou tiveram suas obras atribuídas a homens.</p>",p:"A situação descrita revela que:",o:["a filosofia é uma área que naturalmente atrai mais homens que mulheres.","as mulheres produziram menos conhecimento filosófico por questões biológicas.","o conhecimento é construído socialmente e reflete as desigualdades de seu tempo.","a exclusão das mulheres do ensino não afetou a produção filosófica da época."],x:2,e:"O conhecimento é construído socialmente e reflete as desigualdades de seu tempo."},
+{c:"Filósofas",s:"Simone de Beauvoir",si:"<p>Em sua obra 'O Segundo Sexo', a filósofa Simone de Beauvoir escreveu: 'Não se nasce mulher, torna-se mulher'. A frase é considerada uma das mais importantes do pensamento feminista do século XX.</p>",p:"Com essa afirmação, Beauvoir quis dizer que:",o:["as mulheres nascem com características que as tornam naturalmente diferentes.","o 'ser mulher' é resultado de uma construção social, não de uma essência natural.","as mulheres devem assumir papéis masculinos para alcançar a igualdade.","a biologia feminina determina o comportamento das mulheres na sociedade."],x:1,e:"O 'ser mulher' é construção social, não essência natural."},
+{c:"Filósofas",s:"Angela Davis",si:"<p>A filósofa Angela Davis, em suas obras, argumenta que não é possível separar as discussões sobre gênero das discussões sobre raça e classe. Segundo ela, uma mulher negra e pobre enfrenta opressões que não podem ser entendidas isoladamente.</p>",p:"A contribuição de Davis para o pensamento feminista consiste em:",o:["mostrar que as opressões se cruzam e se potencializam mutuamente.","defender que o feminismo deve tratar apenas das questões de gênero.","afirmar que as mulheres brancas sofrem mais que as mulheres negras.","propor que o feminismo seja liderado exclusivamente por mulheres negras."],x:0,e:"Interseccionalidade: as opressões se cruzam e se potencializam."},
+{c:"Filósofas",s:"Djamila Ribeiro",si:"<p>A filósofa brasileira Djamila Ribeiro, em seu livro 'O que é lugar de fala?', discute como grupos historicamente silenciados têm dificuldade de serem ouvidos nos espaços de poder e de produção de conhecimento.</p>",p:"O conceito de 'lugar de fala' defende que:",o:["apenas quem vive determinada opressão pode falar sobre ela publicamente.","todas as pessoas devem falar igualmente, independentemente de sua origem.","o conhecimento acadêmico é o único lugar legítimo para se discutir opressões.","a voz de quem vive uma opressão tem peso diferente e não pode ser ignorada."],x:3,e:"A voz de quem vive a opressão tem peso diferente e não pode ser ignorada."},
+{c:"Filósofas",s:"Judith Butler",si:"<p>A filósofa Judith Butler, em 'Problemas de Gênero', propõe que o gênero é performático. Isso significa que o gênero não é uma essência interior, mas algo que se produz por meio de atos repetidos ao longo do tempo.</p>",p:"A proposta de Butler implica que:",o:["o gênero é uma escolha individual que pode ser mudada a qualquer momento.","o gênero é determinado pela biologia e não pode ser modificado pela cultura.","o gênero é uma invenção recente que não existia em sociedades anteriores.","o gênero é construído por comportamentos repetidos, e não por uma natureza fixa."],x:3,e:"Performatividade: o gênero é construído por comportamentos repetidos."},
+{c:"Filósofas",s:"Lélia Gonzalez",si:"<p>A pensadora brasileira Lélia Gonzalez criou o conceito de 'amefricanidade' para pensar a experiência específica das mulheres negras na América Latina, marcada pela colonização, pela escravidão e pela resistência.</p>",p:"A principal contribuição de Lélia Gonzalez foi:",o:["mostrar que a experiência das mulheres negras latino-americanas é específica.","defender que o feminismo brasileiro deve seguir os modelos europeus.","afirmar que a questão racial é menos importante que a questão de gênero.","propor que o feminismo se restrinja às mulheres da região Sudeste do Brasil."],x:0,e:"A experiência das mulheres negras latino-americanas é específica."},
+{c:"Feminismos",s:"Definição",si:"<p>Em um debate sobre feminismo, um estudante afirmou: 'Feminismo é o contrário de machismo'. A professora corrigiu, explicando que os dois conceitos não são opostos simétricos.</p>",p:"A correção da professora se justifica porque:",o:["o machismo é um comportamento individual, e o feminismo é um movimento coletivo.","o feminismo defende a superioridade das mulheres, enquanto o machismo defende a dos homens.","o feminismo é um movimento antigo, e o machismo é um fenômeno recente na história.","o machismo é uma ideologia de superioridade, e o feminismo luta por igualdade."],x:3,e:"Machismo = ideologia de superioridade. Feminismo = luta por igualdade."},
+{c:"Interseccionalidade",s:"Opressões combinadas",si:"<p>Uma reportagem mostrou que, em uma mesma empresa, mulheres negras recebem salários menores que mulheres brancas, que por sua vez recebem menos que homens brancos. A reportagem ouviu especialistas que explicaram o fenômeno.</p>",p:"O fenômeno descrito pode ser explicado pelo conceito de:",o:["alteridade, que estuda a relação com o outro em diferentes culturas.","amefricanidade, que valoriza a cultura afro-latino-americana.","performatividade, que discute a repetição de atos de gênero no cotidiano.","interseccionalidade, que analisa o cruzamento entre gênero, raça e classe."],x:3,e:"Interseccionalidade analisa o cruzamento entre gênero, raça e classe."},
+{c:"Identidade de gênero",s:"Direitos",si:"<p>Em uma escola, uma aluna transgênero pediu para usar o banheiro feminino. A direção decidiu proibir, alegando que 'a aluna ainda não fez a cirurgia de redesignação sexual'. O caso gerou polêmica entre estudantes e famílias.</p>",p:"A decisão da direção pode ser criticada porque:",o:["a aluna deveria usar o banheiro masculino até completar 18 anos de idade.","a escola não tem competência para decidir sobre o uso dos banheiros.","a identidade de gênero não depende de procedimentos cirúrgicos para ser reconhecida.","a aluna deveria ser transferida para outra escola mais adequada ao seu caso."],x:2,e:"A identidade de gênero não depende de cirurgia para ser reconhecida."},
+{c:"Filósofas",s:"Alteridade (Beauvoir)",si:"<p>A filósofa Simone de Beauvoir analisou, em 'O Segundo Sexo', como a mulher foi historicamente construída como 'o outro' em relação ao homem, que se colocava como sujeito universal.</p>",p:"O conceito de alteridade, utilizado por Beauvoir, refere-se à:",o:["condição de ser visto como diferente e inferior em relação a um padrão.","capacidade de reconhecer as diferenças culturais entre povos.","habilidade de se colocar no lugar do outro em situações de conflito.","disposição de aceitar as diferenças sem questionar as hierarquias."],x:0,e:"Alteridade: condição de ser visto como diferente e inferior em relação a um padrão."},
+{c:"Estereótipos",s:"Escolhas infantis",si:"<p>Um menino de 8 anos disse à sua mãe que gostaria de fazer aula de balé, mas estava com medo de ser zombado pelos colegas. A mãe o incentivou, dizendo que dança é para todos.</p>",p:"A atitude da mãe contribui para:",o:["reforçar os estereótipos de gênero que limitam as escolhas das crianças.","ignorar as dificuldades que o menino enfrentará no ambiente escolar.","desconstruir a ideia de que existem atividades exclusivas para cada gênero.","transferir para a escola a responsabilidade pela educação do filho."],x:2,e:"A atitude desconstrói a ideia de atividades exclusivas para cada gênero."},
+{c:"Violência de gênero",s:"Culpabilização da vítima",si:"<p>Em um programa de televisão, um apresentador afirmou que 'mulher que se dá ao respeito não sofre assédio'. A frase gerou revolta nas redes sociais e foi denunciada por diversas entidades.</p>",p:"A frase do apresentador é problemática porque:",o:["defende que as mulheres devem se vestir de forma adequada para evitar assédio.","responsabiliza a vítima pela violência que sofreu, em vez de responsabilizar o agressor.","sugere que o assédio é um problema exclusivo das grandes cidades brasileiras.","propõe que o assédio seja tratado como uma questão de foro íntimo."],x:1,e:"Culpabilizar a vítima é uma forma de violência simbólica."},
+{c:"Divisão sexual do trabalho",s:"Trabalho doméstico",si:"<p>Uma pesquisa mostrou que, no Brasil, as mulheres dedicam, em média, o dobro do tempo que os homens aos afazeres domésticos e ao cuidado com os filhos. Esse trabalho, muitas vezes, não é remunerado nem reconhecido.</p>",p:"A situação descrita está relacionada a:",o:["divisão sexual do trabalho, que atribui às mulheres as tarefas de cuidado.","igualdade de gênero, que já foi plenamente alcançada no Brasil.","liberdade individual, que permite a cada casal organizar sua rotina.","avanço tecnológico, que reduziu o tempo gasto nas tarefas domésticas."],x:0,e:"Divisão sexual do trabalho: as mulheres ficam com as tarefas de cuidado."},
+{c:"Machismo",s:"Naturalização",si:"<p>Em uma conversa entre amigos, um deles disse: 'Não sou machista, mas não gosto quando mulher dirige'. A frase foi recebida com risos pelos demais, que não a consideraram problemática.</p>",p:"A frase do amigo pode ser considerada machista porque:",o:["expressa uma preferência pessoal que não afeta outras pessoas.","demonstra preocupação legítima com a segurança no trânsito urbano.","reflete uma opinião minoritária que não representa a sociedade.","reproduz um estereótipo que associa mulheres à incapacidade de dirigir."],x:3,e:"A frase reproduz estereótipo que associa mulheres à incapacidade."},
+{c:"Filósofas",s:"Gênero e diversidade (Butler)",si:"<p>A filósofa Judith Butler critica a ideia de que existem apenas dois gêneros (masculino e feminino) e defende que a heterossexualidade não é a única forma legítima de desejo. Sua obra influenciou os estudos de gênero e o movimento LGBTQIA+.</p>",p:"A crítica de Butler se baseia na ideia de que:",o:["a heterossexualidade é uma invenção recente que deve ser abandonada.","a biologia determina o gênero e a orientação sexual das pessoas.","o gênero é uma construção social que não se reduz a duas categorias fixas.","o movimento LGBTQIA+ deve se separar das pautas feministas."],x:2,e:"Gênero é construção social que não se reduz a duas categorias fixas."},
+{c:"Interseccionalidade",s:"Racismo e gênero",si:"<p>Uma jovem negra relatou que, em uma loja, foi seguida por um segurança enquanto as amigas brancas não foram importunadas. Ao reclamar, ouviu que o segurança estava 'apenas fazendo seu trabalho'.</p>",p:"A situação descrita pode ser analisada a partir do conceito de:",o:["alteridade, que estuda a relação com o outro em diferentes culturas.","interseccionalidade, que analisa o cruzamento entre raça e gênero.","performatividade, que discute a repetição de atos de gênero.","idadismo, que estabelece hierarquias entre diferentes idades."],x:1,e:"Interseccionalidade analisa o cruzamento entre raça e gênero."},
+{c:"Identidade de gênero",s:"Banheiro neutro",si:"<p>Em uma escola, o grêmio estudantil propôs a criação de um banheiro neutro, que pudesse ser usado por qualquer pessoa, independentemente de seu gênero. A proposta gerou debate entre estudantes, professores e famílias.</p>",p:"A proposta do banheiro neutro busca:",o:["garantir o direito de uso a todas as pessoas, respeitando a diversidade.","excluir os banheiros tradicionais, que seriam desativados.","criar um espaço exclusivo para pessoas transgênero e não-binárias.","evitar que homens e mulheres usem o mesmo banheiro ao mesmo tempo."],x:0,e:"Busca garantir o direito de uso a todas as pessoas, respeitando a diversidade."},
+{c:"Feminismos plurais",s:"Inclusão",si:"<p>A escritora Djamila Ribeiro afirma que o feminismo precisa incluir as pautas das mulheres negras, indígenas, periféricas e LGBTQIA+, sob pena de reproduzir as mesmas exclusões que critica.</p>",p:"A afirmação de Ribeiro aponta para a necessidade de:",o:["um feminismo único, que trate todas as mulheres da mesma forma.","um feminismo restrito às questões de gênero, sem abordar raça e classe.","um feminismo plural, que reconheça as diferentes experiências das mulheres.","um feminismo liderado exclusivamente por mulheres acadêmicas."],x:2,e:"Feminismo plural: reconhecer as diferentes experiências das mulheres."},
+{c:"Estereótipos",s:"Representações midiáticas",si:"<p>Uma pesquisa mostrou que, em filmes infantis, as personagens femininas costumam ser representadas como frágeis e dependentes, enquanto os personagens masculinos são apresentados como corajosos e independentes.</p>",p:"A representação descrita contribui para:",o:["reforçar estereótipos que limitam as possibilidades de meninas e meninos.","ampliar a diversidade de modelos de comportamento para as crianças.","estimular a reflexão crítica das crianças sobre as relações de gênero.","valorizar a igualdade entre homens e mulheres desde a infância."],x:0,e:"A representação reforça estereótipos que limitam meninas e meninos."},
+{c:"Violência de gênero",s:"Assédio no trabalho",si:"<p>Em uma empresa, uma funcionária relatou que seu chefe faz comentários sobre sua aparência e insinuações de cunho sexual. Ela tem medo de denunciar e perder o emprego.</p>",p:"A situação descrita configura:",o:["conflito interpessoal, que deve ser resolvido apenas entre as partes.","assédio sexual, que é uma forma de violência de gênero no trabalho.","problema de relacionamento, que não envolve questões de gênero.","questão de foro íntimo, que não diz respeito à empresa."],x:1,e:"Assédio sexual é uma forma de violência de gênero no trabalho."},
+{c:"Filósofas",s:"Lélia Gonzalez e a interseccionalidade",si:"<p>A filósofa Lélia Gonzalez criticou tanto o feminismo branco, que ignorava as pautas das mulheres negras, quanto o machismo do movimento negro, que tratava as mulheres como coadjuvantes.</p>",p:"A crítica de Gonzalez aponta para a necessidade de:",o:["separar as lutas de gênero e raça, para que cada uma tenha suas pautas.","priorizar a luta racial, deixando as questões de gênero em segundo plano.","articular as lutas de gênero e raça, reconhecendo suas intersecções.","priorizar a luta de gênero, deixando as questões raciais em segundo plano."],x:2,e:"Articular as lutas de gênero e raça, reconhecendo suas intersecções."},
+{c:"Feminismos",s:"Equívocos comuns",si:"<p>Um estudante afirmou que 'o feminismo quer que as mulheres sejam superiores aos homens'. A professora explicou que essa é uma visão equivocada do movimento.</p>",p:"O equívoco do estudante está em confundir:",o:["feminismo com machismo, tratando-os como movimentos simétricos.","igualdade com superioridade, distorcendo o objetivo do feminismo.","gênero com sexualidade, misturando conceitos diferentes.","alteridade com interseccionalidade, usando termos sem precisão."],x:1,e:"O equívoco está em confundir igualdade com superioridade."},
+{c:"Violência de gênero",s:"Violência doméstica",si:"<p>Em uma campanha contra a violência doméstica, foi veiculado o slogan: 'Em briga de marido e mulher, ninguém mete a colher'. O slogan foi criticado por entidades de direitos humanos.</p>",p:"A crítica ao slogan se justifica porque:",o:["a violência doméstica é um crime, e a sociedade deve se mobilizar para combatê-lo.","a violência doméstica é um problema privado, que não deve ser exposto.","a violência doméstica é um problema exclusivo das classes mais pobres.","a violência doméstica é um fenômeno recente, que não existia antigamente."],x:0,e:"Violência doméstica é crime, e a sociedade deve combatê-la."},
+{c:"Formação cidadã",s:"Pensamento crítico",si:"<p>Durante uma roda de conversa na escola, estudantes debateram sobre a importância de compreender as relações de gênero e as diferentes formas de desigualdade presentes na sociedade. Ao final, concluíram que esse conhecimento contribui para a formação de cidadãos mais conscientes e atuantes.</p>",p:"A conclusão dos estudantes está correta porque o estudo desses temas permite:",o:["repetir opiniões de autores renomados sem questioná-las ou adaptá-las à realidade.","defender posições políticas partidárias específicas durante os períodos eleitorais.","compreender a sociedade de forma crítica e agir para transformá-la em direção à igualdade.","substituir crenças religiosas por explicações científicas sobre o mundo natural."],x:2,e:"Compreender a sociedade criticamente e agir para transformá-la."}
+];
+
+/* ===== CONFIG E ESTADO ===== */
+var CONFIG={MIN_LOCK:8,MAX_LOCK:16,WPS:15,FAST:4,FAST_STREAK:2,RUSH:20,MAX_ATT:300};
+var SAVE_KEY='agora-filo-genero-v1s-v3';
+var LET=['A','B','C','D'];
+var state=null, lockTimer=null, rushTimer=null;
+
+function novoEstado(){
+  var ordem=shuffle(Q.map(function(_,i){return i}));
+  return{v:3,sid:Date.now(),queue:ordem,pos:0,disp:null,qid:null,mastered:[],att:{},tot:0,ok:0,err:0,firstTry:0,ciclo:1,start:Date.now(),tempos:{},ap:0,fs:0,rushN:0,estado:'quiz',fb:null,lockR:0,saved:Date.now()};
+}
+function salvar(){if(!state)return;state.saved=Date.now();try{localStorage.setItem(SAVE_KEY,JSON.stringify(state))}catch(e){}}
+function carregar(){try{var r=localStorage.getItem(SAVE_KEY);if(!r)return null;var s=JSON.parse(r);if(!s||s.v!==3||!Array.isArray(s.queue)||typeof s.pos!=='number'){localStorage.removeItem(SAVE_KEY);return null}return s}catch(e){return null}}
+function limpar(){try{localStorage.removeItem(SAVE_KEY)}catch(e){}}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+function fmt(s){return s<60?s+'s':Math.floor(s/60)+'min '+(s%60)+'s'}
+function lockSec(sit,pr){var t=(sit+' '+pr).replace(/<[^>]+>/g,' ');var w=t.trim().split(/\s+/).length;return Math.min(CONFIG.MAX_LOCK,Math.max(CONFIG.MIN_LOCK,Math.round(w/CONFIG.WPS)))}
+function shuffleOpts(qi){var q=Q[qi];var idx=q.o.map(function(t,i){return{t:t,c:i===q.x}});var sh=shuffle(idx);var nc=-1;for(var i=0;i<sh.length;i++){if(sh[i].c){nc=i;break}}return{o:sh.map(function(x){return x.t}),c:nc}}
+
+/* ===== APOSTILA ===== */
+function renderApostila(){
+  document.getElementById('apostila-body-target').innerHTML = APOSTILA_HTML;
+  document.getElementById('pdf-source').innerHTML = APOSTILA_HTML;
+}
+
+function abrirApostila(){if(state){state.ap++;salvar()}document.getElementById('apostila-overlay').classList.add('show');document.body.style.overflow='hidden'}
+function fecharApostila(){document.getElementById('apostila-overlay').classList.remove('show');document.body.style.overflow=''}
+function abrirRelatorio(){if(!state)return;document.getElementById('report-overlay').classList.add('show');document.body.style.overflow='hidden';renderRel()}
+function fecharRelatorio(){document.getElementById('report-overlay').classList.remove('show');document.body.style.overflow=''}
+function abrirGabarito(){document.getElementById('gabarito-overlay').classList.add('show');document.body.style.overflow='hidden';renderGabarito()}
+function fecharGabarito(){document.getElementById('gabarito-overlay').classList.remove('show');document.body.style.overflow=''}
+document.getElementById('apostila-overlay').addEventListener('click',function(e){if(e.target===this)fecharApostila()});
+document.getElementById('report-overlay').addEventListener('click',function(e){if(e.target===this)fecharRelatorio()});
+document.getElementById('gabarito-overlay').addEventListener('click',function(e){if(e.target===this)fecharGabarito()});
+
+/* ===== DOWNLOAD PDF ===== */
+function baixarPDF(){
+  var src = document.getElementById('pdf-source');
+  if(!src.innerHTML.trim()){renderApostila();}
+  allowPrint = true;
+  document.body.classList.add('print-pdf');
+  document.getElementById('apostila-overlay').classList.remove('show');
+  setTimeout(function(){
+    try { window.print(); }
+    catch(err){ console.error('Falha ao gerar PDF:', err); }
+    setTimeout(function(){
+      document.body.classList.remove('print-pdf');
+      allowPrint = false;
+    }, 1200);
+  }, 150);
+}
+window.addEventListener('afterprint', function(){
+  document.body.classList.remove('print-pdf');
+  allowPrint = false;
+});
+
+/* ===== GABARITO / CONFERIR QUESTÕES ===== */
+var gabFiltro = '';
+function renderGabarito(){
+  var b = document.getElementById('gabarito-body');
+  var filtro = gabFiltro.toLowerCase().trim();
+  var itens = Q.map(function(q, i){ return {q:q, i:i}; });
+  if(filtro){
+    itens = itens.filter(function(it){
+      var siTxt = (it.q.si || '').replace(/<[^>]+>/g,' ');
+      return it.q.c.toLowerCase().indexOf(filtro) !== -1
+          || it.q.s.toLowerCase().indexOf(filtro) !== -1
+          || it.q.p.toLowerCase().indexOf(filtro) !== -1
+          || siTxt.toLowerCase().indexOf(filtro) !== -1
+          || it.q.e.toLowerCase().indexOf(filtro) !== -1;
+    });
+  }
+  var stats = '<div class="gab-stats">'+
+    '<div class="stat"><span class="num">'+Q.length+'</span><span class="lbl">Total</span></div>'+
+    '<div class="stat"><span class="num">'+itens.length+'</span><span class="lbl">Exibidas</span></div>'+
+    '<div class="stat"><span class="num">'+[0,1,2,3].filter(function(n){return Q.some(function(q){return q.x===n})}).length+'</span><span class="lbl">Alternativas</span></div>'+
+    '</div>';
+  var toolbar = '<div class="gab-toolbar">'+
+    '<label for="gab-busca">🔎 Filtrar:</label>'+
+    '<input id="gab-busca" type="text" placeholder="Categoria, sub-tema, enunciado ou justificativa..." value="'+esc(gabFiltro)+'" oninput="gabFiltro=this.value;renderGabarito();var e=document.getElementById(\'gab-busca\');if(e){e.focus();e.setSelectionRange(e.value.length,e.value.length);}">'+
+    '<span class="count">'+itens.length+' / '+Q.length+'</span>'+
+    '</div>';
+  var html = stats + toolbar;
+  if(itens.length === 0){
+    html += '<div class="gab-empty">Nenhuma questão encontrada com esse filtro.</div>';
+  } else {
+    itens.forEach(function(it){
+      var q = it.q, n = it.i + 1;
+      var resp = q.x;
+      html += '<div class="gab-card">';
+      html += '<div class="gab-card-head">';
+      html += '<span class="gab-num">Questão '+n+'</span>';
+      html += '<div class="gab-tags">';
+      html += '<span class="gab-tag cat">'+esc(q.c)+'</span>';
+      html += '<span class="gab-tag sub">'+esc(q.s)+'</span>';
+      html += '</div></div>';
+      html += '<div class="gab-answer">✅ Alternativa correta: '+LET[resp]+'</div>';
+      if(q.si){ html += '<div class="gab-situation">'+ q.si +'</div>'; }
+      html += '<div class="gab-q-text">'+esc(q.p)+'</div>';
+      q.o.forEach(function(opt, k){
+        var cls = (k === resp) ? 'gab-opt right' : 'gab-opt';
+        html += '<div class="'+cls+'"><span class="letter">'+LET[k]+'</span><span class="text">'+esc(opt)+'</span></div>';
+      });
+      html += '<div class="gab-expl"><strong>Justificativa</strong>'+esc(q.e)+'</div>';
+      html += '</div>';
+    });
+  }
+  b.innerHTML = html;
+}
+
+/* ===== MENU PROF ===== */
+function abrirMenuProf(){document.getElementById('tmenu-login').style.display=teacherAuth?'none':'block';document.getElementById('tmenu-panel').style.display=teacherAuth?'block':'none';document.getElementById('tmenu-msg').textContent='';document.getElementById('tmenu-pass').value='';atualMenu();document.getElementById('tmenu-overlay').classList.add('show')}
+function fecharMenuProf(){document.getElementById('tmenu-overlay').classList.remove('show')}
+function entrarMenuProf(){var v=document.getElementById('tmenu-pass').value.trim();if(hashSenha(v)===PASS_HASH){teacherAuth=true;abrirMenuProf()}else{document.getElementById('tmenu-msg').textContent='Senha incorreta.';document.getElementById('tmenu-pass').value=''}}
+function atualMenu(){var st=document.getElementById('tmenu-status'),bt=document.getElementById('tmenu-toggle');if(GUARD){st.className='tstatus on';st.textContent='🔒 Anti-burla: ATIVOS';bt.className='tbtn warn';bt.textContent='Desativar anti-burla'}else{st.className='tstatus off';st.textContent='🛠️ Anti-burla: DESATIVADOS';bt.className='tbtn ok';bt.textContent='Reativar anti-burla'}}
+function alternarGuard(){if(!teacherAuth)return;GUARD=!GUARD;document.body.classList.toggle('guard-on',GUARD);document.body.classList.toggle('guard-off',!GUARD);if(!GUARD){document.body.style.filter='';document.body.style.pointerEvents='';if(rushTimer){clearInterval(rushTimer);rushTimer=null}fecharRush();if(lockTimer&&state&&state.estado==='quiz'){clearInterval(lockTimer);lockTimer=null;state.lockR=0;unlockQ()}}atualMenu()}
+function abrirRelatorioDoProfessor(){if(!teacherAuth)return;fecharMenuProf();abrirRelatorio()}
+function abrirGabaritoDoProfessor(){if(!teacherAuth)return;gabFiltro='';fecharMenuProf();abrirGabarito()}
+document.getElementById('tmenu-overlay').addEventListener('click',function(e){if(e.target===this)fecharMenuProf()});
+document.getElementById('tmenu-pass').addEventListener('keydown',function(e){if(e.key==='Enter')entrarMenuProf()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){fecharApostila();fecharRelatorio();fecharGabarito();fecharMenuProf();fecharRush()}});
+
+function renderRel(){
+  var b=document.getElementById('report-body');
+  if(!state){b.innerHTML='<p>Nenhuma sessão ativa.</p>';return}
+  var m=state.mastered.length,T=Q.length,pct=Math.round(m/T*100);
+  var tTot=Math.round((Date.now()-state.start)/1000);
+  var ini=new Date(state.start).toLocaleString('pt-BR');
+  var allA=[];Object.keys(state.tempos).forEach(function(k){state.tempos[k].forEach(function(x){allA.push(x)})});
+  var avg=allA.length?Math.round(allA.reduce(function(a,t){return a+t.e},0)/allA.length):0;
+  var fast=allA.length?Math.min.apply(null,allA.map(function(t){return t.e})):0;
+  var rush=allA.filter(function(t){return t.r}).length;
+  var rushPct=allA.length?Math.round(rush/allA.length*100):0;
+  var isF=state.estado==='final';
+  var dev=devtoolsAttempts+contextMenuAttempts+copyAttempts;
+  var susp=(devtoolsAttempts>0?1:0)+(contextMenuAttempts>0?1:0)+(copyAttempts>0?1:0);
+  var limpo=susp===0&&rush===0&&state.rushN===0;
+  var dC,dM;
+  if(rushPct===0&&state.rushN===0){dC='ok';dM='<strong>Leitura consciente.</strong> Ritmo adequado.'}
+  else if(rushPct<40&&state.rushN<=1){dC='warn';dM='<strong>Ritmo irregular.</strong> Algumas respostas rápidas demais.'}
+  else{dC='bad';dM='<strong>Leitura apressada.</strong> Muitas respostas sem tempo mínimo.'}
+  b.innerHTML=
+    '<div style="margin-bottom:14px;padding:10px 14px;border-radius:10px;text-align:center;background:'+(isF?'#e8f5e9':'#fff8e1')+';color:'+(isF?'#1b5e20':'#8a5f00')+';font-weight:800;font-size:.82rem">'+(isF?'Atividade concluída':'Atividade em andamento')+'</div>'+
+    '<div class="report-section"><h4>Desempenho</h4>'+
+    '<div class="report-row"><span class="label">Questões dominadas</span><span class="value '+(m===T?'ok':'')+'">'+m+' de '+T+' ('+pct+'%)</span></div>'+
+    '<div class="report-row"><span class="label">Total de tentativas</span><span class="value">'+(state.tot||0)+'</span></div>'+
+    '<div class="report-row"><span class="label">Acertos / Erros</span><span class="value">'+(state.ok||0)+' / '+(state.err||0)+'</span></div>'+
+    '<div class="report-row"><span class="label">Acertos na 1ª tentativa</span><span class="value">'+(state.firstTry||0)+'</span></div>'+
+    '<div class="report-row"><span class="label">Ciclos completados</span><span class="value">'+state.ciclo+'</span></div></div>'+
+    '<div class="report-section"><h4>Tempo e ritmo</h4>'+
+    '<div class="report-row"><span class="label">Tempo total</span><span class="value">'+fmt(tTot)+'</span></div>'+
+    '<div class="report-row"><span class="label">Início</span><span class="value">'+ini+'</span></div>'+
+    '<div class="report-row"><span class="label">Tempo médio</span><span class="value">'+avg+'s</span></div>'+
+    '<div class="report-row"><span class="label">Mais rápida</span><span class="value">'+fast+'s</span></div>'+
+    '<div class="report-row"><span class="label">Respostas apressadas (&lt;4s)</span><span class="value '+(rush>0?'warn':'ok')+'">'+rush+' de '+allA.length+' ('+rushPct+'%)</span></div>'+
+    '<div class="report-row"><span class="label">Pausas reflexivas</span><span class="value '+(state.rushN===0?'ok':(state.rushN===1?'warn':'bad'))+'">'+state.rushN+'</span></div></div>'+
+    '<div class="report-section"><h4>Consultas</h4>'+
+    '<div class="report-row"><span class="label">Apostila aberta</span><span class="value">'+state.ap+' vez(es)</span></div></div>'+
+    '<div class="report-section"><h4>Anti-burla</h4>'+
+    '<div class="report-row"><span class="label">DevTools</span><span class="value '+(devtoolsAttempts===0?'ok':'bad')+'">'+devtoolsAttempts+'</span></div>'+
+    '<div class="report-row"><span class="label">Menu de contexto</span><span class="value '+(contextMenuAttempts===0?'ok':'bad')+'">'+contextMenuAttempts+'</span></div>'+
+    '<div class="report-row"><span class="label">Cópia / seleção</span><span class="value '+(copyAttempts===0?'ok':'bad')+'">'+copyAttempts+'</span></div>'+
+    '<div class="report-row"><span class="label">Troca de aba</span><span class="value '+(tabSwitches>0?'warn':'ok')+'">'+tabSwitches+'</span></div>'+
+    '<div class="report-row" style="border-bottom:none"><span class="label"><strong>Total suspeitos</strong></span><span class="value '+(dev===0?'ok':'bad')+'"><strong>'+dev+'</strong></span></div></div>'+
+    '<div class="report-section"><h4>Síntese</h4><div class="report-diagnosis '+dC+'">'+dM+'</div>'+
+    (limpo?'<div class="report-diagnosis ok" style="margin-top:10px"><strong>Sessão exemplar.</strong></div>':'')+'</div>';
+}
+
+function renderQ(){
+  if(lockTimer){clearInterval(lockTimer);lockTimer=null}
+  if(!state)return;
+  if(state.pos>=state.queue.length){fimCiclo();return}
+  state.estado='quiz';
+  state.qid=state.queue[state.pos];
+  state.disp=shuffleOpts(state.qid);
+  var q=Q[state.qid];
+  var retry=(state.att[state.qid]||0)>0;
+  var c=document.getElementById('questions-container');
+  var optsHtml='';
+  for(var i=0;i<state.disp.o.length;i++){
+    optsHtml+='<button class="opt" data-i="'+i+'" disabled><span class="letter">'+LET[i]+'</span><span class="text">'+esc(state.disp.o[i])+'</span></button>';
+  }
+  c.innerHTML=
+    '<article class="question-block '+(retry?'retry':'')+'" id="current-q">'+
+    '<div class="q-header"><span class="q-number '+(retry?'retry':'')+'">QUESTÃO '+(state.pos+1)+' / '+state.queue.length+'</span>'+
+    '<span class="q-concept">'+esc(q.c)+'</span>'+
+    (retry?'<span class="q-cycle-tag">Retomada · Ciclo '+state.ciclo+'</span>':'')+
+    '<div class="q-inline-help"><button class="help-btn" type="button" onclick="abrirApostila()">📖 Apostila</button></div></div>'+
+    '<div class="situation">'+q.si+'</div>'+
+    '<p class="q-prompt">'+esc(q.p)+'</p>'+
+    '<div class="lock-bar" id="lock-bar"><span class="lock-count" id="lock-count">🔒</span><span id="lock-text">Leia com atenção para liberar as alternativas…</span></div>'+
+    '<div class="options" id="options">'+optsHtml+'</div>'+
+    '<div class="feedback" id="feedback"></div></article>';
+  var btns=c.querySelectorAll('.opt');
+  for(var j=0;j<btns.length;j++){
+    btns[j].addEventListener('click',function(){if(this.disabled)return;responder(parseInt(this.dataset.i,10))});
+  }
+  if(state.estado==='feedback'&&state.fb&&state.fb.qid===state.qid){
+    var fb=state.fb;
+    var o=c.querySelectorAll('#options .opt');
+    for(var k=0;k<o.length;k++){o[k].disabled=true;if(k===fb.ch){o[k].classList.add(fb.correct?'correct':'wrong')}else{o[k].classList.add('dimmed')}}
+    var lb=document.getElementById('lock-bar');lb.classList.add('unlocked');
+    document.getElementById('lock-count').textContent='✓';
+    document.getElementById('lock-text').textContent='Leitura concluída.';
+    renderFb(fb);atualPlacar();atualRitmo();window.scrollTo({top:0,behavior:'smooth'});return;
+  }
+  if(!GUARD){state.lockR=0;unlockQ();document.getElementById('lock-text').textContent='Modo professor — liberado.';atualPlacar();window.scrollTo({top:0,behavior:'smooth'});return;}
+  var lb2=document.getElementById('lock-bar'),cnt=document.getElementById('lock-count'),tx=document.getElementById('lock-text');
+  var total=lockSec(q.si,q.p);
+  var rem=total;cnt.textContent=rem;state.lockR=rem;salvar();
+  lockTimer=setInterval(function(){
+    if(!GUARD)return;
+    if(document.hidden){lb2.classList.add('paused');tx.textContent='⏸️ Aba em segundo plano — pausado.';return}
+    lb2.classList.remove('paused');tx.textContent='Leia com atenção para liberar as alternativas…';
+    rem--;state.lockR=rem;cnt.textContent=rem;
+    if(rem<=0){clearInterval(lockTimer);lockTimer=null;state.lockR=0;unlockQ()}
+  },1000);
+  atualPlacar();window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function unlockQ(){
+  var lb=document.getElementById('lock-bar');if(!lb)return;
+  lb.classList.remove('paused');lb.classList.add('unlocked');
+  document.getElementById('lock-count').textContent='✓';
+  document.getElementById('lock-text').textContent='Leitura concluída — escolha com atenção.';
+  var o=document.querySelectorAll('#options .opt');
+  for(var i=0;i<o.length;i++)o[i].disabled=false;
+  state.effStart=Date.now();salvar();
+}
+
+function responder(idx){
+  if(state.estado!=='quiz')return;
+  if(lockTimer){clearInterval(lockTimer);lockTimer=null}
+  var q=Q[state.qid], d=state.disp;
+  var correct=idx===d.c;
+  var ms=state.effStart?(Date.now()-state.effStart):0;
+  var sec=Math.round(ms/1000);
+  var rushed=GUARD&&sec<CONFIG.FAST;
+  if(!state.tempos[state.qid])state.tempos[state.qid]=[];
+  state.tempos[state.qid].push({c:state.ciclo,e:sec,r:rushed,ok:correct});
+  state.att[state.qid]=(state.att[state.qid]||0)+1;
+  state.tot=(state.tot||0)+1;
+  if(correct){state.ok++;if(state.mastered.indexOf(state.qid)===-1)state.mastered.push(state.qid);if(state.ciclo===1&&state.att[state.qid]===1)state.firstTry++}
+  else{state.err++}
+  if(rushed)state.fs++;else state.fs=0;
+  state.fb={qid:state.qid,ch:idx,correct:correct,e:sec,r:rushed};
+  state.estado='feedback';
+  salvar();
+  var o=document.querySelectorAll('#options .opt');
+  for(var i=0;i<o.length;i++){
+    o[i].disabled=true;
+    if(i===idx)o[i].classList.add(correct?'correct':'wrong');
+    else if(!GUARD&&!correct&&i===d.c)o[i].classList.add('correct');
+    else o[i].classList.add('dimmed');
+  }
+  atualPlacar();atualRitmo();renderFb(state.fb);
+  if(GUARD&&state.fs>=CONFIG.FAST_STREAK)setTimeout(triggerRush,600);
+}
+
+function renderFb(fb){
+  var q=Q[fb.qid];
+  var box=document.getElementById('feedback');
+  box.className='feedback show '+(fb.correct?'ok':'erro');
+  var pace=fb.r?'<span class="fast">⚡ Resposta em '+fb.e+'s — ritmo apressado.</span>':'<span class="good">🧠 Resposta em '+fb.e+'s — ritmo consciente.</span>';
+  var last=state.pos>=state.queue.length-1;
+  var lbl=last?(state.mastered.length>=Q.length?'Finalizar ➔':'Continuar ➔'):'Próxima questão ➔';
+  if(fb.correct){
+    box.innerHTML='<span class="concept-tag">📚 '+esc(q.s)+'</span><div class="head">✅ Muito bem! Você dominou esta questão.</div><div>'+esc(q.e)+'</div><div class="meta">'+pace+'</div><div class="next-inline" style="justify-content:flex-end"><button class="next-btn-inline" id="next-btn-inline" onclick="avancar()">'+lbl+'</button></div>';
+  }else{
+    box.innerHTML='<div class="head">❌ Não foi desta vez.</div><div>Releia a apostila com atenção e pense novamente antes de responder.</div>'+(!GUARD&&state.disp?'<div style="margin-top:8px;padding:8px 12px;background:#fff8e1;border-radius:8px"><strong>Modo professor:</strong> alternativa correta = '+LET[state.disp.c]+'. '+esc(q.e)+'</div>':'')+'<div class="meta">'+pace+'</div><div class="next-inline"><button class="next-btn-inline ouro" type="button" onclick="abrirApostila()">📖 Releia a apostila</button><button class="next-btn-inline" id="next-btn-inline" onclick="avancar()">Continuar ➔</button></div>';
+  }
+}
+
+function avancar(){if(lockTimer){clearInterval(lockTimer);lockTimer=null}state.fb=null;state.pos++;salvar();renderQ()}
+
+function fimCiclo(){
+  var m=state.mastered.length;
+  if(m>=Q.length||state.tot>=CONFIG.MAX_ATT){finalizar();return}
+  var rest=state.queue.filter(function(x){return state.mastered.indexOf(x)===-1});
+  if(rest.length===0){finalizar();return}
+  state.queue=shuffle(rest);state.pos=0;state.ciclo++;salvar();renderQ();
+}
+
+function finalizar(){if(lockTimer){clearInterval(lockTimer);lockTimer=null}state.estado='final';salvar();finalizarUI()}
+function finalizarUI(){
+  document.getElementById('questions-container').innerHTML='';
+  document.getElementById('final-box').classList.add('show');
+  document.getElementById('scoreboard').classList.add('done');
+  var m=state.mastered.length,T=Q.length;
+  document.getElementById('final-score').textContent=m+' / '+T;
+  document.getElementById('final-message').textContent=m===T?'Excelente! Você dominou todo o conteúdo.':'Você dominou '+m+' de '+T+' questões. Converse com o professor antes de encerrar.';
+}
+
+function atualPlacar(){
+  if(!state)return;
+  document.getElementById('erro-count').textContent=state.err||0;
+  document.getElementById('cycle-count').textContent=state.ciclo||1;
+  var pct=Math.min(100,Math.round(state.mastered.length/Q.length*100));
+  document.getElementById('mastery-fill').style.width=pct+'%';
+  document.getElementById('mastery-label').textContent=state.mastered.length+' / '+Q.length;
+}
+
+function atualRitmo(){
+  var all=[];Object.keys(state.tempos).forEach(function(k){state.tempos[k].forEach(function(x){all.push(x)})});
+  if(!all.length)return;
+  var r=all.filter(function(x){return x.r}).length;
+  var p=all.length?r/all.length*100:0;
+  var pill=document.getElementById('pace-pill');
+  if(p===0){pill.className='pill pace-good';pill.textContent='🧠 Leitura consciente'}
+  else if(p<40){pill.className='pill pace-warn';pill.textContent='⚠️ Ritmo apressado'}
+  else{pill.className='pill pace-bad';pill.textContent='🚨 Leitura suspeita'}
+}
+
+function triggerRush(){
+  state.rushN++;state.fs=0;salvar();
+  var ov=document.getElementById('rush-overlay');
+  var cnt=document.getElementById('rush-countdown');
+  var btn=document.getElementById('rush-continue-btn');
+  var rem=CONFIG.RUSH;cnt.textContent=rem;btn.disabled=true;btn.textContent='⏳ Aguarde… ('+rem+'s)';
+  ov.classList.add('show');document.body.style.overflow='hidden';
+  rushTimer=setInterval(function(){
+    rem--;cnt.textContent=rem;btn.textContent='⏳ Aguarde… ('+rem+'s)';
+    if(rem<=0){clearInterval(rushTimer);rushTimer=null;btn.disabled=false;btn.textContent='✅ Continuar a atividade'}
+  },1000);
+}
+function fecharRush(){document.getElementById('rush-overlay').classList.remove('show');document.body.style.overflow=''}
+
+function confirmarReset(){
+  if(!state)return;
+  if(!confirm('Reiniciar a atividade? Todo o progresso será perdido.'))return;
+  limpar();
+  if(lockTimer){clearInterval(lockTimer);lockTimer=null}
+  if(rushTimer){clearInterval(rushTimer);rushTimer=null}
+  devtoolsAttempts=0;contextMenuAttempts=0;copyAttempts=0;tabSwitches=0;
+  state=novoEstado();salvar();
+  document.getElementById('questions-container').innerHTML='';
+  document.getElementById('final-box').classList.remove('show');
+  document.getElementById('scoreboard').classList.remove('done');
+  renderQ();
+}
+
+function showResume(saved){
+  var b=document.getElementById('resume-info-box');
+  var m=(saved.mastered||[]).length;
+  var ini=new Date(saved.start).toLocaleString('pt-BR');
+  b.innerHTML='<div class="resume-info-row"><span class="lbl">📌 Dominadas</span><span class="val">'+m+' / '+Q.length+'</span></div>'+
+    '<div class="resume-info-row"><span class="lbl">🔄 Ciclo</span><span class="val">'+saved.ciclo+'</span></div>'+
+    '<div class="resume-info-row"><span class="lbl">✏️ Tentativas</span><span class="val">'+(saved.tot||0)+'</span></div>'+
+    '<div class="resume-info-row"><span class="lbl">✅ Acertos</span><span class="val">'+(saved.ok||0)+'</span></div>'+
+    '<div class="resume-info-row"><span class="lbl">❌ Erros</span><span class="val">'+(saved.err||0)+'</span></div>'+
+    '<div class="resume-info-row"><span class="lbl">🕒 Início</span><span class="val">'+ini+'</span></div>';
+  document.getElementById('resume-overlay').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function continuarSessao(){
+  var s=carregar();if(!s){document.getElementById('resume-overlay').classList.remove('show');document.body.style.overflow='';return}
+  state=s;
+  document.getElementById('resume-overlay').classList.remove('show');
+  document.body.style.overflow='';
+  if(state.estado==='final'){finalizarUI()}else{renderQ()}
+}
+function comecarDoZero(){
+  if(!confirm('Isso vai apagar todo o progresso salvo. Tem certeza?'))return;
+  limpar();state=novoEstado();salvar();
+  document.getElementById('resume-overlay').classList.remove('show');
+  document.body.style.overflow='';
+  document.getElementById('questions-container').innerHTML='';
+  document.getElementById('final-box').classList.remove('show');
+  renderQ();
+}
+
+window.addEventListener('beforeunload',function(){if(state&&state.estado!=='final')salvar()});
+document.addEventListener('visibilitychange',function(){if(state&&state.estado!=='final'){salvar();if(document.hidden&&GUARD)tabSwitches++}});
+
+document.addEventListener('DOMContentLoaded',function(){
+  renderApostila();
+  var s=carregar();
+  if(s&&(s.pos>0||s.ciclo>1||Object.keys(s.att||{}).length>0)){showResume(s)}
+  else{state=novoEstado();salvar();renderQ()}
+});
+</script>
+</body>
+</html>
