@@ -198,7 +198,6 @@ h3.rel-h{color:var(--accent);margin:18px 0 0;font-size:1rem}
   <button role="tab" id="tab-ap" aria-controls="p-ap" aria-selected="true">Apostila</button>
   <button role="tab" id="tab-qz" aria-controls="p-qz" aria-selected="false">Quiz</button>
   <button role="tab" id="tab-rel" aria-controls="p-rel" aria-selected="false">Relatório</button>
-  <span id="chip-guard" class="chip-guard" hidden>Modo professor: travas desativadas</span>
   <span id="alertas" hidden></span>
 </div></nav>
 <main class="wrap">
@@ -208,7 +207,6 @@ h3.rel-h{color:var(--accent);margin:18px 0 0;font-size:1rem}
 </main>
 <footer><button id="btn-prof" type="button">Área do professor</button></footer>
 <div class="veu" id="veu" hidden><div class="caixa" id="veu-caixa"></div></div>
-<div class="veu rush" id="veu-rush" hidden><div class="caixa"></div></div>
 
 <script>!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"function"==typeof define&&define.amd?define(["exports"],e):e((t=t||self).PDFLib={})}(this,(function(t){"use strict";
 /*! *****************************************************************************
@@ -562,11 +560,9 @@ function telaInicio(){
     <label class="campo" for="f-nome">Nome completo</label><input class="txt" id="f-nome" autocomplete="name" maxlength="80">
     <label class="campo" for="f-turma">Turma</label><input class="txt" id="f-turma" maxlength="20" placeholder="Ex.: 2º M01">
     <ol class="regras">
-      <li>Cada questão tem um tempo mínimo de leitura. As alternativas só ficam disponíveis depois dele. Se você sair da página, o tempo para.</li>
       <li>Escolha uma alternativa e clique em <strong>Confirmar resposta</strong>. Não é possível voltar.</li>
       <li>Nas questões de completar, arraste cada resposta para o campo indicado (ou toque na resposta e depois no campo). Só uma resposta do quadro é correta. Para tirar a resposta do campo, toque nele.</li>
-      <li>Se errar, o quiz indica a seção da apostila que você deve reler e faz uma pausa para reflexão. A resposta certa não é mostrada.</li>
-      <li>Responder rápido demais, várias vezes seguidas, gera uma pausa obrigatória para reflexão.</li>
+      <li>Se errar, o quiz indica a seção da apostila que você deve reler e a questão volta mais adiante, com as alternativas embaralhadas. A resposta certa não é mostrada.</li>
       <li>A nota considera a primeira resposta de cada questão.</li>
       <li>Seu progresso fica salvo neste navegador. Se a página fechar, você continua de onde parou.</li>
     </ol>
@@ -608,22 +604,20 @@ function mostra(){
   const tentativa = S.respondida ? rs.length - 1 : rs.length;
   const ord = ordemDe(qi, tentativa);
   if (!S.abertaEm) S.abertaEm = agora();
-  if (S.leitRest == null) S.leitRest = LEITURA;
   salva();
-  const v = vistas(), rt = ritmo(), erros = todasResp().filter(r => !r.ok).length;
+  const v = vistas(), erros = todasResp().filter(r => !r.ok).length;
   area.innerHTML =
     `<div class="qtopo"><span>Questões vistas: <b>${v}</b> de ${Q.length}</span>
-       <span class="pills"><span class="pill erro">❌ Erros: ${erros}</span><span class="pill ${rt.cls}">${rt.txt}</span></span>
+       <span class="pills"><span class="pill erro">❌ Erros: ${erros}</span></span>
        <span>${esc(S.nome)} • ${esc(S.turma)}</span></div>
      <div class="progresso" role="progressbar" aria-valuemin="0" aria-valuemax="${Q.length}" aria-valuenow="${v}"><div style="width:${v/Q.length*100}%"></div></div>
      <div class="qnum">QUESTÃO ${String(S.seq.indexOf(qi)+1).padStart(2,"0")}${tentativa>0?' <span class="retorno">RETORNO</span>':""}</div>
      ${q.t.map(t=>`<p>${md(t)}</p>`).join("")}
      <p class="qcomando">${md(q.q)}</p>
-     <div class="leitura" id="q-leit" hidden></div>
      ${q.tipo==="arraste" ? htmlArraste(q, ord) : `<div class="alts">${ord.map((o,k)=>`<button class="alt" type="button" data-o="${o}" disabled><span class="le">${L[k]})</span><span class="tx">${md(q.a[o])}</span></button>`).join("")}</div>`}
      <div id="q-fb"></div>
      <div class="nav-q" id="q-nav"></div>`;
-  if (S.respondida){ posResposta(qi, rs[rs.length-1], ord); if (S.rushAte && S.rushAte > agora()) mostraRush(); return; }
+  if (S.respondida){ posResposta(qi, rs[rs.length-1], ord); return; }
   if (q.tipo === "arraste") return ligaArraste(qi, q);
   const alts = [...area.querySelectorAll(".alt")];
   let escolhida = S.pendente && S.pendente.qi === qi ? S.pendente.o : null;
@@ -633,45 +627,20 @@ function mostra(){
     escolhida = +b.dataset.o; S.pendente = {qi, o:escolhida}; salva();
     alts.forEach(x => x.classList.toggle("sel", x===b)); conf.disabled = false;
   });
-  const leit = $("#q-leit");
-  const libera = () => {
-    limpaTick();
-    S.leitRest = 0; if (!S.liberadaEm) S.liberadaEm = agora(); salva();
-    alts.forEach(b => { b.disabled = false; if (+b.dataset.o === escolhida) { b.classList.add("sel"); conf.disabled = false; } });
-    leit.hidden = true;
-  };
-  const pinta = () => {
-    leit.hidden = false;
-    leit.classList.toggle("pausado", document.hidden);
-    leit.textContent = document.hidden ? "⏸ Página em segundo plano: o tempo de leitura está parado."
-      : `🔒 Tempo mínimo de leitura: as alternativas serão liberadas em ${S.leitRest} s.`;
-  };
-  if (!GUARD || S.leitRest <= 0) libera();
-  else {
-    pinta();
-    tick = setInterval(() => {
-      if (!GUARD) return libera();
-      if (document.hidden) return pinta();
-      S.leitRest--; salva();
-      if (S.leitRest <= 0) libera(); else pinta();
-    }, 1000);
-  }
+  if (!S.liberadaEm) S.liberadaEm = agora(); salva();
+  alts.forEach(b => { b.disabled = false; if (+b.dataset.o === escolhida) { b.classList.add("sel"); conf.disabled = false; } });
   conf.onclick = () => {
     if (escolhida === null || S.respondida) return;
     const ok = gab()[qi][0] === escolhida;
     const e = Math.round((agora() - (S.liberadaEm || agora())) / 1000);
-    const rapida = GUARD && e < RAPIDA;
-    const r = { o: escolhida, ok, t: agora(), e, r: rapida };
+    const r = { o: escolhida, ok, t: agora(), e };
     (S.resp[qi] = S.resp[qi] || []).push(r);
     S.pendente = null; S.respondida = true;
-    S.fs = rapida ? (S.fs||0) + 1 : 0;
     if (!ok){
-      if (GUARD) S.pausaAte = agora() + PAUSA*1000;
       // a questão errada volta em uma posição aleatória da fila (nunca logo em seguida, se houver outras)
       const n = S.fila.length, min = n > 0 ? 1 : 0;
       S.fila.splice(min + Math.floor(Math.random() * (n - min + 1)), 0, qi);
     }
-    if (GUARD && S.fs >= SEQ_RAPIDA){ S.fs = 0; S.rushN = (S.rushN||0) + 1; S.rushAte = agora() + PAUSA_RITMO*1000; }
     salva(); mostra();
   };
 }
@@ -739,45 +708,20 @@ function ligaArraste(qi, q){
       c.addEventListener("pointermove", move); c.addEventListener("pointerup", fim); c.addEventListener("pointercancel", fim);
     });
   });
-  const leit = $("#q-leit");
-  const libera = () => {
-    limpaTick();
-    S.leitRest = 0; if (!S.liberadaEm) S.liberadaEm = agora(); salva();
-    liberado = true; leit.hidden = true; pinta();
-  };
-  const pintaLeit = () => {
-    leit.hidden = false;
-    leit.classList.toggle("pausado", document.hidden);
-    leit.textContent = document.hidden ? "⏸ Página em segundo plano: o tempo de leitura está parado."
-      : "🔒 Tempo mínimo de leitura: as respostas serão liberadas em " + S.leitRest + " s.";
-  };
-  pinta();
-  if (!GUARD || S.leitRest <= 0) libera();
-  else {
-    pintaLeit();
-    tick = setInterval(() => {
-      if (!GUARD) return libera();
-      if (document.hidden) return pintaLeit();
-      S.leitRest--; salva();
-      if (S.leitRest <= 0) libera(); else pintaLeit();
-    }, 1000);
-  }
+  if (!S.liberadaEm) S.liberadaEm = agora(); salva();
+  liberado = true; pinta();
   conf.onclick = () => {
     if (fill.some(x => x == null) || S.respondida) return;
     const certo = gab()[qi][0];
     const ok = fill.every((b,i) => b === certo[i]);
     const e = Math.round((agora() - (S.liberadaEm || agora())) / 1000);
-    const rapida = GUARD && e < RAPIDA;
-    const r = { f: fill.slice(), ok, t: agora(), e, r: rapida };
+    const r = { f: fill.slice(), ok, t: agora(), e };
     (S.resp[qi] = S.resp[qi] || []).push(r);
     S.pendente = null; S.respondida = true;
-    S.fs = rapida ? (S.fs||0) + 1 : 0;
     if (!ok){
-      if (GUARD) S.pausaAte = agora() + PAUSA*1000;
       const nf = S.fila.length, min = nf > 0 ? 1 : 0;
       S.fila.splice(min + Math.floor(Math.random() * (nf - min + 1)), 0, qi);
     }
-    if (GUARD && S.fs >= SEQ_RAPIDA){ S.fs = 0; S.rushN = (S.rushN||0) + 1; S.rushAte = agora() + PAUSA_RITMO*1000; }
     salva(); mostra();
   };
 }
@@ -796,49 +740,17 @@ function posResposta(qi, r, ord){
   const sec = DATA.qsec[qi+1];
   const fb = $("#q-fb"), nav = $("#q-nav");
   const rotulo = S.fila.length ? "Próxima questão →" : "Concluir";
-  const ritmoTxt = typeof r.e === "number" ? `<p class="ritmo ${r.r?"no-t":"ok-t"}">${r.r?`⚡ Resposta em ${r.e} s após a liberação: ritmo apressado.`:`🧠 Resposta em ${r.e} s após a liberação: ritmo consciente.`}</p>` : "";
   if (r.ok){
-    fb.innerHTML = `<div class="feedback ok" role="status"><strong>Correto!</strong><p>${md(gab()[qi][1])}</p>${ritmoTxt}</div>`;
+    fb.innerHTML = `<div class="feedback ok" role="status"><strong>Correto!</strong><p>${md(gab()[qi][1])}</p></div>`;
     nav.innerHTML = `<button class="btn" id="q-prox" type="button">${rotulo}</button>`;
     $("#q-prox").onclick = avanca;
     return;
   }
   const modoProf = !GUARD ? `<p class="prof-dica"><strong>Modo professor:</strong> ${arr ? "preenchimento correto = " + certo.map((b,i)=>`(${i+1}) ${Q[qi].b[b]}`).join("; ") : "alternativa correta = " + L[ord.indexOf(certo)]}. ${md(gab()[qi][1])}</p>` : "";
-  fb.innerHTML = `<div class="feedback no" role="status"><strong>Resposta incorreta.</strong><p>Releia a ${esc(secNome(sec))} da apostila.</p>${ritmoTxt}${modoProf}</div>
-    <div class="pausa" id="q-pausa"></div>`;
-  nav.innerHTML = `<button class="btn sec" id="q-sec" type="button">Abrir a seção ${sec} na apostila</button><button class="btn" id="q-prox" type="button" disabled>${rotulo}</button>`;
+  fb.innerHTML = `<div class="feedback no" role="status"><strong>Resposta incorreta.</strong><p>Releia a ${esc(secNome(sec))} da apostila.</p>${modoProf}</div>`;
+  nav.innerHTML = `<button class="btn sec" id="q-sec" type="button">Abrir a seção ${sec} na apostila</button><button class="btn" id="q-prox" type="button">${rotulo}</button>`;
   $("#q-sec").onclick = () => { contaApostila(); irSecao(sec); };
   const prox = $("#q-prox"); prox.onclick = avanca;
-  const pinta = () => {
-    const rest = GUARD ? Math.ceil(((S.pausaAte||0) - agora())/1000) : 0;
-    const el = $("#q-pausa"); if (!el) return limpaTick();
-    if (rest > 0){
-      el.innerHTML = `<strong>Pausa para reflexão (${rest} s)</strong><p style="margin:4px 0 0">Antes de seguir, pense: qual ideia da ${esc(secNome(sec))} ajuda a analisar esta situação? ${arr ? "Que conceito da apostila completa cada campo?" : "Que alternativa a apostila permite descartar?"}</p>`;
-      prox.disabled = true;
-    } else { limpaTick(); el.innerHTML = `<strong>Pausa concluída.</strong> Você pode seguir. Aproveite para reler a seção indicada.`; prox.disabled = false; }
-  };
-  pinta(); if (GUARD && (S.pausaAte||0) > agora()) tick = setInterval(pinta, 500);
-}
-
-// pausa reflexiva obrigatória por ritmo apressado
-let rushTick = null;
-function mostraRush(){
-  const ov = $("#veu-rush"); if (!S || !S.rushAte) return;
-  const frase = LEMBRETES[(S.rushN||1) % LEMBRETES.length] || "";
-  const pinta = () => {
-    const rest = GUARD ? Math.ceil((S.rushAte - agora())/1000) : 0;
-    ov.querySelector(".caixa").innerHTML = `<span class="rush-tag">⚠️ Ritmo apressado</span>
-      <h2>Pausa reflexiva obrigatória</h2>
-      <p>Você respondeu as últimas questões em menos de ${RAPIDA} segundos depois de liberadas. A reflexão sobre gênero e sociedade exige tempo de leitura e de pensamento. Leia com calma:</p>
-      <blockquote>${md(frase)}<span>Apostila, quadro “Para lembrar”</span></blockquote>
-      <div class="rush-num">${Math.max(rest,0)}</div>
-      <div class="nav-q" style="justify-content:center"><button class="btn" id="rush-ok" type="button" ${rest>0?"disabled":""}>${rest>0?`Aguarde ${rest} s`:"Continuar a atividade"}</button></div>`;
-    $("#rush-ok").onclick = () => { ov.hidden = true; S.rushAte = null; salva(); };
-    if (rest <= 0 && rushTick){ clearInterval(rushTick); rushTick = null; }
-  };
-  ov.hidden = false; pinta();
-  if (rushTick) clearInterval(rushTick);
-  rushTick = setInterval(pinta, 500);
 }
 
 function avanca(){
@@ -895,13 +807,10 @@ function linhasRel(R, aluno){
       ...(aluno && S.fase !== "fim" ? [] : [["Questões resolvidas corretamente", `${R.dominadas} de ${Q.length}`]]),
       ["Total de respostas dadas", String(R.total)],
       ["Acertos / erros", `${R.acertos} / ${R.erros}`]]],
-    ["Tempo e ritmo", [
+    ["Tempo", [
       ["Início", fmtData(S.inicio)], ["Fim", S.fim ? fmtData(S.fim) : "em andamento"], ["Duração", fmtDur(R.dur)],
-      ["Tempo médio de resposta após a liberação", `${R.media} s`], ["Resposta mais rápida", `${R.rapida} s`],
-      [`Respostas apressadas (menos de ${RAPIDA} s)`, `${R.apressadas} de ${R.nTempos} (${R.pctAp}%)`],
-      ["Pausas reflexivas obrigatórias", String(S.rushN||0)]]],
-    ["Consultas", [["Apostila aberta durante o quiz", `${S.ap||0} vez(es)`]]],
-    ["Síntese", [["Diagnóstico", R.diag[1] + (R.limpo ? " Sessão exemplar: ritmo de leitura adequado em toda a atividade." : "")]]]
+      ["Tempo médio de resposta", `${R.media} s`], ["Resposta mais rápida", `${R.rapida} s`]]],
+    ["Consultas", [["Apostila aberta durante o quiz", `${S.ap||0} vez(es)`]]]
   ];
 }
 function tabelaRel(R, aluno){
@@ -925,7 +834,6 @@ function telaFinal(){
       <tr><th>Turma</th><td>${esc(S.turma)}</td></tr>
       <tr><th>Código de verificação</th><td><span class="codigo">${R.codigo}</span></td></tr>
     </tbody></table></div>
-    <div class="diag ${R.diag[0]}">${esc(R.diag[1])}</div>
     ${tabelaRel(R)}
     ${errSecs.length?`<p><strong>Seções para revisar:</strong> ${errSecs.map(n=>`<button class="btn sec" type="button" data-s="${n}" style="margin:3px">Seção ${n}</button>`).join("")}</p>`:""}
     <h3 class="rel-h">Desempenho por questão</h3>
@@ -975,40 +883,27 @@ function menuProf(){
   if (!profAuth) return;
   const tent = S ? `${esc(S.nome)} (${esc(S.turma)}), ${S.fase==="fim"?"concluída":"em andamento"}` : "nenhuma tentativa salva neste navegador";
   veu(`<div class="prof"><h2>🛠️ Área do professor</h2>
-    <div class="tstatus ${GUARD?"on":"off"}">${GUARD?"🔒 Travas de ritmo: ATIVAS":"🛠️ Travas de ritmo: DESATIVADAS"}</div>
     <div class="tgrid">
       <button class="btn" id="m-gab" type="button">📝 Conferir questões (gabarito)</button>
       <button class="btn sec" id="m-rel" type="button" ${S?"":"disabled"}>📊 Relatório do estudante</button>
       <button class="btn sec" id="m-cod" type="button">🔎 Conferir código de um relatório</button>
-      <button class="btn ${GUARD?"perigo":"bom"}" id="m-guard" type="button">${GUARD?"Desativar travas (teste)":"Reativar travas"}</button>
       <button class="btn sec" id="m-reset" type="button" ${S?"":"disabled"}>🔄 Liberar nova tentativa</button>
       <button class="btn sec" id="m-fechar" type="button">Fechar</button>
     </div>
     <p class="tnota"><strong>Tentativa salva neste navegador:</strong> ${tent}.</p>
-    <p class="tnota">Funcionamento: tempo mínimo de leitura de ${LEITURA} s por questão, que para quando a página fica em segundo plano; cada questão errada volta em posição aleatória da fila, com as alternativas embaralhadas; a ordem das questões e a posição das alternativas (e das respostas das questões de completar) são sorteadas para cada estudante (o gabarito abaixo usa a numeração e as letras do Quiz em PDF); o quiz só termina quando o estudante acerta todas as ${Q.length} (essa regra não aparece para os estudantes); ${SEQ_RAPIDA} respostas seguidas em menos de ${RAPIDA} s geram uma pausa reflexiva obrigatória de ${PAUSA_RITMO} s.</p>
-    <p class="tnota">Com as travas desativadas: sem tempo de leitura e sem pausas; depois de um erro, a alternativa correta é mostrada. O desligamento vale só até a página ser recarregada. Reative antes de entregar o aparelho a um estudante.</p></div>`, "prof");
+    <p class="tnota">Funcionamento: cada questão errada volta em posição aleatória da fila, com as alternativas embaralhadas; a ordem das questões e a posição das alternativas (e das respostas das questões de completar) são sorteadas para cada estudante (o gabarito abaixo usa a numeração e as letras do Quiz em PDF); o quiz só termina quando o estudante acerta todas as ${Q.length} (essa regra não aparece para os estudantes); ${SEQ_RAPIDA} respostas seguidas em menos de ${RAPIDA} s geram uma pausa reflexiva obrigatória de ${PAUSA_RITMO} s.</p></div>`, "prof");
   $("#m-gab").onclick = () => gabarito("");
   $("#m-rel").onclick = relProf;
   $("#m-cod").onclick = conferirCodigo;
-  $("#m-guard").onclick = alternaGuard;
   $("#m-fechar").onclick = fechaVeu;
   $("#m-reset").onclick = () => {
     if (!confirm("Apagar a tentativa salva neste navegador e liberar uma nova?")) return;
     try { localStorage.removeItem(ST_KEY); } catch(e){}
-    S = null; limpaTick(); $("#veu-rush").hidden = true; atualizaAlertas(); fechaVeu(); telaInicio();
+    S = null; limpaTick(); atualizaAlertas(); fechaVeu(); telaInicio();
   };
 }
 function voltar(){ return `<div class="nav-q" style="justify-content:space-between;margin-bottom:10px"><button class="btn sec" id="m-voltar" type="button">← Voltar ao menu</button><button class="btn sec" id="m-x" type="button">✕ Fechar</button></div>`; }
 function ligaVoltar(){ $("#m-voltar").onclick = menuProf; $("#m-x").onclick = fechaVeu; }
-function alternaGuard(){
-  if (!profAuth) return;
-  GUARD = !GUARD;
-  document.body.classList.toggle("guard-off", !GUARD);
-  $("#chip-guard").hidden = GUARD;
-  if (!GUARD){ $("#veu-rush").hidden = true; if (rushTick){ clearInterval(rushTick); rushTick = null; } if (S) { S.rushAte = null; S.pausaAte = null; salva(); } }
-  if (emQuiz()) mostra();
-  menuProf();
-}
 function gabarito(filtro){
   const G = gab();
   const dist = [0,0,0,0,0]; let nArr = 0; G.forEach(g => { if (typeof g[0] === "number") dist[g[0]]++; else nArr++; });
@@ -1053,7 +948,6 @@ function relAluno(){
     <div class="tstatus ${fim?"on":"off"}">${fim?"Atividade concluída":"Atividade em andamento"}</div>
     <div class="tw"><table><tbody><tr><th style="width:46%">Estudante</th><td>${esc(S.nome)}</td></tr><tr><th>Turma</th><td>${esc(S.turma)}</td></tr>
     <tr><th>Questões vistas</th><td>${vistas()} de ${Q.length}</td></tr><tr><th>Código de verificação</th><td>${fim?`<span class="codigo">${R.codigo}</span>`:esc(R.codigo)}</td></tr></tbody></table></div>
-    <div class="diag ${R.diag[0]}">${esc(R.diag[1])}</div>
     ${tabelaRel(R, true)}
     <h3 class="rel-h">Desempenho por questão</h3>
     <div class="tw"><table><thead><tr><th>Questão</th><th>Seção da apostila</th><th>1ª tentativa</th><th>Tentativas</th></tr></thead><tbody>
@@ -1073,7 +967,6 @@ function relProf(){
     <div class="tstatus ${S.fase==="fim"?"on":"off"}">${S.fase==="fim"?"Atividade concluída":"Atividade em andamento"}</div>
     <div class="tw"><table><tbody><tr><th style="width:46%">Estudante</th><td>${esc(S.nome)}</td></tr><tr><th>Turma</th><td>${esc(S.turma)}</td></tr>
     <tr><th>Questões vistas</th><td>${vistas()} de ${Q.length}</td></tr><tr><th>Código de verificação</th><td>${esc(R.codigo)}</td></tr></tbody></table></div>
-    <div class="diag ${R.diag[0]}">${esc(R.diag[1])}</div>
     ${tabelaRel(R)}
     <h3 class="rel-h">Desempenho por questão</h3>
     <div class="tw"><table><thead><tr><th>Questão</th><th>Nº no gabarito</th><th>Seção</th><th>1ª tentativa</th><th>Tentativas</th></tr></thead><tbody>
@@ -1108,18 +1001,14 @@ function retomada(){
       <tr><th>Questões vistas</th><td>${vistas()} de ${Q.length}</td></tr>
       <tr><th>Respostas dadas</th><td>${E.total}</td></tr>
     </tbody></table></div>
-    <div id="res-senha" hidden><label class="campo" for="res-pw">Senha do professor para reiniciar</label><input class="txt" id="res-pw" type="password" autocomplete="off"><p id="res-erro" class="no-t" hidden>Senha incorreta.</p></div>
     <div class="nav-q"><button class="btn sec" id="res-reini" type="button">🔄 Reiniciar</button><button class="btn" id="res-ok" type="button">▶ Continuar</button></div>`, "retomada");
   $("#res-ok").onclick = () => { fechaVeu(); abre("#tab-qz","#p-qz"); };
   const reinicia = () => {
-    const box = $("#res-senha");
-    if (box.hidden){ box.hidden = false; $("#res-reini").textContent = "Confirmar reinício"; setTimeout(()=>{const f=$("#res-pw"); if (f) f.focus();},50); return; }
-    if (cyrb($("#res-pw").value.trim()) !== SENHA_H){ $("#res-erro").hidden = false; $("#res-pw").value = ""; return; }
+    if (!confirm("Apagar o progresso salvo e recomeçar o quiz do início?")) return;
     try { localStorage.removeItem(ST_KEY); } catch(e){}
-    S = null; limpaTick(); $("#veu-rush").hidden = true; atualizaAlertas(); fechaVeu(); telaInicio(); abre("#tab-qz","#p-qz");
+    S = null; limpaTick(); atualizaAlertas(); fechaVeu(); telaInicio(); abre("#tab-qz","#p-qz");
   };
   $("#res-reini").onclick = reinicia;
-  $("#res-pw").onkeydown = e => { if (e.key === "Enter") reinicia(); };
 }
 S = carrega();
 atualizaAlertas();
