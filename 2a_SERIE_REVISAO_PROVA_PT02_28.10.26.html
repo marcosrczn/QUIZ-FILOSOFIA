@@ -90,8 +90,8 @@ input.txt{width:100%;font:inherit;padding:10px 12px;border:1.5px solid var(--bor
 .feedback{border-radius:10px;padding:12px 16px;margin-bottom:14px}
 .feedback.ok{background:var(--ok-bg);border:1px solid var(--ok)}
 .feedback.no{background:var(--err-bg);border:1px solid var(--err)}
-.feedback strong{display:block;margin-bottom:4px}
-.feedback.ok strong{color:var(--ok)} .feedback.no strong{color:var(--err)}
+.feedback>strong{display:block;margin-bottom:4px}
+.feedback.ok>strong{color:var(--ok)} .feedback.no>strong{color:var(--err)}
 .feedback p{margin:4px 0 0}
 .pausa{border:1px dashed var(--accent);border-radius:10px;padding:12px 16px;margin-bottom:14px;background:var(--surface2)}
 .nav-q{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
@@ -169,6 +169,13 @@ h3.rel-h{color:var(--accent);margin:18px 0 0;font-size:1rem}
 .chip.arrastando{opacity:.4}
 .chip.fantasma{position:fixed;z-index:70;pointer-events:none;box-shadow:0 6px 18px rgba(0,0,0,.25);background:var(--accent);color:#fff;cursor:grabbing}
 [hidden]{display:none!important}
+.qgrade{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 14px}
+.qn{min-width:2.3em;height:2.3em;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;font-weight:700;font-size:.85rem;cursor:pointer}
+.qn.ok{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.qn.no{background:var(--err-bg);border-color:var(--err);color:var(--err)}
+.qn.atual{outline:3px solid var(--accent);outline-offset:1px}
+.nav-livre{margin-top:18px;padding-top:14px;border-top:1px solid var(--border);align-items:center}
+.nav-livre .esp{flex:1}
 @media (max-width:560px){
   body{font-size:15px}
   .meta{grid-template-columns:1fr}
@@ -197,16 +204,11 @@ h3.rel-h{color:var(--accent);margin:18px 0 0;font-size:1rem}
 <nav class="abas"><div class="wrap" role="tablist">
   <button role="tab" id="tab-ap" aria-controls="p-ap" aria-selected="true">Apostila</button>
   <button role="tab" id="tab-qz" aria-controls="p-qz" aria-selected="false">Quiz</button>
-  <button role="tab" id="tab-rel" aria-controls="p-rel" aria-selected="false">Relatório</button>
-  <span id="alertas" hidden></span>
 </div></nav>
 <main class="wrap">
   <section id="p-ap" role="tabpanel" aria-labelledby="tab-ap" class="painel"><article id="apostila"></article></section>
   <section id="p-qz" role="tabpanel" aria-labelledby="tab-qz" class="painel" hidden><div id="q-area"></div></section>
-  <section id="p-rel" role="tabpanel" aria-labelledby="tab-rel" class="painel" hidden><div id="rel-area"></div></section>
 </main>
-<footer><button id="btn-prof" type="button">Área do professor</button></footer>
-<div class="veu" id="veu" hidden><div class="caixa" id="veu-caixa"></div></div>
 
 <script>!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"function"==typeof define&&define.amd?define(["exports"],e):e((t=t||self).PDFLib={})}(this,(function(t){"use strict";
 /*! *****************************************************************************
@@ -451,9 +453,7 @@ const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>
 const md = s => esc(s).replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>").replace(/_([^_]+)_/g,"<em>$1</em>");
 const L = "ABCDE";
 const CHAVE = "Lelia-Beauvoir-Davis-amefricanidade";
-const SENHA_H = "1I4LDFC4620";
-const ST_KEY = "filo2s3t_genero_quiz_v6";
-const PAUSA = 20;
+const ST_KEY = "filo2s3t_genero_quiz_livre_v1";
 
 /* ---------- utilidades ---------- */
 function cyrb(str, seed){seed=seed||7;let h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(let i=0;i<str.length;i++){const ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return (4294967296*(2097151&h2)+(h1>>>0)).toString(36).toUpperCase();}
@@ -497,7 +497,7 @@ $("#dl-ap").onclick = () => baixa(b64bytes(PDF_AP), "Apostila_Filosofia_2a_serie
 $("#dl-qz").onclick = () => baixa(b64bytes(PDF_QZ), "Quiz_Filosofia_2a_serie_3o_trim_Genero.pdf");
 
 /* ---------- abas ---------- */
-const tabs = [["#tab-ap","#p-ap"],["#tab-qz","#p-qz"],["#tab-rel","#p-rel"]];
+const tabs = [["#tab-ap","#p-ap"],["#tab-qz","#p-qz"]];
 function abre(t, p){
   tabs.forEach(([t2,p2]) => { $(t2).setAttribute("aria-selected", t2===t); $(p2).hidden = p2!==p; });
 }
@@ -520,129 +520,85 @@ DATA.conteudo.forEach(([tp,a,b,w]) => {
 });
 $("#apostila").innerHTML = h;
 
-/* ---------- estado ---------- */
-const Q = DATA.questoes;
-let S = null;
-let GUARD = true, profAuth = false;
-function salva(){ if (!S) return; try { localStorage.setItem(ST_KEY, JSON.stringify(S)); } catch(e){} }
-function carrega(){ try { const s = JSON.parse(localStorage.getItem(ST_KEY)); return s && s.v === 6 && s.seq && s.seq.length === DATA.questoes.length && Array.isArray(s.seq) ? s : null; } catch(e){ return null; } }
-const emQuiz = () => !!(S && S.fase === "quiz");
-const ativo = () => GUARD && emQuiz();
-
-/* ---------- utilidades de tela ---------- */
-function atualizaAlertas(){ const el = $("#alertas"); if (el) el.hidden = true; }
-function registra(){ return false; }
-function veu(html, tipo){
-  const v = $("#veu"); v.dataset.tipo = tipo || ""; $("#veu-caixa").innerHTML = html; v.hidden = false;
-}
-function fechaVeu(){ $("#veu").hidden = true; $("#veu-caixa").style.maxWidth = ""; }
-document.addEventListener("visibilitychange", () => { if (S) salva(); });
-window.addEventListener("beforeunload", () => { if (S) salva(); });
-document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#veu").hidden && $("#veu").dataset.tipo === "prof") fechaVeu(); });
-function telaCheia(){}
-const bloqueadaAqui = false;
-function pingAbas(){}
-// consultas à apostila durante o quiz
-function contaApostila(){ if (emQuiz()){ S.ap = (S.ap||0) + 1; salva(); } }
-$("#tab-ap").addEventListener("click", contaApostila);
-
 /* ---------- quiz ---------- */
+const Q = DATA.questoes;
 const area = $("#q-area");
-let tick = null;
-function limpaTick(){ if (tick){ clearInterval(tick); tick = null; } }
-const LEITURA = 8, RAPIDA = 4, SEQ_RAPIDA = 2, PAUSA_RITMO = 20, MAX_RESP = 300;
-const LEMBRETES = DATA.conteudo.filter(b => b[0] === "box").map(b => b[1]);
-
-function telaInicio(){
-  limpaTick();
-  area.innerHTML = `<h2 style="margin-top:0;color:var(--brand)">Quiz: ${Q.length} questões</h2>
-    <p>Antes de começar, estude a apostila. O quiz é individual. Preencha seus dados:</p>
-    <label class="campo" for="f-nome">Nome completo</label><input class="txt" id="f-nome" autocomplete="name" maxlength="80">
-    <label class="campo" for="f-turma">Turma</label><input class="txt" id="f-turma" maxlength="20" placeholder="Ex.: 2º M01">
-    <ol class="regras">
-      <li>Escolha uma alternativa e clique em <strong>Confirmar resposta</strong>. Não é possível voltar.</li>
-      <li>Nas questões de completar, arraste cada resposta para o campo indicado (ou toque na resposta e depois no campo). Só uma resposta do quadro é correta. Para tirar a resposta do campo, toque nele.</li>
-      <li>Se errar, o quiz indica a seção da apostila que você deve reler e a questão volta mais adiante, com as alternativas embaralhadas. A resposta certa não é mostrada.</li>
-      <li>A nota considera a primeira resposta de cada questão.</li>
-      <li>Seu progresso fica salvo neste navegador. Se a página fechar, você continua de onde parou.</li>
-    </ol>
-    <div class="nav-q"><button class="btn" id="f-ir" type="button">Começar o quiz</button></div>
-    <p id="f-erro" class="no-t" hidden></p>`;
-  $("#f-ir").onclick = () => {
-    const nome = $("#f-nome").value.trim().replace(/\s+/g," "), turma = $("#f-turma").value.trim();
-    if (nome.split(" ").length < 2 || turma.length < 1){ const e=$("#f-erro"); e.hidden=false; e.textContent="Informe seu nome completo (nome e sobrenome) e sua turma."; return; }
-    const ord = embaralha(Q.map((_,i)=>i));   // ordem das questões sorteada para cada estudante
-    S = { v:6, seq: ord, nome, turma, inicio: agora(), fase:"quiz", atual: ord[0], fila: ord.slice(1), respondida:false, ordem:{}, resp:{}, infr:[], recargas:0,
-          abertaEm:null, leitRest:null, liberadaEm:null, pausaAte:null, pendente:null, fs:0, rushN:0, rushAte:null, ap:0 };
-    salva(); telaCheia(); pingAbas(); atualizaAlertas(); mostra();
-  };
+function carrega(){ try { const s = JSON.parse(localStorage.getItem(ST_KEY)); return s && s.resp && typeof s.atual === "number" && s.atual >= 0 && s.atual < Q.length ? s : null; } catch(e){ return null; } }
+let S = carrega() || { atual: 0, resp: {} };
+function salva(){ try { localStorage.setItem(ST_KEY, JSON.stringify(S)); } catch(e){} }
+const acertos = () => Q.filter((_,i) => S.resp[i] && S.resp[i].ok).length;
+const respondidas = () => Object.keys(S.resp).length;
+function ordBanco(qi){
+  S.bancos = S.bancos || {};
+  const o = S.bancos[qi];
+  if (Array.isArray(o) && o.length === Q[qi].b.length) return o;
+  S.bancos[qi] = embaralha(Q[qi].b.map((_,i)=>i)); salva(); return S.bancos[qi];
 }
-
-// ordem das alternativas: sorteada para cada estudante e sorteada de novo quando a questão volta
-function ordemDe(qi, tentativa){
-  const key = qi+"-"+tentativa;
-  const nOp = Q[qi].b ? Q[qi].b.length : Q[qi].a.length;
-  if (!Array.isArray(S.ordem[key]) || S.ordem[key].length !== nOp || S.ordem[key].some(i => !(i >= 0 && i < nOp))) S.ordem[key] = embaralha(Array.from({length:nOp},(_,i)=>i));   // alternativas sorteadas em toda aparição
-  return S.ordem[key];
-}
-const vistas = () => Object.keys(S.resp).length;
-function todasResp(){ const a = []; Object.keys(S.resp).forEach(k => S.resp[k].forEach(r => a.push(r))); return a; }
-function ritmo(){
-  const a = todasResp().filter(r => typeof r.e === "number");
-  if (!a.length) return { cls:"", txt:"🧠 Iniciando" };
-  const p = a.filter(r => r.r).length / a.length * 100;
-  if (p === 0) return { cls:"bom", txt:"🧠 Leitura consciente" };
-  if (p < 40) return { cls:"alerta", txt:"⚠️ Ritmo apressado" };
-  return { cls:"ruim", txt:"🚨 Leitura apressada" };
+function vai(i){
+  if (i < 0 || i >= Q.length) return;
+  S.atual = i; salva(); mostra();
+  $("#p-qz").scrollIntoView({behavior:"smooth"});
 }
 
 function mostra(){
-  limpaTick();
-  if (bloqueadaAqui) return;
-  if (S.fase === "fim") return telaFinal();
-  const qi = S.atual, q = Q[qi], rs = S.resp[qi] || [];
-  const tentativa = S.respondida ? rs.length - 1 : rs.length;
-  const ord = ordemDe(qi, tentativa);
-  if (!S.abertaEm) S.abertaEm = agora();
-  salva();
-  const v = vistas(), erros = todasResp().filter(r => !r.ok).length;
+  const qi = S.atual, q = Q[qi], r = S.resp[qi];
   area.innerHTML =
-    `<div class="qtopo"><span>Questões vistas: <b>${v}</b> de ${Q.length}</span>
-       <span class="pills"><span class="pill erro">❌ Erros: ${erros}</span></span>
-       <span>${esc(S.nome)} • ${esc(S.turma)}</span></div>
-     <div class="progresso" role="progressbar" aria-valuemin="0" aria-valuemax="${Q.length}" aria-valuenow="${v}"><div style="width:${v/Q.length*100}%"></div></div>
-     <div class="qnum">QUESTÃO ${String(S.seq.indexOf(qi)+1).padStart(2,"0")}${tentativa>0?' <span class="retorno">RETORNO</span>':""}</div>
+    `<div class="qtopo"><span>Questão <b>${qi+1}</b> de ${Q.length}</span>
+       <span class="pills"><span class="pill bom">✔ Acertos: ${acertos()}</span><span class="pill">Respondidas: ${respondidas()} de ${Q.length}</span></span></div>
+     <div class="qgrade" aria-label="Ir para uma questão">${Q.map((_,i) => { const x = S.resp[i]; return `<button type="button" class="qn${i===qi?" atual":""}${x?(x.ok?" ok":" no"):""}" data-i="${i}" aria-label="Questão ${i+1}">${i+1}</button>`; }).join("")}</div>
+     <div class="qnum">QUESTÃO ${String(qi+1).padStart(2,"0")}</div>
      ${q.t.map(t=>`<p>${md(t)}</p>`).join("")}
      <p class="qcomando">${md(q.q)}</p>
-     ${q.tipo==="arraste" ? htmlArraste(q, ord) : `<div class="alts">${ord.map((o,k)=>`<button class="alt" type="button" data-o="${o}" disabled><span class="le">${L[k]})</span><span class="tx">${md(q.a[o])}</span></button>`).join("")}</div>`}
+     ${q.tipo==="arraste" ? htmlArraste(q, ordBanco(qi)) : `<div class="alts">${q.a.map((a,o)=>`<button class="alt" type="button" data-o="${o}"><span class="le">${L[o]})</span><span class="tx">${md(a)}</span></button>`).join("")}</div>`}
      <div id="q-fb"></div>
-     <div class="nav-q" id="q-nav"></div>`;
-  if (S.respondida){ posResposta(qi, rs[rs.length-1], ord); return; }
+     <div class="nav-q" id="q-acao"></div>
+     <div class="nav-q nav-livre">
+       <button class="btn sec" id="q-zera" type="button">↺ Recomeçar</button>
+       <span class="esp"></span>
+       <button class="btn sec" id="q-ant" type="button" ${qi===0?"disabled":""}>← Anterior</button>
+       <button class="btn sec" id="q-seg" type="button" ${qi===Q.length-1?"disabled":""}>Próxima →</button>
+     </div>`;
+  area.querySelectorAll(".qn").forEach(b => b.onclick = () => vai(+b.dataset.i));
+  $("#q-ant").onclick = () => vai(qi-1);
+  $("#q-seg").onclick = () => vai(qi+1);
+  $("#q-zera").onclick = () => {
+    if (!confirm("Apagar todas as respostas e recomeçar o quiz?")) return;
+    S = { atual: 0, resp: {} }; salva(); mostra();
+  };
+  if (r) return resultado(qi, r);
   if (q.tipo === "arraste") return ligaArraste(qi, q);
   const alts = [...area.querySelectorAll(".alt")];
-  let escolhida = S.pendente && S.pendente.qi === qi ? S.pendente.o : null;
-  $("#q-nav").innerHTML = `<button class="btn" id="q-conf" type="button" disabled>Confirmar resposta</button>`;
+  let escolhida = null;
+  $("#q-acao").innerHTML = `<button class="btn" id="q-conf" type="button" disabled>Confirmar resposta</button>`;
   const conf = $("#q-conf");
   alts.forEach(b => b.onclick = () => {
-    escolhida = +b.dataset.o; S.pendente = {qi, o:escolhida}; salva();
+    escolhida = +b.dataset.o;
     alts.forEach(x => x.classList.toggle("sel", x===b)); conf.disabled = false;
   });
-  if (!S.liberadaEm) S.liberadaEm = agora(); salva();
-  alts.forEach(b => { b.disabled = false; if (+b.dataset.o === escolhida) { b.classList.add("sel"); conf.disabled = false; } });
   conf.onclick = () => {
-    if (escolhida === null || S.respondida) return;
-    const ok = gab()[qi][0] === escolhida;
-    const e = Math.round((agora() - (S.liberadaEm || agora())) / 1000);
-    const r = { o: escolhida, ok, t: agora(), e };
-    (S.resp[qi] = S.resp[qi] || []).push(r);
-    S.pendente = null; S.respondida = true;
-    if (!ok){
-      // a questão errada volta em uma posição aleatória da fila (nunca logo em seguida, se houver outras)
-      const n = S.fila.length, min = n > 0 ? 1 : 0;
-      S.fila.splice(min + Math.floor(Math.random() * (n - min + 1)), 0, qi);
-    }
+    if (escolhida === null) return;
+    S.resp[qi] = { o: escolhida, ok: gab()[qi][0] === escolhida };
     salva(); mostra();
   };
+}
+
+function resultado(qi, r){
+  const q = Q[qi];
+  if (q.tipo === "arraste") finalArraste(qi, r);
+  else area.querySelectorAll(".alt").forEach(b => { b.disabled = true; if (+b.dataset.o === r.o) b.classList.add(r.ok ? "certa" : "errada"); });
+  const sec = DATA.qsec[qi+1], fb = $("#q-fb"), ac = $("#q-acao");
+  if (r.ok){
+    fb.innerHTML = `<div class="feedback ok" role="status"><strong>Correto!</strong><p>${md(gab()[qi][1])}</p></div>`;
+    ac.innerHTML = qi < Q.length-1 ? `<button class="btn" id="q-prox" type="button">Próxima questão →</button>` : "";
+    if (qi < Q.length-1) $("#q-prox").onclick = () => vai(qi+1);
+  } else {
+    fb.innerHTML = `<div class="feedback no" role="status"><strong>Resposta incorreta.</strong><p>Releia a ${esc(secNome(sec))} da apostila e tente de novo.</p></div>`;
+    ac.innerHTML = `<button class="btn sec" id="q-sec" type="button">Abrir a seção ${sec} na apostila</button><button class="btn" id="q-nova" type="button">Tentar de novo</button>`;
+    $("#q-sec").onclick = () => irSecao(sec);
+    $("#q-nova").onclick = () => { delete S.resp[qi]; salva(); mostra(); };
+  }
+  if (respondidas() === Q.length)
+    fb.insertAdjacentHTML("afterbegin", `<div class="feedback ${acertos()===Q.length?"ok":"no"}" role="status"><strong>Você respondeu todas as questões: ${acertos()} de ${Q.length} corretas.</strong><p>${acertos()===Q.length?"Parabéns!":"Use os números acima para voltar às questões marcadas em vermelho e tentar de novo."}</p></div>`);
 }
 
 /* ---------- questões de completar (arrastar para o campo indicado) ---------- */
@@ -664,17 +620,16 @@ function finalArraste(qi, r){
 function ligaArraste(qi, q){
   const n = (q.f.match(/\{\d\}/g) || []).length;
   const lacs = [...area.querySelectorAll(".lac")], chips = [...area.querySelectorAll(".chip")];
-  let fill = S.pendente && S.pendente.qi === qi && Array.isArray(S.pendente.f) ? S.pendente.f.slice() : Array(n).fill(null);
-  fill = fill.length === n ? fill.map(x => x != null && x >= 0 && x < q.b.length ? x : null) : Array(n).fill(null);
+  let fill = Array(n).fill(null);
   let liberado = false, sel = null;
-  $("#q-nav").innerHTML = '<button class="btn" id="q-conf" type="button" disabled>Confirmar resposta</button>';
+  $("#q-acao").innerHTML = '<button class="btn" id="q-conf" type="button" disabled>Confirmar resposta</button>';
   const conf = $("#q-conf");
   const pinta = () => {
     lacs.forEach(l => { const b = fill[+l.dataset.l]; l.classList.toggle("cheia", b != null); l.classList.toggle("alvo", liberado && sel != null); l.querySelector(".lac-v").innerHTML = b != null ? md(q.b[b]) : ""; });
     chips.forEach(c => { const b = +c.dataset.b, usada = fill.includes(b); c.classList.toggle("usada", usada); c.classList.toggle("sel", sel === b); c.disabled = !liberado || usada; });
     conf.disabled = !liberado || fill.some(x => x == null);
   };
-  const guarda = () => { S.pendente = { qi, f: fill.slice() }; salva(); };
+  const guarda = () => {};
   const coloca = (b, i) => { const j = fill.indexOf(b); if (j >= 0) fill[j] = null; fill[i] = b; sel = null; guarda(); pinta(); };
   const tira = i => { if (fill[i] == null) return; fill[i] = null; guarda(); pinta(); };
   lacs.forEach(l => {
@@ -708,312 +663,16 @@ function ligaArraste(qi, q){
       c.addEventListener("pointermove", move); c.addEventListener("pointerup", fim); c.addEventListener("pointercancel", fim);
     });
   });
-  if (!S.liberadaEm) S.liberadaEm = agora(); salva();
   liberado = true; pinta();
   conf.onclick = () => {
-    if (fill.some(x => x == null) || S.respondida) return;
+    if (fill.some(x => x == null)) return;
     const certo = gab()[qi][0];
-    const ok = fill.every((b,i) => b === certo[i]);
-    const e = Math.round((agora() - (S.liberadaEm || agora())) / 1000);
-    const r = { f: fill.slice(), ok, t: agora(), e };
-    (S.resp[qi] = S.resp[qi] || []).push(r);
-    S.pendente = null; S.respondida = true;
-    if (!ok){
-      const nf = S.fila.length, min = nf > 0 ? 1 : 0;
-      S.fila.splice(min + Math.floor(Math.random() * (nf - min + 1)), 0, qi);
-    }
+    S.resp[qi] = { f: fill.slice(), ok: fill.every((b,i) => b === certo[i]) };
     salva(); mostra();
   };
 }
 
-function posResposta(qi, r, ord){
-  limpaTick();
-  const arr = Q[qi].tipo === "arraste";
-  if (arr) finalArraste(qi, r);
-  const alts = [...area.querySelectorAll(".alt")];
-  const certo = gab()[qi][0];
-  alts.forEach(b => {
-    b.disabled = true; b.onclick = null;
-    if (+b.dataset.o === r.o) b.classList.add(r.ok ? "certa" : "errada");
-    else if (!GUARD && !r.ok && +b.dataset.o === certo) b.classList.add("certa");
-  });
-  const sec = DATA.qsec[qi+1];
-  const fb = $("#q-fb"), nav = $("#q-nav");
-  const rotulo = S.fila.length ? "Próxima questão →" : "Concluir";
-  if (r.ok){
-    fb.innerHTML = `<div class="feedback ok" role="status"><strong>Correto!</strong><p>${md(gab()[qi][1])}</p></div>`;
-    nav.innerHTML = `<button class="btn" id="q-prox" type="button">${rotulo}</button>`;
-    $("#q-prox").onclick = avanca;
-    return;
-  }
-  const modoProf = !GUARD ? `<p class="prof-dica"><strong>Modo professor:</strong> ${arr ? "preenchimento correto = " + certo.map((b,i)=>`(${i+1}) ${Q[qi].b[b]}`).join("; ") : "alternativa correta = " + L[ord.indexOf(certo)]}. ${md(gab()[qi][1])}</p>` : "";
-  fb.innerHTML = `<div class="feedback no" role="status"><strong>Resposta incorreta.</strong><p>Releia a ${esc(secNome(sec))} da apostila.</p>${modoProf}</div>`;
-  nav.innerHTML = `<button class="btn sec" id="q-sec" type="button">Abrir a seção ${sec} na apostila</button><button class="btn" id="q-prox" type="button">${rotulo}</button>`;
-  $("#q-sec").onclick = () => { contaApostila(); irSecao(sec); };
-  const prox = $("#q-prox"); prox.onclick = avanca;
-}
-
-function avanca(){
-  limpaTick();
-  if (!S.respondida) return;
-  S.abertaEm = null; S.pausaAte = null; S.respondida = false; S.leitRest = null; S.liberadaEm = null;
-  if (S.fila.length && todasResp().length < MAX_RESP){ S.atual = S.fila.shift(); }
-  else { S.fase = "fim"; S.fim = agora(); }
-  salva(); mostra(); $("#p-qz").scrollIntoView({behavior:"smooth"});
-}
-
-/* ---------- resultado ---------- */
-function estat(){
-  const prim = Q.map((_,qi) => { const r = (S.resp[qi]||[])[0]; return !!(r && r.ok); });
-  const acertos1 = prim.filter(Boolean).length;
-  const todas = todasResp(), total = todas.length;
-  const acertos = todas.filter(r => r.ok).length, erros = total - acertos;
-  const dominadas = Q.filter((_,qi) => (S.resp[qi]||[]).some(r => r.ok)).length;
-  const tempos = todas.filter(r => typeof r.e === "number");
-  const media = tempos.length ? Math.round(tempos.reduce((s,r)=>s+r.e,0)/tempos.length) : 0;
-  const rapida = tempos.length ? Math.min(...tempos.map(r=>r.e)) : 0;
-  const apressadas = tempos.filter(r => r.r).length;
-  const pctAp = tempos.length ? Math.round(apressadas/tempos.length*100) : 0;
-  const nota = (acertos1/Q.length*10).toFixed(1).replace(".",",");
-  const dur = (S.fim||agora()) - S.inicio;
-  let diag;
-  if (pctAp === 0 && !S.rushN) diag = ["ok","Leitura consciente: ritmo adequado em todas as respostas."];
-  else if (pctAp < 40 && (S.rushN||0) <= 1) diag = ["alerta","Ritmo irregular: algumas respostas foram dadas rápido demais."];
-  else diag = ["ruim","Leitura apressada: muitas respostas sem tempo de reflexão."];
-  const limpo = !apressadas && !S.rushN;
-  return { prim, acertos1, total, acertos, erros, dominadas, media, rapida, apressadas, pctAp, nota, dur, diag, limpo, nTempos: tempos.length };
-}
-function resumo(){
-  const E = estat();
-  const registro = `${S.nome}|${S.turma}|${E.acertos1}|${E.total}|${S.infr.length}|${S.recargas}|${S.rushN||0}|${new Date(S.fim).toISOString()}`;
-  const cod = cyrb(registro + "|" + CHAVE).slice(0,10).padEnd(10,"0");
-  return Object.assign(E, { registro, codigo: cod.slice(0,5)+"-"+cod.slice(5) });
-}
-function linhaQuestao(qi){
-  const rs = S.resp[qi]||[], sec = DATA.qsec[qi+1], p = rs[0];
-  return { pos: S.seq.indexOf(qi), num: String(S.seq.indexOf(qi)+1).padStart(2,"0"), gab: String(qi+1).padStart(2,"0"), sec: `${sec}. ${DATA.secs[sec]}`, prim: p ? (p.ok ? "Acertou" : "Errou") : "Não respondida", ret: String(rs.length) };
-}
-function todasLinhas(){ return Q.map((_,qi) => linhaQuestao(qi)).sort((a,b) => a.pos - b.pos); }
-
-function contaAlertas(){
-  const m = {}; S.infr.forEach(i => m[i.tipo] = (m[i.tipo]||0)+1);
-  return Object.entries(m).map(([k,v]) => `${k} (${v})`);
-}
-// linhas do relatório (tela final, PDF e área do professor)
-function linhasRel(R, aluno){
-  return [
-    ["Desempenho", [
-      ["Nota (primeira tentativa)", `${R.nota} (${R.acertos1} de ${Q.length})`],
-      ...(aluno && S.fase !== "fim" ? [] : [["Questões resolvidas corretamente", `${R.dominadas} de ${Q.length}`]]),
-      ["Total de respostas dadas", String(R.total)],
-      ["Acertos / erros", `${R.acertos} / ${R.erros}`]]],
-    ["Tempo", [
-      ["Início", fmtData(S.inicio)], ["Fim", S.fim ? fmtData(S.fim) : "em andamento"], ["Duração", fmtDur(R.dur)],
-      ["Tempo médio de resposta", `${R.media} s`], ["Resposta mais rápida", `${R.rapida} s`]]],
-    ["Consultas", [["Apostila aberta durante o quiz", `${S.ap||0} vez(es)`]]]
-  ];
-}
-function tabelaRel(R, aluno){
-  return linhasRel(R, aluno).map(([tit, rows]) => `<h3 class="rel-h">${tit}</h3><div class="tw"><table><tbody>${rows.map(([a,b])=>`<tr><th style="width:46%">${esc(a)}</th><td>${esc(b)}</td></tr>`).join("")}</tbody></table></div>`).join("");
-}
-function telaFinal(){
-  limpaTick();
-  const R = resumo();
-  const msg = R.acertos1>=Math.ceil(Q.length*0.9) ? "Excelente! Você domina o conteúdo." :
-              R.acertos1>=Math.ceil(Q.length*0.7) ? "Muito bom! Revise as seções ligadas às questões que errou." :
-              R.acertos1>=Math.ceil(Q.length*0.5) ? "Bom começo. Releia as seções indicadas abaixo." :
-                               "Estude a apostila com calma, seção por seção, e converse com seu professor.";
-  const linhas = todasLinhas();
-  const errSecs = [...new Set(Q.map((_,qi)=>qi).filter(qi=>!R.prim[qi]).map(qi=>DATA.qsec[qi+1]))].sort((a,b)=>a-b);
-  area.innerHTML = `<div class="qnum centro">RELATÓRIO FINAL</div>
-    <div class="nota">${R.nota}</div>
-    <p class="centro"><strong>${R.acertos1} acertos em ${Q.length} questões na primeira tentativa</strong></p>
-    <p>${msg}</p>
-    <div class="tw"><table><tbody>
-      <tr><th style="width:46%">Estudante</th><td>${esc(S.nome)}</td></tr>
-      <tr><th>Turma</th><td>${esc(S.turma)}</td></tr>
-      <tr><th>Código de verificação</th><td><span class="codigo">${R.codigo}</span></td></tr>
-    </tbody></table></div>
-    ${tabelaRel(R)}
-    ${errSecs.length?`<p><strong>Seções para revisar:</strong> ${errSecs.map(n=>`<button class="btn sec" type="button" data-s="${n}" style="margin:3px">Seção ${n}</button>`).join("")}</p>`:""}
-    <h3 class="rel-h">Desempenho por questão</h3>
-    <div class="tw"><table><thead><tr><th>Questão</th><th>Seção da apostila</th><th>1ª tentativa</th><th>Tentativas</th></tr></thead><tbody>
-      ${linhas.map(l=>`<tr><td>${l.num}</td><td>${esc(l.sec)}</td><td class="${l.prim==="Acertou"?"ok-t":"no-t"}">${l.prim}</td><td>${l.ret}</td></tr>`).join("")}
-    </tbody></table></div>
-    <p style="font-size:.9rem;color:var(--muted)">Baixe o relatório em PDF e entregue ao professor do jeito que ele combinar com a turma. O código de verificação permite ao professor conferir os dados.</p>
-    <div class="nav-q"><button class="btn" id="r-pdf" type="button">⬇ Relatório em PDF</button></div>`;
-  area.querySelectorAll("[data-s]").forEach(b => b.onclick = () => irSecao(+b.dataset.s));
-  $("#r-pdf").onclick = () => relatorioPDF(R, linhas, $("#r-pdf"), true);
-}
-async function relatorioPDF(R, linhas, b, aluno){
-  const txt = b.textContent; b.disabled = true; b.textContent = "Gerando…";
-  try {
-    const conteudo = [["h1","Identificação"], ["tb",["Item","Registro"],[["Estudante", S.nome], ["Turma", S.turma], ["Situação", S.fase==="fim"?"Atividade concluída":"Atividade em andamento"]],[3600,6038]]];
-    linhasRel(R, aluno).forEach(([tit, rows]) => conteudo.push(["h1", tit], ["tb",["Item","Registro"], rows,[3600,6038]]));
-    conteudo.push(["h1","Verificação"], ["tb",["Item","Registro"],[["Código de verificação", R.codigo], ["Registro", R.registro]],[3600,6038]]);
-    conteudo.push(["h1","Desempenho por questão"], ["tb",(aluno ? ["Questão","Seção da apostila","1ª tentativa","Tentativas"] : ["Questão","Nº no gabarito","Seção da apostila","1ª tentativa","Tentativas"]), (aluno ? linhas.map(l=>[l.num,l.sec,l.prim,l.ret]) : linhas.map(l=>[l.num,l.gab,l.sec,l.prim,l.ret])),(aluno ? [1100,4900,1800,1838] : [1000,1300,4100,1700,1538])]);
-    if (S.infr.length) conteudo.push(["h1","Alertas em ordem cronológica"], ["tb",["Horário","Ocorrência"], S.infr.map(i=>[new Date(i.t).toLocaleTimeString("pt-BR"), i.tipo]),[2000,7638]]);
-    const D = { cab: DATA.cab, sub: "Relatório do quiz", rod: "Relatório do quiz",
-      cabLinhas: [`**Componente curricular:** ${DATA.cab.componente}. **Série/trimestre:** ${DATA.cab.serie}.`], conteudo };
-    const bytes = await gerarApostilaPDF(PDFLib, D);
-    baixa(bytes, `Relatorio_Quiz_${S.nome.replace(/[^A-Za-zÀ-ÿ0-9]+/g,"_")}.pdf`);
-  } catch(e){ console.error(e); alert("Não foi possível gerar o PDF neste navegador."); }
-  b.disabled = false; b.textContent = txt;
-}
-
-/* ---------- área do professor ---------- */
-$("#btn-prof").onclick = () => {
-  if (profAuth) return menuProf();
-  veu(`<h2>🔐 Área do professor</h2><label class="campo" for="p-senha">Senha</label>
-    <input class="txt" id="p-senha" type="password" autocomplete="off">
-    <p id="p-erro" class="no-t" hidden>Senha incorreta.</p>
-    <div class="nav-q" style="margin-top:12px"><button class="btn sec" id="p-sair" type="button">Cancelar</button><button class="btn" id="p-ok" type="button">Entrar</button></div>`, "prof");
-  $("#p-sair").onclick = fechaVeu;
-  const entra = () => {
-    if (cyrb($("#p-senha").value.trim()) !== SENHA_H){ $("#p-erro").hidden = false; $("#p-senha").value = ""; return; }
-    profAuth = true; menuProf();
-  };
-  $("#p-ok").onclick = entra;
-  $("#p-senha").onkeydown = e => { if (e.key === "Enter") entra(); };
-  setTimeout(()=>{const f=$("#p-senha"); if (f) f.focus();},50);
-};
-$("#veu").addEventListener("click", e => { if (e.target.id === "veu" && e.currentTarget.dataset.tipo === "prof") fechaVeu(); });
-function largo(){ $("#veu-caixa").style.maxWidth = "820px"; }
-function menuProf(){
-  if (!profAuth) return;
-  const tent = S ? `${esc(S.nome)} (${esc(S.turma)}), ${S.fase==="fim"?"concluída":"em andamento"}` : "nenhuma tentativa salva neste navegador";
-  veu(`<div class="prof"><h2>🛠️ Área do professor</h2>
-    <div class="tgrid">
-      <button class="btn" id="m-gab" type="button">📝 Conferir questões (gabarito)</button>
-      <button class="btn sec" id="m-rel" type="button" ${S?"":"disabled"}>📊 Relatório do estudante</button>
-      <button class="btn sec" id="m-cod" type="button">🔎 Conferir código de um relatório</button>
-      <button class="btn sec" id="m-reset" type="button" ${S?"":"disabled"}>🔄 Liberar nova tentativa</button>
-      <button class="btn sec" id="m-fechar" type="button">Fechar</button>
-    </div>
-    <p class="tnota"><strong>Tentativa salva neste navegador:</strong> ${tent}.</p>
-    <p class="tnota">Funcionamento: cada questão errada volta em posição aleatória da fila, com as alternativas embaralhadas; a ordem das questões e a posição das alternativas (e das respostas das questões de completar) são sorteadas para cada estudante (o gabarito abaixo usa a numeração e as letras do Quiz em PDF); o quiz só termina quando o estudante acerta todas as ${Q.length} (essa regra não aparece para os estudantes); ${SEQ_RAPIDA} respostas seguidas em menos de ${RAPIDA} s geram uma pausa reflexiva obrigatória de ${PAUSA_RITMO} s.</p></div>`, "prof");
-  $("#m-gab").onclick = () => gabarito("");
-  $("#m-rel").onclick = relProf;
-  $("#m-cod").onclick = conferirCodigo;
-  $("#m-fechar").onclick = fechaVeu;
-  $("#m-reset").onclick = () => {
-    if (!confirm("Apagar a tentativa salva neste navegador e liberar uma nova?")) return;
-    try { localStorage.removeItem(ST_KEY); } catch(e){}
-    S = null; limpaTick(); atualizaAlertas(); fechaVeu(); telaInicio();
-  };
-}
-function voltar(){ return `<div class="nav-q" style="justify-content:space-between;margin-bottom:10px"><button class="btn sec" id="m-voltar" type="button">← Voltar ao menu</button><button class="btn sec" id="m-x" type="button">✕ Fechar</button></div>`; }
-function ligaVoltar(){ $("#m-voltar").onclick = menuProf; $("#m-x").onclick = fechaVeu; }
-function gabarito(filtro){
-  const G = gab();
-  const dist = [0,0,0,0,0]; let nArr = 0; G.forEach(g => { if (typeof g[0] === "number") dist[g[0]]++; else nArr++; });
-  veu(`<div class="prof">${voltar()}<h2>📝 Conferir questões: gabarito completo</h2>
-    <div class="gstats">
-      <div><b>${Q.length}</b><span>Questões</span></div>
-      <div><b id="g-exib">${Q.length}</b><span>Exibidas</span></div>
-      ${dist.map((n,i)=>`<div><b>${n}</b><span>Letra ${L[i]}</span></div>`).join("")}<div><b>${nArr}</b><span>Completar</span></div>
-    </div>
-    <label class="campo" for="g-busca">🔎 Filtrar por seção, filósofa, enunciado ou comentário</label>
-    <input class="txt" id="g-busca" value="${esc(filtro)}" placeholder="Ex.: Butler, interseccionalidade, seção 6">
-    <div id="g-lista"></div></div>`, "prof");
-  largo(); ligaVoltar();
-  const lista = () => {
-    const f = $("#g-busca").value.toLowerCase().trim();
-    const itens = Q.map((q,i)=>({q,i})).filter(({q,i}) => {
-      if (!f) return true;
-      const sec = DATA.qsec[i+1];
-      const txt = [q.t.join(" "), q.q, (q.a || q.b).join(" "), q.f || "", G[i][1], `seção ${sec}`, DATA.secs[sec], `questão ${i+1}`].join(" ").toLowerCase();
-      return txt.includes(f);
-    });
-    $("#g-exib").textContent = itens.length;
-    $("#g-lista").innerHTML = itens.length ? itens.map(({q,i}) => {
-      const sec = DATA.qsec[i+1], c = G[i][0];
-      return `<div class="gcard"><div class="ghead"><span class="gnum">Questão ${String(i+1).padStart(2,"0")}</span><span class="gtag">Seção ${sec}: ${esc(DATA.secs[sec])}</span><span class="gresp">✅ ${q.tipo==="arraste" ? "Completar" : "Correta: " + L[c]}</span></div>
-        ${q.t.map(t=>`<p>${md(t)}</p>`).join("")}<p class="qcomando">${md(q.q)}</p>
-        ${q.tipo==="arraste"
-          ? `<div class="gopt certa">${q.f.split(/\{(\d)\}/).map((p,j)=> j%2 ? `<b>[(${+p+1}) ${md(q.b[c[+p]])}]</b>` : md(p)).join("")}</div><div class="gopt"><b>Respostas do quadro:</b> ${q.b.map((b,k)=> c.includes(k) ? `<strong>${md(b)}</strong>` : md(b)).join(" • ")}</div>`
-          : q.a.map((a,k)=>`<div class="gopt${k===c?" certa":""}"><b>${L[k]})</b> ${md(a)}</div>`).join("")}
-        <div class="gexp"><strong>Justificativa:</strong> ${md(G[i][1])}</div></div>`;
-    }).join("") : `<p class="centro">Nenhuma questão encontrada com esse filtro.</p>`;
-  };
-  $("#g-busca").oninput = lista; lista();
-}
-function relAluno(){
-  const el = $("#rel-area");
-  if (!S){ el.innerHTML = `<h2 style="margin-top:0;color:var(--brand)">Relatório</h2><p>O relatório aparece aqui depois que você começar o quiz.</p>`; return; }
-  const fim = S.fase === "fim";
-  const R = fim ? resumo() : Object.assign(estat(), { codigo: "gerado ao concluir o quiz", registro: "" });
-  const linhas = todasLinhas();
-  el.innerHTML = `<h2 style="margin-top:0;color:var(--brand)">📊 Relatório de desempenho</h2>
-    <div class="tstatus ${fim?"on":"off"}">${fim?"Atividade concluída":"Atividade em andamento"}</div>
-    <div class="tw"><table><tbody><tr><th style="width:46%">Estudante</th><td>${esc(S.nome)}</td></tr><tr><th>Turma</th><td>${esc(S.turma)}</td></tr>
-    <tr><th>Questões vistas</th><td>${vistas()} de ${Q.length}</td></tr><tr><th>Código de verificação</th><td>${fim?`<span class="codigo">${R.codigo}</span>`:esc(R.codigo)}</td></tr></tbody></table></div>
-    ${tabelaRel(R, true)}
-    <h3 class="rel-h">Desempenho por questão</h3>
-    <div class="tw"><table><thead><tr><th>Questão</th><th>Seção da apostila</th><th>1ª tentativa</th><th>Tentativas</th></tr></thead><tbody>
-    ${linhas.map(l=>`<tr><td>${l.num}</td><td>${esc(l.sec)}</td><td class="${l.prim==="Acertou"?"ok-t":l.prim==="Errou"?"no-t":""}">${l.prim}</td><td>${l.ret}</td></tr>`).join("")}</tbody></table></div>
-    ${S.infr.length?`<h3 class="rel-h">Alertas em ordem cronológica</h3><div class="tw"><table><tbody>${S.infr.map(i=>`<tr><td style="width:24%">${new Date(i.t).toLocaleTimeString("pt-BR")}</td><td>${esc(i.tipo)}</td></tr>`).join("")}</tbody></table></div>`:""}
-    <div class="nav-q" style="margin-top:12px"><button class="btn sec" id="rel-quiz" type="button">${fim?"Ver resultado no quiz":"Voltar ao quiz"}</button><button class="btn" id="rel-pdf" type="button">⬇ Relatório em PDF</button></div>`;
-  $("#rel-quiz").onclick = () => abre("#tab-qz","#p-qz");
-  $("#rel-pdf").onclick = () => relatorioPDF(R, linhas, $("#rel-pdf"), true);
-}
-$("#tab-rel").addEventListener("click", relAluno);
-
-function relProf(){
-  if (!S) return;
-  const R = S.fase === "fim" ? resumo() : Object.assign(estat(), { codigo: "gerado ao concluir", registro: "" });
-  const linhas = todasLinhas();
-  veu(`<div class="prof">${voltar()}<h2>📊 Relatório do estudante</h2>
-    <div class="tstatus ${S.fase==="fim"?"on":"off"}">${S.fase==="fim"?"Atividade concluída":"Atividade em andamento"}</div>
-    <div class="tw"><table><tbody><tr><th style="width:46%">Estudante</th><td>${esc(S.nome)}</td></tr><tr><th>Turma</th><td>${esc(S.turma)}</td></tr>
-    <tr><th>Questões vistas</th><td>${vistas()} de ${Q.length}</td></tr><tr><th>Código de verificação</th><td>${esc(R.codigo)}</td></tr></tbody></table></div>
-    ${tabelaRel(R)}
-    <h3 class="rel-h">Desempenho por questão</h3>
-    <div class="tw"><table><thead><tr><th>Questão</th><th>Nº no gabarito</th><th>Seção</th><th>1ª tentativa</th><th>Tentativas</th></tr></thead><tbody>
-    ${linhas.map(l=>`<tr><td>${l.num}</td><td>${l.gab}</td><td>${esc(l.sec)}</td><td class="${l.prim==="Acertou"?"ok-t":"no-t"}">${l.prim}</td><td>${l.ret}</td></tr>`).join("")}</tbody></table></div>
-    ${S.infr.length?`<h3 class="rel-h">Alertas em ordem cronológica</h3><div class="tw"><table><tbody>${S.infr.map(i=>`<tr><td style="width:24%">${new Date(i.t).toLocaleTimeString("pt-BR")}</td><td>${esc(i.tipo)}</td></tr>`).join("")}</tbody></table></div>`:""}
-    <div class="nav-q"><button class="btn" id="m-relpdf" type="button">⬇ Relatório em PDF</button></div></div>`, "prof");
-  largo(); ligaVoltar();
-  $("#m-relpdf").onclick = () => relatorioPDF(R, linhas, $("#m-relpdf"));
-}
-function conferirCodigo(){
-  veu(`<div class="prof">${voltar()}<h2>🔎 Conferir código de um relatório</h2>
-    <p style="font-size:.9rem">Cole a linha <em>Registro</em> e o <em>Código de verificação</em> que aparecem no relatório em PDF do estudante.</p>
-    <input class="txt" id="v-reg" placeholder="Registro"><input class="txt" id="v-cod" placeholder="Código (ex.: AB12C-D34EF)" style="margin-top:8px">
-    <p id="v-res"></p>
-    <div class="nav-q"><button class="btn" id="v-ok" type="button">Conferir</button></div></div>`, "prof");
-  ligaVoltar();
-  $("#v-ok").onclick = () => {
-    const reg = $("#v-reg").value.trim(), cod = $("#v-cod").value.trim().toUpperCase();
-    const calc = cyrb(reg + "|" + CHAVE).slice(0,10).padEnd(10,"0"); const fmt = calc.slice(0,5)+"-"+calc.slice(5);
-    $("#v-res").innerHTML = reg && cod === fmt ? `<span class="ok-t">Código válido: os dados do registro não foram alterados.</span>` : `<span class="no-t">Código não confere com o registro.</span>`;
-  };
-}
-
-/* ---------- início ---------- */
-function retomada(){
-  const E = estat();
-  veu(`<h2>💾 Você tem uma atividade em andamento</h2>
-    <p>Encontramos o seu progresso salvo neste navegador. Continue de onde parou.</p>
-    <div class="tw"><table><tbody>
-      <tr><th style="width:46%">Estudante</th><td>${esc(S.nome)} (${esc(S.turma)})</td></tr>
-      <tr><th>Início</th><td>${fmtData(S.inicio)}</td></tr>
-      <tr><th>Questões vistas</th><td>${vistas()} de ${Q.length}</td></tr>
-      <tr><th>Respostas dadas</th><td>${E.total}</td></tr>
-    </tbody></table></div>
-    <div class="nav-q"><button class="btn sec" id="res-reini" type="button">🔄 Reiniciar</button><button class="btn" id="res-ok" type="button">▶ Continuar</button></div>`, "retomada");
-  $("#res-ok").onclick = () => { fechaVeu(); abre("#tab-qz","#p-qz"); };
-  const reinicia = () => {
-    if (!confirm("Apagar o progresso salvo e recomeçar o quiz do início?")) return;
-    try { localStorage.removeItem(ST_KEY); } catch(e){}
-    S = null; limpaTick(); atualizaAlertas(); fechaVeu(); telaInicio(); abre("#tab-qz","#p-qz");
-  };
-  $("#res-reini").onclick = reinicia;
-}
-S = carrega();
-atualizaAlertas();
-if (S) mostra(); else telaInicio();
-if (S && emQuiz()) retomada();
+mostra();
 })();
 </script>
 </body>
