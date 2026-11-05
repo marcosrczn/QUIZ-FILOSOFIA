@@ -450,11 +450,11 @@ var reNome=/^(nome|name|aluno|estudante|student|fullname)([_ -]?(completo|do_?al
   reConcluido=/(conclu|finaliz|terminou|encerr|done|finished|completo$)/i,
   reCorreta=/^(correta|correto|acertou|acerto|certa|certo|correct|iscorrect|is_correct|ok|resultado)$/i,
   ORDEM_Q=['original','noriginal','numoriginal','questao','questão','q','numero','número','num','pergunta','qid','n','indice','índice','idx','id'];
-function lerLista(ex,x){
+function lerLista(ex,x,ids){
   var c=0,e=0,t=0,vistas={},pc=0,pt=0;
-  x.forEach(function(it){
+  x.forEach(function(it,i){
     if(!it||typeof it!=='object'||Array.isArray(it))return;
-    var ok=null,qid=null,qr=99;
+    var ok=null,qid=ids?ids[i]:null,qr=ids?-1:99;
     Object.keys(it).forEach(function(k){
       var v=it[k];
       if(reCorreta.test(k)){if(typeof v==='boolean')ok=v;else if(typeof v==='string'){var l=v.toLowerCase();if(/^(correta|certa|acerto|sim|correct|true)$/.test(l))ok=true;else if(/^(errada|erro|nao|não|wrong|false)$/.test(l))ok=false}}
@@ -472,7 +472,10 @@ function andar(ex,chave,v,prof){
     if(chave){if(reAlertas.test(chave)&&v.length>ex.alertas)ex.alertas=v.length;else if(reRespostas.test(chave)&&v.length>ex.respostas)ex.respostas=v.length}
     if(v.length<=400)v.forEach(function(x){andar(ex,'',x,prof+1)});return;
   }
-  if(typeof v==='object'){Object.keys(v).forEach(function(k){andar(ex,k,v[k],prof+1)});return}
+  if(typeof v==='object'){var ks=Object.keys(v);
+    /* respostas guardadas por número da questão: {"0":{ok:true},"1":{ok:false}} */
+    if(ks.length&&ks.every(function(k){return/^\d+$/.test(k)&&v[k]&&typeof v[k]==='object'&&!Array.isArray(v[k])}))lerLista(ex,ks.map(function(k){return v[k]}),ks);
+    ks.forEach(function(k){andar(ex,k,v[k],prof+1)});return}
   if(typeof v==='string'){var s=v.trim();if(!s||s.length>90)return;
     if(!ex.nome&&s.length>=3&&reNome.test(chave))ex.nome=s;else if(!ex.turma&&reTurma.test(chave))ex.turma=s;else if(!ex.nota&&reNota.test(chave))ex.nota=s;return}
   if(typeof v==='number'){var n=String(v);
