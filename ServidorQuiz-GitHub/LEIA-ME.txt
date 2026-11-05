@@ -1,0 +1,39 @@
+SERVIDOR DE QUIZZES — VERSÃO GITHUB (sem programa no computador)
+================================================================
+
+Tudo fica no seu repositório do GitHub: o portal dos estudantes, o painel do
+professor e os quizzes. O painel aberto no seu navegador acompanha as respostas
+ao vivo, como o programa fazia.
+
+PUBLICAR (uma vez)
+1. No GitHub, abra um repositório PÚBLICO (ou crie um).
+2. Envie TODOS os arquivos desta pasta, mantendo a pasta "quizzes":
+   index.html, painel.html, captura.js, sq-mural.js, qrcode.js e quizzes/
+   (Add file > Upload files > arraste tudo > Commit changes)
+3. Settings > Pages > Branch: main, pasta / (root) > Save.
+   Em 1 ou 2 minutos fica pronto em:
+   https://SEU-USUARIO.github.io/NOME-DO-REPOSITORIO/
+
+USAR
+- Painel do professor:  https://SEU-USUARIO.github.io/NOME-DO-REPOSITORIO/painel.html
+  (salve nos favoritos; abra sempre no mesmo navegador e computador)
+- Novos quizzes: envie o .html para a pasta "quizzes" do repositório e clique em
+  "Atualizar lista" no painel. O nome que aparece é o nome do arquivo.
+- Para a turma entrar: "Mostrar link" ao lado do quiz (QR no projetor) ou
+  "Copiar link". O link geral do painel abre a lista de atividades.
+- Resultados: botão "Resultados" > "Baixar PDF" (na janela de impressão, escolha
+  "Salvar como PDF").
+- Nova aula: baixa uma cópia (.json) dos dados e limpa o painel.
+
+COMO OS DADOS CHEGAM
+O quiz no celular manda o que registra por murais públicos gratuitos (EMQX,
+HiveMQ, Mosquitto), sempre embaralhado com o código da sua sala: ninguém mais
+consegue ler. As respostas ficam guardadas no celular até o painel confirmar que
+recebeu. Se o painel estiver fechado, elas chegam quando você abrir o painel e o
+estudante estiver com o quiz aberto.
+
+IMPORTANTE
+- Os dados ficam guardados no navegador do computador onde o painel está aberto.
+  Para usar outro computador: Configurações > Copiar código, e cole o código lá.
+- Mensagens para os estudantes só chegam a quem estiver com o quiz aberto.
+- O quiz ao vivo (questão na TV) continua só no programa ServidorQuiz.exe.
