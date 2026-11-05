@@ -1,0 +1,778 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Painel do professor</title>
+<style>
+/* Servidor de Quizzes — estilo vidro (liquid glass), cores de lousa e giz */
+:root{
+  color-scheme:light dark;
+  --fonte:"Segoe UI Variable Text","Segoe UI Variable","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Roboto,sans-serif;
+  --fonte-titulo:"Segoe UI Variable Display","Segoe UI Variable","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+  --fonte-mono:"Cascadia Mono",Consolas,ui-monospace,monospace;
+
+  --fundo:#D8E0E2;
+  --mancha-1:#A7BCAD;   /* musgo */
+  --mancha-2:#9EB1BC;   /* ardósia azulada */
+  --mancha-3:#CFC7BA;   /* pedra */
+  --vidro:rgba(255,255,255,.50);
+  --vidro-forte:rgba(255,255,255,.68);
+  --vidro-fino:rgba(255,255,255,.32);
+  --borda-vidro:rgba(255,255,255,.72);
+  --brilho:rgba(255,255,255,.85);
+  --sombra:0 1px 2px rgba(30,42,47,.06),0 12px 40px rgba(30,42,47,.12);
+  --linha:rgba(31,42,47,.10);
+
+  --tinta:#1F2A2F;
+  --suave:#52626A;
+  --fraco:#7A888E;
+  --acento:#2E4853;
+  --sobre-acento:#F4F7F7;
+  --musgo:#47705B;  --musgo-tinta:rgba(71,112,91,.14);
+  --ambar:#8F6A2C;  --ambar-tinta:rgba(170,128,58,.16);
+  --ferrugem:#9C4F43; --ferrugem-tinta:rgba(156,79,67,.13);
+  --ardosia-tinta:rgba(46,72,83,.10);
+  --raio-g:22px; --raio-m:14px; --raio-p:10px;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --fundo:#1C2427;
+    --mancha-1:#2C4A40;
+    --mancha-2:#283D4B;
+    --mancha-3:#3A3530;
+    --vidro:rgba(38,50,55,.46);
+    --vidro-forte:rgba(40,53,58,.66);
+    --vidro-fino:rgba(255,255,255,.05);
+    --borda-vidro:rgba(255,255,255,.11);
+    --brilho:rgba(255,255,255,.10);
+    --sombra:0 1px 2px rgba(0,0,0,.25),0 14px 44px rgba(0,0,0,.35);
+    --linha:rgba(255,255,255,.08);
+    --tinta:#EDF1F0;
+    --suave:#B3BFC2;
+    --fraco:#85949A;
+    --acento:#D8E3E6;
+    --sobre-acento:#1C2427;
+    --musgo:#8FB59D;  --musgo-tinta:rgba(143,181,157,.14);
+    --ambar:#D4B47D;  --ambar-tinta:rgba(212,180,125,.14);
+    --ferrugem:#D69083; --ferrugem-tinta:rgba(214,144,131,.14);
+    --ardosia-tinta:rgba(216,227,230,.08);
+  }
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{min-height:100%;background:var(--fundo)}
+body{
+  margin:0;min-height:100vh;color:var(--tinta);font:15px/1.5 var(--fonte);
+  font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;
+  background:
+    radial-gradient(60vmax 50vmax at 8% 6%,var(--mancha-1) 0%,transparent 60%),
+    radial-gradient(55vmax 45vmax at 96% 18%,var(--mancha-2) 0%,transparent 62%),
+    radial-gradient(50vmax 45vmax at 60% 100%,var(--mancha-3) 0%,transparent 60%),
+    var(--fundo);
+  background-attachment:fixed;
+}
+button,select,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--acento);outline-offset:2px}
+
+.vidro{
+  background:var(--vidro);
+  -webkit-backdrop-filter:blur(26px) saturate(150%);backdrop-filter:blur(26px) saturate(150%);
+  border:1px solid var(--borda-vidro);
+  box-shadow:inset 0 1px 0 var(--brilho),var(--sombra);
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  :root{--vidro:rgba(246,248,248,.94);--vidro-forte:rgba(250,251,251,.97)}
+  @media (prefers-color-scheme:dark){:root{--vidro:rgba(36,47,52,.95);--vidro-forte:rgba(40,52,57,.97)}}
+}
+@media (prefers-reduced-transparency:reduce){
+  :root{--vidro:rgba(246,248,248,.96);--vidro-forte:#fff}
+  @media (prefers-color-scheme:dark){:root{--vidro:#263236;--vidro-forte:#2B383D}}
+}
+
+.botao{
+  display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:8px 16px;
+  font-weight:600;font-size:14px;text-decoration:none;color:var(--tinta);
+  background:var(--vidro-fino);border:1px solid var(--borda-vidro);
+  box-shadow:inset 0 1px 0 var(--brilho);transition:background .15s,transform .1s;
+}
+.botao:hover{background:var(--vidro-forte)}
+.botao:active{transform:scale(.97)}
+.botao.pri{background:var(--acento);color:var(--sobre-acento);border-color:transparent;box-shadow:0 4px 14px rgba(30,42,47,.18)}
+.botao.pri:hover{filter:brightness(1.12)}
+.botao.perigo{color:var(--ferrugem)}
+.botao.peq{padding:5px 12px;font-size:13px}
+.botao:disabled{opacity:.5;cursor:default}
+
+header{position:sticky;top:12px;z-index:20;margin:12px 16px 0}
+.topo{max-width:1400px;margin:0 auto;padding:10px 12px 10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-radius:var(--raio-g)}
+.topo h1{font:600 19px/1.2 var(--fonte-titulo);margin:0;flex:1;min-width:200px;display:flex;align-items:center;gap:12px}
+.vivo{display:inline-flex;align-items:center;gap:7px;font:500 12.5px var(--fonte);color:var(--suave);padding:4px 10px;border-radius:999px;background:var(--ardosia-tinta)}
+.vivo i{width:8px;height:8px;border-radius:50%;background:var(--musgo)}
+.vivo.off i{background:var(--ferrugem)}
+main{max-width:1400px;margin:0 auto;padding:18px 16px 60px;display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px}
+@media (max-width:1080px){main{grid-template-columns:minmax(0,1fr)}}
+.cartao{border-radius:var(--raio-g);overflow:hidden}
+.cartao h2{font:600 16.5px/1.25 var(--fonte-titulo);margin:0}
+.cab{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 18px;border-bottom:1px solid var(--linha);flex-wrap:wrap}
+.cab small{color:var(--fraco);font-size:12.5px}
+.entrar{display:flex;gap:18px;padding:18px;align-items:flex-start;flex-wrap:wrap}
+.qr{width:150px;height:150px;border-radius:16px;background:#fff;padding:8px;flex:none;box-shadow:0 0 0 1px var(--linha);display:grid;place-items:center;cursor:zoom-in}
+.qr img,.qr canvas{width:134px!important;height:134px!important;image-rendering:pixelated}
+.rot{font-size:13px;font-weight:600;color:var(--suave)}
+.url{font:600 14.5px/1.35 var(--fonte-mono);word-break:break-all;margin:4px 0 8px}
+.nota{font-size:13px;color:var(--suave);line-height:1.45}
+.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}
+@media (max-width:760px){.nums{grid-template-columns:repeat(2,1fr)}}
+.num{border-radius:var(--raio-m);padding:13px 16px}
+.num b{display:block;font:600 30px/1.1 var(--fonte-titulo)}
+.num span{font-size:13px;color:var(--suave)}
+.num.verde b{color:var(--musgo)}.num.ambar b{color:var(--ambar)}.num.azul b{color:var(--acento)}
+.qz{display:flex;align-items:center;gap:8px;padding:11px 18px;border-top:1px solid var(--linha);flex-wrap:wrap}
+.qz:first-child{border-top:0}
+.qz .t{flex:1;min-width:210px}
+.qz .t b{display:block;font-weight:600}
+.pill{display:inline-block;font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--ardosia-tinta);color:var(--suave);margin-right:4px}
+.filtros{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.filtros select,.filtros input[type=search]{border:1px solid var(--linha);border-radius:999px;padding:6px 12px;background:var(--vidro-fino);font-size:13.5px}
+.tabela{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:12.5px;font-weight:600;color:var(--fraco);padding:10px 12px;border-bottom:1px solid var(--linha);white-space:nowrap}
+th.n,td.n{text-align:center}
+th:first-child,td:first-child{padding-left:18px}
+td{padding:10px 12px;border-bottom:1px solid var(--linha);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+tr.linha{cursor:pointer}
+tr.linha:hover td{background:var(--vidro-fino)}
+.est b{display:block;font-weight:600}
+.est small{color:var(--fraco);font-size:12.5px}
+.sit{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;white-space:nowrap}
+.sit i{width:9px;height:9px;border-radius:50%;background:var(--fraco);opacity:.5}
+.sit.on i{background:var(--musgo);opacity:1}
+.sit.fora i{background:var(--ambar);opacity:1}
+.sit.fim i{background:var(--acento);opacity:1}
+.tag{display:inline-block;font-size:12.5px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.tag.ok{background:var(--musgo-tinta);color:var(--musgo)}
+.tag.al{background:var(--ferrugem-tinta);color:var(--ferrugem)}
+.tag.av{background:var(--ambar-tinta);color:var(--ambar)}
+.tag.off{color:var(--fraco);padding-left:0}
+.vazio{padding:34px 18px;text-align:center;color:var(--suave)}
+aside .cartao{position:sticky;top:96px;max-height:calc(100vh - 116px);display:flex;flex-direction:column}
+.feed{overflow:auto}
+.ev{padding:9px 18px 9px 16px;border-left:2px solid transparent;font-size:13.5px}
+.ev+.ev{border-top:1px solid var(--linha)}
+.ev small{display:block;color:var(--fraco);font-size:12px}
+.ev.al{border-left-color:var(--ferrugem)}.ev.ok{border-left-color:var(--musgo)}
+.veu{position:fixed;inset:0;background:rgba(20,28,32,.28);z-index:40;display:none}
+.veu.aberto{display:block}
+.gaveta{position:fixed;top:12px;right:12px;bottom:12px;width:min(560px,calc(100% - 24px));z-index:41;border-radius:var(--raio-g);transform:translateX(calc(100% + 24px));transition:transform .28s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;background:var(--vidro-forte)}
+.gaveta.aberta{transform:none}
+.gaveta .corpo{overflow:auto;padding:18px}
+.grade{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.grade div{background:var(--vidro-fino);border:1px solid var(--linha);border-radius:var(--raio-m);padding:9px 12px}
+.grade b{display:block;font-size:18px}
+.grade span{font-size:12.5px;color:var(--suave)}
+h3{font:600 14.5px var(--fonte-titulo);margin:18px 0 8px}
+.msgbox{display:flex;gap:8px;align-items:flex-end}
+.msgbox textarea{flex:1;border:1px solid var(--linha);border-radius:var(--raio-m);padding:9px 12px;resize:vertical;min-height:44px;background:var(--vidro-fino)}
+.esc p{margin:0 0 4px;font-size:13.5px;color:var(--suave)}
+.esc{margin-bottom:10px}
+dialog{border:1px solid var(--borda-vidro);border-radius:var(--raio-g);padding:0;width:min(560px,calc(100% - 32px));color:var(--tinta);background:var(--vidro-forte);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);box-shadow:var(--sombra)}
+dialog::backdrop{background:rgba(20,28,32,.32)}
+dialog .corpo{padding:16px 18px}
+dialog label{display:block;font-size:13px;font-weight:600;color:var(--suave);margin:12px 0 5px}
+dialog input,dialog textarea,dialog select{width:100%;border:1px solid var(--linha);border-radius:12px;padding:9px 12px;background:var(--vidro-fino)}
+dialog textarea{min-height:100px;resize:vertical}
+.acoes{display:flex;justify-content:flex-end;gap:8px;padding:0 18px 18px;flex-wrap:wrap}
+.rapidas{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.rapidas button{border:1px solid var(--linha);background:var(--vidro-fino);border-radius:999px;padding:4px 11px;font-size:13px}
+.proj{position:fixed;inset:0;z-index:60;display:none;flex-direction:column;align-items:center;justify-content:center;gap:2vh;background:var(--fundo)}
+.proj.aberto{display:flex}
+.proj .placa{padding:3vh;border-radius:36px;display:flex;flex-direction:column;align-items:center;gap:2vh;max-width:94vw}
+.proj .qrg{background:#fff;border-radius:24px;padding:1.6vh}
+.proj .qrg img,.proj .qrg canvas{width:min(56vh,76vw)!important;height:min(56vh,76vw)!important;image-rendering:pixelated}
+.proj p{font:clamp(16px,2.1vw,26px)/1.3 var(--fonte-titulo);margin:0;color:var(--suave);text-align:center}
+.proj .x{position:absolute;top:18px;right:18px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,8px);padding:10px 18px;border-radius:999px;z-index:80;font-size:14px;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;background:var(--vidro-forte)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+/* resultados */
+#vRes{grid-column:1/-1;display:none;flex-direction:column;gap:18px}
+body.res #vRes{display:flex}
+body.res #vPainel,body.res #vQuiz,body.res aside{display:none!important}
+.gres .cab h2{font-size:18px}
+#grupos{display:flex;flex-direction:column;gap:18px}
+.gnums{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--linha)}
+.gnums div{padding:12px 18px}.gnums div+div{border-left:1px solid var(--linha)}
+.gnums b{display:block;font:600 22px/1.1 var(--fonte-titulo)}
+.gnums span{font-size:12.5px;color:var(--suave)}
+td.nota{font-weight:600;font-size:15px}
+.impr{display:none}
+@media print{
+  @page{size:A4;margin:12mm}
+  body{background:#fff!important;color:#000}
+  header,aside,#vPainel,.gaveta,.veu,.toast,.semimpr,.proj{display:none!important}
+  main{display:block;padding:0}
+  #vRes{display:flex!important}
+  .vidro{background:#fff!important;box-shadow:none!important;border:1px solid #ccc!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+  .gres{break-inside:avoid-page}
+  .impr{display:block;font:600 22px Georgia,serif;margin:0 0 4px}
+  .imprsub{display:block;font-size:12px;color:#555;margin-bottom:14px}
+  .rodape{display:block!important;font-size:10px;color:#666;margin-top:16px}
+}
+.rodape{display:none}
+
+/* ===== Tema Crepúsculo: azul-noite e lilás, vidro escuro (vale em qualquer configuração do sistema) ===== */
+html:root{color-scheme:dark;
+  --fundo:#1A2238;--mancha-1:#3B2F55;--mancha-2:#24365A;--mancha-3:#45304A;
+  --vidro:rgba(255,255,255,.065);--vidro-forte:rgba(30,38,64,.78);--vidro-fino:rgba(255,255,255,.05);
+  --borda-vidro:rgba(255,255,255,.10);--brilho:rgba(255,255,255,.07);--linha:rgba(236,232,245,.09);
+  --sombra:0 1px 2px rgba(0,0,0,.3),0 16px 44px rgba(8,10,24,.45);
+  --tinta:#ECE8F5;--suave:#B7B1CC;--fraco:#8A86A3;--acento:#B9A6E8;--sobre-acento:#1E2A44;
+  --musgo:#9FE1CB;--musgo-tinta:rgba(159,225,203,.13);--ambar:#FAC775;--ambar-tinta:rgba(250,199,117,.13);
+  --ferrugem:#F09595;--ferrugem-tinta:rgba(240,149,149,.13);--ardosia-tinta:rgba(185,166,232,.12)}
+html:root body{background:
+  radial-gradient(60vmax 50vmax at 8% 6%,var(--mancha-1) 0%,transparent 60%),
+  radial-gradient(55vmax 45vmax at 96% 18%,var(--mancha-2) 0%,transparent 62%),
+  radial-gradient(50vmax 45vmax at 60% 100%,var(--mancha-3) 0%,transparent 60%),
+  linear-gradient(160deg,#1E2A44,#2E2846 60%,#3B2F4A);background-attachment:fixed}
+.botao.pri{box-shadow:0 4px 16px rgba(185,166,232,.28)}
+.botao.pri:hover{filter:brightness(1.06)}
+.botao{color:var(--tinta)}
+dialog,.gaveta{background:rgba(30,38,64,.92)}
+select,input,textarea{color:var(--tinta)}
+select option{background:#1E2A44;color:#ECE8F5}
+.veu{background:rgba(6,8,20,.5)}
+/* QR e projetor continuam claros: leem melhor na TV */
+.qr{background:#fff}
+.proj{background:#F4F2F8!important;color:#1E2A44}
+.proj p{color:#3B3556}
+.proj .placa{background:rgba(255,255,255,.75)!important;border-color:rgba(30,42,68,.12)!important}
+.proj .x{color:#1E2A44;background:#fff;border-color:rgba(30,42,68,.2)}
+/* ===== painel enxuto ===== */
+main{grid-template-columns:minmax(0,1fr)!important;max-width:1180px}
+.abas{display:flex;gap:4px;padding:4px;border-radius:999px;background:var(--vidro-fino);border:1px solid var(--linha)}
+.abas button{border:0;background:none;color:var(--suave);font:600 14px var(--fonte);padding:7px 14px;border-radius:999px;cursor:pointer}
+.abas button.on{background:var(--acento);color:var(--sobre-acento)}
+#vPainel{display:flex;flex-direction:column;gap:18px}
+.dupla{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+@media (max-width:900px){.dupla{grid-template-columns:1fr}}
+.acesso{display:flex;gap:16px;align-items:center;padding:14px 18px 18px}
+.acesso .qr{flex:none;width:118px!important;height:118px!important;padding:8px!important;border-radius:14px;cursor:pointer;overflow:hidden;box-sizing:border-box}
+.acesso .qr img{width:102px!important;height:102px!important;display:block;image-rendering:pixelated}
+.acesso>div:last-child{min-width:0}
+.acesso .url{font:13px var(--fonte-mono);word-break:break-all;margin-bottom:8px}
+.rolar{max-height:206px;overflow:auto}
+.qp{display:flex;align-items:center;gap:8px;padding:9px 18px;border-top:1px solid var(--linha)}
+.qp:first-child{border-top:0}
+.qp{flex-wrap:wrap}.qp .t{flex:1;min-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qp .t small{display:block;color:var(--fraco);font-size:12px}
+.cod{font:600 12.5px var(--fonte-mono);padding:3px 9px;border-radius:999px;background:var(--ardosia-tinta);color:var(--acento)}
+.cod.sem{color:var(--fraco);font-family:var(--fonte);font-weight:500}
+.resumo{font:400 13px var(--fonte);color:var(--suave);margin-left:10px}
+.resumo b{color:var(--tinta)}
+#vQuiz{display:none;flex-direction:column;gap:18px}
+body.qz #vQuiz{display:flex}
+body.qz #vPainel{display:none}
+.pad{padding:0 18px 16px}
+.gq .cab h2{font-size:17px}
+.gq .cab small{color:var(--fraco)}
+.bt{display:flex;gap:6px;flex-wrap:wrap}
+.qe{display:grid;grid-template-columns:minmax(0,1fr) 150px 140px auto;gap:10px;align-items:center;padding:10px 18px;border-top:1px solid var(--linha)}
+.qe:first-of-type{border-top:0}
+@media (max-width:820px){.qe{grid-template-columns:1fr 1fr}.qe .t{grid-column:1/-1}}
+.qe .t b{font-weight:600}
+.qe select,.qe input{width:100%;border:1px solid var(--linha);border-radius:10px;padding:7px 10px;background:var(--vidro-fino);font:inherit;font-size:13.5px}
+.qe input{font-family:var(--fonte-mono)}
+.qe input.erro{border-color:var(--ferrugem)}
+.qe .bt{display:flex;gap:6px}
+tr.linha{cursor:pointer}
+.topico{border:1px solid var(--linha);background:var(--vidro-fino);border-radius:var(--raio-m);padding:4px 14px 12px;margin-bottom:12px}
+.topico h3{margin:10px 0 6px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--acento)}
+.li{display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:14.5px}
+.li span{color:var(--suave)}
+.li b{text-align:right}
+.tres{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tres div{text-align:center;padding:8px 4px;border-radius:10px;background:var(--vidro)}
+.tres b{display:block;font:600 24px/1.1 var(--fonte-titulo)}
+.tres span{font-size:12px;color:var(--suave)}
+.esc2{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:6px 0;border-top:1px solid var(--linha);font-size:13.5px;color:var(--suave)}
+.esc2:first-of-type{border-top:0}
+.remover{background:none;border:0;color:var(--fraco);font-size:12.5px;text-decoration:underline;cursor:pointer;padding:4px 0}
+@media print{#vQuiz{display:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="topo vidro">
+    <h1>Painel do professor <span class="vivo off" id="vivo" title="Murais conectados"><i></i><span>conectando…</span></span></h1>
+    <nav class="abas" aria-label="Seções"><button type="button" id="tPainel" class="on">Painel</button><button type="button" id="tQuiz">Quizzes disponíveis</button><button type="button" id="bRes">Resultados</button></nav>
+    <button class="botao pri" id="bMsgTodos" type="button">Mensagem</button>
+    <button class="botao" id="bConfig" type="button" title="Configurações">Configurações</button>
+  </div>
+</header>
+
+<main>
+  <section id="vPainel">
+    <div class="dupla">
+      <div class="cartao vidro">
+        <div class="cab"><h2>Entrada dos estudantes</h2><span class="bt"><button class="botao peq" data-a="copiar" data-q="" type="button">Copiar link</button><button class="botao peq" data-a="qrcopy" data-q="" type="button">Copiar QR</button><button class="botao peq" data-a="wa" data-q="" type="button">WhatsApp</button><button class="botao peq" id="bProjetar" type="button">Projetar</button></span></div>
+        <div class="acesso">
+          <div class="qr" id="qrGeral" title="Mostrar no projetor"></div>
+          <div><div class="url" id="urlGeral"></div>
+            <div class="nota">O estudante abre este link e digita o código de acesso do quiz, ou escolhe na lista da turma dele.</div></div>
+        </div>
+      </div>
+      <div class="cartao vidro">
+        <div class="cab"><h2>Quizzes da pasta</h2><button class="botao peq" id="bIrQuiz" type="button">Organizar e criar códigos</button></div>
+        <div id="quizzes" class="rolar"><div class="vazio">Carregando…</div></div>
+      </div>
+    </div>
+    <div class="cartao vidro">
+      <div class="cab"><h2>Estudantes <small class="resumo"><b id="nOnline">0</b> no quiz · <b id="nTotal">0</b> registrados · <b id="nFim">0</b> concluíram · <b id="nAlerta">0</b> saíram da página</small></h2>
+        <div class="filtros"><select id="fQuiz" aria-label="Quiz"><option value="">Todos os quizzes</option></select><select id="fTurma" aria-label="Turma"><option value="">Todas as turmas</option></select><input type="search" id="fBusca" placeholder="Buscar nome"></div></div>
+      <div class="tabela"><table><thead><tr><th>Estudante</th><th>Turma</th><th>Situação</th><th class="n">Nota</th></tr></thead><tbody id="corpo"></tbody></table>
+      <div class="vazio" id="vazio">Nenhum estudante ainda. Quando alguém abrir um quiz, o nome aparece aqui. Clique no nome para ver os detalhes.</div></div>
+    </div>
+  </section>
+
+  <section id="vQuiz">
+    <div class="cartao vidro"><div class="cab"><h2>Quizzes disponíveis</h2>
+      <span><small id="repoInfo"></small> <button class="botao peq" id="bAtualizar" type="button">Atualizar lista</button> <button class="botao peq" id="bBaixarCod" type="button" title="Arquivo opcional para enviar à pasta quizzes">Baixar acessos.json</button></span></div>
+      <div class="nota pad">Escolha a turma de cada quiz e crie um código de acesso (por exemplo <b>sala14</b>). O estudante digita o código na página de entrada e cai direto no quiz. Tudo é salvo sozinho.</div>
+    </div>
+    <div id="turmasQuiz"></div>
+  </section>
+
+  <section id="vRes">
+    <div class="impr">Resultados</div><span class="impr imprsub" id="imprSub"></span>
+    <div class="cartao vidro semimpr"><div class="cab"><h2>Resultados</h2>
+      <div class="filtros"><select id="rQuiz" aria-label="Quiz"><option value="">Todos os quizzes</option></select><select id="rTurma" aria-label="Turma"><option value="">Todas as turmas</option></select>
+      <button class="botao pri" id="bPDF" type="button">Baixar PDF</button><button class="botao" id="bVoltar" type="button">Voltar ao painel</button></div></div></div>
+    <div id="grupos"></div>
+    <div class="rodape">Marcos Cesana — Direito &amp; Filosofia</div>
+  </section>
+</main>
+
+<div class="veu" id="veu"></div>
+<div class="gaveta vidro" id="gaveta" role="dialog" aria-modal="true">
+  <div class="cab"><div><h2 id="dNome" style="font-size:20px">—</h2><small id="dSub"></small></div><button class="botao peq" id="dFechar" type="button">Fechar ✕</button></div>
+  <div class="corpo">
+    <div id="dTopo"></div>
+    <div class="topico"><h3>Mensagem</h3>
+    <div class="msgbox"><textarea id="dMsg" rows="2" placeholder="Escreva só para este estudante"></textarea><button class="botao pri" id="dEnviar" type="button">Enviar</button></div></div>
+    <div id="dResto"></div>
+  </div>
+</div>
+
+<dialog id="dlgMsg">
+  <div class="cab"><h2>Mensagem para os estudantes</h2></div>
+  <div class="corpo">
+    <select id="msgAlvo" aria-label="Para quem"></select>
+    <div class="rapidas" id="rapidas"></div>
+    <textarea id="msgTexto" aria-label="Mensagem" placeholder="A mensagem aparece na tela de quem está com o quiz aberto."></textarea>
+  </div>
+  <div class="acoes"><button class="botao" id="msgCancelar" type="button">Cancelar</button><button class="botao pri" id="msgEnviar" type="button">Enviar</button></div>
+</dialog>
+
+<dialog id="dlgConfig">
+  <div class="cab"><h2>Configurações</h2></div>
+  <div class="corpo">
+    <label for="cRepo">Repositório no GitHub (usuário/repositório)</label><input id="cRepo" placeholder="seu-usuario/seu-repositorio">
+    <label for="cPasta">Pasta dos quizzes no repositório</label><input id="cPasta" placeholder="quizzes">
+    <label for="cSala">Código da sala</label><input id="cSala" spellcheck="false">
+    <p class="nota" style="margin:8px 0 0">O código da sala vai no link dos estudantes e protege as respostas. Para usar o painel em outro computador, copie este código e cole lá. Trocar o código faz os links antigos pararem de funcionar.</p>
+  </div>
+  <div class="acoes"><button class="botao" id="bNovaAula" type="button" title="Guarda os dados atuais num arquivo e limpa o painel" style="margin-right:auto">Nova aula</button><button class="botao" id="cCopiar" type="button">Copiar código</button><button class="botao" id="cCancelar" type="button">Cancelar</button><button class="botao pri" id="cSalvar" type="button">Salvar</button></div>
+</dialog>
+
+<div class="proj" id="proj"><button class="botao x" id="projFechar" type="button">Fechar ✕</button>
+  <div class="placa vidro"><p id="projTit">Aponte a câmera do celular para o código</p><div class="qrg" id="projQR"></div><p>Funciona no Wi-Fi da escola ou nos dados móveis.</p></div></div>
+<div class="toast vidro" id="toast" role="status"></div>
+
+<script src="qrcode.js"></script>
+<script src="sq-mural.js"></script>
+<script>
+(function(){
+'use strict';
+var $=function(i){return document.getElementById(i)};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function toast(t){var e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('on')},2600)}
+function guardar(k,v){try{localStorage.setItem(k,typeof v==='string'?v:JSON.stringify(v));return true}catch(e){return false}}
+function ler(k,j){try{var v=localStorage.getItem(k);return j?JSON.parse(v||'null'):v}catch(e){return null}}
+var PARAM=new URLSearchParams(location.search);
+
+/* ---------- configuração ---------- */
+/* descobre repositório e subpasta pelo endereço do próprio painel */
+function localGitHub(){
+  var h=location.hostname.match(/^([^.]+)\.github\.io$/i);if(!h)return null;
+  var partes=location.pathname.split('/').filter(Boolean);if(partes.length&&/\.html?$/i.test(partes[partes.length-1]))partes.pop();
+  if(!partes.length)return{repo:h[1]+'/'+h[1]+'.github.io',sub:''};
+  return{repo:h[1]+'/'+partes[0],sub:partes.slice(1).join('/')};
+}
+function repoPadrao(){var g=localGitHub();return g?g.repo:''}
+function pastaPadrao(){var g=localGitHub();return g&&g.sub?g.sub+'/quizzes':'quizzes'}
+/* aceita "usuario/repo", "https://github.com/usuario/repo/..." ou "https://usuario.github.io/repo/..." */
+function normalizarRepo(t){
+  t=String(t||'').trim();var m;
+  if((m=t.match(/^https?:\/\/github\.com\/([^\/]+)\/([^\/#?]+)/i)))return{repo:m[1]+'/'+m[2]};
+  if((m=t.match(/^https?:\/\/([^.\/]+)\.github\.io\/?([^#?]*)/i))){var p=m[2].split('/').filter(Boolean);if(p.length&&/\.html?$/i.test(p[p.length-1]))p.pop();
+    if(!p.length)return{repo:m[1]+'/'+m[1]+'.github.io'};var resto=p.slice(1);if(resto[resto.length-1]==='quizzes')resto.pop();return{repo:m[1]+'/'+p[0],sub:resto.join('/')}}
+  return{repo:t.replace(/^\/+|\/+$/g,'')};
+}
+var CFG=ler('sqg_cfg',true)||{};
+if(!CFG.sala||!/^[a-z0-9]{10,40}$/.test(CFG.sala))CFG.sala=SQMural.aleatorio(10);
+if(CFG.repo==null||!CFG.v2){
+  var nr=CFG.repo?normalizarRepo(CFG.repo):null;
+  if(!CFG.repo||/^https?:/i.test(CFG.repo)){CFG.repo=nr&&nr.repo&&nr.repo.indexOf('/')>0?nr.repo:repoPadrao();if(!CFG.pasta||CFG.pasta==='quizzes')CFG.pasta=nr&&nr.sub?nr.sub+'/quizzes':pastaPadrao()}
+  if(!CFG.pasta)CFG.pasta=pastaPadrao();CFG.v2=1;
+}
+if(CFG.repo&&!/^[^\/\s]+\/[^\/\s]+$/.test(CFG.repo)){var nr0=normalizarRepo(CFG.repo);CFG.repo=nr0.repo&&/^[^\/\s]+\/[^\/\s]+$/.test(nr0.repo)?nr0.repo:repoPadrao()}
+guardar('sqg_cfg',CFG);
+var MURAIS=PARAM.get('m')?PARAM.get('m').split(','):null;
+var BASE=new URL('./',location.href).href;
+function linkQuiz(arq){return BASE+'#s='+CFG.sala+(arq?'&q='+encodeURIComponent(arq):'')+(MURAIS?'&m='+MURAIS.join(','):'')}
+
+/* ---------- estado (guardado neste navegador) ---------- */
+var S={clientes:{},feed:[]};
+(function(){var d=ler('sqg_estado:'+CFG.sala,true);if(d&&d.clientes){S=d;S.feed=S.feed||[]}})();
+var sujo=false;
+setInterval(function(){if(!sujo)return;sujo=false;if(!guardar('sqg_estado:'+CFG.sala,S)){
+  // sem espaço: tira os dados brutos de quem já concluiu
+  Object.keys(S.clientes).forEach(function(k){var c=S.clientes[k];if(resumir(c).concluido)c.estado={}});guardar('sqg_estado:'+CFG.sala,S)}},2000);
+
+/* ---------- leitura de nome, turma, nota, acertos e erros (como no executável) ---------- */
+var reNome=/^(nome|name|aluno|estudante|student|fullname)([_ -]?(completo|do_?aluno|do_?estudante|aluno|estudante|full|name))?$/i,
+  reTurma=/^(turma|classe|serie|série|sala|class|grupo)/i,reNota=/^(nota|score|pontuacao|pontuação|pontos|notafinal|nota_final)$/i,
+  reAcertos=/^(acertos|corretas|certas|correct|acertosprimeira)/i,reErros=/^(erros|erradas|incorretas|wrong)$/i,
+  reAlertas=/(alerta|alert|aviso|ocorrencia|ocorrência|infra|viola)/i,reRespostas=/(respostas|answers|historico|histórico|tentativas|registro|log)/i,
+  reConcluido=/(conclu|finaliz|terminou|encerr|done|finished|completo$)/i,
+  reCorreta=/^(correta|correto|acertou|acerto|certa|certo|correct|iscorrect|is_correct|ok|resultado)$/i,
+  ORDEM_Q=['original','noriginal','numoriginal','questao','questão','q','numero','número','num','pergunta','qid','n','indice','índice','idx','id'];
+function lerLista(ex,x){
+  var c=0,e=0,t=0,vistas={},pc=0,pt=0;
+  x.forEach(function(it){
+    if(!it||typeof it!=='object'||Array.isArray(it))return;
+    var ok=null,qid=null,qr=99;
+    Object.keys(it).forEach(function(k){
+      var v=it[k];
+      if(reCorreta.test(k)){if(typeof v==='boolean')ok=v;else if(typeof v==='string'){var l=v.toLowerCase();if(/^(correta|certa|acerto|sim|correct|true)$/.test(l))ok=true;else if(/^(errada|erro|nao|não|wrong|false)$/.test(l))ok=false}}
+      var r=ORDEM_Q.indexOf(k.toLowerCase());if(r>=0&&r<qr){qr=r;qid=String(v)}
+    });
+    if(ok===null)return;t++;if(ok)c++;else e++;
+    if(qid!==null&&!vistas[qid]){vistas[qid]=1;pt++;if(ok)pc++}
+  });
+  if(t>ex.listaN){ex.listaN=t;ex.listaC=c;ex.listaE=e;ex.pc=pc;ex.pt=pt}
+}
+function andar(ex,chave,v,prof){
+  if(prof>8||v==null)return;
+  if(Array.isArray(v)){
+    lerLista(ex,v);
+    if(chave){if(reAlertas.test(chave)&&v.length>ex.alertas)ex.alertas=v.length;else if(reRespostas.test(chave)&&v.length>ex.respostas)ex.respostas=v.length}
+    if(v.length<=400)v.forEach(function(x){andar(ex,'',x,prof+1)});return;
+  }
+  if(typeof v==='object'){Object.keys(v).forEach(function(k){andar(ex,k,v[k],prof+1)});return}
+  if(typeof v==='string'){var s=v.trim();if(!s||s.length>90)return;
+    if(!ex.nome&&s.length>=3&&reNome.test(chave))ex.nome=s;else if(!ex.turma&&reTurma.test(chave))ex.turma=s;else if(!ex.nota&&reNota.test(chave))ex.nota=s;return}
+  if(typeof v==='number'){var n=String(v);
+    if(!ex.nota&&reNota.test(chave))ex.nota=n;else if(!ex.acertos&&reAcertos.test(chave))ex.acertos=n;else if(!ex.erros&&reErros.test(chave))ex.erros=n;else if(!ex.turma&&reTurma.test(chave))ex.turma=n;return}
+  if(v===true&&chave&&reConcluido.test(chave))ex.concluido=true;
+}
+function primeiro(){for(var i=0;i<arguments.length;i++){var s=arguments[i];if(s!=null&&String(s).trim()!=='')return String(s).trim()}return''}
+function online(c){return Date.now()-(c.hb||0)<40000}
+function resumir(c){
+  var ex={nome:'',turma:'',nota:'',acertos:'',erros:'',alertas:0,respostas:0,concluido:false,listaN:0};
+  Object.keys(c.estado||{}).sort().forEach(function(k){try{andar(ex,k,JSON.parse(c.estado[k]),0)}catch(e){}});
+  var la='',le='',n1='';
+  if(ex.listaN){la=String(ex.listaC);le=String(ex.listaE);if(ex.pt)n1=String(ex.pc)}
+  var aa=0,ae=0;(c.eventos||[]).forEach(function(e){if(e.tipo==='resposta'&&e.dados&&typeof e.dados.correta==='boolean'){if(e.dados.correta)aa++;else ae++}});
+  if(aa+ae&&!la){la=String(aa);le=String(ae)}
+  var r={chave:c.chave,quiz:c.quiz,inicio:c.inicio,ultimo:c.ultimo,disp:c.disp,saidas:c.saidas||0,online:online(c),visivel:c.visivel!==false,
+    nome:primeiro(c.ident.nome,c.campos.nome,ex.nome),turma:primeiro(c.ident.turma,c.campos.turma,ex.turma),
+    nota:primeiro(c.ident.nota,ex.nota,n1),acertos:primeiro(c.ident.acertos,ex.acertos,la),erros:primeiro(c.ident.erros,ex.erros,le),
+    respostas:Math.max(ex.respostas,(c.eventos||[]).filter(function(e){return e.tipo==='resposta'}).length),alertas:ex.alertas,
+    concluido:ex.concluido||c.ident.concluido==='sim'||c.ident.concluido===true,escritas:[]};
+  Object.keys(c.escritas||{}).sort(function(a,b){return parseInt(a)-parseInt(b)}).forEach(function(k){var w=c.escritas[k];r.escritas.push({pergunta:w.pergunta,veredito:veredito(w),w:w})});
+  if(!r.nome)r.nome='(sem nome) '+c.cid.slice(0,4);
+  return r;
+}
+function veredito(w){if(w.colagens>0&&w.digitado<5)return'Colou';if(w.colagens>0)return'Digitou e colou';if(w.bloqueadas>0)return'Digitou (tentou colar)';if(w.digitado>0||w.tamanho>0)return'Digitou';return'Em branco'}
+function dispositivo(ua){var l=(ua||'').toLowerCase(),s='Computador';
+  if(l.indexOf('iphone')>=0)s='iPhone';else if(l.indexOf('ipad')>=0)s='iPad';else if(l.indexOf('android')>=0)s=l.indexOf('mobile')>=0?'Celular Android':'Tablet Android';
+  else if(l.indexOf('cros')>=0)s='Chromebook';else if(l.indexOf('windows')>=0)s='Windows';else if(l.indexOf('mac os')>=0)s='Mac';return s}
+
+/* ---------- o que chega dos estudantes ---------- */
+function cliente(cid,quiz,ua){
+  var k=cid+'|'+quiz,c=S.clientes[k];
+  if(!c){c=S.clientes[k]={chave:k,cid:cid,quiz:quiz,inicio:Date.now(),ultimo:Date.now(),visivel:true,estado:{},campos:{},ident:{},eventos:[],saidas:0,escritas:{},hb:0}}
+  c.ultimo=Date.now();if(ua)c.disp=dispositivo(ua);sujo=true;return c;
+}
+function evento(c,tipo,dados){c.eventos.push({hora:Date.now(),tipo:tipo,dados:dados||null});if(c.eventos.length>300)c.eventos.splice(0,c.eventos.length-300)}
+function feed(c,texto){var r=resumir(c);S.feed.push({hora:Date.now(),nome:r.nome.indexOf('(sem nome)')===0?'Estudante':r.nome,turma:r.turma,quiz:c.quiz,texto:texto});if(S.feed.length>300)S.feed.shift();novoFeed=true}
+var novoFeed=false;
+function processar(e,ua){
+  if(!e||!/^[a-zA-Z0-9_-]{6,64}$/.test(e.cid||'')||!e.quiz)return;
+  var c=cliente(e.cid,e.quiz,ua),antes=resumir(c),f='';
+  switch(e.tipo){
+    case 'storage':(e.itens||[]).forEach(function(it){
+      if(it.k==='*'&&it.v==null){Object.keys(c.estado).forEach(function(k){if(k.indexOf(it.a+':')===0)delete c.estado[k]});return}
+      var k=it.a+':'+it.k;if(it.v==null)delete c.estado[k];else if(String(it.v).length<=300000)c.estado[k]=String(it.v)});break;
+    case 'campo':if((e.campo==='nome'||e.campo==='turma')&&e.valor)c.campos[e.campo]=String(e.valor).slice(0,120);break;
+    case 'visibilidade':var vis=e.valor==='visivel';
+      if(!antes.concluido){if(c.visivel&&!vis){c.saidas++;f='saiu da página do quiz';evento(c,'saiu_da_pagina')}else if(!c.visivel&&vis){f='voltou para o quiz';evento(c,'voltou')}}
+      c.visivel=vis;break;
+    case 'abriu':f='abriu o quiz';c.visivel=true;evento(c,'abriu');break;
+    case 'ident':if(e.dados&&typeof e.dados==='object')Object.keys(e.dados).forEach(function(k){var v=e.dados[k];c.ident[k.toLowerCase()]=typeof v==='boolean'?(v?'sim':'nao'):String(v).slice(0,200)});break;
+    case 'escrita':var d=e.dados||{};if(!d.campo)break;var ant=c.escritas[d.campo];c.escritas[d.campo]={pergunta:String(d.pergunta||'').slice(0,300),digitado:+d.digitado||0,colado:+d.colado||0,colagens:+d.colagens||0,bloqueadas:+d.bloqueadas||0,tamanho:+d.tamanho||0};
+      if(d.colagens>0&&(!ant||ant.colagens<d.colagens))f='colou texto numa resposta escrita';else if(d.bloqueadas>0&&(!ant||ant.bloqueadas<d.bloqueadas))f='tentou colar numa resposta escrita';break;
+    default:var t=String(e.tipo||'').toLowerCase().slice(0,40);if(!t)return;evento(c,t,e.dados);
+      if(t==='resposta')f='respondeu'+(e.dados&&e.dados.questao!=null?' a questão '+e.dados.questao:'')+(e.dados&&typeof e.dados.correta==='boolean'?(e.dados.correta?' — acertou':' — errou'):'');
+      else if(t==='alerta')f='alerta'+(e.dados&&e.dados.motivo?': '+e.dados.motivo:'');else if(t==='conclusao')f='concluiu o quiz';
+  }
+  var depois=resumir(c);
+  if(!f){if(antes.nome!==depois.nome&&depois.nome.indexOf('(sem nome)')!==0)f='identificou-se como '+depois.nome;
+    else if(depois.respostas>antes.respostas)f=depois.respostas===1?'respondeu a primeira questão':'respondeu ('+depois.respostas+' respostas até agora)';
+    else if(depois.concluido&&!antes.concluido)f='concluiu o quiz'}
+  if(f)feed(c,f);
+}
+var conectados=0;
+var sala=new SQMural.Sala(CFG.sala,MURAIS,function(n){conectados=n;var v=$('vivo');v.classList.toggle('off',!n);v.lastChild.textContent=n?'ao vivo':'conectando…';v.title=n+' de '+sala.murais.length+' murais conectados';if(n){anunciar();publicarLista()}});
+sala.ouvir('a',function(o){
+  if(o.k==='d'){var ids=[];(o.itens||[]).forEach(function(it){ids.push(it.id);(it.corpo||[]).forEach(function(e){e.cid=o.cid;processar(e,o.ua)})});
+    sala.enviar('p/'+o.cid,{k:'ack',ids:ids});agendar()}
+  else if(o.k==='hb'){var c=S.clientes[o.cid+'|'+o.quiz];if(c){var era=online(c);c.hb=Date.now();if(typeof o.vis==='boolean'&&c.visivel!==o.vis&&!resumir(c).concluido){/* a visibilidade chega pela captura */}if(!era)agendar()}else{cliente(o.cid,o.quiz).hb=Date.now();agendar()}}
+});
+function anunciar(){sala.enviar('on',{k:'on',t:Date.now()},true)}
+setInterval(anunciar,20000);
+window.addEventListener('pagehide',function(){sala.enviar('on',{k:'on',t:0},true)});
+setInterval(function(){agendar()},15000); // presença expira
+
+/* ---------- quizzes do GitHub ---------- */
+var QUIZZES=[];
+function nome(arq){return arq.replace(/\.html?$/i,'')}
+function listarPasta(repo,pasta){
+  if(!repo)return Promise.reject(0);
+  return fetch('https://api.github.com/repos/'+repo+'/contents/'+pasta.split('/').map(encodeURIComponent).join('/'),{cache:'no-cache'})
+    .then(function(r){if(!r.ok)throw r.status;return r.json()})
+    .then(function(l){if(!Array.isArray(l))throw 0;return l.filter(function(x){return x.type==='file'&&/\.html?$/i.test(x.name)}).map(function(x){return x.name})});
+}
+function carregarQuizzes(){
+  $('repoInfo').textContent=CFG.repo?CFG.repo+' / '+CFG.pasta:'';
+  $('quizzes').innerHTML='<div class="vazio">Procurando os quizzes no GitHub…</div>';
+  /* caminhos tentados, em ordem: o das Configurações, o descoberto pelo endereço do painel e a pasta "quizzes" ao lado do painel */
+  var tent=[[CFG.repo,CFG.pasta],[repoPadrao(),pastaPadrao()],[repoPadrao(),'quizzes']],vistos={};
+  tent=tent.filter(function(t){var k=t[0]+'|'+t[1];if(!t[0]||vistos[k])return false;vistos[k]=1;return true});
+  var achouVazio=null;
+  (function proximo(i){
+    if(i>=tent.length){
+      fetch('quizzes/lista.json',{cache:'no-cache'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(fim).catch(function(){
+        if(achouVazio){CFG.repo=achouVazio[0];CFG.pasta=achouVazio[1];guardar('sqg_cfg',CFG);fim([])}
+        else{QUIZZES=[];$('quizzes').innerHTML='<div class="vazio">Não encontrei a pasta dos quizzes. Confira se o repositório é público e se a pasta se chama <b>quizzes</b> (minúsculas), ao lado do painel.html. Caminho procurado: '+esc(tent.map(function(t){return t[0]+'/'+t[1]}).join(' ou '))+'</div>'}
+      });return;
+    }
+    listarPasta(tent[i][0],tent[i][1]).then(function(l){
+      if(!l.length){if(!achouVazio)achouVazio=tent[i];proximo(i+1);return}
+      if(CFG.repo!==tent[i][0]||CFG.pasta!==tent[i][1]){CFG.repo=tent[i][0];CFG.pasta=tent[i][1];guardar('sqg_cfg',CFG)}
+      fim(l);
+    }).catch(function(){proximo(i+1)});
+  })(0);
+  function fim(l){$('repoInfo').textContent=CFG.repo?CFG.repo+' / '+CFG.pasta:'';QUIZZES=l.slice().sort(function(a,b){return a.localeCompare(b,'pt-BR',{numeric:true})});publicarLista();desenharQuizzes()}
+}
+var TURMAS=['8º Ano EF','9º Ano EF','1ª série EM','2ª série EM','3ª série EM'];
+if(!CFG.meta||typeof CFG.meta!=='object')CFG.meta={};
+function adivinharTurma(a){var n=a.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''),m;
+  if((m=n.match(/(^|[^0-9])([89])\s*[o°º]?[\s_.-]*ano/)))return m[2]+'º Ano EF';
+  if((m=n.match(/(^|[^0-9])([123])\s*[a°ª]?[\s_.-]*(serie|em)([^a-z]|$)/)))return m[2]+'ª série EM';
+  return''}
+function meta(a){var m=CFG.meta[a]||{};return{turma:m.turma!=null?m.turma:adivinharTurma(a),codigo:m.codigo||''}}
+function normCod(t){return String(t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9-]/g,'').slice(0,30)}
+function itensLista(){return QUIZZES.map(function(a){var m=meta(a);return{arquivo:a,titulo:nome(a),turma:m.turma,codigo:m.codigo}})}
+function publicarLista(){if(conectados&&QUIZZES.length)sala.enviar('lista',{k:'lista',quizzes:itensLista()},true)}
+setInterval(publicarLista,300000);
+function desenharQuizzes(){
+  var cont={};Object.keys(S.clientes).forEach(function(k){var c=S.clientes[k];if(online(c))cont[c.quiz]=(cont[c.quiz]||0)+1});
+  if(!QUIZZES.length){$('quizzes').innerHTML='<div class="vazio">Nenhum arquivo .html na pasta '+esc(CFG.pasta)+' do repositório.</div>';return}
+  $('quizzes').innerHTML=QUIZZES.map(function(a){var m=meta(a),n=cont[a]||0;
+    return'<div class="qp"><div class="t"><b>'+esc(nome(a))+'</b><small>'+esc(m.turma||'Sem turma')+(n?' · '+n+' agora':'')+'</small></div>'+
+      (m.codigo?'<span class="cod">'+esc(m.codigo)+'</span>':'<span class="cod sem">sem código</span>')+
+      botoesComp(a,1)+'</div>'}).join('');
+  ligarBotoes($('quizzes'));
+  if(document.body.classList.contains('qz')&&!$('turmasQuiz').contains(document.activeElement))desenharQuizTab();
+}
+function botoesComp(a,curto){var q=esc(a);return'<button class="botao peq" data-a="copiar" data-q="'+q+'">'+(curto?'Link':'Copiar link')+'</button><button class="botao peq" data-a="qrcopy" data-q="'+q+'">'+(curto?'QR':'Copiar QR')+'</button><button class="botao peq" data-a="wa" data-q="'+q+'">WhatsApp</button>'+(curto?'':'<button class="botao peq" data-a="proj" data-q="'+q+'">Projetar</button>')}
+function textoConvite(a){var u=linkQuiz(a);if(!a)return'Atividades de Filosofia: abra o link e digite o código que o professor passar.\n'+u;
+  var c=meta(a).codigo;return nome(a)+(meta(a).turma?' ('+meta(a).turma+')':'')+'\nAbra: '+u+(c?'\nCódigo de acesso: '+c:'')}
+/* gera o QR em PNG (com o nome embaixo) para colar no WhatsApp */
+function qrBlob(a){return new Promise(function(ok,falha){if(!window.qrcode)return falha();var q=qrcode(0,'M');q.addData(linkQuiz(a));q.make();
+  var n=q.getModuleCount(),m=12,bor=4,lado=(n+bor*2)*m,rod=a?90:60,cv=document.createElement('canvas');cv.width=lado;cv.height=lado+rod;var g=cv.getContext('2d');
+  g.fillStyle='#fff';g.fillRect(0,0,cv.width,cv.height);g.fillStyle='#000';
+  for(var r=0;r<n;r++)for(var c=0;c<n;c++)if(q.isDark(r,c))g.fillRect((c+bor)*m,(r+bor)*m,m,m);
+  g.textAlign='center';g.fillStyle='#1E2A44';g.font='600 34px system-ui,sans-serif';g.fillText(a?nome(a):'Atividades de Filosofia',lado/2,lado+8);
+  var cod=a&&meta(a).codigo;if(cod){g.font='500 28px system-ui,sans-serif';g.fillStyle='#555';g.fillText('código: '+cod,lado/2,lado+50)}
+  cv.toBlob(function(b){b?ok(b):falha()},'image/png')})}
+function copiarQR(a){qrBlob(a).then(function(b){
+  if(navigator.clipboard&&window.ClipboardItem)return navigator.clipboard.write([new ClipboardItem({'image/png':b})]).then(function(){toast('QR copiado: cole no WhatsApp (Ctrl+V)')});
+  throw 0}).catch(function(){qrBlob(a).then(function(b){var x=document.createElement('a');x.href=URL.createObjectURL(b);x.download='qr_'+(a?nome(a):'atividades')+'.png';x.click();toast('QR baixado como imagem')})})}
+function whatsapp(a){var t=textoConvite(a);
+  qrBlob(a).then(function(b){var f=new File([b],'qr.png',{type:'image/png'});
+    if(navigator.canShare&&navigator.canShare({files:[f]}))return navigator.share({files:[f],text:t});throw 0})
+  .catch(function(e){if(e&&e.name==='AbortError')return;window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank','noopener')})}
+function ligarBotoes(el){[].forEach.call(el.querySelectorAll('button[data-a]'),function(b){b.onclick=function(){var a=b.getAttribute('data-q'),u=linkQuiz(a),t=b.getAttribute('data-a');
+  if(t==='proj')projetar(u,nome(a)+(meta(a).codigo?' — código '+meta(a).codigo:''));else if(t==='qrcopy')copiarQR(a);else if(t==='wa')whatsapp(a);else copiar(a?textoConvite(a):u)}})}
+/* aba Quizzes disponíveis: separados por turma, com código de acesso */
+function desenharQuizTab(){
+  var g={};QUIZZES.forEach(function(a){var t=meta(a).turma||'';(g[t]=g[t]||[]).push(a)});
+  var ordem=TURMAS.concat(Object.keys(g).filter(function(t){return t&&TURMAS.indexOf(t)<0}).sort()).concat(['']);
+  var opc=function(sel){return'<option value="">Sem turma</option>'+TURMAS.map(function(t){return'<option'+(t===sel?' selected':'')+'>'+esc(t)+'</option>'}).join('')};
+  $('turmasQuiz').innerHTML=QUIZZES.length?ordem.map(function(t){var l=g[t]||[];if(!l.length&&!t)return'';
+    return'<section class="cartao vidro gq"><div class="cab"><h2>'+esc(t||'Sem turma')+'</h2><small>'+l.length+(l.length===1?' quiz':' quizzes')+'</small></div>'+
+      (l.length?l.map(function(a){var m=meta(a);return'<div class="qe" data-q="'+esc(a)+'"><div class="t"><b>'+esc(nome(a))+'</b></div>'+
+        '<select aria-label="Turma">'+opc(m.turma)+'</select><input aria-label="Código de acesso" placeholder="código, ex.: sala14" value="'+esc(m.codigo)+'" spellcheck="false" autocomplete="off">'+
+        '<div class="bt">'+botoesComp(a)+'<a class="botao peq" target="_blank" rel="noopener" href="'+esc(linkQuiz(a))+'">Abrir</a></div></div>'}).join('')
+        :'<div class="vazio">Nenhum quiz nesta turma.</div>')+'</section>'}).join(''):'<div class="cartao vidro"><div class="vazio">Nenhum quiz encontrado na pasta.</div></div>';
+  ligarBotoes($('turmasQuiz'));
+  [].forEach.call($('turmasQuiz').querySelectorAll('.qe'),function(r){var a=r.getAttribute('data-q'),sel=r.querySelector('select'),inp=r.querySelector('input');
+    sel.onchange=function(){salvarMeta(a,{turma:sel.value});desenharQuizTab();desenharQuizzes();toast('Turma salva')};
+    inp.onchange=function(){var c=normCod(inp.value);inp.value=c;
+      var dono=c&&QUIZZES.filter(function(x){return x!==a&&meta(x).codigo===c})[0];
+      if(dono){inp.classList.add('erro');toast('O código "'+c+'" já é do quiz '+nome(dono));return}
+      inp.classList.remove('erro');salvarMeta(a,{codigo:c});desenharQuizzes();toast(c?'Código "'+c+'" salvo':'Código removido')};
+    inp.onkeydown=function(e){if(e.key==='Enter')inp.blur()};
+  });
+}
+function salvarMeta(a,mud){var m=meta(a);Object.keys(mud).forEach(function(k){m[k]=mud[k]});CFG.meta[a]=m;guardar('sqg_cfg',CFG);publicarLista()}
+$('bBaixarCod').onclick=function(){var o={};itensLista().forEach(function(q){o[q.arquivo]={turma:q.turma,codigo:q.codigo}});
+  var b=new Blob([JSON.stringify({quizzes:o},null,1)],{type:'application/json'}),x=document.createElement('a');x.href=URL.createObjectURL(b);x.download='acessos.json';x.click();
+  toast('Envie o acessos.json para a pasta quizzes (opcional)')};
+function copiar(u){(navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(function(){toast('Link copiado')},function(){prompt('Copie o link:',u)})}
+
+/* ---------- QR e projetor ---------- */
+function qr(el,u,tam){el.innerHTML='';if(!window.qrcode){el.textContent='QR indisponível';return}var q=qrcode(0,'M');q.addData(u);q.make();var im=new Image();im.alt='QR code';im.src=q.createDataURL(8,0);el.appendChild(im)}
+function desenharAcesso(){var u=linkQuiz('');$('urlGeral').textContent=u;qr($('qrGeral'),u,134)}
+function projetar(u,titulo){$('projTit').textContent=titulo?titulo+': aponte a câmera do celular para o código':'Aponte a câmera do celular para o código';qr($('projQR'),u||linkQuiz(''),600);$('proj').classList.add('aberto');try{document.documentElement.requestFullscreen()}catch(e){}}
+$('bProjetar').onclick=function(){projetar()};$('qrGeral').onclick=function(){projetar()};
+$('projFechar').onclick=function(){$('proj').classList.remove('aberto');try{document.fullscreenElement&&document.exitFullscreen()}catch(e){}};
+
+/* ---------- tabela, números e atividade ---------- */
+function situacao(r){if(r.concluido)return{k:'fim',t:'Concluiu'};if(r.online&&r.visivel)return{k:'on',t:'No quiz'};if(r.online)return{k:'fora',t:'Fora da página'};return{k:'',t:'Desconectado'}}
+function rel(t){var s=(Date.now()-t)/1000;if(s<10)return'agora';if(s<60)return'há '+Math.floor(s)+' s';if(s<3600)return'há '+Math.floor(s/60)+' min';if(s<86400)return'há '+Math.floor(s/3600)+' h';return new Date(t).toLocaleDateString('pt-BR')}
+function hora(t){return new Date(t).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
+function v(x){return x===''||x==null?'—':esc(x)}
+function preencher(sel,vals,todos,rot){var atual=sel.value,ass=vals.join('\u0001');if(sel._a===ass)return;sel._a=ass;
+  sel.innerHTML='<option value="">'+todos+'</option>'+vals.map(function(x){return'<option value="'+esc(x)+'">'+esc(rot?rot(x):x)+'</option>'}).join('');sel.value=vals.indexOf(atual)>=0?atual:''}
+function todos(){return Object.keys(S.clientes).map(function(k){return resumir(S.clientes[k])})}
+function desenharTabela(){
+  var l=todos(),fq=$('fQuiz').value,ft=$('fTurma').value,fb=$('fBusca').value.trim().toLowerCase();
+  var quizzes={},turmas={};l.forEach(function(r){quizzes[r.quiz]=1;if(r.turma)turmas[r.turma]=1});
+  preencher($('fQuiz'),Object.keys(quizzes).sort(),'Todos os quizzes',nome);preencher($('fTurma'),Object.keys(turmas).sort(),'Todas as turmas');
+  preencher($('rQuiz'),Object.keys(quizzes).sort(),'Todos os quizzes',nome);preencher($('rTurma'),Object.keys(turmas).sort(),'Todas as turmas');
+  var f=l.filter(function(r){return(!fq||r.quiz===fq)&&(!ft||r.turma===ft)&&(!fb||r.nome.toLowerCase().indexOf(fb)>=0)}).sort(function(a,b){return b.ultimo-a.ultimo});
+  $('vazio').style.display=l.length?'none':'block';
+  $('corpo').innerHTML=f.map(function(r){var s=situacao(r);
+    return'<tr class="linha" data-k="'+esc(r.chave)+'"><td class="est"><b>'+esc(r.nome)+'</b><small>'+esc(nome(r.quiz))+'</small></td><td>'+v(r.turma)+'</td><td><span class="sit '+s.k+'"><i></i>'+s.t+'</span>'+(r.saidas?' <span class="tag av" title="Saiu da página">saiu '+r.saidas+'×</span>':'')+'</td>'+
+      '<td class="n"><b>'+v(r.nota)+'</b></td></tr>'}).join('');
+  [].forEach.call($('corpo').querySelectorAll('tr.linha'),function(tr){tr.onclick=function(){abrir(tr.getAttribute('data-k'))}});
+  var on=0,fim=0,sa=0;l.forEach(function(r){if(r.online)on++;if(r.concluido)fim++;if(r.saidas)sa++});
+  $('nOnline').textContent=on;$('nTotal').textContent=l.length;$('nFim').textContent=fim;$('nAlerta').textContent=sa;
+}
+function desenharFeed(){var el=$('feed');if(!el)return;if(!S.feed.length){el.innerHTML='<div class="vazio">Aguardando…</div>';return}
+  el.innerHTML=S.feed.slice(-120).reverse().map(function(x){var cl=/saiu|colou|colar|alerta/.test(x.texto)?'al':/conclu|acertou/.test(x.texto)?'ok':'';
+    return'<div class="ev '+cl+'"><b>'+esc(x.nome)+'</b> '+esc(x.texto)+'<small>'+hora(x.hora)+(x.turma?', '+esc(x.turma):'')+' — '+esc(nome(x.quiz))+'</small></div>'}).join('')}
+['fQuiz','fTurma'].forEach(function(id){$(id).onchange=desenharTabela});$('fBusca').oninput=desenharTabela;
+var tm=null;function agendar(){clearTimeout(tm);tm=setTimeout(function(){desenharTabela();desenharQuizzes();if(novoFeed){novoFeed=false;desenharFeed()}if(ABERTO)desenharFicha();if(document.body.classList.contains('res'))desenharResultados()},250)}
+
+/* ---------- ficha do estudante (a caixa de mensagem fica fixa) ---------- */
+var ABERTO=null;
+function abrir(k){if(ABERTO!==k)$('dMsg').value='';ABERTO=k;desenharFicha();$('veu').classList.add('aberto');$('gaveta').classList.add('aberta')}
+function fechar(){ABERTO=null;$('veu').classList.remove('aberto');$('gaveta').classList.remove('aberta')}
+$('veu').onclick=fechar;$('dFechar').onclick=fechar;
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){fechar();$('proj').classList.remove('aberto')}});
+function desenharFicha(){
+  var c=S.clientes[ABERTO];if(!c){fechar();return}var r=resumir(c),s=situacao(r);
+  $('dNome').textContent=r.nome;$('dSub').textContent=(r.turma?r.turma+' · ':'')+nome(r.quiz);
+  var h='<div class="topico"><h3>Situação</h3>'+
+    '<div class="li"><span>Agora</span><b><span class="sit '+s.k+'"><i></i>'+s.t+'</span></b></div>'+
+    '<div class="li"><span>Última atividade</span><b>'+rel(r.ultimo)+'</b></div>'+
+    (r.online?'':'<div class="nota">Desconectado: a mensagem só chega com o quiz aberto.</div>')+'</div>'+
+    '<div class="topico"><h3>Desempenho</h3><div class="tres"><div><b>'+v(r.nota)+'</b><span>nota</span></div><div><b>'+v(r.acertos)+'</b><span>acertos</span></div><div><b>'+v(r.erros)+'</b><span>erros</span></div></div></div>'+
+    '<div class="topico"><h3>Conduta</h3><div class="li"><span>Saiu da página</span><b>'+(r.saidas?'<span class="tag av">Sim, '+r.saidas+(r.saidas>1?' vezes':' vez')+'</span>':'<span class="tag ok">Não</span>')+'</b></div>'+
+    (r.escritas.length?r.escritas.map(function(x){var w=x.w;return'<div class="esc2"><span>'+esc(x.pergunta)+'</span><span class="tag '+(w.colagens>0?'al':w.bloqueadas>0?'av':'ok')+'">'+esc(x.veredito)+'</span></div>'}).join('')
+      :'<div class="li"><span>Respostas escritas</span><b>—</b></div>')+'</div>';
+  $('dTopo').innerHTML=h;
+  $('dResto').innerHTML='<button class="remover" id="dRemover" type="button">Apagar este registro do painel</button>';
+  $('dRemover').onclick=function(){if(confirm('Apagar o registro de '+r.nome+'?')){delete S.clientes[ABERTO];sujo=true;fechar();agendar()}};
+}
+
+/* ---------- mensagens ---------- */
+function enviarMsg(alvo,texto){
+  var o={k:'msg',texto:texto,hora:Date.now()},sub='todos',n=0;
+  if(alvo.indexOf('quiz:')===0){o.quiz=alvo.slice(5)}
+  else if(alvo!=='todos'){var c=S.clientes[alvo];if(!c)return;o.para=c.cid;o.quiz=c.quiz;sub='p/'+c.cid}
+  Object.keys(S.clientes).forEach(function(k){var c=S.clientes[k];if(!online(c))return;if(o.para&&c.cid!==o.para)return;if(o.quiz&&c.quiz!==o.quiz)return;n++;evento(c,'mensagem_professor',{texto:texto})});
+  sala.enviar(sub,o).then(function(m){toast(!m?'Sem conexão com os murais. Tente de novo.':n?'Mensagem enviada a '+n+(n>1?' estudantes':' estudante'):'Ninguém conectado para receber')});sujo=true;
+}
+$('dEnviar').onclick=function(){var t=$('dMsg').value.trim();if(!t){$('dMsg').focus();return}enviarMsg(ABERTO,t);$('dMsg').value=''};
+$('dMsg').addEventListener('keydown',function(e){if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();$('dEnviar').click()}});
+var RAPIDAS=['Atenção: faltam 10 minutos.','Faltam 5 minutos. Confirme suas respostas.','Leiam a apostila com calma antes de responder.','Fiquem na página do quiz, por favor.','Quem terminou, aguarde em silêncio.'];
+$('bMsgTodos').onclick=function(){
+  $('msgAlvo').innerHTML='<option value="todos">Todos os conectados</option>'+QUIZZES.map(function(a){return'<option value="quiz:'+esc(a)+'">Só quem está em: '+esc(nome(a))+'</option>'}).join('');
+  $('rapidas').innerHTML=RAPIDAS.map(function(t){return'<button type="button">'+esc(t)+'</button>'}).join('');
+  [].forEach.call($('rapidas').children,function(b){b.onclick=function(){$('msgTexto').value=b.textContent}});
+  $('dlgMsg').showModal();$('msgTexto').focus();
+};
+$('msgCancelar').onclick=function(){$('dlgMsg').close()};
+$('msgEnviar').onclick=function(){var t=$('msgTexto').value.trim();if(!t){$('msgTexto').focus();return}enviarMsg($('msgAlvo').value,t);$('msgTexto').value='';$('dlgMsg').close()};
+
+/* ---------- resultados e PDF ---------- */
+function textoEscritas(l){if(!l.length)return'—';var col=0,ten=0;l.forEach(function(x){if(x.w.colagens>0)col++;else if(x.w.bloqueadas>0)ten++});
+  var dig=l.length-col,p=[];if(dig)p.push(dig+(dig>1?' digitadas':' digitada'));if(col)p.push(col+' com texto colado');if(ten)p.push(ten>1?ten+' tentativas de colar':'tentou colar');return p.join(', ')}
+function desenharResultados(){
+  var rq=$('rQuiz').value,rt=$('rTurma').value,g={};
+  todos().forEach(function(r){if(rq&&r.quiz!==rq)return;if(rt&&r.turma!==rt)return;if(r.nome.indexOf('(sem nome)')===0&&!r.respostas&&!r.escritas.length&&!r.nota)return;(g[r.quiz]=g[r.quiz]||[]).push(r)});
+  var ks=Object.keys(g).sort();
+  $('imprSub').textContent=(rt?'Turma '+rt+'. ':'')+'Gerado em '+new Date().toLocaleString('pt-BR');
+  if(!ks.length){$('grupos').innerHTML='<div class="cartao vidro vazio">Nenhum estudante registrado'+(rq||rt?' com estes filtros':' ainda')+'.</div>';return}
+  $('grupos').innerHTML=ks.map(function(q){
+    var l=g[q].sort(function(a,b){return a.turma!==b.turma?a.turma.localeCompare(b.turma,'pt-BR'):a.nome.localeCompare(b.nome,'pt-BR')});
+    var temEsc=l.some(function(r){return r.escritas.length}),soma=0,nn=0,sai=0,col=0;
+    l.forEach(function(r){var x=parseFloat(String(r.nota).replace(',','.'));if(!isNaN(x)){soma+=x;nn++}if(r.saidas)sai++;if(r.escritas.some(function(e){return e.w.colagens>0}))col++});
+    return'<section class="cartao vidro gres"><div class="cab"><h2>'+esc(nome(q))+'</h2></div><div class="gnums"><div><b>'+l.length+'</b><span>estudantes</span></div><div><b>'+(nn?(soma/nn).toFixed(1).replace('.',','):'—')+'</b><span>nota média</span></div>'+
+      '<div><b>'+sai+'</b><span>saíram da página</span></div><div><b>'+(temEsc?col:'—')+'</b><span>colaram texto</span></div></div>'+
+      '<div class="tabela"><table><thead><tr><th>Estudante</th><th>Turma</th><th class="n">Nota</th><th class="n">Acertos</th><th class="n">Erros</th><th>Saiu da página</th>'+(temEsc?'<th>Respostas escritas</th>':'')+'</tr></thead><tbody>'+
+      l.map(function(r){var te=textoEscritas(r.escritas);return'<tr><td><b>'+esc(r.nome)+'</b></td><td>'+v(r.turma)+'</td><td class="n nota">'+v(r.nota)+'</td><td class="n">'+v(r.acertos)+'</td><td class="n">'+v(r.erros)+'</td>'+
+        '<td>'+(r.saidas?'<span class="tag av">Sim, '+r.saidas+(r.saidas>1?' vezes':' vez')+'</span>':'<span class="tag off">Não</span>')+'</td>'+(temEsc?'<td>'+(/colad|colar/.test(te)?'<span class="tag al">'+esc(te)+'</span>':esc(te))+'</td>':'')+'</tr>'}).join('')+'</tbody></table></div></section>';
+  }).join('');
+}
+function aba(v){document.body.classList.toggle('res',v==='res');document.body.classList.toggle('qz',v==='qz');
+  $('tPainel').classList.toggle('on',v==='p');$('tQuiz').classList.toggle('on',v==='qz');$('bRes').classList.toggle('on',v==='res');
+  if(v==='res')desenharResultados();if(v==='qz')desenharQuizTab();window.scrollTo(0,0)}
+$('tPainel').onclick=function(){aba('p')};$('tQuiz').onclick=function(){aba('qz')};$('bIrQuiz').onclick=function(){aba('qz')};
+$('bRes').onclick=function(){aba('res')};$('bVoltar').onclick=function(){aba('p')};
+$('rQuiz').onchange=desenharResultados;$('rTurma').onchange=desenharResultados;
+$('bPDF').onclick=function(){desenharResultados();var t=document.title;document.title='resultados_'+new Date().toISOString().slice(0,10);window.print();document.title=t};
+
+/* ---------- nova aula e configurações ---------- */
+$('bNovaAula').onclick=function(){
+  if(!confirm('Começar uma nova aula?\n\nOs dados atuais são baixados num arquivo de cópia (.json) e o painel fica vazio.'))return;
+  var b=new Blob([JSON.stringify(S)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='aula_'+new Date().toISOString().slice(0,16).replace(/[:T]/g,'-')+'.json';a.click();
+  S={clientes:{},feed:[]};sujo=true;agendar();desenharFeed();toast('Cópia baixada. Painel limpo.');
+};
+$('bConfig').onclick=function(){$('cRepo').value=CFG.repo||'';$('cPasta').value=CFG.pasta;$('cSala').value=CFG.sala;$('dlgConfig').showModal()};
+$('cCancelar').onclick=function(){$('dlgConfig').close()};
+$('cCopiar').onclick=function(){copiar(CFG.sala)};
+$('cSalvar').onclick=function(){
+  var nr=normalizarRepo($('cRepo').value),repo=nr.repo,pasta=$('cPasta').value.trim().replace(/^\/+|\/+$/g,'')||'quizzes',s=$('cSala').value.trim().toLowerCase();
+  if(nr.sub!=null&&(pasta==='quizzes'||pasta===CFG.pasta))pasta=(nr.sub?nr.sub+'/':'')+'quizzes';
+  if(repo&&!/^[^\/\s]+\/[^\/\s]+$/.test(repo)){alert('Escreva o repositório no formato usuario/repositorio, por exemplo marcosrczn/QUIZ-FILOSOFIA.');return}
+  if(!/^[a-z0-9]{10,40}$/.test(s)){alert('O código da sala deve ter de 10 a 40 letras minúsculas e números.');return}
+  var trocouSala=s!==CFG.sala;CFG.repo=repo;CFG.pasta=pasta;CFG.sala=s;guardar('sqg_cfg',CFG);$('dlgConfig').close();
+  if(trocouSala)location.reload();else{carregarQuizzes();desenharAcesso()}
+};
+$('bAtualizar').onclick=carregarQuizzes;
+
+desenharAcesso();ligarBotoes(document.querySelector('#vPainel .cab'));carregarQuizzes();desenharTabela();desenharFeed();
+})();
+</script>
+</body>
+</html>
