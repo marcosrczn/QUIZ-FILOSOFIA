@@ -422,7 +422,7 @@ function normalizarRepo(t){
   return{repo:t.replace(/^\/+|\/+$/g,'')};
 }
 var CFG=ler('sqg_cfg',true)||{};
-if(!CFG.sala||!/^[a-z0-9]{10,40}$/.test(CFG.sala))CFG.sala=SQMural.aleatorio(10);
+if(!CFG.salaManual||!CFG.sala||!/^[a-z0-9]{10,40}$/.test(CFG.sala))CFG.sala=SQMural.salaPadrao();
 if(CFG.repo==null||!CFG.v2){
   var nr=CFG.repo?normalizarRepo(CFG.repo):null;
   if(!CFG.repo||/^https?:/i.test(CFG.repo)){CFG.repo=nr&&nr.repo&&nr.repo.indexOf('/')>0?nr.repo:repoPadrao();if(!CFG.pasta||CFG.pasta==='quizzes')CFG.pasta=nr&&nr.sub?nr.sub+'/quizzes':pastaPadrao()}
@@ -432,7 +432,7 @@ if(CFG.repo&&!/^[^\/\s]+\/[^\/\s]+$/.test(CFG.repo)){var nr0=normalizarRepo(CFG.
 guardar('sqg_cfg',CFG);
 var MURAIS=PARAM.get('m')?PARAM.get('m').split(','):null;
 var BASE=new URL('./',location.href).href;
-function linkQuiz(arq){return BASE+'#s='+CFG.sala+(arq?'&q='+encodeURIComponent(arq):'')+(MURAIS?'&m='+MURAIS.join(','):'')}
+function linkQuiz(arq){var p=[];if(CFG.sala!==SQMural.salaPadrao())p.push('s='+CFG.sala);if(arq)p.push('q='+encodeURIComponent(arq));if(MURAIS)p.push('m='+MURAIS.join(','));return BASE+(p.length?'#'+p.join('&'):'')}
 
 /* ---------- estado (guardado neste navegador) ---------- */
 var S={clientes:{},feed:[]};
@@ -555,8 +555,7 @@ function nome(arq){return arq.split('/').pop().replace(/\.html?$/i,'')}
 function listarPasta(repo,pasta){
   if(!repo)return Promise.reject(0);
   var pre=pasta.replace(/^\/+|\/+$/g,'')+'/';
-  return fetch('https://api.github.com/repos/'+repo+'/git/trees/HEAD?recursive=1',{cache:'no-cache'})
-    .then(function(r){if(!r.ok)throw r.status;return r.json()})
+  return SQMural.arvore(repo)
     .then(function(j){if(!j||!Array.isArray(j.tree))throw 0;
       if(!j.tree.some(function(x){return x.type==='tree'&&x.path+'/'===pre}))throw 404;
       return j.tree.filter(function(x){return x.type==='blob'&&x.path.indexOf(pre)===0&&/\.html?$/i.test(x.path)}).map(function(x){return x.path.slice(pre.length)})});
@@ -772,7 +771,7 @@ $('cSalvar').onclick=function(){
   if(nr.sub!=null&&(pasta==='quizzes'||pasta===CFG.pasta))pasta=(nr.sub?nr.sub+'/':'')+'quizzes';
   if(repo&&!/^[^\/\s]+\/[^\/\s]+$/.test(repo)){alert('Escreva o repositório no formato usuario/repositorio, por exemplo marcosrczn/QUIZ-FILOSOFIA.');return}
   if(!/^[a-z0-9]{10,40}$/.test(s)){alert('O código da sala deve ter de 10 a 40 letras minúsculas e números.');return}
-  var trocouSala=s!==CFG.sala;CFG.repo=repo;CFG.pasta=pasta;CFG.sala=s;guardar('sqg_cfg',CFG);$('dlgConfig').close();
+  var trocouSala=s!==CFG.sala;CFG.repo=repo;CFG.pasta=pasta;CFG.sala=s;CFG.salaManual=s!==SQMural.salaPadrao()?1:0;guardar('sqg_cfg',CFG);$('dlgConfig').close();
   if(trocouSala)location.reload();else{carregarQuizzes();desenharAcesso()}
 };
 $('bAtualizar').onclick=carregarQuizzes;

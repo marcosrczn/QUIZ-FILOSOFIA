@@ -70,5 +70,12 @@ function Sala(codigo,murais,aoMudar){
   };
 }
 
-window.SQMural={Sala:Sala,aleatorio:aleatorio,MURAIS_PADRAO:MURAIS_PADRAO};
+/* código de sala fixo, tirado do endereço da pasta: o link simples da pasta já funciona, sem #s=... */
+function salaPadrao(){var d=(location.host+location.pathname.replace(/[^\/]*$/,'')).toLowerCase(),h1=0x811c9dc5,h2=0x1b873593;
+  for(var i=0;i<d.length;i++){var c=d.charCodeAt(i);h1=Math.imul(h1^c,16777619)>>>0;h2=Math.imul(h2^c,2246822519)>>>0;h2=(h2<<13|h2>>>19)>>>0}
+  return'sq'+('0000000'+h1.toString(16)).slice(-8)+('0000000'+h2.toString(16)).slice(-8)}
+/* árvore de arquivos do repositório (tenta o ramo padrão, depois main e master) */
+function arvore(repo){var refs=['HEAD','main','master'];return(function t(i){if(i>=refs.length)return Promise.reject(404);
+  return fetch('https://api.github.com/repos/'+repo+'/git/trees/'+refs[i]+'?recursive=1',{cache:'no-cache'}).then(function(r){if(r.status===403||r.status===429)throw r.status;if(!r.ok)return t(i+1);return r.json()})})(0)}
+window.SQMural={Sala:Sala,aleatorio:aleatorio,MURAIS_PADRAO:MURAIS_PADRAO,salaPadrao:salaPadrao,arvore:arvore};
 })();

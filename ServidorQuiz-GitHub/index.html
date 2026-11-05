@@ -583,7 +583,7 @@
 'use strict';
 var $=function(i){return document.getElementById(i)};
 var H={};location.hash.replace(/^#/,'').split('&').forEach(function(p){var i=p.indexOf('=');if(i>0)H[p.slice(0,i)]=decodeURIComponent(p.slice(i+1))});
-var SALA=H.s||'',QUIZ=H.q||'',MURAIS=H.m?H.m.split(','):null,PASTA='quizzes/';
+var SALA=H.s||SQMural.salaPadrao(),QUIZ=H.q||'',MURAIS=H.m?H.m.split(','):null,PASTA='quizzes/';
 var REDUZ=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
 var T0=Date.now();
 
@@ -667,6 +667,9 @@ window.addEventListener('message',function(ev){
 var LISTA=null;
 function nomeBonito(a){return a.split('/').pop().replace(/\.html?$/i,'')}
 var TURMAS=['8º Ano EF','9º Ano EF','1ª série EM','2ª série EM','3ª série EM'];
+function turmaDe(a){var n=a.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''),m;
+  if((m=n.match(/(^|[^0-9])([89])\s*[oa°ºª]?[\s_.-]*(ano|serie)/))||(m=n.match(/(^|[^0-9])([89])\s*[o°º]([^a-z]|$)/)))return m[2]+'º Ano EF';
+  if((m=n.match(/(^|[^0-9])([123])\s*[a°ª]?[\s_.-]*(seri?e|em)([^a-z]|$)/)))return m[2]+'ª série EM';return''}
 function normCod(t){return String(t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9-]/g,'')}
 function irPara(arq){QUIZ=arq;history.replaceState(null,'','#s='+SALA+'&q='+encodeURIComponent(QUIZ)+(H.m?'&m='+H.m:''));abrirQuiz()}
 function entrarComCodigo(cod,msg){
@@ -728,8 +731,8 @@ function listaPeloGitHub(){
   var h=location.hostname.match(/^([^.]+)\.github\.io$/i);if(!h)return;
   var partes=location.pathname.split('/').filter(Boolean);if(partes.length&&/\.html?$/i.test(partes[partes.length-1]))partes.pop();
   var repo=partes.length?partes[0]:h[1]+'.github.io',pre=partes.slice(1).concat(['quizzes']).join('/')+'/';
-  fetch('https://api.github.com/repos/'+h[1]+'/'+repo+'/git/trees/HEAD?recursive=1').then(function(r){return r.json()}).then(function(j){if(LISTA||!j||!Array.isArray(j.tree))return;
-    LISTA=j.tree.filter(function(x){return x.type==='blob'&&x.path.indexOf(pre)===0&&/\.html?$/i.test(x.path)}).map(function(x){var a=x.path.slice(pre.length),p=a.split('/');return{arquivo:a,turma:p.length>1?p[0]:''}});
+  SQMural.arvore(h[1]+'/'+repo).then(function(j){if(LISTA||!j||!Array.isArray(j.tree))return;
+    LISTA=j.tree.filter(function(x){return x.type==='blob'&&x.path.indexOf(pre)===0&&/\.html?$/i.test(x.path)}).map(function(x){var a=x.path.slice(pre.length),p=a.split('/');return{arquivo:a,turma:turmaDe(p.length>1?p[0]+' ':'')||turmaDe(p[p.length-1])||(p.length>1?p[0]:'')}});
     aplicarAcessos();if(!QUIZ&&!emQuiz)mostrarLista()}).catch(function(){});
 }
 if(QUIZ)abrirQuiz();else{mostrarLista();setTimeout(listaPeloGitHub,2500)}
