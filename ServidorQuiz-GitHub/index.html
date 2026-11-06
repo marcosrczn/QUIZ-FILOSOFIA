@@ -636,7 +636,7 @@ function enviarFila(forcar){
   if(!lote.length)return;
   enviando=true;lote.forEach(function(it){it.t=agora});
   sala.enviar('a',{k:'d',cid:CID,ua:navigator.userAgent.slice(0,200),itens:lote.map(function(it){return{id:it.id,corpo:it.corpo}})})
-    .then(function(){enviando=false},function(){enviando=false});
+    .then(function(){enviando=false;enviarFila()},function(){enviando=false});
 }
 setInterval(enviarFila,3000);
 /* presença */

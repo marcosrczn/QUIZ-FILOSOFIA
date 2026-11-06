@@ -448,6 +448,7 @@ var reNome=/^(nome|name|aluno|estudante|student|fullname)([_ -]?(completo|do_?al
   reAcertos=/^(acertos|corretas|certas|correct|acertosprimeira)/i,reErros=/^(erros|erradas|incorretas|wrong)$/i,
   reAlertas=/(alerta|alert|aviso|ocorrencia|ocorrência|infra|viola)/i,reRespostas=/(respostas|answers|historico|histórico|tentativas|registro|log)/i,
   reConcluido=/(conclu|finaliz|terminou|encerr|done|finished|completo$)/i,
+  reAtual=/^(atual|questaoatual|questao_atual|current|currentquestion|current_question|indiceatual)$/i,
   reCorreta=/^(correta|correto|acertou|acerto|certa|certo|correct|iscorrect|is_correct|ok|resultado)$/i,
   ORDEM_Q=['original','noriginal','numoriginal','questao','questão','q','numero','número','num','pergunta','qid','n','indice','índice','idx','id'];
 function lerLista(ex,x,ids){
@@ -479,6 +480,7 @@ function andar(ex,chave,v,prof){
   if(typeof v==='string'){var s=v.trim();if(!s||s.length>90)return;
     if(!ex.nome&&s.length>=3&&reNome.test(chave))ex.nome=s;else if(!ex.turma&&reTurma.test(chave))ex.turma=s;else if(!ex.nota&&reNota.test(chave))ex.nota=s;return}
   if(typeof v==='number'){var n=String(v);
+    if(ex.atual==null&&reAtual.test(chave)&&v>=0&&v<1000){ex.atual=v;return}
     if(!ex.nota&&reNota.test(chave))ex.nota=n;else if(!ex.acertos&&reAcertos.test(chave))ex.acertos=n;else if(!ex.erros&&reErros.test(chave))ex.erros=n;else if(!ex.turma&&reTurma.test(chave))ex.turma=n;return}
   if(v===true&&chave&&reConcluido.test(chave))ex.concluido=true;
 }
@@ -494,6 +496,7 @@ function resumir(c){
   var r={chave:c.chave,quiz:c.quiz,inicio:c.inicio,ultimo:c.ultimo,disp:c.disp,saidas:c.saidas||0,online:online(c),visivel:c.visivel!==false,
     nome:primeiro(c.ident.nome,c.campos.nome,ex.nome),turma:primeiro(c.ident.turma,c.campos.turma,ex.turma),
     nota:primeiro(c.ident.nota,ex.nota,n1),acertos:primeiro(c.ident.acertos,ex.acertos,la),erros:primeiro(c.ident.erros,ex.erros,le),
+    questao:ex.atual!=null?String(ex.atual+1):'',
     respostas:Math.max(ex.respostas,(c.eventos||[]).filter(function(e){return e.tipo==='resposta'}).length),alertas:ex.alertas,
     concluido:ex.concluido||c.ident.concluido==='sim'||c.ident.concluido===true,escritas:[]};
   Object.keys(c.escritas||{}).sort(function(a,b){return parseInt(a)-parseInt(b)}).forEach(function(k){var w=c.escritas[k];r.escritas.push({pergunta:w.pergunta,veredito:veredito(w),w:w})});
@@ -518,9 +521,12 @@ function processar(e,ua){
   if(!e||!/^[a-zA-Z0-9_-]{6,64}$/.test(e.cid||'')||!e.quiz)return;
   var c=cliente(e.cid,e.quiz,ua),antes=resumir(c),f='';
   switch(e.tipo){
-    case 'storage':(e.itens||[]).forEach(function(it){
+    case 'storage':c.ver=c.ver||{};(e.itens||[]).forEach(function(it){
       if(it.k==='*'&&it.v==null){Object.keys(c.estado).forEach(function(k){if(k.indexOf(it.a+':')===0)delete c.estado[k]});return}
-      var k=it.a+':'+it.k;if(it.v==null)delete c.estado[k];else if(String(it.v).length<=300000)c.estado[k]=String(it.v)});break;
+      var k=it.a+':'+it.k;
+      /* um reenvio antigo pode chegar depois do mais novo: não deixa voltar no tempo */
+      if(e.__id){if(c.ver[k]>e.__id)return;c.ver[k]=e.__id}
+      if(it.v==null)delete c.estado[k];else if(String(it.v).length<=300000)c.estado[k]=String(it.v)});break;
     case 'campo':if((e.campo==='nome'||e.campo==='turma')&&e.valor)c.campos[e.campo]=String(e.valor).slice(0,120);break;
     case 'visibilidade':var vis=e.valor==='visivel';
       if(!antes.concluido){if(c.visivel&&!vis){c.saidas++;f='saiu da página do quiz';evento(c,'saiu_da_pagina')}else if(!c.visivel&&vis){f='voltou para o quiz';evento(c,'voltou')}}
@@ -542,7 +548,7 @@ function processar(e,ua){
 var conectados=0;
 var sala=new SQMural.Sala(CFG.sala,MURAIS,function(n){conectados=n;var v=$('vivo');v.classList.toggle('off',!n);v.lastChild.textContent=n?'ao vivo':'conectando…';v.title=n+' de '+sala.murais.length+' murais conectados';if(n){anunciar();publicarLista()}});
 sala.ouvir('a',function(o){
-  if(o.k==='d'){var ids=[];(o.itens||[]).forEach(function(it){ids.push(it.id);(it.corpo||[]).forEach(function(e){e.cid=o.cid;processar(e,o.ua)})});
+  if(o.k==='d'){var ids=[];(o.itens||[]).forEach(function(it){ids.push(it.id);(it.corpo||[]).forEach(function(e){e.cid=o.cid;e.__id=it.id;processar(e,o.ua)})});
     sala.enviar('p/'+o.cid,{k:'ack',ids:ids});agendar()}
   else if(o.k==='hb'){var c=S.clientes[o.cid+'|'+o.quiz];if(c){var era=online(c);c.hb=Date.now();if(typeof o.vis==='boolean'&&c.visivel!==o.vis&&!resumir(c).concluido){/* a visibilidade chega pela captura */}if(!era)agendar()}else{cliente(o.cid,o.quiz).hb=Date.now();agendar()}}
 });
@@ -678,7 +684,7 @@ function desenharTabela(){
   var f=l.filter(function(r){return(!fq||r.quiz===fq)&&(!ft||r.turma===ft)&&(!fb||r.nome.toLowerCase().indexOf(fb)>=0)}).sort(function(a,b){return b.ultimo-a.ultimo});
   $('vazio').style.display=l.length?'none':'block';
   $('corpo').innerHTML=f.map(function(r){var s=situacao(r);
-    return'<tr class="linha" data-k="'+esc(r.chave)+'"><td class="est"><b>'+esc(r.nome)+'</b><small>'+esc(nome(r.quiz))+'</small></td><td>'+v(r.turma)+'</td><td><span class="sit '+s.k+'"><i></i>'+s.t+'</span>'+(r.saidas?' <span class="tag av" title="Saiu da página">saiu '+r.saidas+'×</span>':'')+'</td>'+
+    return'<tr class="linha" data-k="'+esc(r.chave)+'"><td class="est"><b>'+esc(r.nome)+'</b><small>'+esc(nome(r.quiz))+(r.questao&&!r.concluido?' · questão '+esc(r.questao):'')+'</small></td><td>'+v(r.turma)+'</td><td><span class="sit '+s.k+'"><i></i>'+s.t+'</span>'+(r.saidas?' <span class="tag av" title="Saiu da página">saiu '+r.saidas+'×</span>':'')+'</td>'+
       '<td class="n"><b>'+v(r.nota)+'</b></td></tr>'}).join('');
   [].forEach.call($('corpo').querySelectorAll('tr.linha'),function(tr){tr.onclick=function(){abrir(tr.getAttribute('data-k'))}});
   var on=0,fim=0,sa=0;l.forEach(function(r){if(r.online)on++;if(r.concluido)fim++;if(r.saidas)sa++});
@@ -701,6 +707,7 @@ function desenharFicha(){
   $('dNome').textContent=r.nome;$('dSub').textContent=(r.turma?r.turma+' · ':'')+nome(r.quiz);
   var h='<div class="topico"><h3>Situação</h3>'+
     '<div class="li"><span>Agora</span><b><span class="sit '+s.k+'"><i></i>'+s.t+'</span></b></div>'+
+    (r.questao?'<div class="li"><span>Está na questão</span><b>'+esc(r.questao)+'</b></div>':'')+
     '<div class="li"><span>Última atividade</span><b>'+rel(r.ultimo)+'</b></div>'+
     (r.online?'':'<div class="nota">Desconectado: a mensagem só chega com o quiz aberto.</div>')+'</div>'+
     '<div class="topico"><h3>Desempenho</h3><div class="tres"><div><b>'+v(r.nota)+'</b><span>nota</span></div><div><b>'+v(r.acertos)+'</b><span>acertos</span></div><div><b>'+v(r.erros)+'</b><span>erros</span></div></div></div>'+
