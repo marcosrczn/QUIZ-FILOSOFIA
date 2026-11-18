@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Indústria cultural em vídeo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://www.youtube.com/iframe_api"></script>
+<style>
+:root{
+  --bg:#faf9f5;--surface:#fff;--surface-2:#f1f3f6;--ink:#1d232d;--ink-2:#566170;--line:#d9dee6;
+  --c1:#1f5a94;--c1t:#e4eef9;--c2:#c2501c;--c2t:#fcebdf;--c3:#27784b;--c3t:#e2f3e9;--c4:#74489d;--c4t:#efe7f7;
+  --sec-ink:#fff;--accent-2:#174877;--accent-ink:#fff;
+  --capa:#1f5a94;--capa-ink:#fff;--capa-suave:#cfe0f3;--capa-linha:rgba(255,255,255,.3);--capa-chip:rgba(255,255,255,.14);
+  --art-bg:rgba(255,255,255,.13);--art-am:#f6c853;--art-la:#f28d4f;--art-cl:#fdf6e3;
+  --am:#8a6400;--amt:#fdf2c9;--amb:#efd27a;
+  --bad:#b4372f;--bad-bg:#fbe7e5;
+  --titulo:"Roboto Slab",Rockwell,Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#13171d;--surface:#1b212a;--surface-2:#232b36;--ink:#e8ecf2;--ink-2:#a3adba;--line:#343e4c;
+  --c1:#7fb6ec;--c1t:#1a2c42;--c2:#f29a68;--c2t:#3a2517;--c3:#74ca9b;--c3t:#173124;--c4:#bf9de4;--c4t:#2b2039;
+  --sec-ink:#10151b;--accent-2:#a5cdf3;--accent-ink:#10151b;--capa:#17395c;--capa-suave:#b9cde3;
+  --am:#ecc766;--amt:#3a3013;--amb:#6a5720;--bad:#f28b82;--bad-bg:#3a1d1b;}}
+:root[data-theme="dark"]{
+  --bg:#13171d;--surface:#1b212a;--surface-2:#232b36;--ink:#e8ecf2;--ink-2:#a3adba;--line:#343e4c;
+  --c1:#7fb6ec;--c1t:#1a2c42;--c2:#f29a68;--c2t:#3a2517;--c3:#74ca9b;--c3t:#173124;--c4:#bf9de4;--c4t:#2b2039;
+  --sec-ink:#10151b;--accent-2:#a5cdf3;--accent-ink:#10151b;--capa:#17395c;--capa-suave:#b9cde3;
+  --am:#ecc766;--amt:#3a3013;--amb:#6a5720;--bad:#f28b82;--bad-bg:#3a1d1b;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 var(--sans)}
+.wrap{max-width:1280px;margin:0 auto;padding:0 20px}
+/* capa */
+.hero{background:var(--capa);color:var(--capa-ink)}
+.hero .wrap{display:grid;grid-template-columns:1fr 150px;column-gap:26px;align-items:center;padding-top:28px;padding-bottom:22px;position:relative}
+.hero-art{grid-column:2;grid-row:1/span 3;width:150px;height:150px}
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--capa-suave);font-weight:700;margin:0 0 8px}
+h1{font-family:var(--titulo);font-size:clamp(1.6rem,4.4vw,2.4rem);line-height:1.15;margin:0 0 12px}
+.goal{margin:0;font-size:1.02rem;line-height:1.5;max-width:760px}
+.goal b{display:inline-block;background:var(--art-am);color:#3a2a00;font-size:.74rem;letter-spacing:.07em;text-transform:uppercase;font-weight:800;padding:2px 9px;border-radius:999px;margin-right:6px;vertical-align:2px}
+.meta{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:2px 22px;margin:16px 0 0;padding-top:12px;border-top:1px solid var(--capa-linha);font-size:.88rem;color:var(--capa-suave)}
+.meta b{color:var(--capa-ink)}
+.theme-btn{position:absolute;top:12px;right:10px;width:40px;height:40px;border:0;border-radius:50%;background:var(--capa-chip);color:var(--capa-ink);cursor:pointer;display:grid;place-items:center}
+.theme-btn svg{width:19px;height:19px}
+/* palco: vídeo + card */
+main{padding:22px 0 50px}
+.stage{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:18px;align-items:stretch;background:var(--bg)}
+.stage:fullscreen{padding:18px;height:100vh;grid-template-rows:1fr}
+
+.player{display:flex;flex-direction:column;gap:10px;min-width:0}
+.yt{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:14px;overflow:hidden}.yt iframe,.yt>div{position:absolute;inset:0;width:100%;height:100%;border:0}
+.stage:fullscreen .yt{aspect-ratio:auto;height:calc(100vh - 110px)}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{appearance:none;border:2px solid var(--c1);border-radius:11px;background:var(--c1);color:var(--accent-ink);font:inherit;font-weight:800;font-size:.95rem;padding:8px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.btn.ghost{background:transparent;color:var(--c1)}
+.btn:hover{background:var(--accent-2);border-color:var(--accent-2);color:var(--accent-ink)}
+.btn svg{width:17px;height:17px}
+.chk{display:inline-flex;align-items:center;gap:7px;font-size:.92rem;color:var(--ink-2);cursor:pointer;margin-left:auto}
+.chk input{width:18px;height:18px;accent-color:var(--c1)}
+/* card atual */
+.card{--k:var(--c1);--kt:var(--c1t);background:var(--surface);border:2px solid var(--k);border-radius:16px;padding:0;display:flex;flex-direction:column;overflow:hidden;min-height:100%}
+.card.c2{--k:var(--c2);--kt:var(--c2t)}.card.c3{--k:var(--c3);--kt:var(--c3t)}.card.c4{--k:var(--c4);--kt:var(--c4t)}
+.card.lembrar{--k:var(--am);--kt:var(--amt)}.card.atencao{--k:var(--bad);--kt:var(--bad-bg)}
+.card-cab{display:flex;align-items:center;gap:12px;background:var(--k);color:var(--sec-ink);padding:12px 16px}
+.card.lembrar .card-cab{color:#2b2000}
+.card-cab .n{font-family:var(--titulo);font-size:1.5rem;font-weight:700;min-width:34px;text-align:center}
+.card-cab .tipo{font-size:.76rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.card-cab .ico{margin-left:auto;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center}
+.card-cab .ico svg{width:22px;height:22px}
+.card-corpo{padding:16px 20px 18px;flex:1;animation:entra .45s ease}
+@keyframes entra{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card h2{font-family:var(--titulo);font-size:clamp(1.25rem,2.1vw,1.75rem);line-height:1.2;margin:0 0 12px;color:var(--k)}
+.card.lembrar h2{color:var(--am)}
+.card p{margin:0 0 10px;font-size:clamp(1rem,1.35vw,1.2rem)}
+.card ul{margin:0 0 10px;padding-left:1.3em;font-size:clamp(1rem,1.35vw,1.18rem)}
+.card li{margin-bottom:5px}.card li::marker{color:var(--k);font-weight:800}
+.card .ex{background:var(--kt);border-radius:10px;padding:9px 12px;font-size:clamp(.95rem,1.25vw,1.1rem)}
+.card .ex b{color:var(--k)}
+.card .chave{font-family:var(--titulo);font-size:clamp(1.15rem,1.8vw,1.55rem);line-height:1.35;margin:0 0 12px}
+.card .alerta{border:1.5px dashed var(--bad);border-radius:10px;padding:8px 12px;font-size:clamp(.92rem,1.15vw,1.05rem)}
+.card .alerta b{color:var(--bad)}
+.card details{margin-top:10px;font-size:clamp(.92rem,1.15vw,1.05rem);border-top:1px dashed var(--line);padding-top:8px}
+.card summary{cursor:pointer;font-weight:800;color:var(--k)}
+.card details p{font-size:inherit;margin:8px 0 0}
+.card .aviso{font-size:.9rem;color:var(--ink-2);margin-top:10px}
+.stage:fullscreen .card .chave{font-size:clamp(1.4rem,2.3vw,2.1rem)}
+.card-pe{border-top:1px solid var(--line);padding:8px 16px;font-size:.85rem;color:var(--ink-2);display:flex;justify-content:space-between;gap:10px}
+.stage:fullscreen .card p,.stage:fullscreen .card ul{font-size:clamp(1.15rem,1.7vw,1.6rem)}
+.stage:fullscreen .card h2{font-size:clamp(1.5rem,2.5vw,2.3rem)}
+/* linha do tempo */
+.trilha{margin-top:26px}
+.trilha h3{font-family:var(--titulo);font-size:1.2rem;margin:0 0 10px;color:var(--c1)}
+.trilha ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+.trilha button{appearance:none;width:100%;text-align:left;font:inherit;font-size:.93rem;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:8px 11px;cursor:pointer;display:flex;gap:10px;align-items:baseline}
+.trilha button:hover{border-color:var(--c1);background:var(--c1t)}
+.trilha button.on{border-color:var(--c1);background:var(--c1t);font-weight:700}
+.trilha .t{font-variant-numeric:tabular-nums;color:var(--c2);font-weight:800;flex:none}
+.fonte{margin-top:26px;font-size:.85rem;color:var(--ink-2)}
+@media (max-width:900px){.stage{grid-template-columns:1fr}.card{min-height:0}}
+@media (max-width:600px){
+  body{font-size:16px}.wrap{padding:0 16px}
+  .hero .wrap{grid-template-columns:1fr 84px;column-gap:14px}
+  .hero-art{width:84px;height:84px;grid-row:1/span 2;align-self:start;margin-top:26px}
+  .goal{grid-column:1/-1}.chk{margin-left:0}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+ <div class="wrap">
+  <p class="eyebrow">Filosofia · 3ª série · Aula 08</p>
+  <h1>Indústria cultural: o vídeo explicado em cards</h1>
+  <p class="goal"><b>Objetivo</b>Compreender como a indústria cultural transforma a cultura em mercadoria e padroniza gostos, para distinguir uma necessidade real de uma necessidade criada.</p>
+  <svg class="hero-art" viewBox="0 0 200 200" aria-hidden="true">
+   <circle cx="100" cy="100" r="96" fill="var(--art-bg)"/>
+   <rect x="42" y="104" width="116" height="56" fill="var(--art-cl)"/>
+   <path d="M42 104 L72 84 L72 104 L102 84 L102 104 L132 84 L132 104 Z" fill="var(--art-cl)"/>
+   <rect x="134" y="62" width="18" height="44" fill="var(--art-la)"/>
+   <rect x="56" y="122" width="20" height="20" fill="var(--capa)"/>
+   <rect x="90" y="122" width="20" height="20" fill="var(--capa)"/>
+   <rect x="124" y="122" width="20" height="20" fill="var(--capa)"/>
+   <circle cx="128" cy="44" r="7" fill="var(--art-am)"/><rect x="133" y="22" width="4" height="23" fill="var(--art-am)"/><path d="M137 22 q10 4 6 14" stroke="var(--art-am)" stroke-width="4" fill="none"/>
+   <circle cx="160" cy="36" r="6" fill="var(--art-am)"/><rect x="164" y="16" width="4" height="21" fill="var(--art-am)"/>
+  </svg>
+  <div class="meta"><span><b>Habilidade:</b> EM13CHS303</span><span><b>Objeto de conhecimento:</b> Indústria cultural e cultura de massa</span><span><b>Vídeo:</b> Brasil Escola Oficial, 14 min</span></div>
+  <button class="theme-btn" id="tema" title="Mudar entre claro e escuro" aria-label="Mudar entre claro e escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+ </div>
+</header>
+
+<main class="wrap">
+ <section class="stage" id="stage">
+  <div class="player">
+   <div class="yt"><div id="ytp"></div></div>
+   <div class="controls">
+    <button class="btn ghost" id="ant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6"/></svg>Card anterior</button>
+    <button class="btn ghost" id="prox">Próximo card<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 18l6-6-6-6"/></svg></button>
+    <button class="btn" id="tela"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>Tela cheia</button>
+    <label class="chk"><input type="checkbox" id="pausa">Pausar em todos os cards</label>
+   </div>
+  </div>
+  <article class="card" id="card" aria-live="polite"></article>
+ </section>
+
+ <section class="trilha">
+  <h3>Todos os cards (clique para ir ao momento do vídeo)</h3>
+  <ol id="lista"></ol>
+ </section>
+ <p class="fonte">Vídeo: BRASIL ESCOLA OFICIAL. Indústria Cultural - Brasil Escola. YouTube, https://www.youtube.com/watch?v=Z_GcuooNuys. Vídeo exibido a partir do YouTube. Cards elaborados pelo Prof. Marcos R Cesana a partir da fala do vídeo. Os cards "Atenção" corrigem imprecisões do vídeo; os cards "Pare e pense" pausam o vídeo sozinhos para a conversa com a turma.</p>
+</main>
+
+<script>
+const IC={
+ fabrica:'<path d="M3 21V11l6-4v4l6-4v4l6-4v14z"/><path d="M7 17h2M12 17h2M17 17h1"/>',
+ relogio:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+ pessoas:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><circle cx="17" cy="9" r="2.5"/><path d="M16 15c3 0 5 2 5 5"/>',
+ engrenagem:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',
+ lista:'<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/>',
+ lampada:'<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/>',
+ alerta:'<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/>',
+ oculos:'<circle cx="6.5" cy="14" r="3.5"/><circle cx="17.5" cy="14" r="3.5"/><path d="M10 14h4M3 14l2-6M21 14l-2-6"/>',
+ filme:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 5v14M17 5v14M3 9h4M3 15h4M17 9h4M17 15h4"/>',
+ nota:'<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',
+ livro:'<path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4zM20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/>',
+ globo:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>'
+};
+const TIPO={conceito:['c2','Conceito'],carac:['c4','Característica do vídeo'],exemplo:['c3','Exemplo do vídeo'],contexto:['c1','Contexto'],lembrar:['lembrar','Para lembrar'],atencao:['atencao','Atenção'],pense:['c2','Pare e pense']};
+/* Cada card: chave = ideia principal (curta, para ler na TV); ex = exemplo; mais = "Saiba mais" recolhido; alerta = correção visível. */
+const CARDS=[
+ {t:0,k:'pense',i:'lampada',h:'A pergunta da aula',chave:'Os nossos desejos são realmente nossos?',ex:'A música que você ouve e o tênis que você quer: foram escolhidos <b>por você</b> ou <b>para você</b>?'},
+ {t:31,k:'conceito',i:'fabrica',h:'O tema do vídeo',chave:'Indústria cultural: o capitalismo passa a produzir e vender <b>cultura</b> (músicas, filmes, programas) como faz com qualquer produto.'},
+ {t:58,k:'lembrar',i:'livro',h:'De onde vem o conceito',chave:'<b>Theodor Adorno</b> e <b>Max Horkheimer</b><br>Livro: <b>Dialética do esclarecimento</b> (1947)'},
+ {t:97,k:'contexto',i:'relogio',h:'Rádio, cinema e Escola de Frankfurt',chave:'Anos 1930 e 1940: o rádio e o cinema chegam a milhões de pessoas. Um grupo de pesquisadores alemães decide estudar a <b>cultura</b>.',
+  mais:'Esse grupo ficou conhecido como <b>Escola de Frankfurt</b>. Eles partiam do <b>marxismo</b>, a teoria de Karl Marx sobre como o capitalismo funciona, e perceberam que ela tratava pouco da cultura.'},
+ {t:117,k:'atencao',i:'alerta',h:'Corrigindo uma data',chave:'O instituto da Escola de Frankfurt foi fundado em <b>1923</b>, não em 1940.',
+  mais:'Nos anos 1940, com o nazismo no poder, Adorno e Horkheimer viviam exilados nos Estados Unidos. Foi lá que escreveram o livro.'},
+ {t:143,k:'contexto',i:'pessoas',h:'Adorno e Horkheimer',chave:'Juntaram <b>economia</b>, <b>psicanálise</b> e <b>sociologia</b> para entender a cultura.'},
+ {t:187,k:'conceito',i:'fabrica',h:'O que é indústria cultural',chave:'Cultura <b>fabricada como mercadoria</b>: feita em série para vender e dar lucro.',
+  mais:'<b>Mercantilizar</b> é transformar algo em mercadoria, isto é, em um produto feito para ser vendido.'},
+ {t:218,k:'carac',i:'engrenagem',h:'1. Razão instrumental',chave:'A razão vira <b>ferramenta</b>: calcula o jeito mais eficiente de fazer e deixa de perguntar se o objetivo é bom.',ex:'<b>No vídeo:</b> técnica e ciência usadas para lucrar.',
+  mais:'O <b>Iluminismo</b> (século XVIII) prometia que a razão libertaria a humanidade da ignorância. Kant chamou isso de <b>esclarecimento</b>. Adorno e Horkheimer mostram que a mesma razão também pode servir para dominar a natureza e as pessoas.<br><br>As cinco características deste vídeo são a forma como o professor do vídeo organiza o tema. Elas não aparecem nessa lista no livro de Adorno e Horkheimer.'},
+ {t:277,k:'carac',i:'lista',h:'2. Padronização',chave:'Produtos feitos por <b>fórmula</b>, em larga escala, como numa linha de montagem. O que importa é vender.',
+  mais:'<b>Fordismo</b>: a linha de montagem criada por Henry Ford, com cada etapa repetida em série. O vídeo cita também Max Weber: agir calculando antes o resultado que se quer.'},
+ {t:341,k:'exemplo',i:'globo',h:'Exemplo: a região vira rótulo',chave:'Nordeste = forró e axé. Rio = funk. A diversidade de um lugar vira um <b>rótulo simples</b>, fácil de vender.',
+  mais:'Estereótipo é uma ideia simplificada sobre um grupo. Para Adorno, a padronização aparece sobretudo na fabricação dos produtos: sempre iguais com cara de novidade (refrões de fórmula, continuações, remakes).'},
+ {t:370,k:'carac',i:'oculos',h:'3. Produção social do gosto',chave:'O gosto que parece só meu é, em boa parte, <b>produzido de fora</b>: empresas decidem antes o que vamos ouvir e ver.'},
+ {t:405,k:'pense',i:'lampada',pausa:true,h:'Pare e pense',chave:'A última música que você salvou: <b>você achou</b> ela ou <b>ela achou você</b>?',ex:'Pense em onde ela apareceu: playlist pronta, propaganda, vídeo curto, influenciador.',
+  mais:'Hoje o <b>algoritmo de recomendação</b> (o programa que escolhe o próximo vídeo ou música do feed) faz parte dessa produção do gosto. Essa é uma leitura atual; o vídeo não fala de algoritmos.'},
+ {t:411,k:'carac',i:'pessoas',h:'4. Massificação',chave:'Cultura padronizada + gosto produzido = <b>consumo em massa</b>.',ex:'<b>No vídeo:</b> filmes de até 300 milhões de dólares, com lucro esperado ainda maior.'},
+ {t:448,k:'pense',i:'lampada',pausa:true,h:'Necessidade real ou criada?',chave:'Para vender em massa, é preciso <b>criar desejos</b>.',ex:'<b>Necessidade real:</b> o que precisamos para viver bem.<br><b>Necessidade criada:</b> um desejo fabricado pela propaganda e pela repetição.',
+  mais:'Adorno e Horkheimer escrevem: "A indústria cultural não cessa de lograr seus consumidores quanto àquilo que está continuamente a lhes prometer." Lograr quer dizer enganar. Este card liga o vídeo ao tema da nossa aula e não faz parte da fala do apresentador.'},
+ {t:454,k:'carac',i:'nota',h:'5. Pluriclassismo',chave:'O produto é ajustado para atingir <b>todas as classes sociais</b> e ampliar o consumo.',ex:'<b>No vídeo:</b> o sertanejo sai do ambiente caipira e vira sucesso urbano e universitário.'},
+ {t:533,k:'conceito',i:'oculos',h:'Ideologia',chave:'Ideias dominantes que <b>parecem naturais</b> e escondem como a sociedade funciona.',ex:'<b>No vídeo:</b> achar "natural" que quem mora em Goiás goste de sertanejo. O gosto parece natureza, mas foi produzido.',
+  alerta:'<b>Atenção:</b> o vídeo atribui a Marx a expressão "falsa consciência". Ela é de <b>Friedrich Engels</b>, parceiro de Marx, numa carta de 1893.'},
+ {t:598,k:'exemplo',i:'filme',h:'O cinema e Walter Benjamin',chave:'Para <b>Walter Benjamin</b>, o cinema é uma arte <b>mais democrática</b>: chega a quem nunca iria a um museu.',
+  mais:'Livro citado no vídeo: <b>A obra de arte na era de sua reprodutibilidade técnica</b> (1936). O apresentador acrescenta, por conta própria, que o cinema produzido como negócio também busca o lucro. Fica a pergunta: o acesso à cultura é um ganho, mesmo vindo da indústria?'},
+ {t:653,k:'exemplo',i:'filme',h:'O herói que nunca morre',chave:'O herói morre e volta porque a <b>franquia</b> (a série de filmes e produtos) precisa continuar vendendo.',
+  mais:'Os quadrinhos de super-herói surgiram nos <b>anos 1930</b>. O vídeo diz "2030" por um engano de fala.'},
+ {t:714,k:'contexto',i:'relogio',h:'O inimigo muda com o mercado',chave:'1941: o Capitão América soca Hitler. Fim da guerra, vendas em queda: era preciso um <b>novo inimigo</b>.'},
+ {t:749,k:'exemplo',i:'nota',h:'A música',chave:'A música alcança <b>todas as classes sociais</b> e sustenta a <b>indústria fonográfica</b> (gravadoras e, hoje, o streaming).',
+  mais:'O vídeo cita a TV como grande meio de divulgação. Hoje as plataformas digitais e as redes sociais dividem esse papel.'},
+ {t:780,k:'conceito',i:'engrenagem',h:'Até a crítica vira mercadoria',chave:'Rock e punk nasceram contra o consumismo e viraram discos e camisetas: <b>o capitalismo engloba até os seus críticos</b>.'},
+ {t:822,k:'lembrar',i:'livro',h:'Para lembrar',chave:'Indústria cultural = <b>cultura feita como mercadoria</b>.',ex:'Razão instrumental · padronização · produção social do gosto · massificação · pluriclassismo · ideologia'},
+ {t:836,k:'pense',i:'lampada',pausa:true,h:'Os dois lados',chave:'A cultura de massa <b>padroniza</b> o gosto, mas também <b>amplia o acesso</b> à música, ao cinema e às histórias.',ex:'<b>Volte à pergunta:</b> os nossos desejos são realmente nossos?'}
+];
+let P=null,pronto=false;
+const v={get currentTime(){return pronto?P.getCurrentTime():0},set currentTime(t){if(pronto)P.seekTo(t,true)},get paused(){return !pronto||P.getPlayerState()!==1},pause(){if(pronto)P.pauseVideo()}};
+window.onYouTubeIframeAPIReady=()=>{P=new YT.Player('ytp',{videoId:'Z_GcuooNuys',playerVars:{rel:0,playsinline:1,cc_load_policy:0},events:{onReady:()=>{pronto=true}}})};
+const card=document.getElementById('card'),lista=document.getElementById('lista');
+let atual=-1;
+const mmss=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
+CARDS.forEach((c,i)=>{const li=document.createElement('li');li.innerHTML=`<button data-i="${i}"><span class="t">${mmss(c.t)}</span><span>${c.h}</span></button>`;lista.appendChild(li)});
+lista.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;ir(+b.dataset.i)});
+function mostra(i){
+ if(i===atual)return;atual=i;const c=CARDS[i],[cls,rot]=TIPO[c.k];
+ card.className='card '+cls;
+ card.innerHTML=`<div class="card-cab"><span class="n">${i+1}</span><span class="tipo">${rot}</span><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${IC[c.i]||IC.livro}</svg></span></div>
+ <div class="card-corpo"><h2>${c.h}</h2><p class="chave">${c.chave}</p>${c.ex?`<p class="ex">${c.ex}</p>`:''}${c.alerta?`<p class="alerta">${c.alerta}</p>`:''}${c.mais?`<details open><summary>Saiba mais</summary><p>${c.mais}</p></details>`:''}${c.pausa?'<p class="aviso">O vídeo para aqui. Pense na resposta (ou converse com a turma) e clique em ▶ no vídeo para continuar.</p>':''}</div>
+ <div class="card-pe"><span>Card ${i+1} de ${CARDS.length}</span><span>${mmss(c.t)} no vídeo</span></div>`;
+ lista.querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.i===i));
+}
+function indice(t){let k=0;CARDS.forEach((c,i)=>{if(t+0.25>=c.t)k=i});return k}
+let pulando=false;
+function tick(){const k=indice(v.currentTime);if(k!==atual){const novo=k===atual+1;mostra(k);if(novo&&!pulando&&!v.paused&&(CARDS[k].pausa||document.getElementById('pausa').checked))v.pause()}pulando=false}
+setInterval(()=>{if(pronto)tick()},250);
+function ir(i){i=Math.max(0,Math.min(CARDS.length-1,i));pulando=true;mostra(i);try{v.currentTime=CARDS[i].t+0.3}catch(e){}}
+document.getElementById('ant').onclick=()=>ir(atual-1);
+document.getElementById('prox').onclick=()=>ir(atual+1);
+document.getElementById('tela').onclick=()=>{const s=document.getElementById('stage');document.fullscreenElement?document.exitFullscreen():s.requestFullscreen&&s.requestFullscreen()};
+document.getElementById('tema').onclick=()=>{const r=document.documentElement,esc=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=esc?'light':'dark';try{localStorage.setItem('tema-aula08',r.dataset.theme)}catch(e){}};
+try{const t=localStorage.getItem('tema-aula08');if(t)document.documentElement.dataset.theme=t}catch(e){}
+document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;if(e.key==='ArrowRight'&&e.altKey)ir(atual+1);if(e.key==='ArrowLeft'&&e.altKey)ir(atual-1)});
+mostra(0);
+</script>
+</body>
+</html>
