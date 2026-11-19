@@ -206,7 +206,8 @@ const CARDS=[
 ];
 let P=null,pronto=false;
 const v={get currentTime(){return pronto?P.getCurrentTime():0},set currentTime(t){if(pronto)P.seekTo(t,true)},get paused(){return !pronto||P.getPlayerState()!==1},pause(){if(pronto)P.pauseVideo()}};
-window.onYouTubeIframeAPIReady=()=>{P=new YT.Player('ytp',{videoId:'Z_GcuooNuys',playerVars:{rel:0,playsinline:1,cc_load_policy:0},events:{onReady:()=>{pronto=true}}})};
+const criar=()=>{P=new YT.Player('ytp',{videoId:'Z_GcuooNuys',playerVars:{rel:0,playsinline:1,cc_load_policy:0},events:{onReady:()=>{pronto=true}}})};
+ if(window.YT&&YT.Player)criar();else window.onYouTubeIframeAPIReady=criar;
 const card=document.getElementById('card'),lista=document.getElementById('lista');
 let atual=-1;
 const mmss=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');

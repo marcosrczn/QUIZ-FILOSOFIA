@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Memória em rede</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://www.youtube.com/iframe_api"></script>
+<style>
+:root{
+  --bg:#faf9f5;--surface:#fff;--surface-2:#f1f3f6;--ink:#1d232d;--ink-2:#566170;--line:#d9dee6;
+  --c1:#1f5a94;--c1t:#e4eef9;--c2:#c2501c;--c2t:#fcebdf;--c3:#27784b;--c3t:#e2f3e9;--c4:#74489d;--c4t:#efe7f7;
+  --sec-ink:#fff;--accent-2:#174877;--accent-ink:#fff;
+  --capa:#1f5a94;--capa-ink:#fff;--capa-suave:#cfe0f3;--capa-linha:rgba(255,255,255,.3);--capa-chip:rgba(255,255,255,.14);
+  --art-bg:rgba(255,255,255,.13);--art-am:#f6c853;--art-la:#f28d4f;--art-cl:#fdf6e3;
+  --am:#8a6400;--amt:#fdf2c9;--amb:#efd27a;--bad:#b4372f;--bad-bg:#fbe7e5;
+  --titulo:"Roboto Slab",Rockwell,Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#13171d;--surface:#1b212a;--surface-2:#232b36;--ink:#e8ecf2;--ink-2:#a3adba;--line:#343e4c;
+  --c1:#7fb6ec;--c1t:#1a2c42;--c2:#f29a68;--c2t:#3a2517;--c3:#74ca9b;--c3t:#173124;--c4:#bf9de4;--c4t:#2b2039;
+  --sec-ink:#10151b;--accent-2:#a5cdf3;--accent-ink:#10151b;--capa:#17395c;--capa-suave:#b9cde3;
+  --am:#ecc766;--amt:#3a3013;--amb:#6a5720;--bad:#f28b82;--bad-bg:#3a1d1b;}}
+:root[data-theme="dark"]{
+  --bg:#13171d;--surface:#1b212a;--surface-2:#232b36;--ink:#e8ecf2;--ink-2:#a3adba;--line:#343e4c;
+  --c1:#7fb6ec;--c1t:#1a2c42;--c2:#f29a68;--c2t:#3a2517;--c3:#74ca9b;--c3t:#173124;--c4:#bf9de4;--c4t:#2b2039;
+  --sec-ink:#10151b;--accent-2:#a5cdf3;--accent-ink:#10151b;--capa:#17395c;--capa-suave:#b9cde3;
+  --am:#ecc766;--amt:#3a3013;--amb:#6a5720;--bad:#f28b82;--bad-bg:#3a1d1b;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 var(--sans)}
+.wrap{max-width:1280px;margin:0 auto;padding:0 20px}
+.hero{background:var(--capa);color:var(--capa-ink)}
+.hero .wrap{display:grid;grid-template-columns:1fr 150px;column-gap:26px;align-items:center;padding-top:28px;padding-bottom:22px;position:relative}
+.hero-art{grid-column:2;grid-row:1/span 3;width:150px;height:150px}
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--capa-suave);font-weight:700;margin:0 0 8px}
+h1{font-family:var(--titulo);font-size:clamp(1.6rem,4.4vw,2.4rem);line-height:1.15;margin:0 0 12px}
+.goal{margin:0;font-size:1.02rem;line-height:1.5;max-width:780px}
+.goal b{display:inline-block;background:var(--art-am);color:#3a2a00;font-size:.74rem;letter-spacing:.07em;text-transform:uppercase;font-weight:800;padding:2px 9px;border-radius:999px;margin-right:6px;vertical-align:2px}
+.meta{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:2px 22px;margin:16px 0 0;padding-top:12px;border-top:1px solid var(--capa-linha);font-size:.88rem;color:var(--capa-suave)}
+.meta b{color:var(--capa-ink)}
+.theme-btn{position:absolute;top:12px;right:10px;width:40px;height:40px;border:0;border-radius:50%;background:var(--capa-chip);color:var(--capa-ink);cursor:pointer;display:grid;place-items:center}
+.theme-btn svg{width:19px;height:19px}
+main{padding:22px 0 50px}
+.stage{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:18px;align-items:stretch;background:var(--bg)}
+.stage:fullscreen{padding:18px;height:100vh;overflow:auto}
+.player{display:flex;flex-direction:column;gap:10px;min-width:0}
+.tela{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:14px;overflow:hidden}
+.tela video,.tela iframe,.tela>div{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}
+.stage:fullscreen .tela{aspect-ratio:auto;height:calc(100vh - 120px)}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{appearance:none;border:2px solid var(--c1);border-radius:11px;background:var(--c1);color:var(--accent-ink);font:inherit;font-weight:800;font-size:.95rem;padding:8px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.btn.ghost{background:transparent;color:var(--c1)}
+.btn:hover{background:var(--accent-2);border-color:var(--accent-2);color:var(--accent-ink)}
+.btn svg{width:17px;height:17px}
+.chk{display:inline-flex;align-items:center;gap:7px;font-size:.92rem;color:var(--ink-2);cursor:pointer}
+.chk input{width:18px;height:18px;accent-color:var(--c1)}
+.missing{background:var(--bad-bg);border:1.5px solid var(--bad);border-radius:12px;padding:12px 14px;font-size:.95rem}
+.missing label{color:var(--c1);font-weight:800;text-decoration:underline;cursor:pointer}
+.toast{font-size:.9rem;color:var(--ink-2);min-height:1.4em}
+.card{--k:var(--c1);--kt:var(--c1t);background:var(--surface);border:2px solid var(--k);border-radius:16px;display:flex;flex-direction:column;overflow:hidden;min-height:100%}
+.card.c2{--k:var(--c2);--kt:var(--c2t)}.card.c3{--k:var(--c3);--kt:var(--c3t)}.card.c4{--k:var(--c4);--kt:var(--c4t)}
+.card.lembrar{--k:var(--am);--kt:var(--amt)}
+.card-cab{display:flex;align-items:center;gap:12px;background:var(--k);color:var(--sec-ink);padding:12px 16px}
+.card.lembrar .card-cab{color:#2b2000}
+.card-cab .n{font-family:var(--titulo);font-size:1.5rem;font-weight:700;min-width:34px;text-align:center}
+.card-cab .tipo{font-size:.76rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.card-cab .ico{margin-left:auto;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center}
+.card-cab .ico svg{width:22px;height:22px}
+.card-corpo{padding:16px 20px 18px;flex:1;animation:entra .45s ease}
+@keyframes entra{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card h2{font-family:var(--titulo);font-size:clamp(1.25rem,2vw,1.7rem);line-height:1.2;margin:0 0 12px;color:var(--k)}
+.card.lembrar h2{color:var(--am)}
+.card .chave{font-family:var(--titulo);font-size:clamp(1.08rem,1.6vw,1.4rem);line-height:1.4;margin:0 0 12px}
+.card .ex{background:var(--kt);border-radius:10px;padding:9px 12px;margin:0 0 10px;font-size:clamp(.95rem,1.2vw,1.1rem)}
+.card .ex b{color:var(--k)}
+.card .comp{border:1.5px dashed var(--c4);border-radius:10px;padding:9px 12px;margin:0 0 10px;font-size:clamp(.95rem,1.2vw,1.1rem)}
+.card .comp .rot{display:block;font-size:.74rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--c4);margin-bottom:3px}
+.card details{margin:0 0 10px;font-size:clamp(.92rem,1.15vw,1.05rem);border-top:1px dashed var(--line);padding-top:8px}
+.card summary{cursor:pointer;font-weight:800;color:var(--k)}
+.card details p{margin:6px 0 0}
+.card .pista{font-size:.92rem;background:var(--surface-2);border-radius:10px;padding:8px 12px;margin:0}
+.card .pista b{color:var(--c2)}
+.card .aviso{font-size:.9rem;color:var(--ink-2);margin:10px 0 0}
+.card-pe{border-top:1px solid var(--line);padding:8px 16px;font-size:.85rem;color:var(--ink-2);display:flex;justify-content:space-between;gap:10px}
+.stage:fullscreen .card .chave{font-size:clamp(1.3rem,2.1vw,2rem)}
+.stage:fullscreen .card .ex,.stage:fullscreen .card .comp,.stage:fullscreen .card details{font-size:clamp(1.05rem,1.5vw,1.4rem)}
+.bloco{margin-top:28px}
+.bloco h3{font-family:var(--titulo);font-size:1.25rem;margin:0 0 10px;color:var(--c1)}
+.trilha ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+.trilha button{appearance:none;width:100%;text-align:left;font:inherit;font-size:.93rem;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:8px 11px;cursor:pointer;display:flex;gap:10px;align-items:baseline}
+.trilha button:hover{border-color:var(--c1);background:var(--c1t)}
+.trilha button.on{border-color:var(--c1);background:var(--c1t);font-weight:700}
+.trilha .t{font-variant-numeric:tabular-nums;color:var(--c2);font-weight:800;flex:none}
+.perg{display:grid;gap:10px}
+.qa{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:12px 16px}
+.qa .qt{font-weight:700;font-size:1.05rem}
+.qa .qt b{color:var(--c2)}
+.qa .ans{margin-top:8px;background:var(--c3t);border-radius:10px;padding:10px 12px}
+.qa .btn{margin-top:8px;font-size:.85rem;padding:5px 11px}
+.fonte{margin-top:26px;font-size:.85rem;color:var(--ink-2)}
+@media (max-width:900px){.stage{grid-template-columns:1fr}.card{min-height:0}}
+@media (max-width:600px){
+  body{font-size:16px}.wrap{padding:0 16px}
+  .hero .wrap{grid-template-columns:1fr 84px;column-gap:14px}
+  .hero-art{width:84px;height:84px;grid-row:1/span 2;align-self:start;margin-top:26px}
+  .goal{grid-column:1/-1}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+ <div class="wrap">
+  <p class="eyebrow">Percurso filosófico sobre a evolução humana · 3ª série · Aula 09</p>
+  <h1>Memória em rede: comunicação, racismo e desinformação na era da IA</h1>
+  <p class="goal"><b>Objetivo</b>Analisar criticamente como a inteligência artificial e as redes digitais afetam a memória coletiva, reproduzem o racismo e favorecem a desinformação, à luz da ética da responsabilidade.</p>
+  <svg class="hero-art" viewBox="0 0 200 200" aria-hidden="true">
+   <circle cx="100" cy="100" r="96" fill="var(--art-bg)"/>
+   <path d="M100 52 C70 52 52 74 52 98 C52 112 58 122 66 130 L66 156 L118 156 L118 140 L134 140 L134 118 L146 112 L134 96 C134 70 122 52 100 52 Z" fill="var(--art-cl)"/>
+   <circle cx="88" cy="92" r="7" fill="var(--art-la)"/><circle cx="112" cy="84" r="7" fill="var(--art-am)"/><circle cx="104" cy="112" r="7" fill="var(--art-am)"/>
+   <line x1="88" y1="92" x2="112" y2="84" stroke="var(--capa)" stroke-width="4"/><line x1="112" y1="84" x2="104" y2="112" stroke="var(--capa)" stroke-width="4"/><line x1="88" y1="92" x2="104" y2="112" stroke="var(--capa)" stroke-width="4"/>
+  </svg>
+  <div class="meta"><span><b>Habilidades:</b> EMIFCHSA01, EMIFCHSA02, EMIFCHSA03</span><span><b>Objetos de conhecimento:</b> Ciência, técnica e tecnologia; valores humanos e econômicos; natureza, cuidado e desenvolvimento</span><span><b>Vídeo:</b> Café Filosófico CPFL (07/12/2025)</span></div>
+  <button class="theme-btn" id="tema" title="Mudar entre claro e escuro" aria-label="Mudar entre claro e escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+ </div>
+</header>
+
+<main class="wrap">
+ <section class="stage" id="stage">
+  <div class="player">
+   <div class="tela"><div id="ytp"></div></div>
+   
+   <div class="controls">
+    <button class="btn ghost" id="ant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6"/></svg>Card anterior</button>
+    <button class="btn ghost" id="prox">Próximo card<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 18l6-6-6-6"/></svg></button>
+    <button class="btn" id="tela"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>Tela cheia</button>
+    <label class="chk"><input type="checkbox" id="pular" checked>Pular trechos</label>
+    <label class="chk"><input type="checkbox" id="pausa">Pausar em todos os cards</label>
+   </div>
+   <div class="toast" id="toast" aria-live="polite"></div>
+  </div>
+  <article class="card" id="card" aria-live="polite"></article>
+ </section>
+
+ <section class="bloco trilha">
+  <h3>Todos os cards (clique para ir ao momento do vídeo)</h3>
+  <ol id="lista"></ol>
+ </section>
+
+ <section class="bloco" id="perguntas">
+  <h3>As cinco perguntas da aula</h3>
+  <p>Responda individualmente, com as suas palavras, na folha de perguntas ou no caderno. Os cards marcados com "Pista para a pergunta" ajudam em cada resposta.</p>
+  <div class="perg" id="perg"></div>
+ </section>
+
+ <p class="fonte">Vídeo: CAFÉ FILOSÓFICO CPFL. Memória em rede: comunicação, racismo e desinformação na era da IA. 7 dez. 2025. https://www.youtube.com/watch?v=cPS9t86tSmk. Com "Pular trechos" ligado, o vídeo dura cerca de 28 minutos. Cards elaborados pelo Prof. Marcos R Cesana a partir da fala do vídeo; os quadros "Complemento do professor" trazem autores que não aparecem no vídeo. Os cards "Pare e pense" pausam o vídeo sozinhos.</p>
+</main>
+
+<script>
+const MODO='youtube';
+/* Trechos pulados (segundos). Cada card fica dentro de um trecho mantido. */
+const SKIPS=[
+ [0,147,'Vinhetas e música de abertura'],
+ [282,380,'Detalhes do cosmograma bacongo'],
+ [669,685,'Vinheta de bloco'],
+ [980,1025,'Exemplo sobre moderação de conteúdo'],
+ [1310,1376,'Cadernos Negros e Conceição Evaristo'],
+ [1412,1433,'Vinheta de bloco'],
+ [1511,1599,'Lista de acervos digitais'],
+ [1863,2059,'Poema final e pergunta sobre financiamento'],
+ [2145,2251,'Projeto Folhas (Paraná)'],
+ [2317,2779,'Blogs, família e recursos educacionais'],
+ [2844,2884,'Indicação de ONG'],
+ [2930,3027,'Desigualdade de lazer'],
+ [3064,99999,'Créditos']
+];
+const QUESTIONS=[
+ {p:'Por que se pode afirmar que a tecnologia não é neutra?',
+  a:'Porque toda tecnologia é criada por pessoas em uma sociedade concreta, com interesses e valores. Ela carrega as escolhas de quem a projeta e de quem lucra com ela.'},
+ {p:'De que modo a rede e os algoritmos interferem na memória coletiva de um povo?',
+  a:'Os algoritmos ajudam a decidir o que fica visível e o que desaparece. Grupos sem espaço na rede podem ser apagados da história, o que Boaventura chama de desperdício da experiência.'},
+ {p:'O que é racismo algorítmico e como ele acontece?',
+  a:'É a reprodução do preconceito por sistemas de IA. Eles aprendem com dados do passado e, se esses dados trazem preconceito, a máquina o repete e amplia com aparência de neutralidade técnica, como no reconhecimento facial que erra mais com pessoas negras.'},
+ {p:'Por que a desinformação se espalha tão rápido nas plataformas digitais e o que podemos fazer diante dela?',
+  a:'Porque provoca emoção, cliques e engajamento, e atenção vira dinheiro para as plataformas. Podemos checar a fonte antes de compartilhar, desconfiar de conteúdo que só provoca raiva e cobrar transparência.'},
+ {p:'Segundo Hans Jonas, qual atitude ética o poder da técnica moderna exige de nós?',
+  a:'Responsabilidade: agir de modo que as consequências das nossas ações sejam compatíveis com a continuidade de uma vida humana digna no futuro. Quanto maior o poder técnico, maior a responsabilidade.'}
+];
+/* k: tipo do card. chave: ideia principal. ex: exemplo do vídeo. comp: complemento do professor (não está no vídeo).
+   mais: explicação de palavras. q: pergunta impressa que o card ajuda a responder. pausa: o vídeo para sozinho. */
+const CARDS=[
+ {t:148,k:'contexto',i:'relogio',h:'Dois jeitos de viver o tempo',
+  chave:'No mito grego, <b>Cronos</b> devora os filhos: é o tempo que tudo consome, e vivemos correndo contra ele. Para os povos <b>bacongo</b>, da África Central, o tempo é circular: "começo, meio e começo".',
+  mais:'A frase "começo, meio e começo" é de <b>Nego Bispo</b> (Antônio Bispo dos Santos), pensador quilombola do Piauí. A palestrante cita também o "tempo espiralar" da pesquisadora <b>Leda Maria Martins</b>: o tempo gira e volta perto, mas não ao mesmo lugar.'},
+ {t:393,k:'conceito',i:'livro',h:'Memória: o passado no presente',q:2,
+  chave:'Lembrar acontece sempre <b>agora</b>: a memória liga o presente ao que veio antes. Ela chega em pedaços e só pode ser comunicada pela <b>linguagem</b>.',
+  ex:'<b>Sankofa</b>, símbolo dos povos axante, de Gana: um pássaro com os pés para a frente e a cabeça voltada para trás.'},
+ {t:473,k:'conceito',i:'engrenagem',h:'O que é inteligência artificial',
+  chave:'Um sistema que aprende a processar informações a partir de <b>bases de dados</b>. Não funciona como a inteligência humana.',
+  mais:'<b>Base de dados</b>: um grande conjunto organizado de informações (textos, imagens, números) usado para treinar o sistema.'},
+ {t:513,k:'exemplo',i:'pessoas',h:'A comunidade quilombola e a IA',q:1,
+  chave:'Quando uma comunidade revê os registros das colheitas, <b>alguém escolhe</b> o que vale como aprendizado. Na IA é igual: <b>pessoas criam as regras</b> e escolhem quais dados entram.'},
+ {t:648,k:'pense',i:'lampada',pausa:true,h:'Levante uma hipótese',q:2,
+  chave:'Quem define as bases de dados da IA? Que saberes e que pessoas ficam <b>de fora</b>?',
+  ex:'Escreva no caderno o seu palpite. Depois confira com o que a palestrante diz a seguir.'},
+ {t:715,k:'tese',i:'balanca',h:'A tecnologia não é neutra',q:1,
+  chave:'<b>Não existe técnica separada da visão de mundo.</b> As escolhas sobre os dados carregam preconceitos, crenças e valores de quem decide.',
+  ex:'<b>No vídeo:</b> a IA que usamos é alimentada sobretudo por empresas do Norte global, lideradas em sua maioria por homens brancos.',
+  mais:'<b>Norte global</b>: os países mais ricos do mundo, como Estados Unidos e países da Europa, onde ficam as grandes empresas de tecnologia.'},
+ {t:815,k:'tese',i:'alerta',h:'Racismo algorítmico',q:3,
+  chave:'A IA aprende com dados que <b>já têm preconceito</b> e passa a repeti-lo, com aparência de neutralidade técnica.',
+  ex:'<b>No vídeo:</b> o reconhecimento facial é treinado com imagens de câmeras de vigilância e fichas policiais, onde há mais rostos negros porque a polícia aborda mais pessoas negras. Resultado: mais <b>falsos positivos</b> contra pessoas negras.',
+  mais:'<b>Falso positivo</b>: quando o sistema aponta uma pessoa inocente como suspeita. O conceito de racismo algorítmico é do pesquisador <b>Tarcísio Silva</b>, no livro <i>Racismo algorítmico: inteligência artificial e discriminação nas redes digitais</i>.'},
+ {t:1025,k:'conceito',i:'livro',h:'Epistemicídio',q:2,
+  chave:'A filósofa <b>Sueli Carneiro</b> chama de epistemicídio a negação, o silenciamento e a destruição de saberes, principalmente os produzidos por pessoas negras.',
+  ex:'<b>No vídeo:</b> na universidade, muitas vezes só vale o que foi produzido na Europa; o saber de comunidades indígenas, quilombolas e das favelas fica de fora.',
+  mais:'<b>Epistemologia</b> é o que define quando um conhecimento é considerado válido. Quem tem o seu saber reconhecido como válido também ganha poder.'},
+ {t:1164,k:'tese',i:'globo',h:'A memória coletiva é disputada',q:2,
+  chave:'Treinados com saberes centrados na Europa, os algoritmos repetem o epistemicídio em escala gigante. Nasce uma <b>memória digital excludente</b>: quem não aparece na rede corre o risco de ser apagado da história.',
+  comp:'<b>Boaventura de Sousa Santos</b>, sociólogo português, chama de <b>desperdício da experiência</b> o descarte dos saberes que a ciência ocidental não reconheceu como válidos, como os indígenas, africanos e populares.'},
+ {t:1240,k:'contraponto',i:'pessoas',h:'Onde há poder, há resistência',
+  chave:'Citando <b>Foucault</b>: se existe poder, existe resistência. A população negra sempre resistiu, e resiste também no ambiente digital.',
+  ex:'<b>No vídeo:</b> os quilombos; Maria Firmina dos Reis, que publicou o romance abolicionista <i>Úrsula</i> em 1859; Carolina Maria de Jesus, com <i>Quarto de despejo</i> (1960).'},
+ {t:1376,k:'contraponto',i:'engrenagem',h:'De usuários a produtores',
+  chave:'"Hoje nós somos objeto de quem escreve os algoritmos." A proposta: <b>escrever os códigos</b>, escolher as bases de dados e produzir IA, e não apenas usar.',
+  mais:'A palestrante compara com a <b>escrevivência</b>, termo da escritora Conceição Evaristo: mulheres negras escrevendo a própria história nos próprios termos.'},
+ {t:1433,k:'contraponto',i:'globo',h:'A internet é maior que as redes sociais',
+  chave:'Tecnologias <b>abertas e livres</b>, plataformas independentes e acervos negros e periféricos dão espaço a saberes que foram excluídos.',
+  ex:'<b>No vídeo:</b> a pesquisadora Nina da Hora lembra que ambientes descentralizados e colaborativos existem e funcionam.'},
+ {t:1633,k:'tese',i:'alerta',h:'A desinformação dá lucro',q:4,
+  chave:'Segundo a palestrante, as grandes empresas de tecnologia, as <b>big techs</b>, lucram muito com a propagação do ódio e da desinformação.',
+  comp:'<b>Como esse lucro funciona:</b> as plataformas ganham dinheiro com anúncios. Quanto mais tempo você fica conectado, mais anúncios vê. Conteúdos que provocam medo e raiva prendem mais a atenção, geram mais <b>engajamento</b> (curtidas, comentários, compartilhamentos) e por isso circulam mais rápido que a verdade.'},
+ {t:1669,k:'tese',i:'lista',h:'O que fazer diante da desinformação',q:4,
+  chave:'<b>No vídeo:</b> regulamentar as plataformas ("não é censura, é parâmetro democrático"), exigir <b>transparência</b> no uso dos dados e dos modelos de IA e criar regras éticas para as bases de dados.',
+  ex:'<b>Pacto Digital Global</b> (ONU, 2024): objetivos e compromissos para um ambiente digital que promova os direitos humanos.',
+  comp:'<b>Atitudes de cada um:</b> checar a fonte antes de compartilhar, desconfiar de conteúdo que só provoca raiva ou medo e procurar a mesma notícia em outros veículos.'},
+ {t:1783,k:'pense',i:'relogio',pausa:true,h:'Correr contra o tempo',
+  chave:'"Usar IA sem crítica para correr mais, produzir mais, escrever mais rápido" gera lucro para outros. Lembre do tempo de Cronos, do primeiro card.',
+  ex:'<b>Pare e pense:</b> para que você usa a IA? Ela te ajuda a pensar ou a correr?'},
+ {t:2059,k:'conceito',i:'balanca',h:'Quem é o bárbaro?',q:5,
+  chave:'Para a palestrante, bárbaro <b>não</b> são os povos indígenas, que convivem com a natureza. <b>Bárbaro é quem coloca em risco toda a humanidade</b>: acaba com a água, devasta o solo, desmata.',
+  comp:'<b>Hans Jonas</b> (1903-1993), filósofo alemão: a técnica moderna deu à humanidade um poder que atinge o planeta e as <b>gerações futuras</b>. Por isso ele propõe o <b>princípio responsabilidade</b>: "Age de tal maneira que os efeitos da tua ação sejam compatíveis com a permanência de uma autêntica vida humana sobre a Terra". Quanto maior o poder técnico, maior a responsabilidade.'},
+ {t:2101,k:'contraponto',i:'lampada',h:'Uma palestrante otimista',
+  chave:'"Eu quero a tecnologia do Vale do Silício, mas também a do Vale do Jequitinhonha." A ideia não é inverter quem manda, e sim que <b>todo mundo possa produzir tecnologia</b>.'},
+ {t:2251,k:'contexto',i:'pessoas',h:'Ampliar horizontes com cuidado',
+  chave:'As tecnologias digitais abriram espaço para mais vozes. O desafio: usar a IA e a internet para ampliar horizontes <b>sem perder o cuidado</b> e aquilo que nos faz humanos.'},
+ {t:2805,k:'tese',i:'oculos',h:'A rede amplia tudo, e não é neutra',q:2,
+  chave:'A internet pode ser usada para coisas boas e ruins, mas <b>potencializa</b> tudo. Na rede social, o algoritmo <b>não mostra tudo</b>: mostra o que acha que vai te interessar.'},
+ {t:2884,k:'pense',i:'lampada',pausa:true,h:'Paulo Freire: depende do uso?',q:1,
+  chave:'Perguntado se o computador salvaria ou destruiria a educação, Paulo Freire respondeu: "depende de quem usa, como usa e para que usa".',
+  ex:'<b>Pare e pense:</b> a tecnologia é neutra e só o uso importa, ou ela já vem com as escolhas de quem a criou (card "A tecnologia não é neutra")? Os dois lados podem ter razão?'},
+ {t:3027,k:'lembrar',i:'livro',h:'Para lembrar',
+  chave:'Tecnologia com <b>a vida no centro</b>, e não o lucro. Para usar a IA de forma crítica, é preciso saber <b>quem a produz</b> e quais saberes estão por trás dela.'}
+];
+
+const IC={
+ relogio:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+ pessoas:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><circle cx="17" cy="9" r="2.5"/><path d="M16 15c3 0 5 2 5 5"/>',
+ engrenagem:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',
+ lista:'<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/>',
+ lampada:'<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/>',
+ alerta:'<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/>',
+ oculos:'<circle cx="6.5" cy="14" r="3.5"/><circle cx="17.5" cy="14" r="3.5"/><path d="M10 14h4M3 14l2-6M21 14l-2-6"/>',
+ livro:'<path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4zM20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/>',
+ globo:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
+ balanca:'<path d="M12 3v18M7 21h10M5 7h14"/><path d="M5 7l-3 6a3 3 0 0 0 6 0zM19 7l-3 6a3 3 0 0 0 6 0z"/>'
+};
+const TIPO={conceito:['c2','Conceito'],tese:['c1','Tese da aula'],exemplo:['c3','Exemplo do vídeo'],contexto:['c1','Contexto'],contraponto:['c3','Outro lado'],lembrar:['lembrar','Para lembrar'],pense:['c4','Pare e pense']};
+const card=document.getElementById('card'),lista=document.getElementById('lista');
+const mmss=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
+let atual=-1,pulando=false,toastT=null;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;clearTimeout(toastT);toastT=setTimeout(()=>t.textContent='',3500)}
+
+/* ---------- player: arquivo local ou YouTube, com a mesma interface ---------- */
+let V;
+if(MODO==='youtube'){
+ let P=null,pronto=false;
+ V={get ok(){return pronto},get t(){return pronto?P.getCurrentTime():0},set t(x){if(pronto)P.seekTo(x,true)},get dur(){return pronto?P.getDuration():0},
+    get paused(){return !pronto||P.getPlayerState()!==1},pause(){if(pronto)P.pauseVideo()}};
+ const criar=()=>{P=new YT.Player('ytp',{videoId:'cPS9t86tSmk',playerVars:{rel:0,playsinline:1},events:{onReady:()=>{pronto=true}}})};
+ if(window.YT&&YT.Player)criar();else window.onYouTubeIframeAPIReady=criar;
+}else{
+ const el=document.getElementById('v');
+ V={get ok(){return el.readyState>0},get t(){return el.currentTime},set t(x){el.currentTime=x},get dur(){return el.duration||0},get paused(){return el.paused},pause(){el.pause()}};
+ el.addEventListener('error',()=>document.getElementById('missing').hidden=false);
+ document.getElementById('arq').addEventListener('change',e=>{const f=e.target.files[0];if(f){el.src=URL.createObjectURL(f);document.getElementById('missing').hidden=true}});
+}
+
+CARDS.forEach((c,i)=>{const li=document.createElement('li');li.innerHTML=`<button data-i="${i}"><span class="t">${mmss(c.t)}</span><span>${c.h}</span></button>`;lista.appendChild(li)});
+lista.addEventListener('click',e=>{const b=e.target.closest('button');if(b)ir(+b.dataset.i)});
+function mostra(i){
+ if(i===atual)return;atual=i;const c=CARDS[i],[cls,rot]=TIPO[c.k];
+ card.className='card '+cls;
+ card.innerHTML=`<div class="card-cab"><span class="n">${i+1}</span><span class="tipo">${rot}</span><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${IC[c.i]||IC.livro}</svg></span></div>
+ <div class="card-corpo"><h2>${c.h}</h2><p class="chave">${c.chave}</p>${c.ex?`<p class="ex">${c.ex}</p>`:''}${c.comp?`<p class="comp"><span class="rot">Complemento do professor (não está no vídeo)</span>${c.comp}</p>`:''}${c.mais?`<details open><summary>Saiba mais</summary><p>${c.mais}</p></details>`:''}${c.q?`<p class="pista"><b>Pista para a pergunta ${c.q}:</b> ${QUESTIONS[c.q-1].p}</p>`:''}${c.pausa?'<p class="aviso">O vídeo para aqui. Pense (ou converse com a turma) e clique em ▶ no vídeo para continuar.</p>':''}</div>
+ <div class="card-pe"><span>Card ${i+1} de ${CARDS.length}</span><span>${mmss(c.t)} no vídeo</span></div>`;
+ lista.querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.i===i));
+}
+function indice(t){let k=0;CARDS.forEach((c,i)=>{if(t+0.25>=c.t)k=i});return k}
+function tick(){
+ if(!V.ok)return;const t=V.t;
+ if(document.getElementById('pular').checked){const s=SKIPS.find(([a,b])=>t>=a&&t<b-0.3);
+  if(s){if(s[1]>=V.dur-1||s[1]>=99999){V.pause();document.getElementById('perguntas').scrollIntoView({behavior:'smooth'});return}
+   V.t=s[1];toast('Trecho pulado: '+s[2]);return}}
+ const k=indice(t);if(k!==atual){const novo=k===atual+1;mostra(k);if(novo&&!pulando&&!V.paused&&(CARDS[k].pausa||document.getElementById('pausa').checked))V.pause()}
+ pulando=false;
+}
+setInterval(tick,250);
+function ir(i){i=Math.max(0,Math.min(CARDS.length-1,i));pulando=true;mostra(i);V.t=CARDS[i].t+0.3}
+document.getElementById('ant').onclick=()=>ir(atual-1);
+document.getElementById('prox').onclick=()=>ir(atual+1);
+document.getElementById('tela').onclick=()=>{const s=document.getElementById('stage');document.fullscreenElement?document.exitFullscreen():s.requestFullscreen&&s.requestFullscreen()};
+QUESTIONS.forEach((q,i)=>{const d=document.createElement('div');d.className='qa';
+ d.innerHTML=`<div class="qt"><b>${i+1}.</b> ${q.p}</div>`+(MODO==='local'?`<button class="btn ghost">Mostrar resposta</button><div class="ans" hidden>${q.a}</div>`:'');
+ const b=d.querySelector('button');if(b)b.onclick=()=>{const a=d.querySelector('.ans');a.hidden=!a.hidden;b.textContent=a.hidden?'Mostrar resposta':'Ocultar resposta'};
+ document.getElementById('perg').appendChild(d)});
+document.getElementById('tema').onclick=()=>{const r=document.documentElement,esc=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=esc?'light':'dark';try{localStorage.setItem('tema-pfseh09',r.dataset.theme)}catch(e){}};
+try{const t=localStorage.getItem('tema-pfseh09');if(t)document.documentElement.dataset.theme=t}catch(e){}
+mostra(0);
+</script>
+</body>
+</html>
