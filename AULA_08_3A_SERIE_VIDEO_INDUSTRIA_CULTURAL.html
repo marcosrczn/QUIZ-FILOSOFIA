@@ -124,7 +124,7 @@ main{padding:22px 0 50px}
    <circle cx="128" cy="44" r="7" fill="var(--art-am)"/><rect x="133" y="22" width="4" height="23" fill="var(--art-am)"/><path d="M137 22 q10 4 6 14" stroke="var(--art-am)" stroke-width="4" fill="none"/>
    <circle cx="160" cy="36" r="6" fill="var(--art-am)"/><rect x="164" y="16" width="4" height="21" fill="var(--art-am)"/>
   </svg>
-  <div class="meta"><span><b>Habilidade:</b> EM13CHS303</span><span><b>Objeto de conhecimento:</b> Indústria cultural e cultura de massa</span><span><b>Vídeo:</b> Brasil Escola Oficial, 14 min</span></div>
+  <div class="meta"><span><b>Vídeo:</b> Brasil Escola Oficial, 14 min</span></div>
   <button class="theme-btn" id="tema" title="Mudar entre claro e escuro" aria-label="Mudar entre claro e escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
  </div>
 </header>
@@ -137,7 +137,7 @@ main{padding:22px 0 50px}
     <button class="btn ghost" id="ant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6"/></svg>Card anterior</button>
     <button class="btn ghost" id="prox">Próximo card<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 18l6-6-6-6"/></svg></button>
     <button class="btn" id="tela"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>Tela cheia</button>
-    <label class="chk"><input type="checkbox" id="pausa">Pausar em todos os cards</label>
+    <input type="checkbox" id="pausa" hidden>
    </div>
   </div>
   <article class="card" id="card" aria-live="polite"></article>
@@ -147,7 +147,7 @@ main{padding:22px 0 50px}
   <h3>Todos os cards (clique para ir ao momento do vídeo)</h3>
   <ol id="lista"></ol>
  </section>
- <p class="fonte">Vídeo: BRASIL ESCOLA OFICIAL. Indústria Cultural - Brasil Escola. YouTube, https://www.youtube.com/watch?v=Z_GcuooNuys. Vídeo exibido a partir do YouTube. Cards elaborados pelo Prof. Marcos R Cesana a partir da fala do vídeo. Os cards "Atenção" corrigem imprecisões do vídeo; os cards "Pare e pense" pausam o vídeo sozinhos para a conversa com a turma.</p>
+ <p class="fonte">Vídeo: Brasil Escola Oficial. Indústria Cultural (YouTube). Os cards "Atenção" corrigem imprecisões ditas no vídeo.</p>
 </main>
 
 <script>
@@ -217,7 +217,7 @@ function mostra(i){
  if(i===atual)return;atual=i;const c=CARDS[i],[cls,rot]=TIPO[c.k];
  card.className='card '+cls;
  card.innerHTML=`<div class="card-cab"><span class="n">${i+1}</span><span class="tipo">${rot}</span><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${IC[c.i]||IC.livro}</svg></span></div>
- <div class="card-corpo"><h2>${c.h}</h2><p class="chave">${c.chave}</p>${c.ex?`<p class="ex">${c.ex}</p>`:''}${c.alerta?`<p class="alerta">${c.alerta}</p>`:''}${c.mais?`<details open><summary>Saiba mais</summary><p>${c.mais}</p></details>`:''}${c.pausa?'<p class="aviso">O vídeo para aqui. Pense na resposta (ou converse com a turma) e clique em ▶ no vídeo para continuar.</p>':''}</div>
+ <div class="card-corpo"><h2>${c.h}</h2><p class="chave">${c.chave}</p>${c.ex?`<p class="ex">${c.ex}</p>`:''}${c.alerta?`<p class="alerta">${c.alerta}</p>`:''}${c.mais?`<details open><summary>Saiba mais</summary><p>${c.mais}</p></details>`:''}${c.pausa?'<p class="aviso">O vídeo para aqui. Pense na resposta e clique em ▶ no vídeo para continuar.</p>':''}</div>
  <div class="card-pe"><span>Card ${i+1} de ${CARDS.length}</span><span>${mmss(c.t)} no vídeo</span></div>`;
  lista.querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.i===i));
 }

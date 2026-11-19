@@ -121,7 +121,7 @@ main{padding:22px 0 50px}
    <circle cx="88" cy="92" r="7" fill="var(--art-la)"/><circle cx="112" cy="84" r="7" fill="var(--art-am)"/><circle cx="104" cy="112" r="7" fill="var(--art-am)"/>
    <line x1="88" y1="92" x2="112" y2="84" stroke="var(--capa)" stroke-width="4"/><line x1="112" y1="84" x2="104" y2="112" stroke="var(--capa)" stroke-width="4"/><line x1="88" y1="92" x2="104" y2="112" stroke="var(--capa)" stroke-width="4"/>
   </svg>
-  <div class="meta"><span><b>Habilidades:</b> EMIFCHSA01, EMIFCHSA02, EMIFCHSA03</span><span><b>Objetos de conhecimento:</b> Ciência, técnica e tecnologia; valores humanos e econômicos; natureza, cuidado e desenvolvimento</span><span><b>Vídeo:</b> Café Filosófico CPFL (07/12/2025)</span></div>
+  <div class="meta"><span><b>Vídeo:</b> Café Filosófico CPFL (07/12/2025)</span></div>
   <button class="theme-btn" id="tema" title="Mudar entre claro e escuro" aria-label="Mudar entre claro e escuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
  </div>
 </header>
@@ -135,8 +135,8 @@ main{padding:22px 0 50px}
     <button class="btn ghost" id="ant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6"/></svg>Card anterior</button>
     <button class="btn ghost" id="prox">Próximo card<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 18l6-6-6-6"/></svg></button>
     <button class="btn" id="tela"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>Tela cheia</button>
-    <label class="chk"><input type="checkbox" id="pular" checked>Pular trechos</label>
-    <label class="chk"><input type="checkbox" id="pausa">Pausar em todos os cards</label>
+    <input type="checkbox" id="pular" checked hidden>
+    <input type="checkbox" id="pausa" hidden>
    </div>
    <div class="toast" id="toast" aria-live="polite"></div>
   </div>
@@ -150,11 +150,11 @@ main{padding:22px 0 50px}
 
  <section class="bloco" id="perguntas">
   <h3>As cinco perguntas da aula</h3>
-  <p>Responda individualmente, com as suas palavras, na folha de perguntas ou no caderno. Os cards marcados com "Pista para a pergunta" ajudam em cada resposta.</p>
+  
   <div class="perg" id="perg"></div>
  </section>
 
- <p class="fonte">Vídeo: CAFÉ FILOSÓFICO CPFL. Memória em rede: comunicação, racismo e desinformação na era da IA. 7 dez. 2025. https://www.youtube.com/watch?v=cPS9t86tSmk. Com "Pular trechos" ligado, o vídeo dura cerca de 28 minutos. Cards elaborados pelo Prof. Marcos R Cesana a partir da fala do vídeo; os quadros "Complemento do professor" trazem autores que não aparecem no vídeo. Os cards "Pare e pense" pausam o vídeo sozinhos.</p>
+ <p class="fonte">Vídeo: Café Filosófico CPFL. Memória em rede: comunicação, racismo e desinformação na era da IA (7 dez. 2025).</p>
 </main>
 
 <script>
@@ -293,7 +293,7 @@ function mostra(i){
  if(i===atual)return;atual=i;const c=CARDS[i],[cls,rot]=TIPO[c.k];
  card.className='card '+cls;
  card.innerHTML=`<div class="card-cab"><span class="n">${i+1}</span><span class="tipo">${rot}</span><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${IC[c.i]||IC.livro}</svg></span></div>
- <div class="card-corpo"><h2>${c.h}</h2><p class="chave">${c.chave}</p>${c.ex?`<p class="ex">${c.ex}</p>`:''}${c.comp?`<p class="comp"><span class="rot">Complemento do professor (não está no vídeo)</span>${c.comp}</p>`:''}${c.mais?`<details open><summary>Saiba mais</summary><p>${c.mais}</p></details>`:''}${c.q?`<p class="pista"><b>Pista para a pergunta ${c.q}:</b> ${QUESTIONS[c.q-1].p}</p>`:''}${c.pausa?'<p class="aviso">O vídeo para aqui. Pense (ou converse com a turma) e clique em ▶ no vídeo para continuar.</p>':''}</div>
+ <div class="card-corpo"><h2>${c.h}</h2><p class="chave">${c.chave}</p>${c.ex?`<p class="ex">${c.ex}</p>`:''}${c.comp?`<p class="comp"><span class="rot">Complemento (não está no vídeo)</span>${c.comp}</p>`:''}${c.mais?`<details open><summary>Saiba mais</summary><p>${c.mais}</p></details>`:''}${c.q?`<p class="pista"><b>Pista para a pergunta ${c.q}:</b> ${QUESTIONS[c.q-1].p}</p>`:''}${c.pausa?'<p class="aviso">O vídeo para aqui. Pense na resposta e clique em ▶ no vídeo para continuar.</p>':''}</div>
  <div class="card-pe"><span>Card ${i+1} de ${CARDS.length}</span><span>${mmss(c.t)} no vídeo</span></div>`;
  lista.querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.i===i));
 }
@@ -302,7 +302,7 @@ function tick(){
  if(!V.ok)return;const t=V.t;
  if(document.getElementById('pular').checked){const s=SKIPS.find(([a,b])=>t>=a&&t<b-0.3);
   if(s){if(s[1]>=V.dur-1||s[1]>=99999){V.pause();document.getElementById('perguntas').scrollIntoView({behavior:'smooth'});return}
-   V.t=s[1];toast('Trecho pulado: '+s[2]);return}}
+   V.t=s[1];return}}
  const k=indice(t);if(k!==atual){const novo=k===atual+1;mostra(k);if(novo&&!pulando&&!V.paused&&(CARDS[k].pausa||document.getElementById('pausa').checked))V.pause()}
  pulando=false;
 }
