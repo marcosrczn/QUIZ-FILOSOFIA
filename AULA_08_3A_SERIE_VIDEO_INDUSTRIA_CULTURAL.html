@@ -216,7 +216,7 @@ function mostra(i){
  if(i===atual)return;atual=i;const c=CARDS[i],[cls,rot]=TIPO[c.k];
  card.className='card '+cls;
  card.innerHTML=`<div class="card-cab"><span class="n">${i+1}</span><span class="tipo">${rot}</span><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${IC[c.i]||IC.livro}</svg></span></div>
- <div class="card-corpo"><h2>${c.h}</h2><p class="chave">${c.chave}</p>${c.ex?`<p class="ex">${c.ex}</p>`:''}${c.alerta?`<p class="alerta">${c.alerta}</p>`:''}${c.mais?`<details open><summary>Saiba mais</summary><p>${c.mais}</p></details>`:''}${c.pausa?'<p class="aviso">O vídeo para aqui. Pense na resposta e clique em ▶ no vídeo para continuar.</p>':''}</div>
+ <div class="card-corpo"><h2>${c.h}</h2><p class="chave">${c.chave}</p>${c.ex?`<p class="ex">${c.ex}</p>`:''}${c.alerta?`<p class="alerta">${c.alerta}</p>`:''}${c.mais?`<details open><summary>Saiba mais</summary><p>${c.mais}</p></details>`:''}</div>
  <div class="card-pe"><span>Card ${i+1} de ${CARDS.length}</span><span>${mmss(c.t)} no vídeo</span></div>`;
  lista.querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.i===i));
 }
