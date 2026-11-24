@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atividade · Filosofia</title>
+<style>
+  html,body{margin:0;height:100%;background:#f4f4f4;font-family:Arial,sans-serif}
+  #barra{position:fixed;top:0;left:0;right:0;height:26px;line-height:26px;font-size:12px;text-align:center;background:#111;color:#fff;z-index:2}
+  #quiz{position:fixed;top:26px;left:0;width:100%;height:calc(100% - 26px);border:0;background:#fff}
+</style>
+</head>
+<body>
+<div id="barra">Conectando...</div>
+<iframe id="quiz" title="Atividade"></iframe>
+<script src="sq-mural.js"></script>
+<script>
+var barra = document.getElementById('barra');
+var H = {}; location.hash.replace(/^#/, '').split('&').forEach(function (p) {
+  var i = p.indexOf('='); if (i > 0) H[p.slice(0, i)] = decodeURIComponent(p.slice(i + 1)); });
+var SALA = H.s || SQMural.salaPadrao(), QUIZ = H.q || 'atividade-aula11.html';
+if (QUIZ.indexOf('..') >= 0 || !/\.html$/i.test(QUIZ) || /^[a-z]+:/i.test(QUIZ) || QUIZ.charAt(0) === '/') QUIZ = 'atividade-aula11.html';
+
+var CID = null;
+try { CID = localStorage.getItem('__sq_cid'); } catch (e) {}
+if (!CID || !/^[a-zA-Z0-9_-]{6,64}$/.test(CID)) { CID = SQMural.aleatorio(12); try { localStorage.setItem('__sq_cid', CID); } catch (e) {} }
+
+function chavePublica() {
+  return fetch('sala.json', { cache: 'no-cache' }).then(function (r) {
+    if (r.status === 404) return null; if (!r.ok) throw 0;
+    return r.json().then(function (j) { return j && typeof j.enc === 'string' && typeof j.ass === 'string' ? { publica: j } : null; },
+                         function () { return null; });
+  }).catch(function () { return new Promise(function (ok) { setTimeout(function () { ok(chavePublica()); }, 4000); }); });
+}
+var sala = new SQMural.Sala(SALA, null, function (n) { mostrar(n); enviarFila(); }, chavePublica());
+sala.pronta.catch(function () { barra.textContent = 'Chave da sala inválida. Avise o professor.'; });
+
+var CHAVE_FILA = '__sqg_fila:' + SALA, fila = [], seq = 0, enviando = false;
+try { var f = JSON.parse(localStorage.getItem(CHAVE_FILA) || 'null'); if (f) { fila = f.itens || []; seq = f.seq || 0; } } catch (e) {}
+fila.forEach(function (it) { if (!it.u) it.u = SQMural.aleatorio(4); });
+function guardarFila() { try { localStorage.setItem(CHAVE_FILA, JSON.stringify({ seq: seq, itens: fila.slice(-400) })); } catch (e) {} }
+function adicionar(corpo) { seq++; fila.push({ id: seq, u: SQMural.aleatorio(4), corpo: corpo, t: 0 }); guardarFila(); enviarFila(); mostrar(); }
+
+function mostrar(n) {
+  if (n === 0) { barra.textContent = 'Sem conexão. Suas respostas ficam guardadas e seguem quando a internet voltar.'; return; }
+  barra.textContent = fila.length ? 'Enviando ao professor... (' + fila.length + ' pendente' + (fila.length > 1 ? 's' : '') + ')' : 'Conectado. Tudo entregue ao professor.';
+}
+
+function enviarFila(forcar) {
+  if (enviando || !fila.length || !sala.conectados()) return;
+  var agora = Date.now(), lote = [], tam = 0;
+  for (var i = 0; i < fila.length && tam < 90000; i++) {
+    var it = fila[i]; if (!forcar && it.t && agora - it.t < 6000) continue;
+    var s = JSON.stringify(it.corpo).length; if (lote.length && tam + s > 90000) break;
+    lote.push(it); tam += s;
+  }
+  if (!lote.length) return;
+  enviando = true; lote.forEach(function (it) { it.t = agora; });
+  sala.enviar('a', { k: 'd', cid: CID, ua: navigator.userAgent.slice(0, 200),
+                     itens: lote.map(function (it) { return { id: it.id, u: it.u, corpo: it.corpo }; }) })
+      .then(function () { enviando = false; enviarFila(); }, function () { enviando = false; });
+}
+setInterval(enviarFila, 3000);
+
+sala.ouvir('on', function (o) { if (o.t && Date.now() - o.t < 120000) enviarFila(true); });
+sala.subDe(CID).then(function (s) { sala.ouvir(s, receber); });
+sala.ouvir('todos', receber);
+function receber(o) {
+  if (o.k === 'ack') { var ok = {}; (o.us || []).forEach(function (u) { ok[u] = 1; });
+    var antes = fila.length; fila = fila.filter(function (it) { return !ok[it.u]; });
+    if (fila.length !== antes) { guardarFila(); mostrar(); } return; }
+  if (o.k === 'msg' && o.texto && (!o.para || o.para === CID)) {
+    var fq = null; try { fq = document.getElementById('quiz').contentWindow; fq.__emAlerta = true; } catch (e) {}
+    alert('Mensagem do professor:\n\n' + o.texto);
+    setTimeout(function () { try { fq.__emAlerta = false; } catch (e) {} }, 1500);
+  }
+}
+
+function batida() { sala.enviar('a', { k: 'hb', cid: CID, quiz: QUIZ, vis: document.visibilityState !== 'hidden' }); }
+setInterval(batida, 15000); document.addEventListener('visibilitychange', batida);
+
+var pasta = QUIZ.indexOf('/') >= 0 ? QUIZ.slice(0, QUIZ.lastIndexOf('/') + 1) : '';
+var base = new URL(pasta, location.href).href;
+Promise.all([fetch(QUIZ, { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw r.status; return r.text(); }),
+             fetch('captura.js', { cache: 'no-cache' }).then(function (r) { return r.text(); })])
+.then(function (res) {
+  var html = res[0], cap = res[1], cfg = JSON.stringify({ modo: 'portal', quiz: QUIZ, isolar: true });
+  var tag = '<base href="' + base + '"><script>window.__SQ=' + cfg + ';<\/script><script>' + cap.replace(/<\/script/gi, '<\\/script') + '<\/script>';
+  var m = html.match(/<head[^>]*>/i); html = m ? html.replace(m[0], m[0] + tag) : tag + html;
+  document.getElementById('quiz').srcdoc = html;
+}).catch(function () { barra.textContent = 'Não consegui abrir a atividade. Recarregue a página.'; });
+
+window.addEventListener('message', function (ev) {
+  var f = document.getElementById('quiz');
+  if (!f || ev.source !== f.contentWindow || !ev.data || ev.data.sq !== 'api') return;
+  var corpo = (ev.data.corpo || []).map(function (e) { e.cid = CID; return e; });
+  if (corpo.length) adicionar(corpo);
+});
+</script>
+</body>
+</html>
