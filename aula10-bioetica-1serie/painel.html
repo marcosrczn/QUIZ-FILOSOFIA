@@ -53,6 +53,11 @@
   .folha .q h4{font-family:Arial,sans-serif;font-size:11pt;margin:0 0 3px}
   .folha .q p{margin:3px 0}
   .folha .perg{font-weight:bold}
+  .folha .caso{border:1px solid #000;padding:6px 10px;margin:8px 0;break-inside:avoid-page}
+  .folha .caso h4{font-family:Arial,sans-serif;font-size:11pt;margin:0 0 4px}
+  .folha .caso p{margin:0 0 5px;text-align:justify}
+  .folha .cit{font-style:italic;margin:4px 0 0 1.2cm}
+  .folha .ref{text-align:right;font-family:Arial,sans-serif;font-size:9pt;margin:0 0 4px}
   .folha .resp{border:1px solid #000;padding:6px 8px;margin-top:4px;white-space:pre-wrap;word-wrap:break-word;min-height:2.2em}
   .folha .vazio{color:#555;font-style:italic}
   .folha .obs{font-family:Arial,sans-serif;font-size:9.5pt;color:#555}
@@ -162,10 +167,12 @@ function baixar(nome, txt, tipo) { var a = document.createElement('a'); a.href =
 function str(v, n) { return typeof v === 'string' ? v.slice(0, n || 20000) : ''; }
 
 /* ---------- perguntas da atividade (lidas do próprio arquivo da atividade) ---------- */
-var Q = [];
+var Q = [], CASO = '', CASO_TITULO = '';
 fetch(ATIVIDADE, { cache: 'no-cache' }).then(function (r) { return r.text(); }).then(function (t) {
   var m = t.match(/var Q = (\[[\s\S]*?\n\]);/);
   if (m) { try { Q = (new Function('return ' + m[1]))(); } catch (e) {} }
+  var c = t.match(/var CASO = ("(?:[^"\\]|\\.)*");/), ct = t.match(/var CASO_TITULO = ("(?:[^"\\]|\\.)*");/);
+  try { if (c) CASO = JSON.parse(c[1]); if (ct) CASO_TITULO = JSON.parse(ct[1]); } catch (e) {}
   render();
 }).catch(function () {});
 
@@ -241,7 +248,7 @@ function aplicar(cid, ev) {
       var q = parseInt(d.questao, 10); if (!(q >= 1 && q <= 60)) break;
       dono = donoDe(d, dv); if (!dono) break;
       var mt = d.met && typeof d.met === 'object' ? d.met : null;
-      est(dono.k, dono.nome, dono.turma, cid).resp[q] = { titulo: str(d.titulo, 300), caso: str(d.caso, 4000), pergunta: str(d.pergunta, 2000), texto: str(d.texto), t: Date.now(),
+      est(dono.k, dono.nome, dono.turma, cid).resp[q] = { titulo: str(d.titulo, 300), caso: str(d.caso, 6000), casoTitulo: str(d.casoTitulo, 300), cit: str(d.cit, 1000), ref: str(d.ref, 500), pergunta: str(d.pergunta, 2000), texto: str(d.texto), t: Date.now(),
         met: mt ? { tam: +mt.tam || 0, dig: +mt.dig || 0, blocos: +mt.blocos || 0, blocoChars: +mt.blocoChars || 0, bloq: +mt.bloq || 0, ativoMs: +mt.ativoMs || 0 } : null };
       break;
     case 'conclusao':
@@ -402,11 +409,15 @@ function folha(g) {
     '<div class="id"><b>Estudante:</b> ' + esc(g.nome) + ' &nbsp;·&nbsp; <b>Turma:</b> ' + esc(g.turma || '—') + ' &nbsp;·&nbsp; <b>Envio:</b> ' +
     (g.fim ? esc(hora(g.fim)) : 'não enviou (texto salvo enquanto escrevia)') + '</div>';
   var ind = indicadores(g);
-  h += '<div class="ind">' + (ind.geral.length ? esc(ind.geral.join(' ')) : 'Nenhuma saída da atividade registrada.') + '</div>';
+  h += '<div class="ind' + (g.sai && (g.sai.saidas >= 3 || g.sai.foraMs >= 30000) ? ' forte' : '') + '">' + (ind.geral.length ? esc(ind.geral.join(' ')) : 'Nenhuma saída da atividade registrada.') + '</div>';
+  var casoTxt = (g.resp[1] && g.resp[1].caso) || CASO, casoTit = (g.resp[1] && g.resp[1].casoTitulo) || CASO_TITULO;
+  if (casoTxt) h += '<div class="caso"><h4>Estudo de caso' + (casoTit ? ': ' + esc(casoTit) : '') + '</h4>' + casoTxt.split('\n\n').map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') + '</div>';
   for (var i = 1; i <= n; i++) {
-    var base = Q[i - 1] || {}, r = g.resp[i], tit = (r && r.titulo) || base.t || '', caso = (r && r.caso) || base.c || '', perg = (r && r.pergunta) || base.p || '';
+    var base = Q[i - 1] || {}, r = g.resp[i], tit = (r && r.titulo) || base.t || '', perg = (r && r.pergunta) || base.p || '';
+    var cit = (r && r.cit) || base.cit || '', ref = (r && r.ref) || base.ref || '';
     var txt = r ? (r.texto || '') : '', rasc = !r && g.rasc[i] ? g.rasc[i] : '', e = g.esc[i];
-    h += '<div class="q"><h4>Situação ' + i + (tit ? ': ' + esc(tit) : '') + '</h4>' + (caso ? '<p>' + esc(caso) + '</p>' : '') + (perg ? '<p class="perg">' + esc(perg) + '</p>' : '');
+    h += '<div class="q"><h4>Questão ' + i + (tit ? ': ' + esc(tit) : '') + '</h4>' +
+      (cit ? '<p class="cit">"' + esc(cit) + '"</p><p class="ref">' + esc(ref) + '</p>' : '') + (perg ? '<p class="perg">' + esc(perg) + '</p>' : '');
     if (txt.trim()) h += '<div class="resp">' + esc(txt) + '</div>';
     else if (rasc.trim()) h += '<div class="resp">' + esc(rasc) + '</div><div class="obs">Texto que estava escrito na página; não foi enviado pelo estudante.</div>';
     else h += '<div class="resp vazio">Sem resposta.</div>';
